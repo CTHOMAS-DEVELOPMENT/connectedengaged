@@ -1,0 +1,998 @@
+/* General App Styles */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap&family=Barrio:wght@400;700&display=swap");
+.App {
+  text-align: center;
+  font-family: "Quicksand", sans-serif; /* Consistent with your header font */
+  background: #f0f0f0; /* A light grey background for contrast */
+  color: #333; /* Dark grey color for text for better readability */
+}
+
+/* Header Styles - Assuming you have a header */
+.App-header {
+  background-color: #282c34;
+  padding: 20px 0; /* Adjust padding for a better layout */
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+/* Link Styles */
+.App-link {
+  color: #61dafb;
+}
+
+/* Registration Form Styles */
+.system-form {
+  max-width: 500px; /* Set a max width for the form */
+  margin: 30px auto; /* Center the form with margin */
+  padding: 40px; /* Padding inside the form */
+  background: white; /* White background for the form */
+  border-radius: 8px; /* Rounded corners for the form */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+.system-small-button-wrapper {
+  width: auto; /* Adjust based on content size */
+  height: auto; /* Adjust based on content size */
+  display: flex; /* Use inline-flex to wrap content */
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #0dcaf0;
+  padding: 5px;
+}
+
+.system-form h2 {
+  margin-bottom: 20px; /* Space below the header */
+  color: #333; /* Dark text for the header */
+}
+
+/* Style for form inputs */
+.system-form input {
+  width: calc(100% - 20px); /* Full width inputs */
+  padding: 10px; /* Padding inside inputs */
+  margin-bottom: 15px; /* Space between inputs */
+  border: 1px solid #ddd; /* Subtle border for inputs */
+  border-radius: 4px; /* Slightly rounded corners for inputs */
+}
+
+/* Style for form selects (dropdowns) */
+.system-form select {
+  width: calc(100% - 20px); /* Full width of the select */
+  padding: 10px; /* Padding inside the select */
+  margin-bottom: 15px; /* Space between form elements */
+  border: 1px solid #ddd; /* Subtle border for the select */
+  border-radius: 4px; /* Slightly rounded corners for the select */
+  background-color: white; /* White background for the select */
+  color: #333; /* Dark text color for the select options */
+  cursor: pointer; /* Cursor indicates the select is clickable */
+}
+
+.system-form select:focus {
+  outline: none; /* Removes the default focus outline */
+  border-color: #61dafb; /* Highlight color when select is focused */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .system-form {
+    width: 90%; /* Make the form wider on smaller screens */
+    margin: 20px auto; /* Adjust margin on smaller screens */
+  }
+}
+@media (max-width: 768px) {
+  .resizable-image {
+    width: 60%; /* Adjust the image to 60% of its original width */
+    height: auto; /* Maintain aspect ratio */
+  }
+}
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 10px; /* Space between buttons */
+  align-items: center; /* Center-align the buttons */
+  margin-bottom: 20px; /* Space below the button container */
+}
+.button-stack {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: center; /* Center-align the buttons */
+}
+
+.round-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
+  margin-right: 5px;
+}
+
+.round-button:not(.selected):hover,
+.round-button.selected {
+  background-color: #007bff;
+  color: white;
+}
+/* Container for the form and the image panel */
+.system-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Registration form panel */
+.system-panel {
+  flex: 1;
+  max-width: 400px; /* Limit the width of the form */
+  margin: 0 20px;
+}
+
+/* Image panel */
+.image-panel {
+  flex: 1;
+  margin: 0 20px;
+  border-radius: 8px; /* Optional: if you want rounded corners */
+  overflow: hidden; /* Ensures the border radius clips the image */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
+}
+
+/* Including the image */
+.image-panel img {
+  width: 100%;
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Remove any extra space below the image */
+}
+
+.login-layout {
+  display: flex;
+  flex-direction: column;
+}
+.image-uploader {
+  font-family: "Quicksand", sans-serif;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.image-uploader h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-input {
+  border: 2px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.submit-button {
+  background-color: #008cba;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #005f73;
+}
+
+.login-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  /* Style for the form container */
+  margin: 0 20px; /* Adjust margin as needed */
+}
+.consent_group {
+  margin: 50px 0;
+}
+.image-panel {
+  /* Style for image containers */
+  flex: 1;
+}
+.login-page-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.login-page-link a {
+  color: #007bff; /* Or any color that matches your design */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-page-link a:hover {
+  text-decoration: underline;
+}
+
+.fontHeader {
+  font-family: "Quicksand", sans-serif;
+  font-weight: 600;
+}
+input {
+  font-family: "Quicksand", sans-serif;
+  font-weight: 400;
+  /* Additional styling for the input fields like border, padding, etc. */
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.user-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* Adjust this value as needed */
+  margin-bottom: 10px;
+}
+
+/* Responsive styling for smaller viewports */
+@media (max-width: 768px) {
+  .user-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+.file-upload-filename {
+  background-color: #f8f9fa; /* Bootstrap's default button color */
+  border: 1px solid #ced4da; /* Bootstrap's default border color */
+  border-radius: 0.25rem; /* Bootstrap's default border-radius */
+  padding: 0.375rem 0.75rem; /* Bootstrap's default padding for buttons */
+  font-size: 1rem; /* Bootstrap's default font size for buttons */
+  line-height: 1.5; /* Bootstrap's default line height for buttons */
+  color: #495057; /* Bootstrap's default text color */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Ensures the text doesn't overflow */
+  max-width: 200px; /* Adjust as needed */
+  display: inline-block; /* Makes the span behave like a block element */
+  margin-left: 10px; /* Space between the label and span */
+}
+
+/* Default style for larger screens */
+.date-display {
+  font-size: 1em; /* example size, adjust as needed */
+}
+
+.interaction-wrapper {
+  display: flex;
+}
+
+.interaction-title,
+.interaction-username,
+.interaction-edit {
+  margin-right: 10px; /* Spacing between columns */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.filter-select,
+.filter-input {
+  font-size: 0.8rem;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.filter-container span {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.interaction-title {
+  text-align: left;
+  flex-grow: 2; /* Allows the title to take up more space */
+}
+
+.interaction-username,
+.interaction-edit {
+  flex-basis: 20%; /* Adjust the percentage based on your needs */
+}
+
+/* Style for mobile screens */
+@media (max-width: 768px) {
+  .date-display-mobile {
+    display: inline;
+    font-size: 0.8em;
+  }
+
+  .interaction-username,
+  .interaction-edit {
+    flex-basis: auto; /* Adjusts basis to content size on smaller screens */
+  }
+}
+
+/* Since the checkbox and button are not likely to grow, they don't need flex-grow */
+.checkbox-container {
+  /* Wraps the checkbox and ensures it doesn't grow with flexbox */
+  padding-right: 10px; /* Optional: if you want some space between the checkbox and the username */
+}
+
+.wrapper-container {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.no-bullet {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.interaction-title {
+  font-weight: 600;
+}
+
+.logout-button {
+  margin-bottom: 20px; /* Add some space below the logout button */
+}
+.users-list-container {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+.user-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 0;
+}
+
+.user-item:last-child {
+  border-bottom: none;
+}
+
+.user-info-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px; /* Space between username/checkbox and button */
+}
+
+.user-name {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.user-checkbox {
+  margin-left: 10px; /* Space between username and checkbox */
+}
+
+/*User Profile*/
+.back-button {
+  margin-bottom: 10px; /* Adds space between the button and the profile container */
+}
+
+.profile-container {
+  background: #ffffff; /* White background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
+  padding: 20px; /* Padding inside the container */
+  margin: 20px auto; /* Margin for spacing around the container */
+  max-width: 600px; /* Maximum width of the container */
+  text-align: left; /* Align text to the left inside the container */
+}
+.centre-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  /* Do not use align-items: center here since we're not centering vertically */
+}
+
+.edit-interaction-container {
+  background: #ffffff; /* White background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 20px; /* Padding inside the container */
+  width: 100%; /* Full width */
+  max-width: 600px; /* Maximum width of the container */
+  margin: auto; /* This will ensure the container is centered horizontally */
+  /* Remove any specific margin-top if you want to let the container flow naturally within the document */
+}
+.dropdown-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.user-edit-item {
+  display: flex;
+  justify-content: space-between; /* Distributes space between items */
+  align-items: center; /* Aligns items vertically */
+  padding: 10px 0; /* Padding for each user item */
+}
+
+.user-edit-item:last-child {
+  border-bottom: none;
+}
+
+.user-edit-info {
+  display: flex;
+  justify-content: space-between; /* Distributes space between username and checkbox */
+  align-items: center; /* Aligns items vertically */
+  width: 100%; /* Full width to utilize the space */
+}
+.username {
+  flex-grow: 1; /* Allows the username to grow and fill available space */
+  text-align: left; /* Aligns the username text to the left */
+}
+
+.interaction-item {
+  background: #ffffff; /* White background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 20px; /* Padding inside the container */
+  margin-bottom: 15px; /* Space between items */
+}
+
+.interaction-title-container {
+  text-align: left;
+}
+
+.interaction-details-container {
+  display: flex;
+  flex-direction: column; /* Stack date and edit button vertically */
+  align-items: flex-start; /* Align to the left */
+  font-size: 0.8em; /* Smaller font size for details */
+}
+
+.interaction-edit-container {
+  display: flex;
+  justify-content: flex-end; /* Right align the edit button */
+  margin-top: 10px; /* Space from the date */
+}
+.interaction-date,
+.interaction-expected-end {
+  color: #000; /* Default text color for creation date */
+  margin-bottom: 5px; /* Space between dates and edit button */
+}
+.interaction-expected-end {
+  color: red; /* Red text color for expected end */
+}
+.summary-container {
+  background: #f3f3f3; /* Light grey background */
+  border-radius: 15px; /* Rounded corners */
+  padding: 20px; /* Some padding */
+  margin-bottom: 20px; /* Space below the container */
+  border: 1px solid #ccc; /* Light grey border */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+.element-group-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-bottom: 10px;
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+}
+
+.message-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1050;
+  font-family: "Barrio", sans-serif;
+  animation: fadeOut 4s ease-out forwards;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.btn-wrap {
+  white-space: normal; /* Allow text to wrap */
+  word-wrap: break-word; /* Break words if they are too long */
+  text-align: center; /* Center align text if needed */
+  width: 300px; /* Set the desired width */
+
+}
+
+.section-container {
+  border: 2px solid #0dcaf0; /* Bootstrap's 'info' color */
+  border-radius: 0.25rem; /* Match Bootstrap's border-radius */
+  padding: 15px; /* Padding for some spacing inside the container */
+  margin-bottom: 20px; /* Spacing between sections */
+}
+.center-interaction-elements {
+  max-width: 800px; /* Adjust this width as needed */
+  margin: 0 auto; /* This centers the div in its container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-container {
+  text-align: center;
+  margin: 10px;
+}
+
+.post-profile-image {
+  display: block;
+  margin: 0 auto;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5px;
+}
+
+
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-50%) translateX(-10px);
+  }
+}
+.btn-pulse {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.post-profile-image {
+  border-radius: 50%; /* Add some space between image and text */
+}
+.post-profile-image.active {
+  animation: bounce 1s infinite;
+}
+.post-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between buttons */
+}
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Ensure images don't exceed the container's width */
+.post-image,
+.post-profile-image {
+  max-width: 100px; /* Or any other appropriate max-width */
+  height: auto;
+  border-radius: 50%; /* Circular images for profile pictures */
+}
+
+.current-user-profile-pic {
+  border-radius: 50%; /* Circle shape */
+  margin-right: 10px; /* Spacing between image and text box */
+  width: 50px; /* Set a fixed width */
+  height: 50px; /* Set a fixed height */
+  align-self: center;
+}
+.text-entry-container {
+  flex-grow: 1; /* Allows text input to fill space */
+  /* other styles remain the same */
+}
+.text-input-and-button {
+  display: flex;
+}
+.image-upload-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-opaque mask */
+  z-index: 1040; /* Ensure it's above most content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 1050; /* Above the backdrop */
+}
+
+.photo-upload-edit {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: inline-block;
+}
+
+.file-upload-filename {
+  display: inline-block; /* Inline-block will place it on the same line as preceding content */
+  margin-left: 8px; /* Ensure it doesn’t stick to the button */
+  line-height: 38px; /* Aligns text vertically; adjust as needed based on button size */
+}
+
+/* Hide the file input using opacity instead of display to maintain its functionality */
+#fileUpload {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+  z-index: -1;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+}
+
+.text-update-modal {
+  top: 150px;
+  width: 80%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 1055;
+}
+/*FeedScreen*/
+Interaction_entry {
+  padding-top: 150px; /* Adjust this value based on the actual height of your header */
+}
+.header {
+  position: fixed; /* Add this line to fix the position of the header */
+  top: 0; /* Align the top edge of the element with the top of the viewport */
+  left: 0; /* Align the left edge of the element with the left of the viewport */
+  width: 100%; /* Set the width to 100% of the viewport */
+  z-index: 1000; /* Ensure the header stays on top of other content */
+  background-color: #fff; /* Add a background color to the header, if necessary */
+  /* Keep the rest of your styles */
+}
+
+/* Instead of body, add padding to the main content container of your FeedScreen */
+.feed-displacement {
+  padding-top: 180px; /* Adjust this value based on the actual height of your header */
+  /* Other styles for your feed content */
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  display: none;
+  margin-left: 10px;
+}
+.search-container .search-input {
+  display: block;
+}
+.interaction-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.interaction-icon {
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  border-radius: 50%;
+  margin: 0 5px;
+}
+.interaction-icon.current {
+  width: 15px;
+  height: 15px;
+}
+
+.header-title {
+  font-size: 24px; /* Adjust size as needed */
+  color: #333; /* Text color */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  /* The font-family will be set dynamically */
+}
+.text-entry {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.button-stack {
+  width: 100%;
+}
+
+.text-entry textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  resize: none; /* Optional: Disables the resize handle */
+}
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.8em;
+}
+.custom-btn {
+  width: auto; /* Adjust based on your needs, auto makes the button wrap its content */
+  padding: 0.25rem 0.5rem; /* Adjust padding to suit your design */
+}
+.btn-sm:hover {
+  background-color: #0056b3;
+}
+.btn-sm.interaction-edit {
+  margin-top: 5px; /* Space above the edit button */
+}
+.btn-icon {
+  margin: 0 5px; /* Add space between buttons */
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+.text-entry .btn-sm {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  border-radius: 15px;
+  padding: 5px 15px;
+  font-size: 16px;
+  width: auto; /* Adjust width as necessary */
+  align-self: center; /* Align button to center for stack */
+}
+
+.text-entry .btn-sm:hover,
+.text-entry .btn-sm:focus {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.speech-bubble {
+  position: relative;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  padding: 10px;
+  margin-left: 20px; /* Adjust as necessary */
+  flex-grow: 1; /* Allows the bubble to fill the space */
+  max-width: calc(100% - 60px); /* Max width of the speech bubble */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.speech-bubble::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -10px; /* Adjust as necessary */
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-right-color: #f9f9f9; /* Match bubble background color */
+  border-left: 0;
+  margin-top: -10px; /* Adjust this value to half the border-width to align it properly */
+  transform: translate(0, -50%);
+}
+/*FilterUsers*/
+.filter-users {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers children horizontally in the flex container */
+  justify-content: center; /* Optional: Centers children vertically if needed */
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+.rounded-rectangle-wrapper {
+  border: 1px solid #007bff; 
+  border-radius: 8px;
+  box-shadow: 0 2px 4px #61dafb;
+  
+}
+.centre_scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally in a flex column context */
+  justify-content: center; /* Center vertically if needed */
+  margin: 0 auto; /* Center the container */
+}
+.centre-scroll-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.center-elements {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-you-textarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+}
+.filter-input,
+.filter-select {
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.filter-button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+/*Connection Requests*/
+/* Container for the entire component */
+.connection-requests-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the unordered list */
+.connection-requests-list {
+  list-style-type: none; /* Removes default bullets */
+  padding: 0;
+  margin: 0;
+}
+
+/* Styles for each list item */
+.connection-request-item {
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.connection-request-item:last-child {
+  margin-bottom: 0; /* Removes margin from the last item */
+}
+
+/* Additional styling for text and profile viewer */
+.connection-request-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  display: flex;
+  gap: 20px;
+}
+.left-side-listed-profile-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px; /* Adds a little space between the spans */
+}
+.thumb-profile-viewer {
+  display: block; /* Adjust as needed based on ThumbProfileViewer styling */
+  margin-top: 10px;
+}
+.connection-requests-toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adjust the gap between buttons as needed */
+  margin-bottom: 20px; /* Adds some space below the buttons */
+}
+.button_tower {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adjusts the space between buttons */
+  align-items: center; /* Aligns buttons to the start of the flex container */
+  margin-bottom: 20px; /* Adds some space below the button tower */
+}
+/* Dynamic font class added via JS based on user selection */
+.font-style-1 {
+  font-family: "Roboto", sans-serif;
+}
+.font-style-2 {
+  font-family: "Lato", sans-serif;
+}
+.font-style-3 {
+  font-family: "Montserrat", sans-serif;
+}
+.font-style-4 {
+  font-family: "Barrio", sans-serif;
+}
