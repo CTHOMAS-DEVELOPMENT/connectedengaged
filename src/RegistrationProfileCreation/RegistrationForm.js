@@ -128,7 +128,15 @@ const RegistrationForm = () => {
         },
         body: JSON.stringify(formData),
       })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                if (response.status === 409) {
+                  throw new Error("Email already exists");
+                }
+                throw new Error("Registration failed");
+              }
+              return response.json();                      
+        })
         .then((data) => {
           if (data.id) {
             setUserId(data.id);
@@ -144,7 +152,7 @@ const RegistrationForm = () => {
         })
         .catch((error) => {
           console.error("Registration error:", error);
-          setMessage("Registration failed");
+          setMessage("Registration failed: "+error.message);
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
         });
@@ -192,7 +200,7 @@ const RegistrationForm = () => {
           )}
         </div>
       )}
-      <form className="system-form" onSubmit={handleSubmit}>
+      <form noValidate className="system-form" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
           <input
@@ -320,7 +328,7 @@ const RegistrationForm = () => {
           </Button>
         )}
       </form>
-      {message && <AlertMessage key={alertKey} message={message} type={type} />}
+      {message && <AlertMessage key={alertKey} message={message} type={type} centred={type === "error"} />}
     </div>
   );
 };

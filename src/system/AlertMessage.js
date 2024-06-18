@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-const AlertMessage = ({ message, type }) => {
+const AlertMessage = ({ message, type, centred = false }) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -22,7 +21,18 @@ const AlertMessage = ({ message, type }) => {
   };
 
   return (
-    <div style={{ color: getColor(), margin: '10px', padding: '10px', border: `1px solid ${getColor()}` }}>
+    <div style={{ 
+      color: getColor(),
+      background: "white", 
+      margin: '10px', 
+      padding: '10px', 
+      border: `1px solid ${getColor()}`, 
+      position: centred ? 'fixed' : 'static',
+      top: centred ? '50%' : 'auto',
+      left: centred ? '50%' : 'auto',
+      transform: centred ? 'translate(-50%, -50%)' : 'none',
+      zIndex: centred ? 1000 : 'auto'
+    }}>
       {message}
     </div>
   );

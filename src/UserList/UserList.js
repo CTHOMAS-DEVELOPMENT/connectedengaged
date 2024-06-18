@@ -553,7 +553,7 @@ const UsersList = () => {
             variant={activeTab === "Interactions" ? "info" : "outline-info"}
             onClick={handleInteractionsTabClick}
           >
-            Interactions
+            Engagements
           </Button>
           <Button
             variant={
@@ -561,7 +561,7 @@ const UsersList = () => {
             }
             onClick={handleCommunicationCentreTabClick}
           >
-            Communication Centre
+            Connection Centre
           </Button>
           <Button
             variant="outline-info"
@@ -573,7 +573,7 @@ const UsersList = () => {
         {activeTab === "Communication Centre" && (
           <div className="section-container">
             <div>
-              <h2 className="font-style-4">Communication Centre</h2>
+              <h2 className="font-style-4">Connection Centre</h2>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <ScrollingHelpText message={helpMessage} width="400px" />
               </div>
@@ -725,7 +725,7 @@ const UsersList = () => {
       </div>
       {activeTab === "Interactions" && (
         <div className="section-container center-interaction-elements">
-          <h2 className="font-style-4">Interactions</h2>
+          <h2 className="font-style-4">Engagements</h2>
           <div>
             <input
               type="file"

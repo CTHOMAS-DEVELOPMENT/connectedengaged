@@ -1,4 +1,3 @@
-//const { pipeline, env } = require('@xenova/transformers');
 const express = require("express");
 const { Pool, Client } = require("pg");
 const multer = require("multer");
@@ -12,10 +11,6 @@ const socketIo = require("socket.io");
 const cors = require("cors"); // Assuming you're using the 'cors' package for Express
 const JSZip = require("jszip");
 const util = require("util");
-
-//For .env
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 100; // in milliseconds
 
 // Create a new express application
 const app = express();
@@ -67,19 +62,55 @@ loadEnvVariables();
 const RESET_EMAIL = process.env.RESET_EMAIL;
 const JWT_SECRET = process.env.LG_TOKEN;
 
+const allowedOrigins = [
+  `http://${process.env.HOST}:${process.env.PORTFORAPP}`,
+  `http://${process.env.HOST}:${process.env.PROXYPORT}`,
+  'https://your-remote-domain.com'
+];
+
 app.use(
   cors({
-    origin: `http://${process.env.HOST}:${process.env.PORTFORAPP}`, // Allow your frontend origin
+    origin: (origin, callback) => {
+      // Log the origin for debugging
+      //console.log(`Request origin: ${origin}`);
+      
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) {
+        //console.log(`No origin provided, allowing request.`);
+        return callback(null, true);
+      }
+
+      // Remove trailing slash from origin for comparison
+      const cleanedOrigin = origin.replace(/\/$/, '');
+      
+      if (allowedOrigins.indexOf(cleanedOrigin) !== -1) {
+        console.log(`Origin: ${cleanedOrigin} allowed by CORS`);
+        callback(null, true);
+      } else {
+        console.log(`Origin: ${cleanedOrigin} not allowed by CORS`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
   })
 );
+
+
+
 const io = socketIo(server, {
   cors: {
-    origin: `http://${process.env.HOST}:${process.env.PORTFORAPP}`, // Allow your frontend origin
-    methods: ["GET", "POST"], // Specify which HTTP methods are allowed
-    allowedHeaders: ["my-custom-header"], // Optional: specify headers
-    credentials: true, // Optional: if you need credentials
+    origin: (origin, callback) => {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
   },
 });
+
 
 const transporter = nodemailer.createTransport({
   service: "gmail", // Example using Gmail
@@ -98,20 +129,6 @@ app.use(
   express.static(path.join(__dirname, "imageUploaded"))
 );
 // PostgreSQL connection configuration
-// const pool = new Pool({
-//   user: "interactwithmeadmin",
-//   host: process.env.HOST, // Adjust if your DB is hosted elsewhere
-//   database: "interactwithme",
-//   password: "interactwithmeadmin",
-//   port: process.env.PORTNO, // Default PostgreSQL port
-// });
-// const pool = new Pool({
-//   user: "interactone", // Update to new user
-//   host: process.env.HOST, // Adjust if your DB is hosted elsewhere
-//   database: "interactwithme2", // Update to new database
-//   password: "one_password", // Update to new user's password
-//   port: process.env.PORTNO, // Default PostgreSQL port
-// });
 const pool = new Pool({
   user: "interactone",
   host: "localhost", // Using localhost as specified
@@ -119,6 +136,16 @@ const pool = new Pool({
   password: "one_password", // New user's password
   port: process.env.PORTNO || 5432, // Ensure the port is correct
 });
+/**
+Remote db
+ */
+// const pool = new Pool({
+//   user: "postgres.uvdgwdoooebrlnpkqmtx",
+//   host: "aws-0-eu-central-1.pooler.supabase.com", // Using localhost as specified
+//   database: "postgres", // New database
+//   password: "128Crestway482", // New user's password
+//   port: 6543, // Ensure the port is correct
+// });
 
 function handleDatabaseError(error, res) {
   // Duplicate username
@@ -145,12 +172,7 @@ pool.connect((err, client, release) => {
   });
 });
 
-//const connectionString = `postgresql://interactwithmeadmin:interactwithmeadmin@${process.env.HOST}:${process.env.PORTNO}/interactwithme`;
-//const connectionString = `postgresql://interactone:interactone@${process.env.HOST}:${process.env.PORTNO}/interactwithme2`;
-const connectionString = `postgresql://interactone:one_password@localhost:${
-  process.env.PORTNO || 5432
-}/interactwithme2`;
-
+const connectionString = process.env.CONNECTION_STRING;
 const pgClient = new Client({ connectionString });
 pgClient.connect((err) => {
   if (err) {
@@ -632,8 +654,12 @@ app.post("/api/register", async (req, res) => {
     res.json({ id: newUserId, username: username });
   } catch (error) {
     await client.query("ROLLBACK"); // Roll back the transaction on error
-    console.error(error);
-    res.status(500).send("An error occurred during registration.");
+    if (error.code === "23505") {
+      // Unique constraint violation
+      res.status(409).send("Email already exists");
+    } else {
+      res.status(500).send("An error occurred during registration.");
+    }
   } finally {
     client.release(); // Release the client back to the pool
   }
@@ -1168,10 +1194,12 @@ async function deleteFile(filePath) {
     await fsx.unlink(filePath);
     console.log(`Successfully deleted file: ${filePath}`);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       console.error(`File not found, removing from schedule: ${filePath}`);
     } else {
-      console.error(`Error deleting file: ${filePath}. Error: ${error.message}`);
+      console.error(
+        `Error deleting file: ${filePath}. Error: ${error.message}`
+      );
       throw error;
     }
   }
@@ -1179,25 +1207,32 @@ async function deleteFile(filePath) {
 
 async function scheduleFileForDeletion(client, filePath) {
   try {
-    await client.query("INSERT INTO scheduled_deletions (file_path) VALUES ($1)", [filePath]);
+    await client.query(
+      "INSERT INTO scheduled_deletions (file_path) VALUES ($1)",
+      [filePath]
+    );
     console.log(`Scheduled file for deletion: ${filePath}`);
   } catch (error) {
-    console.error(`Error scheduling file for deletion: ${filePath}. Error: ${error.message}`);
+    console.error(
+      `Error scheduling file for deletion: ${filePath}. Error: ${error.message}`
+    );
   }
 }
 
 async function restoreOriginalProfilePicture(client, userId, originalFilePath) {
   try {
     await client.query("BEGIN");
-    await client.query(
-      "UPDATE users SET profile_picture = $1 WHERE id = $2",
-      [originalFilePath, userId]
-    );
+    await client.query("UPDATE users SET profile_picture = $1 WHERE id = $2", [
+      originalFilePath,
+      userId,
+    ]);
     await client.query("COMMIT");
     console.log("Successfully restored original profile picture");
   } catch (restoreError) {
     await client.query("ROLLBACK");
-    console.error(`Error restoring original profile picture: ${restoreError.message}`);
+    console.error(
+      `Error restoring original profile picture: ${restoreError.message}`
+    );
   }
 }
 
@@ -1205,8 +1240,9 @@ async function generateThumbnail(filePath, thumbnailPath) {
   return new Promise((resolve, reject) => {
     sharp(filePath)
       .metadata()
-      .then(metadata => {
-        const longerDimension = metadata.width > metadata.height ? "width" : "height";
+      .then((metadata) => {
+        const longerDimension =
+          metadata.width > metadata.height ? "width" : "height";
         const resizeOptions = { [longerDimension]: 100 };
 
         sharp(filePath)
@@ -1215,18 +1251,18 @@ async function generateThumbnail(filePath, thumbnailPath) {
           .then(() => {
             resolve();
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
 }
 
 async function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 app.post(
@@ -1281,7 +1317,9 @@ app.post(
           await deleteFile(originalFilePath);
           await deleteFile(originalThumbnailPath);
         } catch (err) {
-          console.error(`Error deleting old profile picture and thumbnail: ${err.message}`);
+          console.error(
+            `Error deleting old profile picture and thumbnail: ${err.message}`
+          );
           // Schedule the files for deletion
           await scheduleFileForDeletion(client, originalFilePath);
           await scheduleFileForDeletion(client, originalThumbnailPath);
@@ -1314,7 +1352,11 @@ app.post(
 
       // Restore original profile picture if an error occurs
       if (originalFilePath) {
-        await restoreOriginalProfilePicture(client, req.params.userId, originalFilePath);
+        await restoreOriginalProfilePicture(
+          client,
+          req.params.userId,
+          originalFilePath
+        );
       }
 
       handleDatabaseError(error, res);
@@ -1322,28 +1364,36 @@ app.post(
       client.release();
     }
   }
-)
+);
 //Cleanup files
 async function cleanupScheduledDeletions() {
   const client = await pool.connect();
 
   try {
-    const { rows: filesToDelete } = await client.query("SELECT id, file_path FROM scheduled_deletions");
+    const { rows: filesToDelete } = await client.query(
+      "SELECT id, file_path FROM scheduled_deletions"
+    );
 
     for (const file of filesToDelete) {
       const { id, file_path } = file;
 
       try {
         await deleteFile(file_path);
-        await client.query("DELETE FROM scheduled_deletions WHERE id = $1", [id]);
+        await client.query("DELETE FROM scheduled_deletions WHERE id = $1", [
+          id,
+        ]);
         console.log(`Successfully deleted scheduled file: ${file_path}`);
       } catch (error) {
-        if (error.code === 'ENOENT') {
+        if (error.code === "ENOENT") {
           // Remove the record from the table if the file does not exist
-          await client.query("DELETE FROM scheduled_deletions WHERE id = $1", [id]);
+          await client.query("DELETE FROM scheduled_deletions WHERE id = $1", [
+            id,
+          ]);
           console.log(`Removed non-existent file from schedule: ${file_path}`);
         } else {
-          console.error(`Error deleting scheduled file: ${file_path}. Error: ${error.message}`);
+          console.error(
+            `Error deleting scheduled file: ${file_path}. Error: ${error.message}`
+          );
         }
         // Continue with next file
       }
@@ -2090,6 +2140,7 @@ app.post("/api/password_reset_request", async (req, res) => {
     ]);
 
     // Create reset URL
+    // HOST PORTFORAPP
     const resetUrl = `http://${process.env.HOST}:${process.env.PORTFORAPP}/password-reset?token=${resetToken}`;
 
     // Send email
