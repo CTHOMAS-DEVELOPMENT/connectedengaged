@@ -41,6 +41,7 @@ const InteractionTitles = ({
   };
   useEffect(() => {
     fetchInteractions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId]);
   useEffect(() => {
     if (shouldRefreshInteractions) {
@@ -52,6 +53,7 @@ const InteractionTitles = ({
       fetchInteractions(); // Your function that fetches interactions
       resetRefreshTrigger(); // Reset the trigger passed down from parent
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldRefreshInteractions, resetRefreshTrigger]);
   const handleTitleClick = (data) => {
     navigate("/feed", {

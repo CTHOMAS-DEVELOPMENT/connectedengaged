@@ -66,6 +66,7 @@ const EditInteraction = () => {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId, navigate]);
   useEffect(() => {
     let filteredUsers = users.filter((user) =>
@@ -252,9 +253,6 @@ const EditInteraction = () => {
   };
 
   // Get current page of users
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  //(aboutYouFilter.length >= 3) 999
   const currentUsers = useMemo(() => {
     let filteredUsers = users.filter((user) => {
       const aboutYouSafe = user.about_you || "";

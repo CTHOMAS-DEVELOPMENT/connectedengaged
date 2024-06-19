@@ -148,6 +148,7 @@ const ConnectionRequested = ({
   };
   useEffect(() => {
     fetchConnectionRequested();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   if (isLoading) return <div>Loading connection requests...</div>;

@@ -60,6 +60,7 @@ const UpdateProfile = () => {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, navigate]);
   useEffect(() => {
     if (formData.sex) {

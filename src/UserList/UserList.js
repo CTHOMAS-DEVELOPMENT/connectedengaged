@@ -21,7 +21,6 @@ const UsersList = () => {
   const [selectedUsernames, setSelectedUsernames] = useState([]);
   const [authError, setAuthError] = useState(false); // State for authorization error
   const [showFilter, setShowFilter] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [showConnectionRequests, setShowConnectionRequests] = useState(true); // State to toggle connection requests visibility
   const [showRequestsFromOthers, setShowRequestsFromOthers] = useState(true);
@@ -36,9 +35,9 @@ const UsersList = () => {
 
   const [activeTab, setActiveTab] = useState("Interactions");
   const [lastSelectedUserId, setLastSelectedUserId] = useState(null);
-  const [notificationson, setNotificationsOn] = useState(false); //overide default
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
+  let notificationson=false; //overide default
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(true);
   const [message, setMessage] = useState("");
@@ -87,7 +86,6 @@ const UsersList = () => {
     }
 
     // Assuming `user.id` is the ID of the logged-in user you want to pass to your backend
-    setIsSubmitting(true);
     fetch(`/api/filter-users/${user.id}`, {
       method: "POST",
       headers: {
@@ -104,12 +102,10 @@ const UsersList = () => {
       })
       .then((data) => {
         // Handle the successful response here
-        setIsSubmitting(false);
         setSubmitSuccess(true);
         setShowConnectionRequests(true);
       })
       .catch((error) => {
-        setIsSubmitting(false);
         setSubmitSuccess(false);
         console.error("Error applying filter:", error);
         // Optionally, update your UI to indicate the error to the user
@@ -151,6 +147,7 @@ const UsersList = () => {
   };
   useEffect(() => {
     fetchConnectionRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
   useEffect(() => {
@@ -166,9 +163,9 @@ const UsersList = () => {
       fetchConnectedUsers(); // Example action: re-fetch connected users
       setShouldRefreshInteractions(true);
       // Optionally, reset other states or perform additional updates
-
       setRefreshNeeded(false); // Reset the refresh trigger
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshNeeded]); // This effect depends on `refreshNeeded`
 
   useEffect(() => {
@@ -197,6 +194,7 @@ const UsersList = () => {
   }, [loggedInUserId, navigate]);
   useEffect(() => {
     fetchConnectedUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId, authError]);
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
@@ -225,11 +223,13 @@ const UsersList = () => {
     return () => {
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (loggedInUserId) {
       fetchConnectionRequested();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId]);
   const fetchConnectionRequested = () => {
     fetch(`/api/connection-requested/${loggedInUserId}`)
@@ -454,7 +454,7 @@ const UsersList = () => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json(); // Assuming the server responds with JSON
+      await response.json(); // Assuming the server responds with JSON
 
       // Handle the successful response here
       setMessage("Connections successfully enabled");
@@ -509,10 +509,6 @@ const UsersList = () => {
     top: "50%",
     transform: "translateY(-50%)",
     animation: "float 2s ease-in-out infinite",
-  };
-
-  const buttonStyle = {
-    animation: "pulse 2s infinite",
   };
 
   // Pagination logic

@@ -403,41 +403,6 @@ app.post("/api/login", async (req, res) => {
     res.status(500).send({ message: "An error occurred." });
   }
 });
-function determinePartnerPreference(orientation, gender) {
-  // Rule 1: Return 'Female' for 'Other'
-  if (gender === "Other") {
-    return "Female";
-  }
-
-  // Handling sexual orientations
-  switch (orientation) {
-    case "Heterosexual":
-    case "Straight":
-      // Opposite gender preference
-      return gender === "Male" ? "Female" : "Male";
-    case "Homosexual":
-    case "Gay":
-      // Same gender preference
-      return gender === "Male" ? "Male" : "Female";
-    case "Bisexual":
-    case "Pansexual":
-    case "Polysexual":
-    case "Omnisexual":
-    case "Queer":
-      // Rule 2: Return 'Female' if the orientation indicates no specific preference
-      return "Female";
-    case "Asexual":
-    case "Demisexual":
-      // Rule 2: Applies as no sexual preference is indicated
-      return "Female";
-    case "Lesbian":
-      // Lesbian orientation explicitly indicates a preference for females
-      return "Female";
-    default:
-      // For any unhandled or unknown orientations, or if no preference is indicated
-      return "Female";
-  }
-}
 
 async function processZipFile(
   zipFilePath,

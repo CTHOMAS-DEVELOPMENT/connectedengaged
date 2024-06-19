@@ -43,9 +43,8 @@ const FeedScreen = () => {
   const [userIsLive, setUserIsLive] = useState(false); // New state for tracking live updates for involved users
   const [associatedUsers, setAssociatedUsers] = useState([]);
   const [activeUsersList, setActiveUsersList] = useState([]);
-  const [audioBlob, setAudioBlob] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState("");
+  
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [loggedInUserName, setLoggedInUsername] = useState("");
@@ -55,8 +54,8 @@ const FeedScreen = () => {
   // Video call state and refs
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const uploadStatus="";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -72,11 +71,11 @@ const FeedScreen = () => {
   };
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
-  const [audioURL, setAudioURL] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  let audioURL=null;
+
   const audioRef = useRef(new Audio());
   const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]); // useRef to keep the audio data across renders
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
 
@@ -134,7 +133,6 @@ const handleStartRecording = () => {
 
         mediaRecorder.addEventListener("stop", () => {
           const blob = new Blob(audioChunks, { type: "audio/mp3" });
-          setAudioBlob(blob);
           setIsRecording(false);
           stream.getTracks().forEach((track) => track.stop());
           uploadAudio(blob); // Trigger upload after stopping
@@ -219,6 +217,7 @@ const handleStartRecording = () => {
       // Reset userIsLive after the update
       setUserIsLive(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userIsLive]);
   useEffect(() => {
     // If there's a new audio URL, play the audio
@@ -309,6 +308,7 @@ const handleStartRecording = () => {
     if (submissionId) {
       fetchPosts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submissionId]);
 
   useEffect(() => {
@@ -379,7 +379,7 @@ const handleStartRecording = () => {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
+      await response.json();
 
       postTypeForEmail("audio");
       setMessage("Upload audio successful!");

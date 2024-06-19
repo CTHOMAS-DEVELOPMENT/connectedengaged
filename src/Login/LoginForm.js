@@ -15,10 +15,6 @@ const LoginForm = () => {
   const [manRotation, setManRotation] = useState(0);
   const [womanRotation, setWomanRotation] = useState(0);
   const [womanImage, setWomanImage] = useState(womanImages[0]);
-  const [consentImage1, setConsentImage1] = useState(consentImages[0]);
-  const [consentImage2, setConsentImage2] = useState(consentImages[1]);
-  const [consentImage3, setConsentImage3] = useState(consentImages[2]);
-  const [consentImage4, setConsentImage4] = useState(consentImages[3]);
   const [consentGiven, setConsentGiven] = useState(false);
   const [consentImagesState, setConsentImagesState] = useState(consentImages);
   const [manImage, setManImage] = useState(manImages[0]);
@@ -60,13 +56,7 @@ const LoginForm = () => {
       setWomanRotation((prevRotation) => (prevRotation + 90) % 360);
     }
   };
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-    }
-    return array;
-  };
+
   const shuffleConsentImages = () => {
     let shuffled = [...consentImages];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -144,11 +134,7 @@ const LoginForm = () => {
     setWomanRotation(randomRotation());
     setManImage(selectRandomImage(manImages));
     setWomanImage(selectRandomImage(womanImages));
-    const shuffledConsentImages = shuffleArray([...consentImages]);
-    setConsentImage1(shuffledConsentImages[0]);
-    setConsentImage2(shuffledConsentImages[1]);
-    setConsentImage3(shuffledConsentImages[2]);
-    setConsentImage4(shuffledConsentImages[3]);
+ 
   };
   const scoreClickConsent = (consertId) => {
     switch (consertId) {
@@ -178,6 +164,7 @@ const LoginForm = () => {
   };
   useEffect(() => {
     resetImages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
