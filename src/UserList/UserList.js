@@ -54,7 +54,7 @@ const UsersList = () => {
     setShowFilter(!showFilter);
   };
   const deleteContactToBeDeleted = (id) => {
-    fetch(`/api/delete-connection/${id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/delete-connection/${id}`, {
       method: "DELETE", // Use the DELETE HTTP method
     })
       .then((response) => {
@@ -86,7 +86,7 @@ const UsersList = () => {
     }
 
     // Assuming `user.id` is the ID of the logged-in user you want to pass to your backend
-    fetch(`/api/filter-users/${user.id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/filter-users/${user.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const UsersList = () => {
   const fetchConnectionRequests = () => {
     if (!user.id) return;
 
-    fetch(`/api/connection-requests/${user.id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/connection-requests/${user.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch connection requests");
@@ -232,7 +232,7 @@ const UsersList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId]);
   const fetchConnectionRequested = () => {
-    fetch(`/api/connection-requested/${loggedInUserId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/connection-requested/${loggedInUserId}`)
       .then((response) => {
         if (!response.ok)
           throw new Error("Failed to fetch connection requests");
@@ -294,7 +294,7 @@ const UsersList = () => {
     formData.append("zipFile", file);
     formData.append("userId", userId);
 
-    fetch("/api/build-interaction-from-files", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/build-interaction-from-files`, {
       method: "POST",
       body: formData,
     })
@@ -403,7 +403,7 @@ const UsersList = () => {
 
     try {
       for (let i = 0; i < associatedUsers.length; i++) {
-        const response = await fetch("/api/notify_offline_users", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notify_offline_users`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -439,7 +439,7 @@ const UsersList = () => {
 
     try {
       const response = await fetch(
-        `/api/enable-selected-connections/${loggedInUserId}`,
+        `${process.env.REACT_APP_API_URL}/api/enable-selected-connections/${loggedInUserId}`,
         {
           method: "POST",
           headers: {
@@ -478,7 +478,7 @@ const UsersList = () => {
 
   const fetchConnectedUsers = () => {
     if (!authError && loggedInUserId) {
-      fetch(`/api/connected/${loggedInUserId}`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/connected/${loggedInUserId}`)
         .then((response) => response.json())
         .then((data) => {
           const loggedInUser = data.find((user) => user.id === loggedInUserId);

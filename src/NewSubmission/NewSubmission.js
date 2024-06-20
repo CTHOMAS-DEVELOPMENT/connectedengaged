@@ -29,7 +29,7 @@ const NewSubmission = () => {
       userIds: userIds,
     };
     // POST request to backend to save data
-    fetch("/api/user_submissions", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/user_submissions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -141,7 +141,7 @@ const EditInteraction = () => {
     }
   };
   const fetchInteractionDetails = () => {
-    fetch(`/api/interaction_user_list?submission_id=${submissionId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/interaction_user_list?submission_id=${submissionId}`)
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
@@ -159,7 +159,7 @@ const EditInteraction = () => {
       });
   };
   const fetchAllUsers = () => {
-    fetch(`/api/connected-users/${loggedInUserId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/connected-users/${loggedInUserId}`)
       .then((response) => response.json())
       .then((data) => {
         const filteredUsers = data.filter(
@@ -224,7 +224,7 @@ const EditInteraction = () => {
       userIds: Array.from(selectedUserIds),
     };
 
-    fetch("/api/update-the-group", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/update-the-group`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

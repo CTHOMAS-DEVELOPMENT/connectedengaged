@@ -46,10 +46,10 @@ const PhotoUploadAndEdit = ({
     formData.append("file", selectedFile);
     if (userId) formData.append("userId", userId);
 
-    let apiEndpoint = "/api/users/uploaded-item";
-    if (submissionId) apiEndpoint = `/api/users/${submissionId}/uploaded-item`;
+    let apiEndpoint = `${process.env.REACT_APP_API_URL}/api/users/uploaded-item`;
+    if (submissionId) apiEndpoint = `${process.env.REACT_APP_API_URL}/api/users/${submissionId}/uploaded-item`;
     if (dialogId)
-      apiEndpoint = `/api/submission-dialog/${dialogId}/update-item`;
+      apiEndpoint = `${process.env.REACT_APP_API_URL}/api/submission-dialog/${dialogId}/update-item`;
 
     fetch(apiEndpoint, {
       method: "POST",

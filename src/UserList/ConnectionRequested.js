@@ -66,7 +66,7 @@ const ConnectionRequested = ({
 
   const deleteAllRequests = () => {
     // Call the API to delete all connection requests to the user
-    fetch(`/api/delete-requests-to-me/${userId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/delete-requests-to-me/${userId}`, {
       method: "DELETE", // Using DELETE method as per the endpoint definition
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const ConnectionRequested = ({
 
   const deleteContactMe = (id) => {
     // Call the API to delete the connection request by ID
-    fetch(`/api/delete-from-connection-requests/${id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/delete-from-connection-requests/${id}`, {
       method: "POST", // or 'DELETE', depending on how your API is set up
       headers: {
         "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const ConnectionRequested = ({
   };
   const fetchConnectionRequested = () => {
     setIsLoading(true);
-    fetch(`/api/connection-requested/${userId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/connection-requested/${userId}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch connection requests");

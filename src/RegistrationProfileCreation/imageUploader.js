@@ -42,7 +42,7 @@ const ImageUploader = ({ userId, onUpload }) => {
       const formData = new FormData();
       formData.append('file', resizedImage); // 'file' is the key multer will look for
 
-      const response = await fetch(`/api/users/${userId}/profile-picture`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/profile-picture`, {
         method: "POST",
         body: formData, // Send formData, not JSON
         // Do not set Content-Type header, let the browser set it

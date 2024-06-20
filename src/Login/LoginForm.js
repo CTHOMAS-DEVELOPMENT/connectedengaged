@@ -85,7 +85,7 @@ const LoginForm = () => {
       return;
     }
     if (validateForm()) {
-      fetch("/api/login", {
+      fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

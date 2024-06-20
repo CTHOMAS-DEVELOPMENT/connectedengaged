@@ -27,7 +27,7 @@ const InteractionTitles = ({
     animation: "pulse 2s infinite",
   };
   const fetchInteractions = () => {
-    fetch(`/api/my_interaction_titles?logged_in_id=${loggedInUserId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/my_interaction_titles?logged_in_id=${loggedInUserId}`)
       .then((response) => response.json())
       .then((data) => {
         setInteractions(data);
@@ -79,7 +79,7 @@ const InteractionTitles = ({
     event.preventDefault(); // Prevent default button behavior
 
     // API endpoint to call
-    const apiUrl = `/api/closed-interaction-zip/${
+    const apiUrl = `${process.env.REACT_APP_API_URL}/api/closed-interaction-zip/${
       interaction.submission_id
     }?title=${encodeURIComponent(interaction.title)}`;
 
@@ -114,7 +114,7 @@ const InteractionTitles = ({
   const handleEndItClick = (interaction, event) => {
     event.stopPropagation(); // Prevent triggering handleTitleClick
 
-    fetch("/api/end_interaction", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/end_interaction`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -69,7 +69,7 @@ const UserProfile = () => {
   }, [loggedInUserId, navigate]);
 
   const fetchUserProfile = () => {
-    fetch(`/api/users/${userId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`)
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => console.error("Error fetching user:", error));

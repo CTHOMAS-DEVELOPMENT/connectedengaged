@@ -21,7 +21,7 @@ const TextEntry = ({ userId, submissionId, adminChatId, onPostSubmit }) => {
     }
     setIsSubmitting(true); // Set submitting state to true
     try {
-      const response = await fetch(`/api/users/${submissionId}/text-entry`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${submissionId}/text-entry`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -8,7 +8,7 @@ const ProfileViewer = ({ userId }) => {
   useEffect(() => {
     const fetchProfilePicture = async () => {
       try {
-        const response = await fetch(`/api/users/${userId}/profile-picture`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/profile-picture`);
         
         if (!response.ok) throw new Error("Failed to fetch profile picture");
         const data = await response.json();

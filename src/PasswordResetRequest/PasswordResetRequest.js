@@ -17,7 +17,7 @@ const PasswordResetRequest = () => {
     event.preventDefault();
     // Implement the logic to handle the password reset request here.
     // Typically, you would send a POST request to your backend.
-    fetch("/api/password_reset_request", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/password_reset_request`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

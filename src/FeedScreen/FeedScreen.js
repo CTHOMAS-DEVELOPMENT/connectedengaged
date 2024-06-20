@@ -166,7 +166,7 @@ const handleStartRecording = () => {
   // For example, you can call it right after fetchPosts() inside useEffect
   const deletePost = async (postId) => {
     try {
-      const response = await fetch(`/api/submission-dialog/${postId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submission-dialog/${postId}`, {
         method: "DELETE",
       });
       if (response.ok) {
@@ -187,7 +187,7 @@ const handleStartRecording = () => {
   // useEffect to fetch associated users
   useEffect(() => {
     if (submissionId) {
-      fetch(`/api/interaction_feed_user_list?submission_id=${submissionId}`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/interaction_feed_user_list?submission_id=${submissionId}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -234,7 +234,7 @@ const handleStartRecording = () => {
 
   useEffect(() => {
     if (userId) {
-      fetch(`/api/users/${userId}/profile-picture`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/profile-picture`)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -254,7 +254,7 @@ const handleStartRecording = () => {
   }, [userId]);
   const fetchPosts = () => {
     if (submissionId) {
-      fetch(`/api/users/${submissionId}/posts`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/users/${submissionId}/posts`)
         .then((response) => response.json())
         .then((data) => {
           return setPosts(data);
@@ -337,7 +337,7 @@ const handleStartRecording = () => {
       return;
     }
     try {
-      const response = await fetch("/api/notify_offline_users", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notify_offline_users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -375,7 +375,7 @@ const handleStartRecording = () => {
     formData.append("userId", userId);
 
     try {
-      const response = await fetch("/api/upload-audio", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/upload-audio`, {
         method: "POST",
         body: formData,
       });

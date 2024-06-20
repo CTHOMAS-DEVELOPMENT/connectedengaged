@@ -5,7 +5,7 @@ const checkAuthorization = (userId) => {
       return Promise.resolve(false);
     }
   
-    return fetch(`/api/authorised/${userId}`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/api/authorised/${userId}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,

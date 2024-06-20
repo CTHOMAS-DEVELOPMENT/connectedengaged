@@ -14,7 +14,7 @@ const TextUpdate = ({ dialogId, initialText, onSaveSuccess }) => {
   }, [dialogId, initialText]);
 
   const handleSave = async () => {
-    const response = await fetch(`/api/submission-dialog/${dialogId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submission-dialog/${dialogId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

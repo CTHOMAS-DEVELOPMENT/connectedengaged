@@ -88,7 +88,7 @@ const UpdateProfile = () => {
     }
   }, [formData.hobby]);
   const fetchUserData = () => {
-    fetch(`/api/users/${userId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`)
       .then((response) => response.json())
       .then((user) => {
         setFormData({
@@ -173,7 +173,7 @@ const UpdateProfile = () => {
     const validationErrors = validateUser(formData, true);
     if (Object.keys(validationErrors).length === 0) {
       // No validation errors, proceed with form submission
-      fetch(`/api/update_profile/${userId}`, {
+      fetch(`${process.env.REACT_APP_API_URL}/api/update_profile/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -25,7 +25,7 @@ const PasswordReset = () => {
       setAlertKey(prevKey => prevKey + 1); 
       return;
     }
-    fetch("/api/update_user_password", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/update_user_password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
