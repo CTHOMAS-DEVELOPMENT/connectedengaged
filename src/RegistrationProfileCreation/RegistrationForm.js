@@ -121,7 +121,8 @@ const RegistrationForm = () => {
     if (Object.keys(validationErrors).length === 0) {
       // Proceed with form submission
       //fetch("/test-db", {
-      fetch(`/api/register`, {
+      //`${process.env.REACT_APP_API_URL}
+      fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
