@@ -60,7 +60,7 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
     <div className="profile-picture-container">
       {profilePicture ? (
         <div className="button-container">
-          <img src={profilePicture} alt="Profile" />
+          <img src={`${process.env.REACT_APP_BACKEND_URL}${profilePicture}`} alt="Profile" />
           <Button
             variant="outline-info"
             className="btn-sm"
