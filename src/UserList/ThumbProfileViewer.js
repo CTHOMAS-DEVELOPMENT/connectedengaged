@@ -30,7 +30,7 @@ const ProfileViewer = ({ userId }) => {
   return (
     <div className="profile-picture-container">
       {profilePicture ? (
-        <img src={profilePicture} alt="Profile" />
+        <img src={`${process.env.REACT_APP_BACKEND_URL}${profilePicture}`} alt="Profile" />
       ) : (
         <span>No image</span>
       )}
