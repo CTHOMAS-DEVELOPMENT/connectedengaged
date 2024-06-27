@@ -11,7 +11,7 @@ const socketIo = require("socket.io");
 const cors = require("cors"); // Assuming you're using the 'cors' package for Express
 const JSZip = require("jszip");
 const util = require("util");
-
+const axios = require('axios');
 // Create a new express application
 const app = express();
 const server = http.createServer(app);
@@ -65,17 +65,16 @@ const JWT_SECRET = process.env.LG_TOKEN;
 const allowedOrigins = [
   `http://${process.env.HOST}:${process.env.PORTFORAPP}`,
   `http://${process.env.HOST}:${process.env.PROXYPORT}`,
-  'https://main--sage-twilight-26e49d.netlify.app', // Add your Netlify URL
-  'https://connectedbackend.onrender.com' // Your backend URL
+  "https://main--sage-twilight-26e49d.netlify.app", // Add your Netlify URL
+  "https://connectedbackend.onrender.com", // Your backend URL
 ];
-
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Log the origin for debugging
       //console.log(`Request origin: ${origin}`);
-      
+
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) {
         //console.log(`No origin provided, allowing request.`);
@@ -83,20 +82,18 @@ app.use(
       }
 
       // Remove trailing slash from origin for comparison
-      const cleanedOrigin = origin.replace(/\/$/, '');
-      
+      const cleanedOrigin = origin.replace(/\/$/, "");
+
       if (allowedOrigins.indexOf(cleanedOrigin) !== -1) {
         console.log(`Origin: ${cleanedOrigin} allowed by CORS`);
         callback(null, true);
       } else {
         console.log(`Origin: ${cleanedOrigin} not allowed by CORS`);
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error("Not allowed by CORS"));
       }
     },
   })
 );
-
-
 
 const io = socketIo(server, {
   cors: {
@@ -104,7 +101,7 @@ const io = socketIo(server, {
       if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error("Not allowed by CORS"));
       }
     },
     methods: ["GET", "POST"],
@@ -112,7 +109,6 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
-
 
 const transporter = nodemailer.createTransport({
   service: "gmail", // Example using Gmail
@@ -410,9 +406,15 @@ async function processZipFile(
   zipFilePath,
   userId,
   originalFileName,
+  zipData = null,
   removeZip = true
 ) {
-  const data = fs.readFileSync(zipFilePath);
+  let data;
+  if (zipData) {
+    data = zipData;
+  } else {
+    data = fs.readFileSync(zipFilePath);
+  }
   const zip = await JSZip.loadAsync(data);
   const zipFiles = Object.keys(zip.files);
   let jsonFileCount = 0;
@@ -1755,24 +1757,83 @@ app.post(
   }
 );
 
+// async function newUserAdminMessage(userId, title) {
+//   const zipFilePath = path.join(__dirname, "Welcome_newAdmin.zip");
+//   const originalFileName = title;
+//   // Ensure the file exists
+//   if (!fs.existsSync(zipFilePath)) {
+//     throw new Error("ZIP file does not exist.");
+//   }
+
+//   // Process the ZIP file using the extracted function
+//   const result = await processZipFile(
+//     zipFilePath,
+//     userId,
+//     originalFileName,
+//     false
+//   );
+//   return result;
+// }
 async function newUserAdminMessage(userId, title) {
-  const zipFilePath = path.join(__dirname, "Welcome_newAdmin.zip");
+  const localZipFilePath = path.join(__dirname, "Welcome_newAdmin.zip");
+  const remoteZipFilePath = process.env.ZIP_LOCATION;
   const originalFileName = title;
-  // Ensure the file exists
-  if (!fs.existsSync(zipFilePath)) {
-    throw new Error("ZIP file does not exist.");
+
+  let zipData;
+  console.log(
+    `Attempting to process ZIP file for user: ${userId}, title: ${title}`
+  );
+  // Check if the file exists locally
+  if (fs.existsSync(localZipFilePath)) {
+    console.log(`Local ZIP file found at ${localZipFilePath}`);
+    zipData = fs.readFileSync(localZipFilePath);
+  } else {
+    console.log(
+      `Local ZIP file not found. Attempting to fetch from ${remoteZipFilePath}`
+    );
+
+    // Fetch the ZIP file from the remote URL
+    try {
+      const response = await axios.get(remoteZipFilePath, { responseType: 'arraybuffer' });
+
+      if (response.status !== 200) {
+        throw new Error(`Failed to download ZIP file. HTTP status: ${response.status}`);
+      }
+
+      console.log(`Successfully fetched ZIP file from ${remoteZipFilePath}`);
+      zipData = Buffer.from(response.data);
+    } catch (error) {
+      console.error(
+        `Error fetching ZIP file from ${remoteZipFilePath}:`,
+        error.message
+      );
+      throw new Error(
+        `Could not fetch ZIP file from remote location: ${error.message}`
+      );
+    }
   }
 
-  // Process the ZIP file using the extracted function
-  const result = await processZipFile(
-    zipFilePath,
-    userId,
-    originalFileName,
-    false
-  );
-  return result;
+  // Call processZipFile with the required arguments
+  try {
+    const result = await processZipFile(
+      localZipFilePath,
+      userId,
+      originalFileName,
+      zipData, // Derived from fs.readFileSync or fetch response
+      false
+    );
+    console.log(
+      `Successfully processed ZIP file for user: ${userId}, title: ${title}`
+    );
+    return result;
+  } catch (error) {
+    console.error(
+      `Error processing ZIP file for user: ${userId}, title: ${title}:`,
+      error.message
+    );
+    throw error;
+  }
 }
-
 async function deleteExpiredInteractions() {
   await pool.query("BEGIN");
 
