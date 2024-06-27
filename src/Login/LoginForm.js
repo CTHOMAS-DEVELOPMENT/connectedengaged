@@ -85,6 +85,8 @@ const LoginForm = () => {
       return;
     }
     if (validateForm()) {
+      console.log("process.env.REACT_APP_API_URL")
+      console.log(`${process.env.REACT_APP_API_URL}/api/login`)
       fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
         method: "POST",
         headers: {
