@@ -85,8 +85,8 @@ const LoginForm = () => {
       return;
     }
     if (validateForm()) {
-      console.log("process.env.REACT_APP_API_URL")
-      console.log(`${process.env.REACT_APP_API_URL}/api/login`)
+      console.log("process.env.REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
+      console.log(`${process.env.REACT_APP_API_URL}/api/login`);
       fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
         method: "POST",
         headers: {
@@ -97,14 +97,19 @@ const LoginForm = () => {
           password: formData.password,
         }),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          console.log("Response status:", response.status);
+          console.log("Response headers:", response.headers);
+          return response.json();
+        })
         .then((data) => {
+          console.log("Response data:", data);
           if (data.success) {
             setMessage("Login successful");
             setType("success");
             setAlertKey(prevKey => prevKey + 1); 
             localStorage.setItem("token", data.token);
-            navigate("/userlist", { state: { userId: data.userId } }); // Update for v6
+            navigate("/userlist", { state: { userId: data.userId } });
           } else {
             setMessage(data.message || "Login failed");
             setType("error");
@@ -121,6 +126,7 @@ const LoginForm = () => {
         });
     }
   };
+  
   const resetImages = () => {
     shuffleConsentImages();
     const randomRotation = () => {
