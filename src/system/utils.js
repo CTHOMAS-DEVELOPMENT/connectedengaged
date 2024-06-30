@@ -16,12 +16,15 @@ export const getThumbnailPath = imagePath => {
   return imagePathParts.join('/');
 };
 export const convertToMediaPath = (dbPath) => {
-
-  console.log("convertToMediaPath-dbPath",dbPath)
-  const rtnValue=dbPath.replace(
-    /^backend\\imageUploaded\\/,
-    "/uploaded-images/"
-  );
-  console.log("convertToMediaPath-rtnValue",rtnValue)
-  return rtnValue?rtnValue:"";
-}
+    console.log("convertToMediaPath-dbPath", dbPath);
+    
+    // Normalize the path separators
+    const normalizedPath = dbPath.replace(/\\/g, '/');
+    
+    // Replace the initial part of the path
+    const rtnValue = normalizedPath.replace(/^backend\/imageUploaded\//, "/uploaded-images/");
+    
+    console.log("convertToMediaPath-rtnValue", rtnValue);
+    return rtnValue ? rtnValue : "";
+  };
+  
