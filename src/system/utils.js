@@ -16,9 +16,12 @@ export const getThumbnailPath = imagePath => {
   return imagePathParts.join('/');
 };
 export const convertToMediaPath = (dbPath) => {
+
+  console.log("convertToMediaPath-dbPath",dbPath)
   const rtnValue=dbPath.replace(
     /^backend\\imageUploaded\\/,
     "/uploaded-images/"
   );
+  console.log("convertToMediaPath-rtnValue",rtnValue)
   return rtnValue?rtnValue:"";
 }
