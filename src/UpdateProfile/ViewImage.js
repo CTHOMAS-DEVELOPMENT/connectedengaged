@@ -6,24 +6,25 @@ import { Button, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
-  const [profilePicture, setProfilePicture] = useState(profileImage);
+  const [profilePicture, setProfilePicture] = useState("");
   const [showUploader, setShowUploader] = useState(false);
   const [showVideoUploader, setShowVideoUploader] = useState(false);
-  const [videoPath, setVideoPath] = useState(profileVideo);
+  const [videoPath, setVideoPath] = useState("");
 
-  // Update profilePicture when profileImage prop changes
+  // Construct the full URL for profileImage and profileVideo using REACT_APP_BACKEND_URL
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
   useEffect(() => {
     if (profileImage) {
-      setProfilePicture(profileImage);
+      setProfilePicture(`${backendUrl}${profileImage}`);
     }
-  }, [profileImage]);
+  }, [profileImage, backendUrl]);
 
-  // Update videoPath when profileVideo prop changes
   useEffect(() => {
     if (profileVideo) {
-      setVideoPath(profileVideo);
+      setVideoPath(`${backendUrl}${profileVideo}`);
     }
-  }, [profileVideo]);
+  }, [profileVideo, backendUrl]);
 
   const handleProfileVideo = () => {
     setShowVideoUploader(!showVideoUploader);
@@ -42,17 +43,13 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
   };
 
   const handleUploadSuccess = (newProfilePicture) => {
-    const updatedProfilePicture = `${
-      process.env.REACT_APP_IMAGE_HOST
-    }/uploaded-images/${newProfilePicture
-      .split("\\")
-      .pop()}?timestamp=${new Date().getTime()}`;
+    const updatedProfilePicture = `${backendUrl}/uploaded-images/${newProfilePicture.split("\\").pop()}?timestamp=${new Date().getTime()}`;
     setProfilePicture(updatedProfilePicture);
     handleCloseUploader();
   };
 
   const handleVideoUploadSuccess = (data) => {
-    setVideoPath(convertToMediaPath(data.user.profile_video));
+    setVideoPath(`${backendUrl}${convertToMediaPath(data.user.profile_video)}`);
     handleCloseVideoUploader();
   };
 
