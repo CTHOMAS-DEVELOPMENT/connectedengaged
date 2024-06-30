@@ -6,16 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
-  /*
-  const updatedProfilePicture = `${
-    process.env.REACT_APP_IMAGE_HOST
-  }/uploaded-images/${newProfilePicture
-    .split("\\")
-    .pop()}?timestamp=${new Date().getTime()}`;
-
-    `${process.env.REACT_APP_IMAGE_HOST}
-    */
-  const [profilePicture, setProfilePicture] = useState(`${process.env.REACT_APP_IMAGE_HOST}${profileImage}`);
+  const [profilePicture, setProfilePicture] = useState(profileImage);
   const [showUploader, setShowUploader] = useState(false);
   const [showVideoUploader, setShowVideoUploader] = useState(false);
   const [videoPath, setVideoPath] = useState(profileVideo);
