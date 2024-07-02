@@ -42,12 +42,12 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
     setShowVideoUploader(false);
   };
 
-  const handleUploadSuccess = (newProfilePicture) => {
-    const updatedProfilePicture = `${backendUrl}/uploaded-images/${newProfilePicture.split("\\").pop()}?timestamp=${new Date().getTime()}`;
+const handleUploadSuccess = (newProfilePicture) => {
+    const fileName = newProfilePicture.split("\\").pop().split("/").pop();
+    const updatedProfilePicture = `${process.env.REACT_APP_BACKEND_URL}/uploaded-images/${fileName}?timestamp=${new Date().getTime()}`;
     setProfilePicture(updatedProfilePicture);
     handleCloseUploader();
   };
-
   const handleVideoUploadSuccess = (data) => {
     setVideoPath(`${backendUrl}${convertToMediaPath(data.user.profile_video)}`);
     handleCloseVideoUploader();

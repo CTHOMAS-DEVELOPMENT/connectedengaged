@@ -115,6 +115,10 @@ app.use(
   "/uploaded-images",
   express.static(path.join(__dirname, "imageUploaded"))
 );
+// app.use('/uploaded-images', (req, res, next) => {
+//   console.log('Serving static file:', req.path);
+//   next();
+// }, express.static(path.join(__dirname, 'backend/imageUploaded')));
 // PostgreSQL connection configuration
 const pool = new Pool({
   user: process.env.CONNECTION_POOL_USER,
