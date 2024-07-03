@@ -53,6 +53,7 @@ const allowedOrigins = [
   `http://${process.env.HOST}:${process.env.PORTFORAPP}`,
   `http://${process.env.HOST}:${process.env.PROXYPORT}`,
   'https://sage-twilight-26e49d.netlify.app', // Netlify URL
+  'https://main--sage-twilight-26e49d.netlify.app', // Netlify branch URL
   'https://coconut-speckled-asterisk.glitch.me' // Glitch URL
 ];
 
@@ -85,15 +86,9 @@ app.use((req, res, next) => {
 
 const io = socketIo(server, {
   cors: {
-    origin: (origin, callback) => {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   },
 });
@@ -111,14 +106,21 @@ const transporter = nodemailer.createTransport({
 });
 app.use(express.json());
 // Serve static files from the 'backend/imageUploaded' directory
-app.use(
-  "/uploaded-images",
-  express.static(path.join(__dirname, "imageUploaded"))
-);
-// app.use('/uploaded-images', (req, res, next) => {
-//   console.log('Serving static file:', req.path);
-//   next();
-// }, express.static(path.join(__dirname, 'backend/imageUploaded')));
+const isLocal = process.env.NODE_ENV === 'development';
+
+if (isLocal) {
+  // Local environment configuration
+  app.use(
+    "/uploaded-images",
+    express.static(path.join(__dirname, "imageUploaded"))
+  );
+} else {
+  // Remote environment configuration
+  app.use('/uploaded-images', (req, res, next) => {
+    console.log('Serving static file:', req.path);
+    next();
+  }, express.static(path.join(__dirname, 'backend/imageUploaded')));
+}
 // PostgreSQL connection configuration
 const pool = new Pool({
   user: process.env.CONNECTION_POOL_USER,
@@ -129,15 +131,9 @@ const pool = new Pool({
 });
 
 function handleDatabaseError(error, res) {
-  // Duplicate username
-  if (error.code === "23505" && error.constraint === "users_username_key") {
-    res.status(409).send({ message: "This username is already taken." });
-  }
-  // Other database errors
-  else {
-    console.error(error);
-    res.status(500).send({ message: "An error occurred." });
-  }
+  // Your error handling logic
+  console.error("Database error:", error);
+  res.status(500).send({ message: "An error occurred." });
 }
 // Verify database connection
 pool.connect((err, client, release) => {
@@ -1144,7 +1140,7 @@ app.get("/api/users/:userId/profile-picture", async (req, res) => {
 
 async function deleteFile(filePath) {
   try {
-    await fsx.unlink(filePath);
+    await fs.promises.unlink(filePath);
     console.log(`Successfully deleted file: ${filePath}`);
   } catch (error) {
     if (error.code === "ENOENT") {
@@ -1191,6 +1187,12 @@ async function restoreOriginalProfilePicture(client, userId, originalFilePath) {
 
 async function generateThumbnail(filePath, thumbnailPath) {
   try {
+      // Ensure the directory exists
+      const dir = path.dirname(thumbnailPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+  
     const image = await Jimp.read(filePath);
     const longerDimension = image.bitmap.width > image.bitmap.height ? 'width' : 'height';
 
@@ -1207,8 +1209,7 @@ async function generateThumbnail(filePath, thumbnailPath) {
     throw error;
   }
 }
-
-async function delay(ms) {
+function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 

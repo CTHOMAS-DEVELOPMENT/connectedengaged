@@ -23,10 +23,6 @@ const ProfileViewer = ({ userId }) => {
   }, [userId]);
 
 
-  // useEffect(() => {
-  //   // This effect will run when `profilePicture` changes.
-  //   // It's mainly for debugging to see if `profilePicture` is properly updated.
-  // }, [profilePicture]);
   return (
     <div className="profile-picture-container">
       {profilePicture ? (

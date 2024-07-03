@@ -8,12 +8,21 @@ export const extractFilename = (pathString, imgDefault="") => {
   return parts.pop();
 };
 
-export const getThumbnailPath = imagePath => {
+export const getThumbnailPathX = imagePath => {
   const imagePathParts = imagePath.split('/');
   const filename = imagePathParts.pop();
   const thumbnailFilename = `thumb-${filename}`;
   imagePathParts.push(thumbnailFilename);
   return imagePathParts.join('/');
+};
+export const getThumbnailPath = (dbPath) => {
+  console.log("getThumbnailPath-dbPath", dbPath);
+
+  // Ensure the path is formatted correctly
+  const formattedPath = dbPath.replace(/^backend\\imageUploaded\\|^backend\/imageUploaded\//, "/uploaded-images/");
+  
+  console.log("getThumbnailPath-formattedPath", formattedPath);
+  return formattedPath ? formattedPath : "";
 };
 export const convertToMediaPath = (dbPath) => {
     console.log("convertToMediaPath-dbPath", dbPath);
