@@ -653,7 +653,7 @@ const handleStartRecording = () => {
           <div className="element-group-box">
             {userProfilePic && (
               <img
-                src={userProfilePic}
+                src={`${process.env.REACT_APP_BACKEND_URL}${userProfilePic}`}
                 alt="Current User Profile"
                 className="current-user-profile-pic"
               />
