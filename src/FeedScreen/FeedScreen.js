@@ -538,7 +538,7 @@ const handleStartRecording = () => {
               {associatedUsers.map((user) => (
                 <div key={user.id} className="user-container">
                   <img
-                    src={`${process.env.REACT_APP_IMAGE_HOST}/${
+                    src={`${process.env.REACT_APP_BACKEND_URL}/${
                       process.env.REACT_APP_IMAGE_FOLDER
                     }/thumb-${extractFilename(user.profile_picture)}`}
                     alt={user.username}
