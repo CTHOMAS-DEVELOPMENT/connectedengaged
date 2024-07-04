@@ -253,16 +253,21 @@ const handleStartRecording = () => {
     }
   }, [userId]);
   const fetchPosts = () => {
+    console.log("Fetching posts for submissionId:", submissionId);
     if (submissionId) {
       fetch(`${process.env.REACT_APP_API_URL}/api/users/${submissionId}/posts`)
         .then((response) => response.json())
         .then((data) => {
+          console.log("Fetched posts:", data);
           return setPosts(data);
         })
         .catch((error) => console.error("Error fetching posts:", error));
     }
   };
-
+  const handlePostSubmit = () => {
+    console.log("New post submitted. Fetching posts...");
+    fetchPosts();
+  };
   const handleGetNewPicture = () => {
     setShowUploader(true); // Show the uploader
   };
@@ -665,6 +670,7 @@ const handleStartRecording = () => {
                 submissionId={submissionId}
                 onPostSubmit={() => {
                   postTypeForEmail("Text");
+                  handlePostSubmit();
                 }}
               />
             </div>
