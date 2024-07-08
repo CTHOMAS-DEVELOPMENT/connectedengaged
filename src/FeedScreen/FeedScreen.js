@@ -124,6 +124,7 @@ const FeedScreen = () => {
     };
   }, [userId, submissionId]);
   
+  
 const handleStartRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
