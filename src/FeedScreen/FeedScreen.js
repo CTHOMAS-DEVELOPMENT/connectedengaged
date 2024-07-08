@@ -82,27 +82,33 @@ const FeedScreen = () => {
     socketRef.current = socket; // Save socket instance
 
     socket.on("connect", () => {
+      console.log("Socket connected");
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
 
     socket.on("incomingCall", (data) => {
+      console.log("Incoming call:", data);
       setCaller(data);
     });
 
     socket.on("callAccepted", (signal) => {
+      console.log("Call accepted:", signal);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
     });
 
     socket.on("active users update", (activeUsers) => {
+      console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
     });
 
     socket.on("post update", (newPost) => {
+      console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
       if (interestedUserIds.includes(parseInt(userId, 10))) {
+        console.log("User is interested in this post. Setting userIsLive to true.");
         setUserIsLive(true);
       }
     });
