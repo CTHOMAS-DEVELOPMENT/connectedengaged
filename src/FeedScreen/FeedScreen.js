@@ -78,7 +78,6 @@ const FeedScreen = () => {
   const mediaRecorderRef = useRef(null);
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
-  
     socketRef.current = socket; // Save socket instance
   
     socket.on("connect", () => {
@@ -123,6 +122,7 @@ const FeedScreen = () => {
       socket.disconnect();
     };
   }, [userId, submissionId]);
+  
   
   
 const handleStartRecording = () => {
