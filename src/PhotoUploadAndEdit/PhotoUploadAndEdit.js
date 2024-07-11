@@ -14,6 +14,7 @@ const PhotoUploadAndEdit = ({
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [fileName, setFileName] = useState(""); // State to hold the file name
+
   const resizeFile = (file) =>
     new Promise((resolve) => {
       Resizer.imageFileResizer(
@@ -29,6 +30,7 @@ const PhotoUploadAndEdit = ({
         "file" // Output as file blob
       );
     });
+
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];

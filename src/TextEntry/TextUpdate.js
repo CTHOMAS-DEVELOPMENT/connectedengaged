@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 
-const TextUpdate = ({ dialogId, initialText, onSaveSuccess }) => {
+const TextUpdate = ({ dialogId, initialText, onSaveSuccess, socketRef }) => {
   const [texty, setTexty] = useState("");
   const textAreaRef = useRef(null);
+
   useEffect(() => {
     // Focus the textarea and select the text after it has been auto-focused
     if (textAreaRef.current) {
@@ -23,7 +24,13 @@ const TextUpdate = ({ dialogId, initialText, onSaveSuccess }) => {
     });
 
     if (response.ok) {
-      //const data = await response.json();
+      const updatedPost = await response.json();
+      // Emit postUpdated event to notify other clients
+      socketRef.current.emit("postUpdated", {
+        submissionId: updatedPost.submission_id,
+        updatedPost,
+      });
+
       // Call the onSaveSuccess callback to indicate that the save was successful
       onSaveSuccess();
     } else {
@@ -38,6 +45,7 @@ const TextUpdate = ({ dialogId, initialText, onSaveSuccess }) => {
         onChange={(e) => setTexty(e.target.value)}
         className="form-control"
         onFocus={(e) => e.currentTarget.select()}
+        ref={textAreaRef}
       />
       <Button variant="primary" onClick={handleSave}>
         Save

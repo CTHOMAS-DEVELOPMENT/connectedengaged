@@ -44,7 +44,7 @@ const FeedScreen = () => {
   const [associatedUsers, setAssociatedUsers] = useState([]);
   const [activeUsersList, setActiveUsersList] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-  
+
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [loggedInUserName, setLoggedInUsername] = useState("");
@@ -55,7 +55,7 @@ const FeedScreen = () => {
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const uploadStatus="";
+  const uploadStatus = "";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -72,46 +72,55 @@ const FeedScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
   const [isRecording, setIsRecording] = useState(false);
-  let audioURL=null;
+  let audioURL = null;
 
   const audioRef = useRef(new Audio());
   const mediaRecorderRef = useRef(null);
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
     socketRef.current = socket; // Save socket instance
-  
+
     socket.on("connect", () => {
       console.log("Socket connected");
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
-  
+
     socket.on("incomingCall", (data) => {
       console.log("Incoming call:", data);
       setCaller(data);
     });
-  
+
     socket.on("callAccepted", (signal) => {
       console.log("Call accepted:", signal);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
     });
-  
+
     socket.on("active users update", (activeUsers) => {
       console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
     });
-  
+
     socket.on("post update", (newPost) => {
       console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
       if (interestedUserIds.includes(parseInt(userId, 10))) {
-        console.log("User is interested in this post. Setting userIsLive to true.");
+        console.log(
+          "User is interested in this post. Setting userIsLive to true."
+        );
         setUserIsLive(true);
       }
     });
-  
+    socket.on("postDeleted", ({ postId }) => {
+      console.log(`Post deleted with ID: ${postId}`);
+      fetchPosts();
+    });
+    socket.on("postUpdated", ({ updatedPost }) => {
+      console.log(`Post updated with ID: ${updatedPost.id}`);
+      fetchPosts();
+    });
     return () => {
       socket.emit("leave screen", { userId, submissionId });
       socket.off("connect");
@@ -119,14 +128,12 @@ const FeedScreen = () => {
       socket.off("callAccepted");
       socket.off("active users update");
       socket.off("post update");
+      socket.off("postDeleted");
       socket.disconnect();
     };
   }, [userId, submissionId]);
-  
-  
-  
-  
-const handleStartRecording = () => {
+
+  const handleStartRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
@@ -175,11 +182,17 @@ const handleStartRecording = () => {
   // For example, you can call it right after fetchPosts() inside useEffect
   const deletePost = async (postId) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submission-dialog/${postId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/submission-dialog/${postId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.ok) {
-        // If the deletion was successful, fetch the posts again to update the UI
+        // If the deletion was successful, notify the server
+        socketRef.current.emit("postDeleted", { postId, submissionId });
+
+        // Fetch the posts again to update the UI
         fetchPosts();
       } else {
         setMessage("Failed to delete the post.");
@@ -196,7 +209,9 @@ const handleStartRecording = () => {
   // useEffect to fetch associated users
   useEffect(() => {
     if (submissionId) {
-      fetch(`${process.env.REACT_APP_API_URL}/api/interaction_feed_user_list?submission_id=${submissionId}`)
+      fetch(
+        `${process.env.REACT_APP_API_URL}/api/interaction_feed_user_list?submission_id=${submissionId}`
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -204,7 +219,6 @@ const handleStartRecording = () => {
           return response.json();
         })
         .then((data) => {
-
           const loggedInUser = data.find((user) => user.id === userId);
           if (loggedInUser) {
             setLoggedInUsername(loggedInUser.username);
@@ -243,7 +257,9 @@ const handleStartRecording = () => {
 
   useEffect(() => {
     if (userId) {
-      fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}/profile-picture`)
+      fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/${userId}/profile-picture`
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -346,23 +362,25 @@ const handleStartRecording = () => {
     );
   }
   const postTypeForEmail = async (type) => {
-
     if (!notificationson) {
       return;
     }
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notify_offline_users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: type, // Assume this is captured somewhere in your component's state or props
-          title: title, // Same as above
-          loggedInUserName: loggedInUserName, // Same as above
-          associatedUsers: associatedUsers, // Array of user objects
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/notify_offline_users`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: type, // Assume this is captured somewhere in your component's state or props
+            title: title, // Same as above
+            loggedInUserName: loggedInUserName, // Same as above
+            associatedUsers: associatedUsers, // Array of user objects
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -389,10 +407,13 @@ const handleStartRecording = () => {
     formData.append("userId", userId);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/upload-audio`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/upload-audio`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       await response.json();
 
       postTypeForEmail("audio");
@@ -429,79 +450,82 @@ const handleStartRecording = () => {
   };
   const startVideoCall = () => {
     setInCall(true);
-  
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
-      }
-  
-      const peer = new Peer({
-        initiator: true,
-        trickle: false,
-        stream: stream,
-      });
-  
-      peer.on("signal", (data) => {
-        
-        socketRef.current.emit("callUser", {
-          userToCall: selectedUserId,
-          signalData: data,
-          from: userId,
-        });
-      });
-  
-      peer.on("stream", (stream) => {
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = stream;
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
         }
+
+        const peer = new Peer({
+          initiator: true,
+          trickle: false,
+          stream: stream,
+        });
+
+        peer.on("signal", (data) => {
+          socketRef.current.emit("callUser", {
+            userToCall: selectedUserId,
+            signalData: data,
+            from: userId,
+          });
+        });
+
+        peer.on("stream", (stream) => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+          }
+        });
+
+        peer.on("close", () => {
+          endCall();
+        });
+
+        socketRef.current.on("callAccepted", (signal) => {
+          peer.signal(signal);
+        });
+
+        peerRef.current = peer;
       });
-  
-      peer.on("close", () => {
-        endCall();
-      });
-  
-      socketRef.current.on("callAccepted", (signal) => {
-        peer.signal(signal);
-      });
-  
-      peerRef.current = peer;
-    });
   };
 
   const answerCall = () => {
     setInCall(true);
-  
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
-      }
-  
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream: stream,
-      });
-  
-      peer.on("signal", (data) => {
-        socketRef.current.emit("acceptCall", {
-          signal: data,
-          to: caller.from,
-        });
-      });
-  
-      peer.on("stream", (stream) => {
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = stream;
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
         }
+
+        const peer = new Peer({
+          initiator: false,
+          trickle: false,
+          stream: stream,
+        });
+
+        peer.on("signal", (data) => {
+          socketRef.current.emit("acceptCall", {
+            signal: data,
+            to: caller.from,
+          });
+        });
+
+        peer.on("stream", (stream) => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+          }
+        });
+
+        peer.on("close", () => {
+          endCall();
+        });
+
+        peer.signal(caller.signal);
+        peerRef.current = peer;
       });
-  
-      peer.on("close", () => {
-        endCall();
-      });
-  
-      peer.signal(caller.signal);
-      peerRef.current = peer;
-    });
   };
 
   const endCall = () => {
@@ -512,10 +536,14 @@ const handleStartRecording = () => {
       peerRef.current.destroy();
     }
     if (localVideoRef.current && localVideoRef.current.srcObject) {
-      localVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      localVideoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop());
     }
     if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
-      remoteVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      remoteVideoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop());
     }
     if (socketRef.current) {
       socketRef.current.disconnect();
@@ -635,35 +663,42 @@ const handleStartRecording = () => {
                 className="text-update-modal"
                 onClick={(e) => e.stopPropagation()}
               >
-                <TextUpdate
-                  dialogId={dialogId}
-                  initialText={currentText}
-                  onSaveSuccess={handleTextSaveSuccess}
-                />
+<TextUpdate
+  dialogId={dialogId}
+  initialText={currentText}
+  onSaveSuccess={handleTextSaveSuccess}
+  socketRef={socketRef} // Pass socketRef to TextUpdate
+/>
               </div>
             </div>
           )}
 
-          {showUploader && (
-            <div className="backdrop" onClick={handleCloseUploader}>
-              <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <PhotoUploadAndEdit
-                  userId={userId}
-                  submissionId={submissionId}
-                  onPhotoSubmit={fetchPosts}
-                  onSaveSuccess={() => {
-                    //Email
-                    setShowUploader(false);
-                    postTypeForEmail("picture");
-                  }}
-                  dialogId={dialogId}
-                />
-              </div>
-            </div>
-          )}
+{showUploader && (
+  <div className="backdrop" onClick={handleCloseUploader}>
+    <div
+      className="modal-content"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <PhotoUploadAndEdit
+        userId={userId}
+        submissionId={submissionId}
+        onPhotoSubmit={fetchPosts}
+        onSaveSuccess={() => {
+          console.log("onSaveSuccess")
+          handleCloseUploader(); // Close the uploader modal first
+          postTypeForEmail("picture");
+          socketRef.current.emit("postUpdated", {
+            submissionId,
+            dialogId,
+          }); // Emit postUpdated event
+        }}
+        dialogId={dialogId}
+      />
+    </div>
+  </div>
+)}
+
+
           <div className="element-group-box">
             {userProfilePic && (
               <img

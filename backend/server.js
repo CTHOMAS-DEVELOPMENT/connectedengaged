@@ -2,7 +2,6 @@ const express = require("express");
 const { Pool, Client } = require("pg");
 const multer = require("multer");
 const fs = require("fs");
-const fsx = require("fs-extra");
 const path = require("path");
 const Jimp = require('jimp');
 const jwt = require("jsonwebtoken");
@@ -11,12 +10,11 @@ const socketIo = require("socket.io");
 const cors = require("cors"); // Assuming you're using the 'cors' package for Express
 const JSZip = require("jszip");
 const util = require("util");
-const axios = require('axios');
+const axios = require("axios");
 
 // Create a new express application
 const app = express();
 const server = http.createServer(app);
-
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -74,7 +72,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle pre-flight requests
+// Handle pre-flight requests for all routes
 app.options('*', cors(corsOptions));
 
 // Logging middleware for debugging
@@ -84,6 +82,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Socket.io configuration
 const io = socketIo(server, {
   cors: {
     origin: allowedOrigins,
@@ -92,7 +91,6 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
-
 
 const transporter = nodemailer.createTransport({
   service: "gmail", // Example using Gmail
@@ -159,15 +157,28 @@ pgClient.connect((err) => {
   }
 });
 
-pgClient.query("LISTEN new_post");
+
 pgClient.query("LISTEN connections_change");
 pgClient.query("LISTEN connection_requests_change");
+pgClient.query('LISTEN new_post', (err, res) => {
+  if (err) {
+    console.error('Error listening to new_post channel: REMOVE??????????', err);
+  } else {
+    console.log('Listening to new_post notifications: REMOVE??????????');
+  }
+});
 // Track clients and their interest in specific submission_ids
 const clientSubmissions = {}; // { socketId: { userId: Number, submissionIds: Set(Number) } }
 const activeUsersPerSubmission = {};
 
 io.on("connection", (socket) => {
+  console.log(`Socket connected: ${socket.id}`);
+  socket.on("postDeleted", ({ postId, submissionId }) => {
+    console.log(`Post deleted with ID: ${postId} in submission: ${submissionId}`);
+    io.to(`submission-${submissionId}`).emit("postDeleted", { postId });
+  });
   socket.on("register", ({ userId, submissionIds }) => {
+    console.log(`User ${userId} registered with submission IDs:`, submissionIds);
     if (!clientSubmissions[socket.id]) {
       clientSubmissions[socket.id] = {
         userId,
@@ -175,12 +186,11 @@ io.on("connection", (socket) => {
         submissionIds: new Set(submissionIds),
       };
     }
-    // Add user to active users
     clientSubmissions[socket.id].activeUsers.add(userId);
   });
 
   socket.on("enter screen", ({ userId, submissionId }) => {
-    // Ensure this socket joins a room specific to the submissionId
+    console.log(`User ${userId} entered screen for submission ${submissionId}`);
     socket.join(`submission-${submissionId}`);
 
     if (!activeUsersPerSubmission[submissionId]) {
@@ -188,7 +198,6 @@ io.on("connection", (socket) => {
     }
     activeUsersPerSubmission[submissionId].add(userId);
 
-    // Emit only to sockets in the same submissionId room
     io.to(`submission-${submissionId}`).emit(
       "active users update",
       Array.from(activeUsersPerSubmission[submissionId])
@@ -196,20 +205,20 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave screen", ({ userId, submissionId }) => {
+    console.log(`User ${userId} left screen for submission ${submissionId}`);
     if (activeUsersPerSubmission[submissionId]) {
       activeUsersPerSubmission[submissionId].delete(userId);
-      // Emit only to sockets in the same submissionId room
       io.to(`submission-${submissionId}`).emit(
         "active users update",
         Array.from(activeUsersPerSubmission[submissionId])
       );
     }
 
-    // Ensure this socket leaves the room
     socket.leave(`submission-${submissionId}`);
   });
 
   socket.on("callUser", ({ userToCall, signalData, from }) => {
+    console.log(`User ${from} calling user ${userToCall}`);
     const recipientSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === userToCall
     );
@@ -226,6 +235,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("acceptCall", ({ signal, to }) => {
+    console.log(`User accepted call from ${to}`);
     const callerSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === to
     );
@@ -237,45 +247,78 @@ io.on("connection", (socket) => {
       console.log(`Caller not found for ${to}`);
     }
   });
+
+  socket.on("disconnect", () => {
+    console.log(`Socket disconnected: ${socket.id}`);
+    if (clientSubmissions[socket.id]) {
+      const { userId, submissionIds } = clientSubmissions[socket.id];
+      submissionIds.forEach((submissionId) => {
+        if (activeUsersPerSubmission[submissionId]) {
+          activeUsersPerSubmission[submissionId].delete(userId);
+          io.to(`submission-${submissionId}`).emit(
+            "active users update",
+            Array.from(activeUsersPerSubmission[submissionId])
+          );
+        }
+      });
+      delete clientSubmissions[socket.id];
+    }
+  });
 });
 
+pgClient.on('end', () => {
+  console.log('pgClient connection ended');
+});
+
+pgClient.on('error', (err) => {
+  console.log('pgClient error:', err);
+});
 pgClient.on("notification", async (msg) => {
   const payload = JSON.parse(msg.payload);
-  if (msg.channel === "new_post") {
-    let newPost = payload; // Assuming newPost is a mutable object here
+  console.log(`Received notification on channel ${msg.channel}:`, payload);
 
-    // Query the database for users interested in this submission
-    const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
-    const res = await pgClient.query(query, [newPost.submission_id]);
-    const interestedUserIds = res.rows.map((row) => row.participating_user_id);
-    // Check if the posting user is currently active
-    let isActive = false;
-    Object.values(clientSubmissions).forEach(({ userId, activeUsers }) => {
-      if (activeUsers.has(newPost.posting_user_id)) {
-        isActive = true;
-      }
-    });
-    newPost = { ...newPost, interestedUserIds };
-    newPost.isActive = isActive;
-    // Emit to clients interested in this submission_id
-    Object.entries(clientSubmissions).forEach(
-      ([socketId, { userId, submissionIds }]) => {
-        if (
-          interestedUserIds.includes(userId) &&
-          submissionIds.has(newPost.submission_id)
-        ) {
-          io.to(socketId).emit("post update", newPost); // Emit to a specific client, now including interestedUserIds
-        }
-      }
-    );
+  if (msg.channel === "new_post") {
+    console.log("OLD new_post CHANNEL??????????")
+    // console.log("io new_post reached with payload:", payload);
+    // let newPost = payload;
+
+    // const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+    // const res = await pgClient.query(query, [newPost.submission_id]);
+    // const interestedUserIds = res.rows.map((row) => row.participating_user_id);
+    // console.log("Interested user IDs:", interestedUserIds);
+
+    // let isActive = false;
+    // Object.values(clientSubmissions).forEach(({ userId, activeUsers }) => {
+    //   if (activeUsers.has(newPost.posting_user_id)) {
+    //     isActive = true;
+    //   }
+    // });
+    // console.log(`User ${newPost.posting_user_id} is active:`, isActive);
+
+    // newPost = { ...newPost, interestedUserIds };
+    // newPost.isActive = isActive;
+
+    // Object.entries(clientSubmissions).forEach(
+    //   ([socketId, { userId, submissionIds }]) => {
+    //     if (
+    //       interestedUserIds.includes(userId) &&
+    //       submissionIds.has(newPost.submission_id)
+    //     ) {
+    //       console.log(`Emitting post update to socket ${socketId} with post:`, newPost);
+    //       io.to(socketId).emit("post update", newPost);
+    //     }
+    //   }
+    // );
   } else if (msg.channel === "connections_change") {
-    // Handle connections_change notification
+    console.log("connections_change payload:", payload);
     io.emit("connections_change", payload);
   } else if (msg.channel === "connection_requests_change") {
-    // Handle connection_requests_change notification
+    console.log("connection_requests_change payload:", payload);
     io.emit("connection_requests_change", payload);
   }
-});
+});  
+
+
 
 // Set up storage location and file naming
 const storage = multer.diskStorage({
@@ -291,6 +334,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+app.get('/test-image', (req, res) => {
+  res.sendFile(path.join(__dirname, 'backend/imageUploaded/file-1719702423262.JPEG'));
+});
 // Define a test route
 app.get("/test-db", async (req, res) => {
   try {
@@ -301,7 +347,18 @@ app.get("/test-db", async (req, res) => {
     res.status(500).send("Error while testing database");
   }
 });
-
+function listDirectoryContents(directoryPath) {
+  fs.readdir(directoryPath, (err, files) => {
+    if (err) {
+      console.error(`Error listing directory contents: ${err.message}`);
+    } else {
+      console.log(`Contents of ${directoryPath}:`);
+      files.forEach(file => {
+        console.log(file);
+      });
+    }
+  });
+}
 app.get("/api/authorised/:userId", async (req, res) => {
   let tokenMatches = false;
   let token = "";
@@ -1209,6 +1266,7 @@ async function generateThumbnail(filePath, thumbnailPath) {
     throw error;
   }
 }
+
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -1259,6 +1317,7 @@ app.post(
       // Ensure all file operations are completed before attempting to delete old files
       await delay(100); // Small delay to ensure file locks are released
 
+      //listDirectoryContents(path.dirname(newFilePath));
       // If there was an existing profile picture, delete the file and its thumbnail after the transaction is committed
       if (originalFilePath) {
         try {
@@ -1523,7 +1582,18 @@ app.post(
       if (updateResult.rows.length) {
         // Commit the transaction
         await pool.query("COMMIT");
-        res.json(updateResult.rows[0]); // Send back the updated record
+
+        // Emit postUpdated event to all clients viewing the same engagement
+        const updatedPost = updateResult.rows[0];
+        const submissionId = updatedPost.submission_id;
+        const interestedUsersQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+        const interestedUsersResult = await pool.query(interestedUsersQuery, [submissionId]);
+        const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
+
+        io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost, interestedUserIds });
+        console.log("updatedPost", updatedPost);
+
+        res.json(updatedPost); // Send back the updated record
       } else {
         throw new Error("No dialog found to update.");
       }
@@ -1535,6 +1605,8 @@ app.post(
     }
   }
 );
+
+
 app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
   const dialogId = req.params.dialogId;
   const newTextContent = req.body.text_content;
@@ -1553,9 +1625,20 @@ app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
     const result = await pool.query(updateQuery, [newTextContent, dialogId]);
 
     if (result.rows.length) {
+      const updatedPost = result.rows[0];
+      const submissionId = updatedPost.submission_id;
+
       // Commit the transaction
       await pool.query("COMMIT");
-      res.json(result.rows[0]); // Send back the updated record
+
+      // Emit postUpdated event to all clients viewing the same engagement
+      const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+      const interestedUsersResult = await pool.query(query, [submissionId]);
+      const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
+
+      io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost, interestedUserIds });
+
+      res.json(updatedPost); // Send back the updated record
     } else {
       res.status(404).send("Submission dialog not found.");
     }
@@ -1569,8 +1652,11 @@ app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
   }
 });
 
+
 app.get("/api/users/:submissionId/posts", async (req, res) => {
   try {
+    console.log("Posting list api")
+    //console.log("Posting list api submissionId",req.params.submissionId)
     const submissionId = req.params.submissionId;
 
     // New query to fetch from the submission_dialog table
@@ -2008,7 +2094,7 @@ app.get("/api/users/:id", async (req, res) => {
 app.post("/api/users/:submissionId/text-entry", async (req, res) => {
   try {
     const submissionId = req.params.submissionId; // Extract submissionId from the URL parameters
-    const { userId, textContent, adminChatId } = req.body; // Extracting userId and textContent from the request body
+    const { userId, textContent } = req.body; // Extracting userId and textContent from the request body
 
     // Validate the received data
     if (!userId || !textContent) {
@@ -2036,9 +2122,21 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
     await pool.query("COMMIT");
 
     // Respond with the new dialog entry
-    // If you also want to send the updated submission, you can include updateResult.rows[0]
+    const newPost = insertResult.rows[0];
+
+    // Fetch interested users
+    const userQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+    const resUsers = await pool.query(userQuery, [submissionId]);
+    const interestedUserIds = resUsers.rows.map((row) => row.participating_user_id);
+    
+    // Emit the post update to interested users
+    newPost.interestedUserIds = interestedUserIds;
+    console.log("New io post update", newPost)
+    io.emit("post update", newPost);
+
+    // Respond with the new dialog entry
     res.json({
-      dialogEntry: insertResult.rows[0],
+      dialogEntry: newPost,
       submissionUpdate: updateResult.rows[0],
     });
 
@@ -2230,7 +2328,6 @@ app.post("/api/notify_offline_users", async (req, res) => {
         }
       });
     }
-
     res.status(200).json({
       success: true,
       message: "Email notifications have been sent.",
@@ -2240,10 +2337,16 @@ app.post("/api/notify_offline_users", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 // Start the server
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**Server running on port ${PORT}`);
+  console.log(`*929*Server running on port ${PORT}`);
 });
