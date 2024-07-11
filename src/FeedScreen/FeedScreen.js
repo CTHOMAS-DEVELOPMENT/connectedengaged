@@ -131,6 +131,7 @@ const FeedScreen = () => {
       socket.off("postDeleted");
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
 
   const handleStartRecording = () => {
