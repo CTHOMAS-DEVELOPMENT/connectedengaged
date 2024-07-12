@@ -64,7 +64,7 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 204
@@ -158,15 +158,15 @@ pgClient.connect((err) => {
 });
 
 
-pgClient.query("LISTEN connections_change");
-pgClient.query("LISTEN connection_requests_change");
-pgClient.query('LISTEN new_post', (err, res) => {
-  if (err) {
-    console.error('Error listening to new_post channel: REMOVE??????????', err);
-  } else {
-    console.log('Listening to new_post notifications: REMOVE??????????');
-  }
-});
+//pgClient.query("LISTEN connections_change");
+//pgClient.query("LISTEN connection_requests_change");
+// pgClient.query('LISTEN new_post', (err, res) => {
+//   if (err) {
+//     console.error('Error listening to new_post channel: REMOVE??????????', err);
+//   } else {
+//     console.log('Listening to new_post notifications: REMOVE??????????');
+//   }
+// });
 // Track clients and their interest in specific submission_ids
 const clientSubmissions = {}; // { socketId: { userId: Number, submissionIds: Set(Number) } }
 const activeUsersPerSubmission = {};
@@ -311,10 +311,10 @@ pgClient.on("notification", async (msg) => {
     // );
   } else if (msg.channel === "connections_change") {
     console.log("connections_change payload:", payload);
-    io.emit("connections_change", payload);
+    //io.emit("connections_change", payload);
   } else if (msg.channel === "connection_requests_change") {
     console.log("connection_requests_change payload:", payload);
-    io.emit("connection_requests_change", payload);
+    //io.emit("connection_requests_change", payload);
   }
 });  
 
@@ -891,51 +891,48 @@ app.get("/api/connection-requested/:userId", async (req, res) => {
       .send("An error occurred while fetching connection requests.");
   }
 });
-app.post(
-  "/api/enable-selected-connections/:loggedInUserId",
-  async (req, res) => {
-    const { loggedInUserId } = req.params; // The ID of the user making the connection approvals
-    const { selectedUserIds } = req.body; // Array of IDs that the logged-in user wishes to connect with
+app.post("/api/enable-selected-connections/:loggedInUserId", async (req, res) => {
+  const { loggedInUserId } = req.params;
+  const { selectedUserIds } = req.body;
 
-    try {
-      await pool.query("BEGIN"); // Start a transaction
+  try {
+    await pool.query("BEGIN");
 
-      for (const requestedId of selectedUserIds) {
-        // Ensure user IDs are integers to prevent SQL injection
-        const requesterIdInt = parseInt(requestedId, 10);
-        const requestedIdInt = parseInt(loggedInUserId, 10);
+    for (const requestedId of selectedUserIds) {
+      const requesterIdInt = parseInt(requestedId, 10);
+      const requestedIdInt = parseInt(loggedInUserId, 10);
 
-        // Delete the corresponding request from `connection_requests`
-        await pool.query(
-          `DELETE FROM connection_requests WHERE requester_id = $1 AND requested_id = $2`,
-          [requesterIdInt, requestedIdInt]
-        );
+      await pool.query(
+        `DELETE FROM connection_requests WHERE requester_id = $1 AND requested_id = $2`,
+        [requesterIdInt, requestedIdInt]
+      );
 
-        // Insert the new connection into `connections`
-        // Assuming `user_one_id` should always be the lower ID to maintain consistency
-        const [userOneId, userTwoId] =
-          requesterIdInt < requestedIdInt
-            ? [requesterIdInt, requestedIdInt]
-            : [requestedIdInt, requesterIdInt];
+      const [userOneId, userTwoId] = requesterIdInt < requestedIdInt
+        ? [requesterIdInt, requestedIdInt]
+        : [requestedIdInt, requesterIdInt];
 
-        await pool.query(
-          `INSERT INTO connections (user_one_id, user_two_id) VALUES ($1, $2)`,
-          [userOneId, userTwoId]
-        );
-      }
+      await pool.query(
+        `INSERT INTO connections (user_one_id, user_two_id) VALUES ($1, $2)`,
+        [userOneId, userTwoId]
+      );
 
-      await pool.query("COMMIT"); // Commit the transaction
-      res.json({ success: true, message: "Connections successfully enabled." });
-    } catch (error) {
-      await pool.query("ROLLBACK"); // Rollback the transaction in case of an error
-      console.error("Error enabling connections:", error);
-      res.status(500).send({
-        success: false,
-        message: "An error occurred while enabling connections.",
+      io.emit('connections_change', {
+        user_one_id: userOneId,
+        user_two_id: userTwoId,
       });
     }
+
+    await pool.query("COMMIT");
+    res.json({ success: true, message: "Connections successfully enabled." });
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error("Error enabling connections:", error);
+    res.status(500).send({
+      success: false,
+      message: "An error occurred while enabling connections.",
+    });
   }
-);
+});
 app.post("/api/delete-from-connection-requests/:id", async (req, res) => {
   const { id } = req.params; // Extracting the id from the request parameters
 
@@ -952,10 +949,15 @@ app.post("/api/delete-from-connection-requests/:id", async (req, res) => {
         .send({ success: false, message: "Connection request not found." });
     } else {
       // On successful deletion, return the deleted record or a success message
+      const deletedRequest = result.rows[0];
+
+      // Emit connection_requests_change event
+      io.emit("connection_requests_change", { requested_id: deletedRequest.requested_id });
+
       res.json({
         success: true,
         message: "Connection request successfully deleted.",
-        deletedRecord: result.rows[0],
+        deletedRecord: deletedRequest,
       });
     }
   } catch (error) {
@@ -1023,12 +1025,17 @@ app.delete("/api/delete-requests-from-me/:userId", async (req, res) => {
   try {
     // Delete all connection requests where the requester_id matches the userId provided
     const result = await pool.query(
-      "DELETE FROM connection_requests WHERE requester_id = $1",
+      "DELETE FROM connection_requests WHERE requester_id = $1 RETURNING *;",
       [userId]
     );
 
     // Check if rows were deleted
     if (result.rowCount > 0) {
+      // Emit connection_requests_change event for each deleted request
+      result.rows.forEach(deletedRequest => {
+        io.emit("connection_requests_change", { requested_id: deletedRequest.requested_id });
+      });
+
       res.json({
         success: true,
         message: `Deleted ${result.rowCount} connection request(s) from user ${userId}.`,
@@ -1078,31 +1085,31 @@ app.delete("/api/delete-requests-to-me/:userId", async (req, res) => {
 });
 
 app.delete("/api/delete-connection/:id", async (req, res) => {
-  const { id } = req.params; // Extract the ID from the URL parameter
+  const { id } = req.params;
 
   try {
-    // Start a transaction
     await pool.query("BEGIN");
 
-    // SQL query to delete the record from connections table
-    const query = "DELETE FROM connections WHERE id = $1";
-
-    // Execute the query
+    const query = "DELETE FROM connections WHERE id = $1 RETURNING *";
     const result = await pool.query(query, [id]);
 
-    // If the query didn't affect any row, the ID was not found
     if (result.rowCount === 0) {
-      await pool.query("ROLLBACK"); // Rollback the transaction
+      await pool.query("ROLLBACK");
       return res.status(404).json({ message: "Connection not found." });
     }
 
-    // Commit the transaction
     await pool.query("COMMIT");
 
-    // Send back a success response
+    // Emit the connection change event
+    const deletedConnection = result.rows[0];
+    io.emit('connections_change', {
+      user_one_id: deletedConnection.user_one_id,
+      user_two_id: deletedConnection.user_two_id,
+    });
+
     res.status(200).json({ message: "Connection successfully deleted." });
   } catch (error) {
-    await pool.query("ROLLBACK"); // Rollback the transaction in case of an error
+    await pool.query("ROLLBACK");
     console.error("Error deleting connection:", error);
     res.status(500).send("An error occurred while deleting the connection.");
   }

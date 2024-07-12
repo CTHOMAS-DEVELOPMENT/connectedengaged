@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
 import ThumbProfileViewer from "./ThumbProfileViewer";
 import AlertMessage from "../system/AlertMessage";
 import { Button } from "react-bootstrap";
@@ -113,6 +114,20 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
         setIsLoading(false);
       });
   };
+  useEffect(() => {
+    const socket = io(process.env.REACT_APP_BACKEND_HOST);
+
+    // Added the connection_requests_change listener
+    socket.on("connection_requests_change", (data) => {
+      if (data.requested_id === userId) fetchConnectionRequests();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
   useEffect(() => {
     fetchConnectionRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps

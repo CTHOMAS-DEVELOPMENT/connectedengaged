@@ -199,23 +199,20 @@ const UsersList = () => {
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
     socket.on("connections_change", (data) => {
-    
-      /*On the requested id screen refresh their screen*/
       if (data.user_two_id === loggedInUserId) {
         fetchConnectedUsers();
-        //The connection requested by userId=84 has been accepted by userId=149
         setMessage("A connection request has been accepted!");
         setType("info");
         setAlertKey((prevKey) => prevKey + 1);
       }
-      /*On the requester id machine send email to herself that her 
-      connection request has been accepted*/
       if (data.user_one_id === loggedInUserId) {
         fetchConnectedUsers();
         fetchConnectionRequests();
         setShowConnectionRequests(false);
       }
     });
+
+    // Added the connection_requests_change listener
     socket.on("connection_requests_change", (data) => {
       if (data.requested_id === loggedInUserId) fetchConnectionRequested();
     });
@@ -225,6 +222,7 @@ const UsersList = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
     if (loggedInUserId) {
       fetchConnectionRequested();
