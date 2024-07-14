@@ -79,30 +79,30 @@ const FeedScreen = () => {
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
     socketRef.current = socket; // Save socket instance
-
+  
     socket.on("connect", () => {
       console.log("Socket connected");
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
-
+  
     socket.on("incomingCall", (data) => {
       console.log("Incoming call:", data);
       setCaller(data);
     });
-
+  
     socket.on("callAccepted", (signal) => {
       console.log("Call accepted:", signal);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
     });
-
+  
     socket.on("active users update", (activeUsers) => {
       console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
     });
-
+  
     socket.on("post update", (newPost) => {
       console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
@@ -113,14 +113,17 @@ const FeedScreen = () => {
         setUserIsLive(true);
       }
     });
+  
     socket.on("postDeleted", ({ postId }) => {
       console.log(`Post deleted with ID: ${postId}`);
       fetchPosts();
     });
+  
     socket.on("postUpdated", ({ updatedPost }) => {
       console.log(`Post updated with ID: ${updatedPost.id}`);
       fetchPosts();
     });
+  
     return () => {
       socket.emit("leave screen", { userId, submissionId });
       socket.off("connect");
@@ -133,6 +136,9 @@ const FeedScreen = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
+  
+  
+  
 
   const handleStartRecording = () => {
     navigator.mediaDevices
@@ -400,13 +406,13 @@ const FeedScreen = () => {
       console.error("No audio to upload");
       return;
     }
-
+  
     setIsUploading(true);
     const formData = new FormData();
     formData.append("audio", blob, "voice-message.mp3");
     formData.append("submissionId", submissionId);
     formData.append("userId", userId);
-
+  
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/upload-audio`,
@@ -415,12 +421,20 @@ const FeedScreen = () => {
           body: formData,
         }
       );
-      await response.json();
-
+      const data = await response.json();
+  
       postTypeForEmail("audio");
       setMessage("Upload audio successful!");
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
+  
+      // Emit postUpdated event
+      socketRef.current.emit("postUpdated", {
+        updatedPost: data,
+        submissionId,
+      });
+  
+      fetchPosts();
     } catch (error) {
       setMessage("Upload failed!");
       setType("error");
@@ -429,6 +443,9 @@ const FeedScreen = () => {
       setIsUploading(false);
     }
   };
+  
+  
+  
 
   const checkUserIsInActiveList = (user_id, activeUsersList) => {
     return activeUsersList.includes(user_id) ? "active" : "";

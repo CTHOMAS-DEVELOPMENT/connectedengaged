@@ -1,5 +1,5 @@
 const express = require("express");
-const { Pool, Client } = require("pg");
+const { Pool } = require("pg");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
@@ -148,14 +148,14 @@ pool.connect((err, client, release) => {
 });
 
 const connectionString = process.env.CONNECTION_STRING;
-const pgClient = new Client({ connectionString });
-pgClient.connect((err) => {
-  if (err) {
-    return console.error("Connection error", err.stack);
-  } else {
-    console.log("Connected to PostgreSQL Database");
-  }
-});
+// const pgClient = new Client({ connectionString });
+// pgClient.connect((err) => {
+//   if (err) {
+//     return console.error("Connection error", err.stack);
+//   } else {
+//     console.log("Connected to PostgreSQL Database");
+//   }
+// });
 
 
 //pgClient.query("LISTEN connections_change");
@@ -266,57 +266,57 @@ io.on("connection", (socket) => {
   });
 });
 
-pgClient.on('end', () => {
-  console.log('pgClient connection ended');
-});
+// pgClient.on('end', () => {
+//   console.log('pgClient connection ended');
+// });
 
-pgClient.on('error', (err) => {
-  console.log('pgClient error:', err);
-});
-pgClient.on("notification", async (msg) => {
-  const payload = JSON.parse(msg.payload);
-  console.log(`Received notification on channel ${msg.channel}:`, payload);
+// pgClient.on('error', (err) => {
+//   console.log('pgClient error:', err);
+// });
+// pgClient.on("notification", async (msg) => {
+//   const payload = JSON.parse(msg.payload);
+//   console.log(`Received notification on channel ${msg.channel}:`, payload);
 
-  if (msg.channel === "new_post") {
-    console.log("OLD new_post CHANNEL??????????")
-    // console.log("io new_post reached with payload:", payload);
-    // let newPost = payload;
+//   if (msg.channel === "new_post") {
+//     console.log("OLD new_post CHANNEL??????????")
+//     // console.log("io new_post reached with payload:", payload);
+//     // let newPost = payload;
 
-    // const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
-    // const res = await pgClient.query(query, [newPost.submission_id]);
-    // const interestedUserIds = res.rows.map((row) => row.participating_user_id);
-    // console.log("Interested user IDs:", interestedUserIds);
+//     // const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+//     // const res = await pgClient.query(query, [newPost.submission_id]);
+//     // const interestedUserIds = res.rows.map((row) => row.participating_user_id);
+//     // console.log("Interested user IDs:", interestedUserIds);
 
-    // let isActive = false;
-    // Object.values(clientSubmissions).forEach(({ userId, activeUsers }) => {
-    //   if (activeUsers.has(newPost.posting_user_id)) {
-    //     isActive = true;
-    //   }
-    // });
-    // console.log(`User ${newPost.posting_user_id} is active:`, isActive);
+//     // let isActive = false;
+//     // Object.values(clientSubmissions).forEach(({ userId, activeUsers }) => {
+//     //   if (activeUsers.has(newPost.posting_user_id)) {
+//     //     isActive = true;
+//     //   }
+//     // });
+//     // console.log(`User ${newPost.posting_user_id} is active:`, isActive);
 
-    // newPost = { ...newPost, interestedUserIds };
-    // newPost.isActive = isActive;
+//     // newPost = { ...newPost, interestedUserIds };
+//     // newPost.isActive = isActive;
 
-    // Object.entries(clientSubmissions).forEach(
-    //   ([socketId, { userId, submissionIds }]) => {
-    //     if (
-    //       interestedUserIds.includes(userId) &&
-    //       submissionIds.has(newPost.submission_id)
-    //     ) {
-    //       console.log(`Emitting post update to socket ${socketId} with post:`, newPost);
-    //       io.to(socketId).emit("post update", newPost);
-    //     }
-    //   }
-    // );
-  } else if (msg.channel === "connections_change") {
-    console.log("connections_change payload:", payload);
-    //io.emit("connections_change", payload);
-  } else if (msg.channel === "connection_requests_change") {
-    console.log("connection_requests_change payload:", payload);
-    //io.emit("connection_requests_change", payload);
-  }
-});  
+//     // Object.entries(clientSubmissions).forEach(
+//     //   ([socketId, { userId, submissionIds }]) => {
+//     //     if (
+//     //       interestedUserIds.includes(userId) &&
+//     //       submissionIds.has(newPost.submission_id)
+//     //     ) {
+//     //       console.log(`Emitting post update to socket ${socketId} with post:`, newPost);
+//     //       io.to(socketId).emit("post update", newPost);
+//     //     }
+//     //   }
+//     // );
+//   } else if (msg.channel === "connections_change") {
+//     console.log("connections_change payload:", payload);
+//     //io.emit("connections_change", payload);
+//   } else if (msg.channel === "connection_requests_change") {
+//     console.log("connection_requests_change payload:", payload);
+//     //io.emit("connection_requests_change", payload);
+//   }
+// });  
 
 
 
@@ -1168,16 +1168,29 @@ app.post("/api/upload-audio", upload.single("audio"), async (req, res) => {
 
     // Insert into the submission_dialog table
     const result = await pool.query(
-      "INSERT INTO submission_dialog (submission_id, posting_user_id, uploaded_path) VALUES ($1, $2, $3) RETURNING *",
-      [submissionId, userId, uploadedFilePath] // Include type of upload if your table supports it
+      "INSERT INTO submission_dialog (submission_id, posting_user_id, uploaded_path, type) VALUES ($1, $2, $3, 'audio') RETURNING *",
+      [submissionId, userId, uploadedFilePath]
     );
 
-    res.json(result.rows[0]); // Return the new database entry
+    const newPost = result.rows[0];
+
+    // Fetch interested users
+    const userQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+    const resUsers = await pool.query(userQuery, [submissionId]);
+    const interestedUserIds = resUsers.rows.map((row) => row.participating_user_id);
+    
+    // Emit the post update to interested users
+    newPost.interestedUserIds = interestedUserIds;
+    io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost: newPost });
+
+    res.json(newPost); // Return the new database entry
   } catch (error) {
     console.error("Failed to upload audio file:", error);
     res.status(500).send("Error uploading audio file.");
   }
 });
+
+
 app.get("/api/users/:userId/profile-picture", async (req, res) => {
   const { userId } = req.params;
 
@@ -2355,5 +2368,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*929*Server running on port ${PORT}`);
+  console.log(`*809*Server running on port ${PORT}`);
 });

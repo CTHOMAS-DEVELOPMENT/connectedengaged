@@ -125,6 +125,7 @@ BEGIN
             submission_id INTEGER REFERENCES user_submissions(id),
             posting_user_id INTEGER NOT NULL,
             text_content TEXT,
+            type VARCHAR(50),
             uploaded_path CHARACTER VARYING(500),
             created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
