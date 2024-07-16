@@ -91,12 +91,13 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
-
+const decodedPassword = decodeURIComponent(process.env.RESET_EMAIL_PASSWORD);
+console.log("decodedPassword",decodedPassword)
 const transporter = nodemailer.createTransport({
   service: "gmail", // Example using Gmail
   auth: {
     user: process.env.RESET_EMAIL,
-    pass: process.env.RESET_EMAIL_PASSWORD
+    pass: decodedPassword
   },
   tls: {
     rejectUnauthorized: false,
@@ -2368,5 +2369,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*809*Server running on port ${PORT}`);
+  console.log(`*889*Server running on port ${PORT}`);
 });

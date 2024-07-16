@@ -44,7 +44,6 @@ const FeedScreen = () => {
   const [associatedUsers, setAssociatedUsers] = useState([]);
   const [activeUsersList, setActiveUsersList] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [loggedInUserName, setLoggedInUsername] = useState("");
@@ -136,8 +135,6 @@ const FeedScreen = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
-  
-  
   
 
   const handleStartRecording = () => {
@@ -406,13 +403,13 @@ const FeedScreen = () => {
       console.error("No audio to upload");
       return;
     }
-  
+
     setIsUploading(true);
     const formData = new FormData();
     formData.append("audio", blob, "voice-message.mp3");
     formData.append("submissionId", submissionId);
     formData.append("userId", userId);
-  
+
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/upload-audio`,
@@ -422,18 +419,18 @@ const FeedScreen = () => {
         }
       );
       const data = await response.json();
-  
+
       postTypeForEmail("audio");
       setMessage("Upload audio successful!");
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
-  
+
       // Emit postUpdated event
       socketRef.current.emit("postUpdated", {
         updatedPost: data,
         submissionId,
       });
-  
+
       fetchPosts();
     } catch (error) {
       setMessage("Upload failed!");
@@ -443,9 +440,6 @@ const FeedScreen = () => {
       setIsUploading(false);
     }
   };
-  
-  
-  
 
   const checkUserIsInActiveList = (user_id, activeUsersList) => {
     return activeUsersList.includes(user_id) ? "active" : "";
@@ -549,7 +543,6 @@ const FeedScreen = () => {
   const endCall = () => {
     setInCall(false);
     setCaller(null);
-    setSelectedUserId(null);
     if (peerRef.current) {
       peerRef.current.destroy();
     }
@@ -569,6 +562,7 @@ const FeedScreen = () => {
     peerRef.current = null;
     socketRef.current = null;
   };
+
   const handleUserCheckboxChange = (event) => {
     event.preventDefault();
     event.stopPropagation(); // Prevents the event from bubbling up
@@ -681,41 +675,40 @@ const FeedScreen = () => {
                 className="text-update-modal"
                 onClick={(e) => e.stopPropagation()}
               >
-<TextUpdate
-  dialogId={dialogId}
-  initialText={currentText}
-  onSaveSuccess={handleTextSaveSuccess}
-  socketRef={socketRef} // Pass socketRef to TextUpdate
-/>
+                <TextUpdate
+                  dialogId={dialogId}
+                  initialText={currentText}
+                  onSaveSuccess={handleTextSaveSuccess}
+                  socketRef={socketRef} // Pass socketRef to TextUpdate
+                />
               </div>
             </div>
           )}
 
-{showUploader && (
-  <div className="backdrop" onClick={handleCloseUploader}>
-    <div
-      className="modal-content"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <PhotoUploadAndEdit
-        userId={userId}
-        submissionId={submissionId}
-        onPhotoSubmit={fetchPosts}
-        onSaveSuccess={() => {
-          console.log("onSaveSuccess")
-          handleCloseUploader(); // Close the uploader modal first
-          postTypeForEmail("picture");
-          socketRef.current.emit("postUpdated", {
-            submissionId,
-            dialogId,
-          }); // Emit postUpdated event
-        }}
-        dialogId={dialogId}
-      />
-    </div>
-  </div>
-)}
-
+          {showUploader && (
+            <div className="backdrop" onClick={handleCloseUploader}>
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <PhotoUploadAndEdit
+                  userId={userId}
+                  submissionId={submissionId}
+                  onPhotoSubmit={fetchPosts}
+                  onSaveSuccess={() => {
+                    console.log("onSaveSuccess");
+                    handleCloseUploader(); // Close the uploader modal first
+                    postTypeForEmail("picture");
+                    socketRef.current.emit("postUpdated", {
+                      submissionId,
+                      dialogId,
+                    }); // Emit postUpdated event
+                  }}
+                  dialogId={dialogId}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="element-group-box">
             {userProfilePic && (
