@@ -5,6 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+// Polyfill for process
+if (typeof process === 'undefined') {
+  global.process = {
+    env: {
+      NODE_ENV: 'development', // or 'production'
+    },
+  };
+}
+
 root.render(
   <React.StrictMode>
     <App />
