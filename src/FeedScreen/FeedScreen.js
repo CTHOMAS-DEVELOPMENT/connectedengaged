@@ -22,8 +22,8 @@ import {
   EnvelopeSlash,
   EnvelopePlusFill,
   EnvelopeSlashFill,
-  CameraVideoFill,
-  CameraVideoOffFill,
+  Telephone,
+  TelephoneFill,
 } from "react-bootstrap-icons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { checkAuthorization } from "../system/authService";
@@ -54,6 +54,7 @@ const FeedScreen = () => {
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
   const uploadStatus = "";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -67,6 +68,10 @@ const FeedScreen = () => {
   const title = location.state ? location.state.title : null;
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
+  };
+  const closeModal = () => {
+    setShowPhoneAnswerModal(false);
+    setCaller(null);
   };
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
@@ -135,7 +140,10 @@ const FeedScreen = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
-  
+  const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
+    const user = associatedUsers.find((user) => user.id === id);
+    return user ? user.username : null;
+  };
 
   const handleStartRecording = () => {
     navigator.mediaDevices
@@ -462,20 +470,20 @@ const FeedScreen = () => {
   };
   const startVideoCall = () => {
     setInCall(true);
-
+  
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-
+  
         const peer = new Peer({
           initiator: true,
           trickle: false,
           stream: stream,
         });
-
+  
         peer.on("signal", (data) => {
           socketRef.current.emit("callUser", {
             userToCall: selectedUserId,
@@ -483,58 +491,66 @@ const FeedScreen = () => {
             from: userId,
           });
         });
-
+  
         peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
         });
-
+  
         peer.on("close", () => {
           endCall();
         });
-
+  
         socketRef.current.on("callAccepted", (signal) => {
           peer.signal(signal);
         });
-
+  
         peerRef.current = peer;
+      })
+      .catch((error) => {
+        console.error("Failed to start media devices:", error);
+        setMessage("Error accessing camera or microphone. Please check your device settings.");
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+        setInCall(false);
       });
   };
+  
 
   const answerCall = () => {
     setInCall(true);
-
+  
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-
+  
         const peer = new Peer({
           initiator: false,
           trickle: false,
           stream: stream,
         });
-
+  
         peer.on("signal", (data) => {
           socketRef.current.emit("acceptCall", {
             signal: data,
             to: caller.from,
           });
         });
-
+  
         peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
         });
-
+  
         peer.on("close", () => {
           endCall();
         });
-
+  
         peer.signal(caller.signal);
         peerRef.current = peer;
       });
@@ -547,14 +563,10 @@ const FeedScreen = () => {
       peerRef.current.destroy();
     }
     if (localVideoRef.current && localVideoRef.current.srcObject) {
-      localVideoRef.current.srcObject
-        .getTracks()
-        .forEach((track) => track.stop());
+      localVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
     if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
-      remoteVideoRef.current.srcObject
-        .getTracks()
-        .forEach((track) => track.stop());
+      remoteVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
     if (socketRef.current) {
       socketRef.current.disconnect();
@@ -602,67 +614,31 @@ const FeedScreen = () => {
                     )}`}
                   />
                   <div className="user-info">
-                    <label className="font-style-4">
+                    <label className="font-style-4">{user.username}</label>
+                    {checkUserIsInActiveList(user.id, activeUsersList) ===
+                      "active" && (
                       <input
                         type="checkbox"
                         value={user.id}
                         checked={selectedUserId === user.id}
                         onChange={handleUserCheckboxChange}
                       />
-                      {user.username}
-                    </label>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="search-container">
-            <Button
-              variant="outline-info"
-              onMouseEnter={() => setHovering(true)}
-              onMouseLeave={() => setHovering(false)}
-              onClick={toggleNotifications}
-              className="btn-icon"
-            >
-              {notificationson ? (
-                hovering ? (
-                  <EnvelopeSlashFill size={25} />
-                ) : (
-                  <EnvelopeSlash size={25} />
-                )
-              ) : hovering ? (
-                <EnvelopePlusFill size={25} />
-              ) : (
-                <EnvelopePlus size={25} />
-              )}
-            </Button>
-            <Button
-              variant="outline-info" // This should match other buttons
-              className="btn-icon" // Make sure it has the same classes
-              onClick={toggleSearch}
-            >
-              <Search size={25} />
-            </Button>
-            {searchActive && (
-              <input
-                ref={searchInputRef}
-                type="text"
-                className="search-input"
-                placeholder="Type your search"
-                onChange={handleSearchChange}
-              />
-            )}
-            <Button
-              variant="outline-info"
-              className="btn-icon"
-              onClick={handleScrollToBottom}
-            >
-              <ArrowDownCircleFill size={25} />
-            </Button>
-          </div>
+          <Button
+            variant="outline-info"
+            className="btn-icon"
+            onClick={handleScrollToBottom}
+          >
+            <ArrowDownCircleFill size={25} />
+          </Button>
         </div>
         <h2 className="header-title font-style-4">{title}</h2>
+
       </div>
       {submissionId && (
         <>
@@ -786,7 +762,7 @@ const FeedScreen = () => {
                   onClick={startVideoCall}
                   disabled={!selectedUserId}
                 >
-                  <CameraVideoFill size={25} />
+                  <Telephone size={25} />
                 </Button>
               ) : (
                 <Button
@@ -794,14 +770,56 @@ const FeedScreen = () => {
                   className="btn-icon"
                   onClick={endCall}
                 >
-                  <CameraVideoOffFill size={25} />
+                  <TelephoneFill size={25} />
                 </Button>
               )}
+
+              <div className="search-container">
+                <Button
+                  variant="outline-info"
+                  onMouseEnter={() => setHovering(true)}
+                  onMouseLeave={() => setHovering(false)}
+                  onClick={toggleNotifications}
+                  className="btn-icon"
+                >
+                  {notificationson ? (
+                    hovering ? (
+                      <EnvelopeSlashFill size={25} />
+                    ) : (
+                      <EnvelopeSlash size={25} />
+                    )
+                  ) : hovering ? (
+                    <EnvelopePlusFill size={25} />
+                  ) : (
+                    <EnvelopePlus size={25} />
+                  )}
+                </Button>
+                <Button
+                  variant="outline-info" // This should match other buttons
+                  className="btn-icon" // Make sure it has the same classes
+                  onClick={toggleSearch}
+                >
+                  <Search size={25} />
+                </Button>
+                {searchActive && (
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    className="search-input"
+                    placeholder="Type your search"
+                    onChange={handleSearchChange}
+                  />
+                )}
+              </div>
             </div>
+
+
+
           </div>
           {message && (
             <AlertMessage key={alertKey} message={message} type={type} />
           )}
+
         </>
       )}
       {/* List of combined posts*/}
@@ -916,23 +934,24 @@ const FeedScreen = () => {
       >
         <ArrowUpCircleFill size={25} />
       </Button>
-      {inCall && (
-        <div className="video-call-container">
-          <video ref={localVideoRef} autoPlay muted className="local-video" />
-          <video ref={remoteVideoRef} autoPlay className="remote-video" />
-        </div>
-      )}
+
       {caller && !inCall && (
-        <div className="incoming-call">
-          <p>Incoming call from {caller.from}</p>
-          <Button variant="outline-info" onClick={answerCall}>
-            Answer
-          </Button>
-          <Button variant="outline-danger" onClick={endCall}>
-            Decline
-          </Button>
-        </div>
-      )}
+  <div className="incoming-call">
+    <p>Incoming call from {caller.from}</p>
+    <Button variant="outline-info" onClick={answerCall}>
+      Answer
+    </Button>
+    <Button variant="outline-danger" onClick={endCall}>
+      Decline
+    </Button>
+  </div>
+)}
+      {inCall && (
+  <div className="video-call-container">
+    <video ref={localVideoRef} autoPlay muted className="local-video" />
+    <video ref={remoteVideoRef} autoPlay className="remote-video" />
+  </div>
+)}
     </div>
   );
 };
