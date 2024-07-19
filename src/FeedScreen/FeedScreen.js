@@ -54,7 +54,7 @@ const FeedScreen = () => {
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  //const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
+  const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
   const uploadStatus = "";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -69,10 +69,10 @@ const FeedScreen = () => {
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
   };
-  // const closeModal = () => {
-  //   setShowPhoneAnswerModal(false);
-  //   setCaller(null);
-  // };
+  const closeModal = () => {
+    setShowPhoneAnswerModal(false);
+    setCaller(null);
+  };
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
   const [isRecording, setIsRecording] = useState(false);
@@ -93,6 +93,7 @@ const FeedScreen = () => {
     socket.on("incomingCall", (data) => {
       console.log("Incoming call:", data);
       setCaller(data);
+      setShowPhoneAnswerModal(true)
     });
   
     socket.on("callAccepted", (signal) => {
@@ -140,10 +141,10 @@ const FeedScreen = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
-  // const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
-  //   const user = associatedUsers.find((user) => user.id === id);
-  //   return user ? user.username : null;
-  // };
+  const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
+    const user = associatedUsers.find((user) => user.id === id);
+    return user ? user.username : null;
+  };
 
   const handleStartRecording = () => {
     navigator.mediaDevices
@@ -935,17 +936,22 @@ const FeedScreen = () => {
         <ArrowUpCircleFill size={25} />
       </Button>
 
-      {caller && !inCall && (
-  <div className="incoming-call">
-    <p>Incoming call from {caller.from}</p>
-    <Button variant="outline-info" onClick={answerCall}>
-      Answer
-    </Button>
-    <Button variant="outline-danger" onClick={endCall}>
-      Decline
-    </Button>
-  </div>
-)}
+      {caller && !inCall && showPhoneAnswerModal && (
+        <div className="centre-container" onClick={closeModal}>
+          <div className="wrapper-container-peer-answer incoming-call">
+            <p>
+              Incoming call from {caller? getUserNameFromAssociatedUsers(associatedUsers, caller.from)
+                : "No one"}
+            </p>
+            <Button variant="outline-info" onClick={answerCall}>
+              Answer
+            </Button>
+            <Button variant="outline-danger" onClick={endCall}>
+              Decline
+            </Button>
+          </div>
+        </div>
+      )}
       {inCall && (
   <div className="video-call-container">
     <video ref={localVideoRef} autoPlay muted className="local-video" />
