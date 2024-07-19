@@ -76,11 +76,11 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // Logging middleware for debugging
-app.use((req, res, next) => {
-  console.log('Incoming Request:', req.method, req.url);
-  console.log('Request Origin:', req.headers.origin);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('Incoming Request:', req.method, req.url);
+//   console.log('Request Origin:', req.headers.origin);
+//   next();
+// });
 
 // Socket.io configuration
 const io = socketIo(server, {
@@ -91,13 +91,11 @@ const io = socketIo(server, {
     credentials: true,
   },
 });
-const decodedPassword = decodeURIComponent(process.env.RESET_EMAIL_PASSWORD);
-console.log("decodedPassword",decodedPassword)
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Example using Gmail
+  service: process.env.RESET_EMAIL_PROVIDER, // Example using Gmail
   auth: {
     user: process.env.RESET_EMAIL,
-    pass: decodedPassword
+    pass: `${process.env.RESET_EMAIL_CODE_1} ${process.env.RESET_EMAIL_CODE_2} ${process.env.RESET_EMAIL_CODE_3} ${process.env.RESET_EMAIL_CODE_4}`
   },
   tls: {
     rejectUnauthorized: false,
@@ -116,7 +114,7 @@ if (isLocal) {
 } else {
   // Remote environment configuration
   app.use('/uploaded-images', (req, res, next) => {
-    console.log('Serving static file:', req.path);
+    //console.log('Serving static file:', req.path);
     next();
   }, express.static(path.join(__dirname, 'backend/imageUploaded')));
 }
@@ -148,38 +146,16 @@ pool.connect((err, client, release) => {
   });
 });
 
-const connectionString = process.env.CONNECTION_STRING;
-// const pgClient = new Client({ connectionString });
-// pgClient.connect((err) => {
-//   if (err) {
-//     return console.error("Connection error", err.stack);
-//   } else {
-//     console.log("Connected to PostgreSQL Database");
-//   }
-// });
-
-
-//pgClient.query("LISTEN connections_change");
-//pgClient.query("LISTEN connection_requests_change");
-// pgClient.query('LISTEN new_post', (err, res) => {
-//   if (err) {
-//     console.error('Error listening to new_post channel: REMOVE??????????', err);
-//   } else {
-//     console.log('Listening to new_post notifications: REMOVE??????????');
-//   }
-// });
-// Track clients and their interest in specific submission_ids
 const clientSubmissions = {}; // { socketId: { userId: Number, submissionIds: Set(Number) } }
 const activeUsersPerSubmission = {};
 
 io.on("connection", (socket) => {
-  console.log(`Socket connected: ${socket.id}`);
   socket.on("postDeleted", ({ postId, submissionId }) => {
-    console.log(`Post deleted with ID: ${postId} in submission: ${submissionId}`);
+    //console.log(`Post deleted with ID: ${postId} in submission: ${submissionId}`);
     io.to(`submission-${submissionId}`).emit("postDeleted", { postId });
   });
   socket.on("register", ({ userId, submissionIds }) => {
-    console.log(`User ${userId} registered with submission IDs:`, submissionIds);
+    //console.log(`User ${userId} registered with submission IDs:`, submissionIds);
     if (!clientSubmissions[socket.id]) {
       clientSubmissions[socket.id] = {
         userId,
@@ -191,7 +167,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("enter screen", ({ userId, submissionId }) => {
-    console.log(`User ${userId} entered screen for submission ${submissionId}`);
+    //console.log(`User ${userId} entered screen for submission ${submissionId}`);
     socket.join(`submission-${submissionId}`);
 
     if (!activeUsersPerSubmission[submissionId]) {
@@ -206,7 +182,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave screen", ({ userId, submissionId }) => {
-    console.log(`User ${userId} left screen for submission ${submissionId}`);
+    //console.log(`User ${userId} left screen for submission ${submissionId}`);
     if (activeUsersPerSubmission[submissionId]) {
       activeUsersPerSubmission[submissionId].delete(userId);
       io.to(`submission-${submissionId}`).emit(
@@ -219,7 +195,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("callUser", ({ userToCall, signalData, from }) => {
-    console.log(`User ${from} calling user ${userToCall}`);
+    //console.log(`User ${from} calling user ${userToCall}`);
     const recipientSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === userToCall
     );
@@ -229,28 +205,28 @@ io.on("connection", (socket) => {
         from,
         signal: signalData,
       });
-      console.log(`Calling user ${userToCall} from ${from}`);
+      //console.log(`Calling user ${userToCall} from ${from}`);
     } else {
       console.log(`User to call not found: ${userToCall}`);
     }
   });
 
   socket.on("acceptCall", ({ signal, to }) => {
-    console.log(`User accepted call from ${to}`);
+    //console.log(`User accepted call from ${to}`);
     const callerSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === to
     );
 
     if (callerSocketId) {
       io.to(callerSocketId).emit("callAccepted", signal);
-      console.log(`Call accepted by ${to}`);
+      //console.log(`Call accepted by ${to}`);
     } else {
       console.log(`Caller not found for ${to}`);
     }
   });
 
   socket.on("disconnect", () => {
-    console.log(`Socket disconnected: ${socket.id}`);
+    //console.log(`Socket disconnected: ${socket.id}`);
     if (clientSubmissions[socket.id]) {
       const { userId, submissionIds } = clientSubmissions[socket.id];
       submissionIds.forEach((submissionId) => {
@@ -266,60 +242,6 @@ io.on("connection", (socket) => {
     }
   });
 });
-
-// pgClient.on('end', () => {
-//   console.log('pgClient connection ended');
-// });
-
-// pgClient.on('error', (err) => {
-//   console.log('pgClient error:', err);
-// });
-// pgClient.on("notification", async (msg) => {
-//   const payload = JSON.parse(msg.payload);
-//   console.log(`Received notification on channel ${msg.channel}:`, payload);
-
-//   if (msg.channel === "new_post") {
-//     console.log("OLD new_post CHANNEL??????????")
-//     // console.log("io new_post reached with payload:", payload);
-//     // let newPost = payload;
-
-//     // const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
-//     // const res = await pgClient.query(query, [newPost.submission_id]);
-//     // const interestedUserIds = res.rows.map((row) => row.participating_user_id);
-//     // console.log("Interested user IDs:", interestedUserIds);
-
-//     // let isActive = false;
-//     // Object.values(clientSubmissions).forEach(({ userId, activeUsers }) => {
-//     //   if (activeUsers.has(newPost.posting_user_id)) {
-//     //     isActive = true;
-//     //   }
-//     // });
-//     // console.log(`User ${newPost.posting_user_id} is active:`, isActive);
-
-//     // newPost = { ...newPost, interestedUserIds };
-//     // newPost.isActive = isActive;
-
-//     // Object.entries(clientSubmissions).forEach(
-//     //   ([socketId, { userId, submissionIds }]) => {
-//     //     if (
-//     //       interestedUserIds.includes(userId) &&
-//     //       submissionIds.has(newPost.submission_id)
-//     //     ) {
-//     //       console.log(`Emitting post update to socket ${socketId} with post:`, newPost);
-//     //       io.to(socketId).emit("post update", newPost);
-//     //     }
-//     //   }
-//     // );
-//   } else if (msg.channel === "connections_change") {
-//     console.log("connections_change payload:", payload);
-//     //io.emit("connections_change", payload);
-//   } else if (msg.channel === "connection_requests_change") {
-//     console.log("connection_requests_change payload:", payload);
-//     //io.emit("connection_requests_change", payload);
-//   }
-// });  
-
-
 
 // Set up storage location and file naming
 const storage = multer.diskStorage({
@@ -399,7 +321,7 @@ app.get("/api/authorised/:userId", async (req, res) => {
 // Login route
 
 app.post("/api/login", async (req, res) => {
-  console.log("Login request received:", req.body);
+  //console.log("Login request received:", req.body);
   try {
     const { username, password } = req.body;
     const result = await pool.query("SELECT * FROM users WHERE username = $1", [
@@ -508,7 +430,7 @@ async function processZipFile(
     [userId, interactionTitle]
   );
   const submissionId = submissionResult.rows[0].id;
-  console.log("submissionId:", submissionId);
+  //console.log("submissionId:", submissionId);
   // Save media files to the server and update interactionData with new paths
   for (const { filename, mediaData } of mediaFiles) {
     const sanitizedFilename = filename.replace("uploaded-images\\", "");
@@ -584,7 +506,7 @@ app.post("/api/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     await client.query("BEGIN"); // Start transaction
-    console.log("Attempting to insert new user");
+    //console.log("Attempting to insert new user");
     // Insert the new User
     const userInsertResult = await client.query(
       "INSERT INTO users (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
@@ -599,7 +521,7 @@ app.post("/api/register", async (req, res) => {
         aboutYou,
       ]
     );
-    console.log("User inserted successfully");
+    //console.log("User inserted successfully");
     const newUserId = userInsertResult.rows[0].id;
 
     // Query to find the existing admin's ID
@@ -648,16 +570,12 @@ app.post("/api/register", async (req, res) => {
       [submissionId, existingAdminId, process.env.ADMIN_MESSAGE_1]
     );
     const result = await newUserAdminMessage(newUserId, `Welcome_${username}`);
-    console.log("*result*", result.submissionId);
-    //INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2);
+    //console.log("newUserAdminMessage-result", result.submissionId);
     await client.query(
       "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
       [result.submissionId, newUserId]
     );
-
-    //Call newUserAdminMessage and wait for its completion
-
-    // Send the response to the client
+  // Send the response to the client
     res.json({ id: newUserId, username: username });
   } catch (error) {
     await client.query("ROLLBACK"); // Roll back the transaction on error
@@ -1219,7 +1137,7 @@ app.get("/api/users/:userId/profile-picture", async (req, res) => {
 async function deleteFile(filePath) {
   try {
     await fs.promises.unlink(filePath);
-    console.log(`Successfully deleted file: ${filePath}`);
+    //console.log(`Successfully deleted file: ${filePath}`);
   } catch (error) {
     if (error.code === "ENOENT") {
       console.error(`File not found, removing from schedule: ${filePath}`);
@@ -1254,7 +1172,7 @@ async function restoreOriginalProfilePicture(client, userId, originalFilePath) {
       userId,
     ]);
     await client.query("COMMIT");
-    console.log("Successfully restored original profile picture");
+    //console.log("Successfully restored original profile picture");
   } catch (restoreError) {
     await client.query("ROLLBACK");
     console.error(
@@ -1281,7 +1199,7 @@ async function generateThumbnail(filePath, thumbnailPath) {
     }
 
     await image.writeAsync(thumbnailPath);
-    console.log(`Thumbnail generated at ${thumbnailPath}`);
+    //console.log(`Thumbnail generated at ${thumbnailPath}`);
   } catch (error) {
     console.error(`Error generating thumbnail: ${error.message}`);
     throw error;
@@ -1612,8 +1530,7 @@ app.post(
         const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
 
         io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost, interestedUserIds });
-        console.log("updatedPost", updatedPost);
-
+        //console.log("updatedPost", updatedPost);
         res.json(updatedPost); // Send back the updated record
       } else {
         throw new Error("No dialog found to update.");
@@ -1676,7 +1593,6 @@ app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
 
 app.get("/api/users/:submissionId/posts", async (req, res) => {
   try {
-    console.log("Posting list api")
     //console.log("Posting list api submissionId",req.params.submissionId)
     const submissionId = req.params.submissionId;
 
@@ -1932,7 +1848,7 @@ async function deleteExpiredInteractions() {
         try {
           if (fs.existsSync(fullPath)) {
             await fs.promises.unlink(fullPath);
-            console.log(`Successfully deleted: ${fullPath}`);
+            //console.log(`Successfully deleted: ${fullPath}`);
           } else {
             console.log(`File not found: ${fullPath}, skipping deletion.`);
           }
@@ -2152,7 +2068,7 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
     
     // Emit the post update to interested users
     newPost.interestedUserIds = interestedUserIds;
-    console.log("New io post update", newPost)
+    //console.log("New io post update", newPost)
     io.emit("post update", newPost);
 
     // Respond with the new dialog entry
@@ -2310,9 +2226,9 @@ app.post("/api/notify_offline_users", async (req, res) => {
           case "Text":
           case "audio":
           case "picture":
-            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: http://${process.env.HOST}:${process.env.PORTFORAPP}`;
+            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: http://${process.env.ROOT_DOMAIN}`;
           case "connection_accepted":
-            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: http://${process.env.HOST}:${process.env.PORTFORAPP}`;
+            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: http://${process.env.ROOT_DOMAIN}`;
           default:
             return "unknown type";
         }
@@ -2369,5 +2285,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*889*Server running on port ${PORT}`);
+  console.log(`*646*Server running on port ${PORT}`);
 });
