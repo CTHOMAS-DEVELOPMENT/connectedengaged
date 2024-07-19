@@ -54,7 +54,7 @@ const FeedScreen = () => {
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
+  //const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
   const uploadStatus = "";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -69,10 +69,10 @@ const FeedScreen = () => {
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
   };
-  const closeModal = () => {
-    setShowPhoneAnswerModal(false);
-    setCaller(null);
-  };
+  // const closeModal = () => {
+  //   setShowPhoneAnswerModal(false);
+  //   setCaller(null);
+  // };
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
   const [isRecording, setIsRecording] = useState(false);
@@ -140,10 +140,10 @@ const FeedScreen = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
-  const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
-    const user = associatedUsers.find((user) => user.id === id);
-    return user ? user.username : null;
-  };
+  // const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
+  //   const user = associatedUsers.find((user) => user.id === id);
+  //   return user ? user.username : null;
+  // };
 
   const handleStartRecording = () => {
     navigator.mediaDevices
