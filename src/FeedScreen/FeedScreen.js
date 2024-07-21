@@ -85,47 +85,45 @@ const FeedScreen = () => {
     socketRef.current = socket; // Save socket instance
 
     socket.on("connect", () => {
-      console.log("Socket connected");
+      //console.log("Socket connected");
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
 
     socket.on("incomingCall", (data) => {
-      console.log("Incoming call:", data);
+      //console.log("Incoming call:", data);
       setCaller(data);
       setShowPhoneAnswerModal(true);
     });
 
     socket.on("callAccepted", (signal) => {
-      console.log("Call accepted:", signal);
+      //console.log("Call accepted:", signal);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
     });
 
     socket.on("active users update", (activeUsers) => {
-      console.log("Active users update:", activeUsers);
+      //console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
     });
 
     socket.on("post update", (newPost) => {
-      console.log("Post update received:", newPost);
+      //console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
       if (interestedUserIds.includes(parseInt(userId, 10))) {
-        console.log(
-          "User is interested in this post. Setting userIsLive to true."
-        );
+        /*User is interested in this post. Setting userIsLive to true.*/
         setUserIsLive(true);
       }
     });
 
     socket.on("postDeleted", ({ postId }) => {
-      console.log(`Post deleted with ID: ${postId}`);
+      //console.log(`Post deleted with ID: ${postId}`);
       fetchPosts();
     });
 
     socket.on("postUpdated", ({ updatedPost }) => {
-      console.log(`Post updated with ID: ${updatedPost.id}`);
+      //console.log(`Post updated with ID: ${updatedPost.id}`);
       fetchPosts();
     });
 
@@ -291,19 +289,19 @@ const FeedScreen = () => {
     }
   }, [userId]);
   const fetchPosts = () => {
-    console.log("Fetching posts for submissionId:", submissionId);
+    //console.log("Fetching posts for submissionId:", submissionId);
     if (submissionId) {
       fetch(`${process.env.REACT_APP_API_URL}/api/users/${submissionId}/posts`)
         .then((response) => response.json())
         .then((data) => {
-          console.log("Fetched posts:", data);
+          //console.log("Fetched posts:", data);
           return setPosts(data);
         })
         .catch((error) => console.error("Error fetching posts:", error));
     }
   };
   const handlePostSubmit = () => {
-    console.log("New post submitted. Fetching posts...");
+    //console.log("New post submitted. Fetching posts...");
     fetchPosts();
   };
   const handleGetNewPicture = () => {
@@ -400,7 +398,7 @@ const FeedScreen = () => {
       }
 
       const result = await response.json();
-      console.log("Notification sent successfully:", result);
+      //console.log("Notification sent successfully:", result);
     } catch (error) {
       console.error("Error sending notification:", error);
     }
@@ -580,8 +578,12 @@ const FeedScreen = () => {
     peerRef.current = null;
     socketRef.current = null;
   };
-
-  const handleUserCheckboxChange = (event) => {
+  const handleUserSelectedForCall = (id) => {
+    setSelectedUserId(id);
+    console.log("handleUserSelectedForCall", id);
+    startVideoCall();
+  };
+  const handleUserSelectedForCall2 = (event) => {
     event.preventDefault();
     event.stopPropagation(); // Prevents the event from bubbling up
     const userId = parseInt(event.target.value, 10);
@@ -623,12 +625,23 @@ const FeedScreen = () => {
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
                       "active" && (
-                      <input
-                        type="checkbox"
-                        value={user.id}
-                        checked={selectedUserId === user.id}
-                        onChange={handleUserCheckboxChange}
-                      />
+                      <>
+                        <input
+                          type="checkbox"
+                          value={user.id}
+                          checked={selectedUserId === user.id}
+                          onChange={handleUserSelectedForCall2}
+                        />
+                        <Button
+                          variant="outline-info"
+                          className="btn-icon"
+                          onClick={() => {
+                            handleUserSelectedForCall(user.id);
+                          }}
+                        >
+                          <Telephone size={25} />
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -677,7 +690,7 @@ const FeedScreen = () => {
                   submissionId={submissionId}
                   onPhotoSubmit={fetchPosts}
                   onSaveSuccess={() => {
-                    console.log("onSaveSuccess");
+                    //console.log("onSaveSuccess");
                     handleCloseUploader(); // Close the uploader modal first
                     postTypeForEmail("picture");
                     socketRef.current.emit("postUpdated", {
@@ -711,7 +724,7 @@ const FeedScreen = () => {
               />
             </div>
             <div className="button-tower">
-              <div className="audio-controls">
+              <div>
                 <Button
                   variant="outline-info"
                   className="btn-icon"
@@ -831,7 +844,7 @@ const FeedScreen = () => {
               />
               <div className="end-call-button">
                 <Button variant="outline-danger" onClick={endCall}>
-                  End Call
+                  <TelephoneFill size={25} />
                 </Button>
               </div>
               <video ref={remoteVideoRef} autoPlay className="remote-video" />

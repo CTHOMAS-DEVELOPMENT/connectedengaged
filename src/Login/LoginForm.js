@@ -85,8 +85,8 @@ const LoginForm = () => {
       return;
     }
     if (validateForm()) {
-      console.log("process.env.REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
-      console.log(`${process.env.REACT_APP_API_URL}/api/login`);
+      //console.log("process.env.REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
+      //console.log(`${process.env.REACT_APP_API_URL}/api/login`);
       fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
         method: "POST",
         headers: {
@@ -98,12 +98,12 @@ const LoginForm = () => {
         }),
       })
         .then((response) => {
-          console.log("Response status:", response.status);
-          console.log("Response headers:", response.headers);
+          //console.log("Response status:", response.status);
+          //console.log("Response headers:", response.headers);
           return response.json();
         })
         .then((data) => {
-          console.log("Response data:", data);
+          //console.log("Response data:", data);
           if (data.success) {
             setMessage("Login successful");
             setType("success");
