@@ -53,6 +53,7 @@ const FeedScreen = () => {
   // Video call state and refs
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
   const uploadStatus = "";
   const localVideoRef = useRef(null);
@@ -468,20 +469,20 @@ const FeedScreen = () => {
   };
   const startVideoCall = (userToCall) => {
     setInCall(true);
-
+  
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-
+  
         const peer = new Peer({
           initiator: true,
           trickle: false,
           stream: stream,
         });
-
+  
         peer.on("signal", (data) => {
           socketRef.current.emit("callUser", {
             userToCall, // Use the passed user ID
@@ -489,21 +490,21 @@ const FeedScreen = () => {
             from: userId,
           });
         });
-
+  
         peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
         });
-
+  
         peer.on("close", () => {
           endCall();
         });
-
+  
         socketRef.current.on("callAccepted", (signal) => {
           peer.signal(signal);
         });
-
+  
         peerRef.current = peer;
       })
       .catch((error) => {
@@ -516,6 +517,57 @@ const FeedScreen = () => {
         setInCall(false);
       });
   };
+  
+  // const startVideoCallOld= () => {
+  //   setInCall(true);
+
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true, audio: true })
+  //     .then((stream) => {
+  //       if (localVideoRef.current) {
+  //         localVideoRef.current.srcObject = stream;
+  //       }
+
+  //       const peer = new Peer({
+  //         initiator: true,
+  //         trickle: false,
+  //         stream: stream,
+  //       });
+
+  //       peer.on("signal", (data) => {
+  //         socketRef.current.emit("callUser", {
+  //           userToCall: selectedUserId,
+  //           signalData: data,
+  //           from: userId,
+  //         });
+  //       });
+
+  //       peer.on("stream", (stream) => {
+  //         if (remoteVideoRef.current) {
+  //           remoteVideoRef.current.srcObject = stream;
+  //         }
+  //       });
+
+  //       peer.on("close", () => {
+  //         endCall();
+  //       });
+
+  //       socketRef.current.on("callAccepted", (signal) => {
+  //         peer.signal(signal);
+  //       });
+
+  //       peerRef.current = peer;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to start media devices:", error);
+  //       setMessage(
+  //         "Error accessing camera or microphone. Please check your device settings."
+  //       );
+  //       setType("error");
+  //       setAlertKey((prevKey) => prevKey + 1);
+  //       setInCall(false);
+  //     });
+  // };
 
   const answerCall = () => {
     setInCall(true);
@@ -578,7 +630,17 @@ const FeedScreen = () => {
     socketRef.current = null;
   };
   const handleUserSelectedForCall = (id) => {
+    setSelectedUserId(id);
+    console.log("handleUserSelectedForCall", id);
     startVideoCall(id);
+  };
+  const handleUserSelectedForCall2 = (event) => {
+    event.preventDefault();
+    event.stopPropagation(); // Prevents the event from bubbling up
+    const userId = parseInt(event.target.value, 10);
+    setSelectedUserId((prevSelectedUserId) =>
+      prevSelectedUserId === userId ? null : userId
+    );
   };
 
   return (
@@ -614,15 +676,23 @@ const FeedScreen = () => {
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
                       "active" && (
-                      <Button
-                        variant="outline-info"
-                        className="btn-icon"
-                        onClick={() => {
-                          handleUserSelectedForCall(user.id);
-                        }}
-                      >
-                        <Telephone size={25} />
-                      </Button>
+                      <>
+                        <input
+                          type="checkbox"
+                          value={user.id}
+                          checked={selectedUserId === user.id}
+                          onChange={handleUserSelectedForCall2}
+                        />
+                        <Button
+                          variant="outline-info"
+                          className="btn-icon"
+                          onClick={() => {
+                            handleUserSelectedForCall(user.id);
+                          }}
+                        >
+                          <Telephone size={25} />
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -705,31 +775,20 @@ const FeedScreen = () => {
               />
             </div>
             <div className="button-tower">
-              <Button
-                variant="outline-info"
-                className="btn-icon"
-                onClick={
-                  isRecording ? handleStopRecording : handleStartRecording
-                }
-              >
-                {isRecording ? (
-                  <MicMuteFill size={25} />
-                ) : (
-                  <MicFill size={25} />
-                )}
-                {isRecording && (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                )}
-              </Button>
-              <div className="upload-status">
-                {isUploading ? (
-                  <>
+              <div>
+                <Button
+                  variant="outline-info"
+                  className="btn-icon"
+                  onClick={
+                    isRecording ? handleStopRecording : handleStartRecording
+                  }
+                >
+                  {isRecording ? (
+                    <MicMuteFill size={25} />
+                  ) : (
+                    <MicFill size={25} />
+                  )}
+                  {isRecording && (
                     <Spinner
                       as="span"
                       animation="border"
@@ -737,11 +796,24 @@ const FeedScreen = () => {
                       role="status"
                       aria-hidden="true"
                     />
-                    <p>Uploading...</p>
-                  </>
-                ) : (
-                  <p>{uploadStatus}</p>
-                )}
+                  )}
+                </Button>
+                <div className="upload-status">
+                  {isUploading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      <p>Uploading...</p>
+                    </>
+                  ) : (
+                    <p>{uploadStatus}</p>
+                  )}
+                </div>
               </div>
               <Button
                 variant="outline-info"
@@ -752,6 +824,24 @@ const FeedScreen = () => {
               >
                 {isImageHovered ? <ImageFill size={25} /> : <Image size={25} />}
               </Button>
+              {!inCall ? (
+                <Button
+                  variant="outline-info"
+                  className="btn-icon"
+                  onClick={startVideoCall}
+                  disabled={!selectedUserId}
+                >
+                  <Telephone size={25} />
+                </Button>
+              ) : (
+                <Button
+                  variant="outline-danger"
+                  className="btn-icon"
+                  onClick={endCall}
+                >
+                  <TelephoneFill size={25} />
+                </Button>
+              )}
 
               <div className="search-container">
                 <Button
