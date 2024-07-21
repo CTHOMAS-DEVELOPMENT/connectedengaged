@@ -69,10 +69,10 @@ const FeedScreen = () => {
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
   };
-  // const closeModal = () => {
-  //   setShowPhoneAnswerModal(false);
-  //   setCaller(null);
-  // };
+  const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
+    const user = associatedUsers.find((user) => user.id === id);
+    return user ? user.username : null;
+  };
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
   const [isRecording, setIsRecording] = useState(false);
@@ -83,30 +83,30 @@ const FeedScreen = () => {
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
     socketRef.current = socket; // Save socket instance
-  
+
     socket.on("connect", () => {
       console.log("Socket connected");
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
-  
+
     socket.on("incomingCall", (data) => {
       console.log("Incoming call:", data);
       setCaller(data);
     });
-  
+
     socket.on("callAccepted", (signal) => {
       console.log("Call accepted:", signal);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
     });
-  
+
     socket.on("active users update", (activeUsers) => {
       console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
     });
-  
+
     socket.on("post update", (newPost) => {
       console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
@@ -117,17 +117,17 @@ const FeedScreen = () => {
         setUserIsLive(true);
       }
     });
-  
+
     socket.on("postDeleted", ({ postId }) => {
       console.log(`Post deleted with ID: ${postId}`);
       fetchPosts();
     });
-  
+
     socket.on("postUpdated", ({ updatedPost }) => {
       console.log(`Post updated with ID: ${updatedPost.id}`);
       fetchPosts();
     });
-  
+
     return () => {
       socket.emit("leave screen", { userId, submissionId });
       socket.off("connect");
@@ -470,20 +470,20 @@ const FeedScreen = () => {
   };
   const startVideoCall = () => {
     setInCall(true);
-  
+
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-  
+
         const peer = new Peer({
           initiator: true,
           trickle: false,
           stream: stream,
         });
-  
+
         peer.on("signal", (data) => {
           socketRef.current.emit("callUser", {
             userToCall: selectedUserId,
@@ -491,66 +491,67 @@ const FeedScreen = () => {
             from: userId,
           });
         });
-  
+
         peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
         });
-  
+
         peer.on("close", () => {
           endCall();
         });
-  
+
         socketRef.current.on("callAccepted", (signal) => {
           peer.signal(signal);
         });
-  
+
         peerRef.current = peer;
       })
       .catch((error) => {
         console.error("Failed to start media devices:", error);
-        setMessage("Error accessing camera or microphone. Please check your device settings.");
+        setMessage(
+          "Error accessing camera or microphone. Please check your device settings."
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
         setInCall(false);
       });
   };
-  
 
   const answerCall = () => {
     setInCall(true);
-  
+
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-  
+
         const peer = new Peer({
           initiator: false,
           trickle: false,
           stream: stream,
         });
-  
+
         peer.on("signal", (data) => {
           socketRef.current.emit("acceptCall", {
             signal: data,
             to: caller.from,
           });
         });
-  
+
         peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
         });
-  
+
         peer.on("close", () => {
           endCall();
         });
-  
+
         peer.signal(caller.signal);
         peerRef.current = peer;
       });
@@ -563,10 +564,14 @@ const FeedScreen = () => {
       peerRef.current.destroy();
     }
     if (localVideoRef.current && localVideoRef.current.srcObject) {
-      localVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      localVideoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop());
     }
     if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
-      remoteVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      remoteVideoRef.current.srcObject
+        .getTracks()
+        .forEach((track) => track.stop());
     }
     if (socketRef.current) {
       socketRef.current.disconnect();
@@ -638,7 +643,6 @@ const FeedScreen = () => {
           </Button>
         </div>
         <h2 className="header-title font-style-4">{title}</h2>
-
       </div>
       {submissionId && (
         <>
@@ -812,14 +816,21 @@ const FeedScreen = () => {
                 )}
               </div>
             </div>
-
-
-
           </div>
           {message && (
             <AlertMessage key={alertKey} message={message} type={type} />
           )}
-
+          {inCall && (
+            <div className="video-call-container">
+              <video
+                ref={localVideoRef}
+                autoPlay
+                muted
+                className="local-video"
+              />
+              <video ref={remoteVideoRef} autoPlay className="remote-video" />
+            </div>
+          )}
         </>
       )}
       {/* List of combined posts*/}
@@ -934,24 +945,18 @@ const FeedScreen = () => {
       >
         <ArrowUpCircleFill size={25} />
       </Button>
-
       {caller && !inCall && (
-  <div className="incoming-call">
-    <p>Incoming call from {caller.from}</p>
-    <Button variant="outline-info" onClick={answerCall}>
-      Answer
-    </Button>
-    <Button variant="outline-danger" onClick={endCall}>
-      Decline
-    </Button>
-  </div>
-)}
-      {inCall && (
-  <div className="video-call-container">
-    <video ref={localVideoRef} autoPlay muted className="local-video" />
-    <video ref={remoteVideoRef} autoPlay className="remote-video" />
-  </div>
-)}
+        <div className="wrapper-container-peer-answer incoming-call">
+          
+          <p>Incoming call from {getUserNameFromAssociatedUsers(associatedUsers, caller.from) }</p>
+          <Button variant="outline-info" onClick={answerCall}>
+            Answer
+          </Button>
+          <Button variant="outline-danger" onClick={endCall}>
+            Decline
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
