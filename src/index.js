@@ -11,13 +11,6 @@ if (typeof process === 'undefined') {
     env: {
       NODE_ENV: 'development', // or 'production'
     },
-    nextTick: function (callback) {
-      setTimeout(callback, 0); // Use setTimeout as a polyfill for nextTick
-    }
-  };
-} else if (typeof process.nextTick === 'undefined') {
-  process.nextTick = function (callback) {
-    setTimeout(callback, 0); // Use setTimeout as a polyfill for nextTick
   };
 }
 

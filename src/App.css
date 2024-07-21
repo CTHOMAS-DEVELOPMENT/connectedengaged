@@ -353,48 +353,6 @@ input {
 }
 
 
-.video-call-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.5); /* Semi-opaque background */
-  z-index: 1000; /* Ensure it is above other content */
-}
-
-.video-call-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: #fff; /* White background for the container */
-  border-radius: 10px;
-  z-index: 1010; /* Ensure it is above the background */
-}
-
-.local-video, .remote-video {
-  width: 45%;
-  border-radius: 10px;
-}
-
-.local-video {
-  border: 3px solid blue;
-}
-
-.remote-video {
-  border: 3px solid red;
-}
-
-.end-call-button {
-  width: 100%;
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-}
 .centre-container {
   position: fixed;
   top: 0;
