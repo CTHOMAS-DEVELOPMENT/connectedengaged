@@ -468,6 +468,56 @@ const FeedScreen = () => {
       behavior: "smooth",
     });
   };
+  const startVideoCall2 = (userToCall) => {
+    setInCall(true);
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+
+        const peer = new Peer({
+          initiator: true,
+          trickle: false,
+          stream: stream,
+        });
+
+        peer.on("signal", (data) => {
+          socketRef.current.emit("callUser", {
+            userToCall,
+            signalData: data,
+            from: userId,
+          });
+        });
+
+        peer.on("stream", (stream) => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+          }
+        });
+
+        peer.on("close", () => {
+          endCall();
+        });
+
+        socketRef.current.on("callAccepted", (signal) => {
+          peer.signal(signal);
+        });
+
+        peerRef.current = peer;
+      })
+      .catch((error) => {
+        console.error("Failed to start media devices:", error);
+        setMessage(
+          "Error accessing camera or microphone. Please check your device settings."
+        );
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+        setInCall(false);
+      });
+  };
   const startVideoCall = () => {
     setInCall(true);
 
@@ -622,12 +672,21 @@ const FeedScreen = () => {
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
                       "active" && (
-                      <input
-                        type="checkbox"
-                        value={user.id}
-                        checked={selectedUserId === user.id}
-                        onChange={handleUserCheckboxChange}
-                      />
+                      <>
+                        <input
+                          type="checkbox"
+                          value={user.id}
+                          checked={selectedUserId === user.id}
+                          onChange={handleUserCheckboxChange}
+                        />
+                        <Button
+                          variant="outline-info"
+                          className="btn-icon"
+                          onClick={()=>{startVideoCall2(user.id)}}
+                        >
+                          <Telephone size={25} />
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -828,6 +887,13 @@ const FeedScreen = () => {
                 muted
                 className="local-video"
               />
+              <Button
+                variant="outline-danger"
+                className="btn-icon"
+                onClick={endCall}
+              >
+                <TelephoneFill size={25} />
+              </Button>
               <video ref={remoteVideoRef} autoPlay className="remote-video" />
             </div>
           )}
@@ -947,8 +1013,10 @@ const FeedScreen = () => {
       </Button>
       {caller && !inCall && (
         <div className="wrapper-container-peer-answer incoming-call">
-          
-          <p>Incoming call from {getUserNameFromAssociatedUsers(associatedUsers, caller.from) }</p>
+          <p>
+            Incoming call from{" "}
+            {getUserNameFromAssociatedUsers(associatedUsers, caller.from)}
+          </p>
           <Button variant="outline-info" onClick={answerCall}>
             Answer
           </Button>
