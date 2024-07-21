@@ -398,7 +398,7 @@ const FeedScreen = () => {
       }
 
       const result = await response.json();
-      console.log("Notification sent successfully:", result);
+      //console.log("Notification sent successfully:", result);
     } catch (error) {
       console.error("Error sending notification:", error);
     }
@@ -467,44 +467,44 @@ const FeedScreen = () => {
       behavior: "smooth",
     });
   };
-  const startVideoCall = (userToCall) => {
+  const startVideoCall = () => {
     setInCall(true);
-  
+
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-  
+
         const peer = new Peer({
           initiator: true,
           trickle: false,
           stream: stream,
         });
-  
+
         peer.on("signal", (data) => {
           socketRef.current.emit("callUser", {
-            userToCall, // Use the passed user ID
+            userToCall: selectedUserId,
             signalData: data,
             from: userId,
           });
         });
-  
+
         peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
         });
-  
+
         peer.on("close", () => {
           endCall();
         });
-  
+
         socketRef.current.on("callAccepted", (signal) => {
           peer.signal(signal);
         });
-  
+
         peerRef.current = peer;
       })
       .catch((error) => {
@@ -517,57 +517,6 @@ const FeedScreen = () => {
         setInCall(false);
       });
   };
-  
-  // const startVideoCallOld= () => {
-  //   setInCall(true);
-
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true, audio: true })
-  //     .then((stream) => {
-  //       if (localVideoRef.current) {
-  //         localVideoRef.current.srcObject = stream;
-  //       }
-
-  //       const peer = new Peer({
-  //         initiator: true,
-  //         trickle: false,
-  //         stream: stream,
-  //       });
-
-  //       peer.on("signal", (data) => {
-  //         socketRef.current.emit("callUser", {
-  //           userToCall: selectedUserId,
-  //           signalData: data,
-  //           from: userId,
-  //         });
-  //       });
-
-  //       peer.on("stream", (stream) => {
-  //         if (remoteVideoRef.current) {
-  //           remoteVideoRef.current.srcObject = stream;
-  //         }
-  //       });
-
-  //       peer.on("close", () => {
-  //         endCall();
-  //       });
-
-  //       socketRef.current.on("callAccepted", (signal) => {
-  //         peer.signal(signal);
-  //       });
-
-  //       peerRef.current = peer;
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to start media devices:", error);
-  //       setMessage(
-  //         "Error accessing camera or microphone. Please check your device settings."
-  //       );
-  //       setType("error");
-  //       setAlertKey((prevKey) => prevKey + 1);
-  //       setInCall(false);
-  //     });
-  // };
 
   const answerCall = () => {
     setInCall(true);
@@ -630,10 +579,11 @@ const FeedScreen = () => {
     socketRef.current = null;
   };
   const handleUserSelectedForCall = (id) => {
-    setSelectedUserId(id);
-    console.log("handleUserSelectedForCall", id);
-    startVideoCall(id);
-  };
+    setSelectedUserId(id)
+    console.log("handleUserSelectedForCall",id)
+    //startVideoCall()
+
+  }
   const handleUserSelectedForCall2 = (event) => {
     event.preventDefault();
     event.stopPropagation(); // Prevents the event from bubbling up
@@ -686,9 +636,7 @@ const FeedScreen = () => {
                         <Button
                           variant="outline-info"
                           className="btn-icon"
-                          onClick={() => {
-                            handleUserSelectedForCall(user.id);
-                          }}
+                          onClick={()=>{handleUserSelectedForCall(user.id)}}
                         >
                           <Telephone size={25} />
                         </Button>
@@ -895,7 +843,7 @@ const FeedScreen = () => {
               />
               <div className="end-call-button">
                 <Button variant="outline-danger" onClick={endCall}>
-                  <TelephoneFill size={25} />
+                  End Call
                 </Button>
               </div>
               <video ref={remoteVideoRef} autoPlay className="remote-video" />
