@@ -398,7 +398,7 @@ const FeedScreen = () => {
       }
 
       const result = await response.json();
-      //console.log("Notification sent successfully:", result);
+      console.log("Notification sent successfully:", result);
     } catch (error) {
       console.error("Error sending notification:", error);
     }
