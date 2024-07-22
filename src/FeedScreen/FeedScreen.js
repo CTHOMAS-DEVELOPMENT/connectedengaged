@@ -630,14 +630,14 @@ const FeedScreen = () => {
     socketRef.current = null;
   };
 
-  const handleUserCheckboxChange = (event) => {
-    event.preventDefault();
-    event.stopPropagation(); // Prevents the event from bubbling up
-    const userId = parseInt(event.target.value, 10);
-    setSelectedUserId((prevSelectedUserId) =>
-      prevSelectedUserId === userId ? null : userId
-    );
-  };
+  // const handleUserCheckboxChange = (event) => {
+  //   event.preventDefault();
+  //   event.stopPropagation(); // Prevents the event from bubbling up
+  //   const userId = parseInt(event.target.value, 10);
+  //   setSelectedUserId((prevSelectedUserId) =>
+  //     prevSelectedUserId === userId ? null : userId
+  //   );
+  // };
 
   return (
     <div>
@@ -672,13 +672,7 @@ const FeedScreen = () => {
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
                       "active" && (
-                      <>
-                        <input
-                          type="checkbox"
-                          value={user.id}
-                          checked={selectedUserId === user.id}
-                          onChange={handleUserCheckboxChange}
-                        />
+
                         <Button
                           variant="outline-info"
                           className="btn-icon"
@@ -686,7 +680,7 @@ const FeedScreen = () => {
                         >
                           <Telephone size={25} />
                         </Button>
-                      </>
+
                     )}
                   </div>
                 </div>
@@ -818,24 +812,7 @@ const FeedScreen = () => {
               >
                 {isImageHovered ? <ImageFill size={25} /> : <Image size={25} />}
               </Button>
-              {!inCall ? (
-                <Button
-                  variant="outline-info"
-                  className="btn-icon"
-                  onClick={startVideoCall}
-                  disabled={!selectedUserId}
-                >
-                  <Telephone size={25} />
-                </Button>
-              ) : (
-                <Button
-                  variant="outline-danger"
-                  className="btn-icon"
-                  onClick={endCall}
-                >
-                  <TelephoneFill size={25} />
-                </Button>
-              )}
+
 
               <div className="search-container">
                 <Button
