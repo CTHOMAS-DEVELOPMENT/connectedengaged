@@ -53,7 +53,6 @@ const FeedScreen = () => {
   // Video call state and refs
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
-  const [selectedUserId, setSelectedUserId] = useState(null);
   //const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
   const uploadStatus = "";
   const localVideoRef = useRef(null);
@@ -470,7 +469,6 @@ const FeedScreen = () => {
   };
   const startVideoCall2 = (userToCall) => {
     setInCall(true);
-
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
@@ -518,56 +516,56 @@ const FeedScreen = () => {
         setInCall(false);
       });
   };
-  const startVideoCall = () => {
-    setInCall(true);
+  // const startVideoCall = () => {
+  //   setInCall(true);
 
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true, audio: true })
+  //     .then((stream) => {
+  //       if (localVideoRef.current) {
+  //         localVideoRef.current.srcObject = stream;
+  //       }
 
-        const peer = new Peer({
-          initiator: true,
-          trickle: false,
-          stream: stream,
-        });
+  //       const peer = new Peer({
+  //         initiator: true,
+  //         trickle: false,
+  //         stream: stream,
+  //       });
 
-        peer.on("signal", (data) => {
-          socketRef.current.emit("callUser", {
-            userToCall: selectedUserId,
-            signalData: data,
-            from: userId,
-          });
-        });
+  //       peer.on("signal", (data) => {
+  //         socketRef.current.emit("callUser", {
+  //           userToCall: selectedUserId,
+  //           signalData: data,
+  //           from: userId,
+  //         });
+  //       });
 
-        peer.on("stream", (stream) => {
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
-          }
-        });
+  //       peer.on("stream", (stream) => {
+  //         if (remoteVideoRef.current) {
+  //           remoteVideoRef.current.srcObject = stream;
+  //         }
+  //       });
 
-        peer.on("close", () => {
-          endCall();
-        });
+  //       peer.on("close", () => {
+  //         endCall();
+  //       });
 
-        socketRef.current.on("callAccepted", (signal) => {
-          peer.signal(signal);
-        });
+  //       socketRef.current.on("callAccepted", (signal) => {
+  //         peer.signal(signal);
+  //       });
 
-        peerRef.current = peer;
-      })
-      .catch((error) => {
-        console.error("Failed to start media devices:", error);
-        setMessage(
-          "Error accessing camera or microphone. Please check your device settings."
-        );
-        setType("error");
-        setAlertKey((prevKey) => prevKey + 1);
-        setInCall(false);
-      });
-  };
+  //       peerRef.current = peer;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to start media devices:", error);
+  //       setMessage(
+  //         "Error accessing camera or microphone. Please check your device settings."
+  //       );
+  //       setType("error");
+  //       setAlertKey((prevKey) => prevKey + 1);
+  //       setInCall(false);
+  //     });
+  // };
 
   const answerCall = () => {
     setInCall(true);
