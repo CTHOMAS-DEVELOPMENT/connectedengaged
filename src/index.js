@@ -2,7 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+import process from 'process';
+
+// Polyfill for process
+if (typeof global.process === 'undefined') {
+  global.process = process;
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // Polyfill for process
@@ -20,7 +27,4 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
