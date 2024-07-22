@@ -630,15 +630,6 @@ const FeedScreen = () => {
     socketRef.current = null;
   };
 
-  // const handleUserCheckboxChange = (event) => {
-  //   event.preventDefault();
-  //   event.stopPropagation(); // Prevents the event from bubbling up
-  //   const userId = parseInt(event.target.value, 10);
-  //   setSelectedUserId((prevSelectedUserId) =>
-  //     prevSelectedUserId === userId ? null : userId
-  //   );
-  // };
-
   return (
     <div>
       {showMessage && <div className="message-box">FeedScreen</div>}{" "}
