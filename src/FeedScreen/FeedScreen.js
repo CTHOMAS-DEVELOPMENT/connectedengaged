@@ -52,7 +52,6 @@ const FeedScreen = () => {
   const [alertKey, setAlertKey] = useState(0);
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
-  const uploadStatus = "";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
