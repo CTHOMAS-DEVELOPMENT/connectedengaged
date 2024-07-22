@@ -137,10 +137,6 @@ const FeedScreen = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, submissionId]);
-  // const getUserNameFromAssociatedUsers = (associatedUsers, id) => {
-  //   const user = associatedUsers.find((user) => user.id === id);
-  //   return user ? user.username : null;
-  // };
 
   const handleStartRecording = () => {
     navigator.mediaDevices
@@ -515,7 +511,6 @@ const FeedScreen = () => {
       });
   };
 
-
   const answerCall = () => {
     setInCall(true);
 
@@ -610,15 +605,15 @@ const FeedScreen = () => {
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
                       "active" && (
-
-                        <Button
-                          variant="outline-info"
-                          className="btn-icon"
-                          onClick={()=>{startVideoCall(user.id)}}
-                        >
-                          <Telephone size={25} />
-                        </Button>
-
+                      <Button
+                        variant="outline-info"
+                        className="btn-icon"
+                        onClick={() => {
+                          startVideoCall(user.id);
+                        }}
+                      >
+                        <Telephone size={25} />
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -700,47 +695,42 @@ const FeedScreen = () => {
                 }}
               />
             </div>
-            <div className="button-tower">
-              <div className="audio-controls">
-                <Button
-                  variant="outline-info"
-                  className="btn-icon"
-                  onClick={
-                    isRecording ? handleStopRecording : handleStartRecording
-                  }
-                >
-                  {isRecording ? (
-                    <MicMuteFill size={25} />
-                  ) : (
-                    <MicFill size={25} />
-                  )}
-                  {isRecording && (
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  )}
-                </Button>
-                <div className="upload-status">
-                  {isUploading ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                      />
-                      <p>Uploading...</p>
-                    </>
-                  ) : (
-                    <p>{uploadStatus}</p>
-                  )}
-                </div>
-              </div>
+            <div className="verticle_wrapper">
+              
+            {isUploading && (
+  <div className="upload-status">
+    <Spinner
+      as="span"
+      animation="border"
+      size="sm"
+      role="status"
+      aria-hidden="true"
+    />
+    <p>Uploading...</p>
+  </div>
+)}
+              <Button
+                variant="outline-info"
+                className="btn-icon"
+                onClick={
+                  isRecording ? handleStopRecording : handleStartRecording
+                }
+              >
+                {isRecording ? (
+                  <MicMuteFill size={25} />
+                ) : (
+                  <MicFill size={25} />
+                )}
+                {isRecording && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}
+              </Button>
               <Button
                 variant="outline-info"
                 className="btn-icon btn-delete"
@@ -750,28 +740,28 @@ const FeedScreen = () => {
               >
                 {isImageHovered ? <ImageFill size={25} /> : <Image size={25} />}
               </Button>
-
-
-              <div className="search-container">
-                <Button
-                  variant="outline-info"
-                  onMouseEnter={() => setHovering(true)}
-                  onMouseLeave={() => setHovering(false)}
-                  onClick={toggleNotifications}
-                  className="btn-icon"
-                >
-                  {notificationson ? (
-                    hovering ? (
-                      <EnvelopeSlashFill size={25} />
-                    ) : (
-                      <EnvelopeSlash size={25} />
-                    )
-                  ) : hovering ? (
-                    <EnvelopePlusFill size={25} />
+            </div>
+            <div className="verticle_wrapper">
+              <Button
+                variant="outline-info"
+                onMouseEnter={() => setHovering(true)}
+                onMouseLeave={() => setHovering(false)}
+                onClick={toggleNotifications}
+                className="btn-icon"
+              >
+                {notificationson ? (
+                  hovering ? (
+                    <EnvelopeSlashFill size={25} />
                   ) : (
-                    <EnvelopePlus size={25} />
-                  )}
-                </Button>
+                    <EnvelopeSlash size={25} />
+                  )
+                ) : hovering ? (
+                  <EnvelopePlusFill size={25} />
+                ) : (
+                  <EnvelopePlus size={25} />
+                )}
+              </Button>
+              <div className="search-container">
                 <Button
                   variant="outline-info" // This should match other buttons
                   className="btn-icon" // Make sure it has the same classes
@@ -920,7 +910,7 @@ const FeedScreen = () => {
         style={{
           position: "fixed",
           bottom: "20px",
-          right: "20px",
+          right: "0",
           zIndex: 1000,
         }}
       >

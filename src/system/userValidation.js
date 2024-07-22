@@ -1,20 +1,9 @@
 // userValidation.js
 
 const validateUser = (formData, ignoreValidation = false) => {
-  console.log("formData", formData);
+  //console.log("formData", formData);
   const errors = {};
-  /**
-{
-    "username": "chips",
-    "email": "",
-    "password": "",
-    "hobby": "",
-    "sexualOrientation": "",
-    "floatsMyBoat": "",
-    "sex": "Female",
-    "aboutYou": ""
-}
-   */
+
   // Username validation
   if (!formData.username.trim()) {
     errors.username = "Username is required";
