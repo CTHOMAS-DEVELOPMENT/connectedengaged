@@ -50,10 +50,8 @@ const FeedScreen = () => {
   const [notificationson, setNotificationsOn] = useState(false); //overide default
   const [hovering, setHovering] = useState(false);
   const [alertKey, setAlertKey] = useState(0);
-  // Video call state and refs
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
-  //const [showPhoneAnswerModal, setShowPhoneAnswerModal] = useState(false);
   const uploadStatus = "";
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -467,7 +465,7 @@ const FeedScreen = () => {
       behavior: "smooth",
     });
   };
-  const startVideoCall2 = (userToCall) => {
+  const startVideoCall = (userToCall) => {
     setInCall(true);
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -516,56 +514,7 @@ const FeedScreen = () => {
         setInCall(false);
       });
   };
-  // const startVideoCall = () => {
-  //   setInCall(true);
 
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true, audio: true })
-  //     .then((stream) => {
-  //       if (localVideoRef.current) {
-  //         localVideoRef.current.srcObject = stream;
-  //       }
-
-  //       const peer = new Peer({
-  //         initiator: true,
-  //         trickle: false,
-  //         stream: stream,
-  //       });
-
-  //       peer.on("signal", (data) => {
-  //         socketRef.current.emit("callUser", {
-  //           userToCall: selectedUserId,
-  //           signalData: data,
-  //           from: userId,
-  //         });
-  //       });
-
-  //       peer.on("stream", (stream) => {
-  //         if (remoteVideoRef.current) {
-  //           remoteVideoRef.current.srcObject = stream;
-  //         }
-  //       });
-
-  //       peer.on("close", () => {
-  //         endCall();
-  //       });
-
-  //       socketRef.current.on("callAccepted", (signal) => {
-  //         peer.signal(signal);
-  //       });
-
-  //       peerRef.current = peer;
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to start media devices:", error);
-  //       setMessage(
-  //         "Error accessing camera or microphone. Please check your device settings."
-  //       );
-  //       setType("error");
-  //       setAlertKey((prevKey) => prevKey + 1);
-  //       setInCall(false);
-  //     });
-  // };
 
   const answerCall = () => {
     setInCall(true);
@@ -665,7 +614,7 @@ const FeedScreen = () => {
                         <Button
                           variant="outline-info"
                           className="btn-icon"
-                          onClick={()=>{startVideoCall2(user.id)}}
+                          onClick={()=>{startVideoCall(user.id)}}
                         >
                           <Telephone size={25} />
                         </Button>
