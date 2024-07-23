@@ -392,7 +392,7 @@ const FeedScreen = () => {
 
       const result = await response.json();
       //console.log("Notification sent successfully:", result);
-      setMessage("Notification sent successfully:"+result);
+      setMessage("Notification sent successfully:" + result);
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
     } catch (error) {
@@ -665,7 +665,7 @@ const FeedScreen = () => {
                   onPhotoSubmit={fetchPosts}
                   onSaveSuccess={() => {
                     console.log("onSaveSuccess");
-                    setMessage("Image uploaded successfully")
+                    setMessage("Image uploaded successfully");
                     setType("info");
                     setAlertKey((prevKey) => prevKey + 1);
                     handleCloseUploader(); // Close the uploader modal first
@@ -701,19 +701,18 @@ const FeedScreen = () => {
               />
             </div>
             <div className="verticle_wrapper">
-              
-            {isUploading && (
-  <div className="upload-status">
-    <Spinner
-      as="span"
-      animation="border"
-      size="sm"
-      role="status"
-      aria-hidden="true"
-    />
-    <p>Uploading...</p>
-  </div>
-)}
+              {isUploading && (
+                <div className="upload-status">
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <p>Uploading...</p>
+                </div>
+              )}
               <Button
                 variant="outline-info"
                 className="btn-icon"

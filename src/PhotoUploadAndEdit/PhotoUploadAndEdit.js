@@ -64,6 +64,7 @@ const PhotoUploadAndEdit = ({
         setSelectedFile(null);
         setPreviewUrl(null);
         setIsEditing(false);
+        setFileName("");
       })
       .catch((error) => console.error("Upload error:", error));
   };

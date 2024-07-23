@@ -289,18 +289,7 @@ app.get("/test-db", async (req, res) => {
     res.status(500).send("Error while testing database");
   }
 });
-function listDirectoryContents(directoryPath) {
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      console.error(`Error listing directory contents: ${err.message}`);
-    } else {
-      console.log(`Contents of ${directoryPath}:`);
-      files.forEach(file => {
-        console.log(file);
-      });
-    }
-  });
-}
+
 app.get("/api/authorised/:userId", async (req, res) => {
   let tokenMatches = false;
   let token = "";

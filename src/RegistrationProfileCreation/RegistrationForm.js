@@ -11,6 +11,7 @@ import {
   version1Hobbies,
   version1Keys,
 } from "./scopedCollections.js";
+import { convertToMediaPath } from "../system/utils";
 import AlertMessage from "../system/AlertMessage";
 import validateUser from "../system/userValidation.js";
 import { Button } from "react-bootstrap";
@@ -58,6 +59,9 @@ const RegistrationForm = () => {
   };
 
   const handleImageUpload = (url) => {
+    //console.log("handleImageUpload",url)
+    //convertToMediaPath(url)
+    //console.log("handleImageUpload-converted",convertToMediaPath(url))
     setUploadedImageUrl(url);
   };
 
@@ -193,8 +197,8 @@ const RegistrationForm = () => {
             <div className="uploaded-image">
               <img
                 src={`${
-                  process.env.REACT_APP_IMAGE_HOST
-                }/uploaded-images/${uploadedImageUrl.split("\\").pop()}`}
+                  process.env.REACT_APP_BACKEND_URL
+                }${convertToMediaPath(uploadedImageUrl)}`}
                 alt="Uploaded Profile"
               />
             </div>
