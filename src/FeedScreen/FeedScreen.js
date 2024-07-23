@@ -87,40 +87,40 @@ const FeedScreen = () => {
     });
 
     socket.on("incomingCall", (data) => {
-      console.log("Incoming call:", data);
+      //console.log("Incoming call:", data);
       setCaller(data);
     });
 
     socket.on("callAccepted", (signal) => {
-      console.log("Call accepted:", signal);
+      //console.log("Call accepted:", signal);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
     });
 
     socket.on("active users update", (activeUsers) => {
-      console.log("Active users update:", activeUsers);
+      //console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
     });
 
     socket.on("post update", (newPost) => {
-      console.log("Post update received:", newPost);
+      //console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
       if (interestedUserIds.includes(parseInt(userId, 10))) {
-        console.log(
-          "User is interested in this post. Setting userIsLive to true."
-        );
+        // console.log(
+        //   "User is interested in this post. Setting userIsLive to true."
+        // );
         setUserIsLive(true);
       }
     });
 
     socket.on("postDeleted", ({ postId }) => {
-      console.log(`Post deleted with ID: ${postId}`);
+      //console.log(`Post deleted with ID: ${postId}`);
       fetchPosts();
     });
 
     socket.on("postUpdated", ({ updatedPost }) => {
-      console.log(`Post updated with ID: ${updatedPost.id}`);
+      //console.log(`Post updated with ID: ${updatedPost.id}`);
       fetchPosts();
     });
 
@@ -282,19 +282,19 @@ const FeedScreen = () => {
     }
   }, [userId]);
   const fetchPosts = () => {
-    console.log("Fetching posts for submissionId:", submissionId);
+    //console.log("Fetching posts for submissionId:", submissionId);
     if (submissionId) {
       fetch(`${process.env.REACT_APP_API_URL}/api/users/${submissionId}/posts`)
         .then((response) => response.json())
         .then((data) => {
-          console.log("Fetched posts:", data);
+          //console.log("Fetched posts:", data);
           return setPosts(data);
         })
         .catch((error) => console.error("Error fetching posts:", error));
     }
   };
   const handlePostSubmit = () => {
-    console.log("New post submitted. Fetching posts...");
+    //console.log("New post submitted. Fetching posts...");
     fetchPosts();
   };
   const handleGetNewPicture = () => {
@@ -391,7 +391,10 @@ const FeedScreen = () => {
       }
 
       const result = await response.json();
-      console.log("Notification sent successfully:", result);
+      //console.log("Notification sent successfully:", result);
+      setMessage("Notification sent successfully:"+result);
+      setType("info");
+      setAlertKey((prevKey) => prevKey + 1);
     } catch (error) {
       console.error("Error sending notification:", error);
     }
@@ -662,6 +665,9 @@ const FeedScreen = () => {
                   onPhotoSubmit={fetchPosts}
                   onSaveSuccess={() => {
                     console.log("onSaveSuccess");
+                    setMessage("Image uploaded successfully")
+                    setType("info");
+                    setAlertKey((prevKey) => prevKey + 1);
                     handleCloseUploader(); // Close the uploader modal first
                     postTypeForEmail("picture");
                     socketRef.current.emit("postUpdated", {

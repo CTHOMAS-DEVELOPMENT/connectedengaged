@@ -97,6 +97,7 @@ const UserProfile = () => {
       }}
     >
       <Button
+        style={{ backgroundColor: "white" }}
         variant="outline-info"
         className="btn-sm back-button"
         onClick={handleBackToMessagesClick}
@@ -122,22 +123,34 @@ const UserProfile = () => {
           />
         )}
         {!showVideo && <ProfileViewer userId={userId} />}
-        <p style={{marginTop:"20px"}} className="font-style-4">{user.username}'s Preferred Company Selection</p>
+        <p style={{ marginTop: "20px" }} className="font-style-4">
+          {user.username}'s Preferred Company Selection
+        </p>
         <Orientation
           onSelectOrientation={() => {}}
           selected={selectedOrientation}
         />
-        <p className="font-style-4">{user.username}'s Favourite Hobby Selection</p>
+        <p className="font-style-4">
+          {user.username}'s Favourite Hobby Selection
+        </p>
         <Hobbies onSelectHobby={() => {}} selected={selectedHobby} />
-        <p className="font-style-4">{user.username}'s Floats Your Boat Selection</p>
+        <p className="font-style-4">
+          {user.username}'s Floats Your Boat Selection
+        </p>
         <FloatsMyBoat
           onSelectCarousel={() => {}}
           selectedCarousel={selectedCarousel}
         />
-        <p className="font-style-4">{user.username}'s Most Like You Selection</p>
+        <p className="font-style-4">
+          {user.username}'s Most Like You Selection
+        </p>
         <Gender onSelectGender={() => {}} selected={selectedGender} />
         <p className="font-style-4">{user.username}'s about you</p>
-        <textarea readOnly className="about-you-textarea">{user.about_you?user.about_you:user.username + " has not entered anything yet.."}</textarea>
+        <textarea readOnly className="about-you-textarea">
+          {user.about_you
+            ? user.about_you
+            : user.username + " has not entered anything yet.."}
+        </textarea>
         <Button
           variant="outline-info"
           className="btn-sm"

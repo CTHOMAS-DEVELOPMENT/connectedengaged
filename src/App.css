@@ -136,6 +136,7 @@
   border-radius: 8px; /* Optional: if you want rounded corners */
   overflow: hidden; /* Ensures the border radius clips the image */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
+  max-width: 300px;
 }
 
 /* Including the image */

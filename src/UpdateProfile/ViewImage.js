@@ -42,9 +42,11 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
     setShowVideoUploader(false);
   };
 
-const handleUploadSuccess = (newProfilePicture) => {
+  const handleUploadSuccess = (newProfilePicture) => {
     const fileName = newProfilePicture.split("\\").pop().split("/").pop();
-    const updatedProfilePicture = `${process.env.REACT_APP_BACKEND_URL}/uploaded-images/${fileName}?timestamp=${new Date().getTime()}`;
+    const updatedProfilePicture = `${
+      process.env.REACT_APP_BACKEND_URL
+    }/uploaded-images/${fileName}?timestamp=${new Date().getTime()}`;
     setProfilePicture(updatedProfilePicture);
     handleCloseUploader();
   };
@@ -59,6 +61,7 @@ const handleUploadSuccess = (newProfilePicture) => {
         <div className="button-container">
           <img src={profilePicture} alt="Profile" />
           <Button
+            style={{ backgroundColor: "white" }}
             variant="outline-info"
             className="btn-sm"
             onClick={handleProfilePictureUpdate}
@@ -66,17 +69,21 @@ const handleUploadSuccess = (newProfilePicture) => {
             Update Profile Image
           </Button>
           <Button
+            style={{ backgroundColor: "white" }}
             variant="outline-info"
             className="btn-sm"
             onClick={handleProfileVideo}
           >
-            {videoPath ? "Update Profile Video (Max 30 seconds)" : "Add Profile Video (Max 30 seconds)"}
+            {videoPath
+              ? "Update Profile Video (Max 30 seconds)"
+              : "Add Profile Video (Max 30 seconds)"}
           </Button>
         </div>
       ) : (
         <div className="button-container">
           <p>No profile picture</p>
           <Button
+            style={{ backgroundColor: "white" }}
             variant="outline-info"
             className="btn-sm"
             onClick={handleProfilePictureUpdate}

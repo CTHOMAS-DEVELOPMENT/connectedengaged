@@ -141,7 +141,9 @@ const EditInteraction = () => {
     }
   };
   const fetchInteractionDetails = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/interaction_user_list?submission_id=${submissionId}`)
+    fetch(
+      `${process.env.REACT_APP_API_URL}/api/interaction_user_list?submission_id=${submissionId}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
@@ -159,7 +161,9 @@ const EditInteraction = () => {
       });
   };
   const fetchAllUsers = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/connected-users/${loggedInUserId}`)
+    fetch(
+      `${process.env.REACT_APP_API_URL}/api/connected-users/${loggedInUserId}`
+    )
       .then((response) => response.json())
       .then((data) => {
         const filteredUsers = data.filter(
@@ -318,6 +322,7 @@ const EditInteraction = () => {
   return (
     <div>
       <Button
+        style={{ backgroundColor: "white" }}
         variant="outline-info"
         className="btn-sm"
         onClick={handleBackToMessagesClick}
@@ -453,12 +458,12 @@ const EditInteraction = () => {
             }}
           >
             <div
-            className="font-style-4 form-check"
+              className="font-style-4 form-check"
               style={{
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                fontSize: "20px"
+                fontSize: "20px",
               }}
             >
               <label

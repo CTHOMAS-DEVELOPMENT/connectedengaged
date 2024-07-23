@@ -148,14 +148,31 @@ pool.connect((err, client, release) => {
 
 const clientSubmissions = {}; // { socketId: { userId: Number, submissionIds: Set(Number) } }
 const activeUsersPerSubmission = {};
+/**
+ * 
+ io.on("connection", (socket) => {
+  console.log(`User connected with socket ID: ${socket.id}`);
 
+  socket.on("register", ({ userId, submissionIds }) => {
+    clientSubmissions[socket.id] = { userId, activeUsers: new Set([userId]), submissionIds: new Set(submissionIds) };
+    console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected with socket ID: ${socket.id}`);
+    delete clientSubmissions[socket.id];
+  });
+});
+ */
 io.on("connection", (socket) => {
+  console.log(`User connected with socket ID: ${socket.id}`);
   socket.on("postDeleted", ({ postId, submissionId }) => {
     //console.log(`Post deleted with ID: ${postId} in submission: ${submissionId}`);
     io.to(`submission-${submissionId}`).emit("postDeleted", { postId });
   });
   socket.on("register", ({ userId, submissionIds }) => {
     //console.log(`User ${userId} registered with submission IDs:`, submissionIds);
+    console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
     if (!clientSubmissions[socket.id]) {
       clientSubmissions[socket.id] = {
         userId,
@@ -195,7 +212,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("callUser", ({ userToCall, signalData, from }) => {
-    //console.log(`User ${from} calling user ${userToCall}`);
+    console.log(`User ${from} calling user ${userToCall}`);
+    console.log("Current clientSubmissions:", clientSubmissions);
     const recipientSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === userToCall
     );
@@ -205,7 +223,7 @@ io.on("connection", (socket) => {
         from,
         signal: signalData,
       });
-      //console.log(`Calling user ${userToCall} from ${from}`);
+      console.log(`Calling user ${userToCall} from ${from}`);
     } else {
       console.log(`User to call not found: ${userToCall}`);
     }
@@ -226,6 +244,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    console.log(`User disconnected with socket ID: ${socket.id}`);
     //console.log(`Socket disconnected: ${socket.id}`);
     if (clientSubmissions[socket.id]) {
       const { userId, submissionIds } = clientSubmissions[socket.id];
@@ -2091,6 +2110,8 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
 app.post("/api/user_submissions", async (req, res) => {
   try {
     const { user_id, title, userIds } = req.body;
+    console.log("Received request:", { user_id, title, userIds }); // Log request data
+
     if (!user_id || !title || !userIds || !Array.isArray(userIds)) {
       return res
         .status(400)
@@ -2104,6 +2125,7 @@ app.post("/api/user_submissions", async (req, res) => {
     );
 
     const submissionId = submissionResult.rows[0].id;
+    console.log("Inserted submission:", submissionResult.rows[0]); // Log the inserted submission
 
     // Insert into submission_members table
     await Promise.all(
@@ -2111,17 +2133,38 @@ app.post("/api/user_submissions", async (req, res) => {
         return pool.query(
           "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
           [submissionId, userId]
-        );
+        ).then(() => console.log(`Inserted submission member for user ${userId}`)); // Log each insertion
       })
     );
+
+    // Emit the 'new_engagement' event to the users
+    userIds.forEach((userId) => {
+      console.log("Current clientSubmissions:", clientSubmissions); // Log current state
+      const recipientSocketId = Object.keys(clientSubmissions).find(
+        (socketId) => clientSubmissions[socketId].userId === userId
+      );
+
+      console.log(`User ${userId} has recipient socket ID: ${recipientSocketId}`); // Log recipient socket ID
+
+      if (recipientSocketId) {
+        io.to(recipientSocketId).emit("new_engagement", {
+          userIds,
+        });
+        console.log(`Emitted new_engagement to user ${userId} with socket ID ${recipientSocketId}`); // Log emission
+      } else {
+        console.log(`No recipient socket ID found for user ${userId}`); // Log missing socket ID
+      }
+    });
 
     // Return the inserted row from user_submissions table
     res.json(submissionResult.rows[0]);
   } catch (error) {
-    console.error(error);
+    console.error("Error in /api/user_submissions:", error);
     handleDatabaseError(error, res);
   }
 });
+
+
 // In your server code
 
 const crypto = require("crypto");
@@ -2285,5 +2328,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*646*Server running on port ${PORT}`);
+  console.log(`*777*Server running on port ${PORT}`);
 });

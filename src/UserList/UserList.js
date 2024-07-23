@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import JSZip from "jszip";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -37,7 +37,7 @@ const UsersList = () => {
   const [lastSelectedUserId, setLastSelectedUserId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
-  let notificationson=false; //overide default
+  let notificationson = false; //overide default
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(true);
   const [message, setMessage] = useState("");
@@ -49,6 +49,7 @@ const UsersList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const loggedInUserId = location.state ? location.state.userId : null;
+  const socketRef = useRef(null);
   const toggleFilter = () => {
     setShowConnectionRequests(false);
     setShowFilter(!showFilter);
@@ -178,7 +179,6 @@ const UsersList = () => {
       setMessage("Successfully sent connection requests!");
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
-      
     }
   }, [submitSuccess]);
   useEffect(() => {
@@ -198,6 +198,11 @@ const UsersList = () => {
   }, [loggedInUserId, authError]);
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
+    socketRef.current = socket; 
+    socket.on("connect", () => {
+      console.log("Socket connected ");
+      socket.emit("register", { userId: loggedInUserId, submissionIds: [] });
+    });
     socket.on("connections_change", (data) => {
       if (data.user_two_id === loggedInUserId) {
         fetchConnectedUsers();
@@ -211,7 +216,18 @@ const UsersList = () => {
         setShowConnectionRequests(false);
       }
     });
-
+ // Listen for new_engagement messages
+ socket.on("new_engagement", (data) => {
+  console.log("New engagement received:", data);
+  if (data.userIds.includes(loggedInUserId)) {
+    console.log("Triggering fetchConnectedUsers due to new engagement");
+    fetchConnectedUsers();
+    setMessage("A new engagement has been created!");
+    setType("info");
+    setAlertKey((prevKey) => prevKey + 1);
+    setShouldRefreshInteractions(true); // Add this line to trigger refresh
+  }
+});
     // Added the connection_requests_change listener
     socket.on("connection_requests_change", (data) => {
       if (data.requested_id === loggedInUserId) fetchConnectionRequested();
@@ -230,7 +246,9 @@ const UsersList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId]);
   const fetchConnectionRequested = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/connection-requested/${loggedInUserId}`)
+    fetch(
+      `${process.env.REACT_APP_API_URL}/api/connection-requested/${loggedInUserId}`
+    )
       .then((response) => {
         if (!response.ok)
           throw new Error("Failed to fetch connection requests");
@@ -401,18 +419,21 @@ const UsersList = () => {
 
     try {
       for (let i = 0; i < associatedUsers.length; i++) {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notify_offline_users`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: "connection_accepted",
-            title: "", // No title is needed for connection acceptance
-            loggedInUserName: user.username,
-            associatedUsers: [associatedUsers[i]], // Send one user at a time
-          }),
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/notify_offline_users`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: "connection_accepted",
+              title: "", // No title is needed for connection acceptance
+              loggedInUserName: user.username,
+              associatedUsers: [associatedUsers[i]], // Send one user at a time
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -476,9 +497,13 @@ const UsersList = () => {
 
   const fetchConnectedUsers = () => {
     if (!authError && loggedInUserId) {
+      console.log("Fetching connected users...");
+
       fetch(`${process.env.REACT_APP_API_URL}/api/connected/${loggedInUserId}`)
         .then((response) => response.json())
         .then((data) => {
+          console.log("Fetched connected users:", data);
+
           const loggedInUser = data.find((user) => user.id === loggedInUserId);
           const dbUserlist = data.filter((user) => user.id !== loggedInUserId);
           setUser(loggedInUser);
@@ -580,10 +605,11 @@ const UsersList = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </Form.Group>
-              )}            </div>
+              )}{" "}
+            </div>
             <div className="users-list-container">
               <ul className="no-bullet">
-              {displayedUsers.map((user) => (
+                {displayedUsers.map((user) => (
                   <li key={user.id} className="user-item">
                     <div className="user-info-container center-elements">
                       <span className="user-name">{user.username}</span>
@@ -645,7 +671,9 @@ const UsersList = () => {
                 ))}
               </ul>
               <Pagination>
-              {Array.from({ length: Math.ceil(users.length / usersPerPage) }, (_, index) => (
+                {Array.from(
+                  { length: Math.ceil(users.length / usersPerPage) },
+                  (_, index) => (
                     <Pagination.Item
                       key={index + 1}
                       active={index + 1 === currentPage}
@@ -658,10 +686,11 @@ const UsersList = () => {
               </Pagination>
             </div>
             {message && (
-            <AlertMessage key={alertKey} message={message} type={type} />
-          )}
+              <AlertMessage key={alertKey} message={message} type={type} />
+            )}
             <div className="button_tower">
               <Button
+                style={{ backgroundColor: "white" }}
                 variant="outline-info"
                 className="btn-sm"
                 onClick={toggleFilter}
@@ -675,6 +704,7 @@ const UsersList = () => {
                 />
               )}
               <Button
+                style={{ backgroundColor: "white" }}
                 variant="outline-info"
                 className="btn-sm"
                 onClick={handleToggleConnectionRequests} // Use this handler to toggle the visibility
@@ -699,6 +729,7 @@ const UsersList = () => {
                   variant="outline-info"
                   className="btn-sm"
                   onClick={handleToggleRequestsFromOthers}
+                  style={{backgroundColor:'white'}}
                 >
                   {showRequestsFromOthers
                     ? "Hide Connection Requests from Others"

@@ -73,14 +73,14 @@ const LoginForm = () => {
     if (!consentGiven) {
       setMessage("Please accept or reject cookies before logging in.");
       setType("error");
-      setAlertKey(prevKey => prevKey + 1); 
+      setAlertKey((prevKey) => prevKey + 1);
       resetImages();
       return;
     }
     if (!isImageCorrectlyOriented()) {
       setMessage("Please correctly orient the images before submitting.");
       setType("error");
-      setAlertKey(prevKey => prevKey + 1); 
+      setAlertKey((prevKey) => prevKey + 1);
       resetImages();
       return;
     }
@@ -107,13 +107,13 @@ const LoginForm = () => {
           if (data.success) {
             setMessage("Login successful");
             setType("success");
-            setAlertKey(prevKey => prevKey + 1); 
+            setAlertKey((prevKey) => prevKey + 1);
             localStorage.setItem("token", data.token);
             navigate("/userlist", { state: { userId: data.userId } });
           } else {
             setMessage(data.message || "Login failed");
             setType("error");
-            setAlertKey(prevKey => prevKey + 1); 
+            setAlertKey((prevKey) => prevKey + 1);
             resetImages();
           }
         })
@@ -121,12 +121,12 @@ const LoginForm = () => {
           console.error("Login error:", error);
           setMessage("Login failed due to network error");
           setType("error");
-          setAlertKey(prevKey => prevKey + 1); 
+          setAlertKey((prevKey) => prevKey + 1);
           resetImages();
         });
     }
   };
-  
+
   const resetImages = () => {
     shuffleConsentImages();
     const randomRotation = () => {
@@ -142,7 +142,6 @@ const LoginForm = () => {
     setWomanRotation(randomRotation());
     setManImage(selectRandomImage(manImages));
     setWomanImage(selectRandomImage(womanImages));
- 
   };
   const scoreClickConsent = (consertId) => {
     switch (consertId) {
@@ -183,7 +182,7 @@ const LoginForm = () => {
           <ScrollingHelpText message={helpMessage} width="300px" />
         </div>
       </div>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <div className="image-panel">
           <img
             src={manImage}
@@ -192,6 +191,17 @@ const LoginForm = () => {
             onClick={() => rotateImage("man")}
           />
         </div>
+        <div className="image-panel">
+          <img
+            src={womanImage}
+            alt="Woman"
+            style={{ transform: `rotate(${womanRotation}deg)` }}
+            onClick={() => rotateImage("woman")}
+          />
+        </div>
+      </div>
+      {message && <AlertMessage key={alertKey} message={message} type={type} />}
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <div className="login-form">
           <div className="form-container">
             <form onSubmit={handleSubmit}>
@@ -237,7 +247,9 @@ const LoginForm = () => {
             {showModal && (
               <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                  <Modal.Title className="font-style-4">Cookie Information</Modal.Title>
+                  <Modal.Title className="font-style-4">
+                    Cookie Information
+                  </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>{modalContent}</Modal.Body>
                 <Modal.Footer>
@@ -273,16 +285,7 @@ const LoginForm = () => {
                 </div>
               </div>
             )}
-            {message && <AlertMessage key={alertKey} message={message} type={type} />}
           </div>
-        </div>
-        <div className="image-panel">
-          <img
-            src={womanImage}
-            alt="Woman"
-            style={{ transform: `rotate(${womanRotation}deg)` }}
-            onClick={() => rotateImage("woman")}
-          />
         </div>
       </div>
     </div>

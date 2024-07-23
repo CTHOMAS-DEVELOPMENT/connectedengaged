@@ -164,12 +164,12 @@ const UpdateProfile = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-  
+
     // Reset the message and type to ensure the component re-renders
     setMessage("");
     setType("info");
     setAlertKey((prevKey) => prevKey + 1);
-  
+
     const validationErrors = validateUser(formData, true);
     if (Object.keys(validationErrors).length === 0) {
       // No validation errors, proceed with form submission
@@ -198,7 +198,7 @@ const UpdateProfile = () => {
     } else {
       // Set the first validation error message
       const firstErrorKey = Object.keys(validationErrors)[0];
-  
+
       setTimeout(() => {
         setMessage(validationErrors[firstErrorKey]);
         setType("error");
@@ -206,13 +206,14 @@ const UpdateProfile = () => {
       }, 0);
     }
   };
-  
+
   if (authError) {
     return <div>Unauthorized. Please log in.</div>;
   }
   return (
     <div>
       <Button
+        style={{ backgroundColor: "white" }}
         variant="outline-info"
         className="btn-sm"
         onClick={() => navigate("/userlist", { state: { userId } })}
@@ -361,7 +362,12 @@ const UpdateProfile = () => {
         {message && (
           <AlertMessage key={alertKey} message={message} type={type} />
         )}
-        <Button variant="outline-info" className="btn-sm" type="submit">
+        <Button
+          style={{ backgroundColor: "white" }}
+          variant="outline-info"
+          className="btn-sm"
+          type="submit"
+        >
           Update Profile
         </Button>
       </form>

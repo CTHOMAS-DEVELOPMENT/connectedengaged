@@ -61,6 +61,7 @@ const NewSubmission = () => {
   return (
     <div>
       <Button
+        style={{ backgroundColor: "white" }}
         variant="outline-info"
         className="btn-sm"
         onClick={handleBackToMessagesClick}
