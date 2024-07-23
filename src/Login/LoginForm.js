@@ -233,15 +233,15 @@ const LoginForm = () => {
                 Login
               </Button>{" "}
               <div className="login-page-link">
-                <p>
+                <span>
                   Don't have an account?{" "}
                   <Link to="/register">Register here</Link>
-                </p>
+                </span>
               </div>
               <div className="login-page-link">
-                <p>
+                <span>
                   <Link to="/password-reset-request">Forgotten password?</Link>
-                </p>
+                </span>
               </div>
             </form>
             {showModal && (
@@ -260,20 +260,9 @@ const LoginForm = () => {
               </Modal>
             )}
             {!consentGiven && (
-              <div className="consent_group">
+              <div className="">
                 <div>
-                  {consentImagesState.slice(0, 2).map((image) => (
-                    <img
-                      key={image.id}
-                      src={image.src}
-                      alt={image.description}
-                      onClick={() => scoreClickConsent(image.id)}
-                      style={{ cursor: "pointer" }}
-                    />
-                  ))}
-                </div>
-                <div>
-                  {consentImagesState.slice(2, 4).map((image) => (
+                  {consentImagesState.map((image) => (
                     <img
                       key={image.id}
                       src={image.src}
