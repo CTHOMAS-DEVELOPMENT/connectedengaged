@@ -1,3 +1,26 @@
+export const parseExpectedEnd = (expectedEndStr) => {
+  const [days, hours, minutes, seconds] = expectedEndStr.split(" ").filter((_, index) => index % 2 === 0);
+  return {
+    days: parseInt(days, 10),
+    hours: parseInt(hours, 10),
+    minutes: parseInt(minutes, 10),
+    seconds: parseInt(seconds, 10),
+  };
+};
+
+export const calculateRemainingTime = (endTime) => {
+  const totalSeconds = endTime.days * 86400 + endTime.hours * 3600 + endTime.minutes * 60 + endTime.seconds;
+  return totalSeconds;
+};
+
+export const formatRemainingTime = (totalSeconds) => {
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
+};
+
 export const extractFilename = (pathString, imgDefault="") => {
   if (!pathString) {
     return imgDefault;
@@ -8,13 +31,6 @@ export const extractFilename = (pathString, imgDefault="") => {
   return parts.pop();
 };
 
-export const getThumbnailPathX = imagePath => {
-  const imagePathParts = imagePath.split('/');
-  const filename = imagePathParts.pop();
-  const thumbnailFilename = `thumb-${filename}`;
-  imagePathParts.push(thumbnailFilename);
-  return imagePathParts.join('/');
-};
 export const getThumbnailPath = (dbPath) => {
   // Ensure the path is formatted correctly
   const formattedPath = dbPath.replace(/^backend\\imageUploaded\\|^backend\/imageUploaded\//, "/uploaded-images/");

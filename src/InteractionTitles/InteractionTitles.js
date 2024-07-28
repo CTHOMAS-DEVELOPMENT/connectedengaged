@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import AlertMessage from "../system/AlertMessage";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const InteractionTitles = ({
@@ -26,6 +25,7 @@ const InteractionTitles = ({
   const buttonStyle = {
     animation: "pulse 2s infinite",
   };
+
   const fetchInteractions = () => {
     fetch(`${process.env.REACT_APP_API_URL}/api/my_interaction_titles?logged_in_id=${loggedInUserId}`)
       .then((response) => response.json())
@@ -33,21 +33,34 @@ const InteractionTitles = ({
         setInteractions(data);
       })
       .catch((error) => {
-        console.error("Error fetching interactions:", error);
-        setMessage(`Error fetching interactions:${error}`);
+        console.error("Error fetching Engagements:", error);
+        setMessage(`Error fetching Engagements:${error}`);
         setType("error");
         setAlertKey(prevKey => prevKey + 1);
       });
   };
+
   useEffect(() => {
     fetchInteractions();
+    const interval = setInterval(() => {
+      setInteractions((prevInteractions) =>
+        prevInteractions.map((interaction) => ({
+          ...interaction,
+          remainingTime: calculateRemainingTime(interaction.end_timestamp),
+        }))
+      );
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId]);
+
   useEffect(() => {
     if (shouldRefreshInteractions) {
       resetRefreshTrigger();
     }
   }, [shouldRefreshInteractions, resetRefreshTrigger, loggedInUserId]);
+
   useEffect(() => {
     if (shouldRefreshInteractions) {
       fetchInteractions(); // Your function that fetches interactions
@@ -55,6 +68,7 @@ const InteractionTitles = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldRefreshInteractions, resetRefreshTrigger]);
+
   const handleTitleClick = (data) => {
     navigate("/feed", {
       state: {
@@ -64,7 +78,6 @@ const InteractionTitles = ({
       },
     });
   };
-  // Function to upload the ZIP file
 
   const handleEditClick = (interaction, event) => {
     event.stopPropagation(); // Prevent triggering handleTitleClick
@@ -75,6 +88,7 @@ const InteractionTitles = ({
       },
     });
   };
+
   const handleDownloadAndEndItClick = (interaction, event) => {
     event.preventDefault(); // Prevent default button behavior
 
@@ -106,7 +120,7 @@ const InteractionTitles = ({
         // You may want to call another API to "end" the interaction, or update your application state accordingly.
       })
       .catch((error) => {
-        console.error("Error downloading interaction ZIP:", error);
+        console.error("Error downloading Engagement ZIP:", error);
         // Handle any errors that occurred during the fetch operation
       });
   };
@@ -132,7 +146,7 @@ const InteractionTitles = ({
       })
       .then((data) => {
         setType("info");
-        setMessage(`The interaction has been removed`);
+        setMessage(`The Engagement has been removed`);
         setAlertKey(prevKey => prevKey + 1);
         setEndedInteractions((oldArray) => [
           ...oldArray,
@@ -140,11 +154,24 @@ const InteractionTitles = ({
         ]);
       })
       .catch((error) => {
-        console.error("Error ending interaction:", error);
-        setMessage(`Error this interaction was not removed:${error}`);
+        console.error("Error ending Engagement:", error);
+        setMessage(`Error this Engagement was not removed:${error}`);
         setType("error");
         setAlertKey(prevKey => prevKey + 1);
       });
+  };
+
+  const calculateRemainingTime = (endTimestamp) => {
+    const endTime = new Date(endTimestamp).getTime();
+    const currentTime = new Date().getTime();
+    const totalSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
   };
 
   return (
@@ -190,7 +217,7 @@ const InteractionTitles = ({
                   Expected end:{" "}
                   {endedInteractions.includes(interaction.submission_id)
                     ? "Ended"
-                    : interaction.expected_end}
+                    : calculateRemainingTime(interaction.end_timestamp)}
                 </span>
               </div>
               <div className="interaction-edit-container">

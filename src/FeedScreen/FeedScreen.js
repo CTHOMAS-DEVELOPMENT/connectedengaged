@@ -107,9 +107,6 @@ const FeedScreen = () => {
       //console.log("Post update received:", newPost);
       const interestedUserIds = newPost.interestedUserIds;
       if (interestedUserIds.includes(parseInt(userId, 10))) {
-        // console.log(
-        //   "User is interested in this post. Setting userIsLive to true."
-        // );
         setUserIsLive(true);
       }
     });

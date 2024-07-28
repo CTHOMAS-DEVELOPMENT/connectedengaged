@@ -154,8 +154,8 @@ const EditInteraction = () => {
         }
       })
       .catch((error) => {
-        console.error("Error fetching interaction details:", error);
-        setMessage("Error fetching interaction details");
+        console.error("Error fetching Engagement details:", error);
+        setMessage("Error fetching Engagement details");
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
