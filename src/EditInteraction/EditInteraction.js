@@ -312,12 +312,7 @@ const EditInteraction = () => {
     currentPage,
     usersPerPage,
   ]);
-  const handleScrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
