@@ -39,8 +39,9 @@ const RegistrationForm = () => {
     floatsMyBoat: "",
     sex: "",
     aboutYou: "",
+    aboutMyBotPal: ""
   });
-
+  //about_my_bot_pal
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
   const handleLoginScreenClick = () => {
@@ -59,9 +60,6 @@ const RegistrationForm = () => {
   };
 
   const handleImageUpload = (url) => {
-    //console.log("handleImageUpload",url)
-    //convertToMediaPath(url)
-    //console.log("handleImageUpload-converted",convertToMediaPath(url))
     setUploadedImageUrl(url);
   };
 
@@ -123,9 +121,6 @@ const RegistrationForm = () => {
     event.preventDefault();
     const validationErrors = validateUser(formData);
     if (Object.keys(validationErrors).length === 0) {
-      // Proceed with form submission
-      //fetch("/test-db", {
-      //`${process.env.REACT_APP_API_URL}
       fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
         method: "POST",
         headers: {
@@ -320,6 +315,20 @@ const RegistrationForm = () => {
               placeholder="I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
               name="aboutYou"
               value={formData.aboutYou}
+              onChange={handleInputChange}
+              onBlur={handleBlur}
+              required
+              style={{ width: "100%", height: "100px" }} // Adjust styling as needed
+            />
+          </div>
+          
+          <div>
+            <textarea
+              id="aboutMyBotPal"
+              className="about-you-textarea"
+              placeholder="Favourite hobby is cooking and tasting. I prefer chocolate sweets rather than boring boiled ones!"
+              name="aboutMyBotPal"
+              value={formData.aboutMyBotPal}
               onChange={handleInputChange}
               onBlur={handleBlur}
               required

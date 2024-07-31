@@ -66,7 +66,8 @@ BEGIN
             hobbies hobby_type DEFAULT 'Other',
             floats_my_boat floats_my_boaty_type DEFAULT 'Other (Not Listed)',
             sex sex_type DEFAULT 'Other',
-            about_you text
+            about_you text,
+            about_my_bot_pal text
         );
     END IF;
 END

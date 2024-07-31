@@ -52,13 +52,15 @@ const PhotoUploadAndEdit = ({
     if (submissionId) apiEndpoint = `${process.env.REACT_APP_API_URL}/api/users/${submissionId}/uploaded-item`;
     if (dialogId)
       apiEndpoint = `${process.env.REACT_APP_API_URL}/api/submission-dialog/${dialogId}/update-item`;
-
+    console.log("Sending request to:", apiEndpoint);
+    console.log("FormData content:", formData.get("file"), formData.get("userId"));
     fetch(apiEndpoint, {
       method: "POST",
       body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Upload response data:", data);
         if (onPhotoSubmit) onPhotoSubmit();
         if (onSaveSuccess) onSaveSuccess();
         setSelectedFile(null);
@@ -91,7 +93,7 @@ const PhotoUploadAndEdit = ({
         <div>
           <img src={previewUrl} alt="Preview" />
           <Button variant="primary" onClick={handleSave}>
-            Save
+            Save?
           </Button>
         </div>
       )}

@@ -51,6 +51,7 @@ const EditInteraction = () => {
   const [showFloatsMyBoat, setShowFloatsMyBoat] = useState(false);
 
   const [filterFloatsMyBoat, setFilterFloatsMyBoat] = useState("");
+  
   const helpMessage =
     process.env.REACT_APP_FILTERING_CONNECTED_ENGAGERS ||
     "No help message configured.";
@@ -311,7 +312,12 @@ const EditInteraction = () => {
     currentPage,
     usersPerPage,
   ]);
-
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -329,7 +335,7 @@ const EditInteraction = () => {
       >
         Back to messages
       </Button>{" "}
-      <div className="centre-container">
+      <div>
         <div className="edit-interaction-container">
           <div className="centre_scroll">
             <h2 className="font-style-4">{title}</h2>
@@ -486,7 +492,7 @@ const EditInteraction = () => {
               </label>
             </div>
           </div>
-
+          <div className="scrollable-content">
           <ul className="no-bullet">
             {currentUsers.map((user) => (
               <li key={user.id} className="user-edit-item">
@@ -506,6 +512,7 @@ const EditInteraction = () => {
               </li>
             ))}
           </ul>
+          </div>
           {totalPages > 1 && (
             <div className="pagination">
               {Array.from({ length: totalPages }, (_, i) => (
@@ -538,6 +545,7 @@ const EditInteraction = () => {
           )}
         </div>
       </div>
+      
     </div>
   );
 };

@@ -580,7 +580,7 @@ const UsersList = () => {
             }
             onClick={handleCommunicationCentreTabClick}
           >
-            Connection Centre
+            Connections
           </Button>
           <Button
             variant="outline-info"
@@ -760,6 +760,7 @@ const UsersList = () => {
               accept=".zip"
             />
             <Button
+            style={{backgroundColor:'white'}}
               variant="outline-info"
               onClick={() => document.getElementById("fileInput").click()}
             >

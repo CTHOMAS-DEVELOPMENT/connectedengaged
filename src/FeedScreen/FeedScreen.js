@@ -105,8 +105,7 @@ const FeedScreen = () => {
 
     socket.on("post update", (newPost) => {
       //console.log("Post update received:", newPost);
-      const interestedUserIds = newPost.interestedUserIds;
-      if (interestedUserIds.includes(parseInt(userId, 10))) {
+      if (newPost && newPost.interestedUserIds && newPost.interestedUserIds.includes(parseInt(userId, 10))) {
         setUserIsLive(true);
       }
     });

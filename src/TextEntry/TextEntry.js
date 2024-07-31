@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AlertMessage from "../system/AlertMessage";
 
 import { Rocket, RocketFill } from "react-bootstrap-icons";
-const TextEntry = ({ userId, submissionId, adminChatId, onPostSubmit }) => {
+const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
   const [textContent, setTextContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
@@ -26,9 +26,9 @@ const TextEntry = ({ userId, submissionId, adminChatId, onPostSubmit }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, textContent, adminChatId }), // Including userId in the request body
+        body: JSON.stringify({ userId, textContent }), // Including userId in the request body
       });
-
+//999 add new field value
       const data = await response.json();
       if (response.ok) {
         setTextContent("");

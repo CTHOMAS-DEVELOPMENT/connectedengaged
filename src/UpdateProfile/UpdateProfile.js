@@ -41,6 +41,7 @@ const UpdateProfile = () => {
     floatsMyBoat: "",
     sex: "",
     aboutYou: "",
+    aboutMyBotPal: "",
   });
 
   const [message, setMessage] = useState("");
@@ -100,6 +101,7 @@ const UpdateProfile = () => {
           floatsMyBoat: user.floats_my_boat || "",
           sex: user.sex || "",
           aboutYou: user.about_you || "",
+          aboutMyBotPal: user.about_my_bot_pal || "",
         });
         if (user.profile_video) {
           setProfileVideo(convertToMediaPath(user.profile_video));
@@ -222,6 +224,7 @@ const UpdateProfile = () => {
       </Button>
 
       <h2 className="font-style-4">Update Profile</h2>
+
       <div className="button-group">
         <ViewImage
           userId={userId}
@@ -229,8 +232,18 @@ const UpdateProfile = () => {
           profileImage={profileImage}
         />
       </div>
-      <form onSubmit={handleSubmit}>
+      <form noValidate onSubmit={handleSubmit}>
         <div className="system-form">
+          <div>
+            <Button
+              style={{ backgroundColor: "white" }}
+              variant="outline-info"
+              className="btn-sm"
+              type="submit"
+            >
+              Update Profile
+            </Button>
+          </div>
           <div>
             <label htmlFor="username">Username</label>
             <input
@@ -267,8 +280,12 @@ const UpdateProfile = () => {
               onChange={handleInputChange}
             />
           </div>
+          {message && (
+            <AlertMessage key={alertKey} message={message} type={type} />
+          )}
           <div className="rounded-rectangle-wrapper">
             <h3 className="font-style-4">About You Survey</h3>
+
             <div>
               <div>
                 <Button
@@ -357,19 +374,21 @@ const UpdateProfile = () => {
                 style={{ width: "100%", height: "100px" }} // Adjust styling as needed
               />
             </div>
+            <div>
+              <textarea
+                id="aboutMyBotPal"
+                name="aboutMyBotPal"
+                className="about-you-textarea"
+                value={formData.aboutMyBotPal}
+                placeholder="Favourite hobby is cooking and tasting. I prefer chocolate sweets rather than boring boiled ones!"
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                style={{ width: "100%", height: "100px" }} // Adjust styling as needed
+              />
+            </div>
           </div>
         </div>
-        {message && (
-          <AlertMessage key={alertKey} message={message} type={type} />
-        )}
-        <Button
-          style={{ backgroundColor: "white" }}
-          variant="outline-info"
-          className="btn-sm"
-          type="submit"
-        >
-          Update Profile
-        </Button>
       </form>
     </div>
   );

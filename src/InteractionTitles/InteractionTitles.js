@@ -239,9 +239,8 @@ const InteractionTitles = ({
                         handleDownloadAndEndItClick(interaction, event)
                       }
                     >
-                      Download
+                      Save
                     </Button>
-
                     <Button
                       variant="danger"
                       className="btn-sm interaction-edit"

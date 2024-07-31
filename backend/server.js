@@ -11,7 +11,7 @@ const cors = require("cors"); // Assuming you're using the 'cors' package for Ex
 const JSZip = require("jszip");
 const util = require("util");
 const axios = require("axios");
-
+const Groq = require('groq-sdk');
 // Create a new express application
 const app = express();
 const server = http.createServer(app);
@@ -45,7 +45,6 @@ function loadEnvVariables() {
 loadEnvVariables();
 
 const JWT_SECRET = process.env.LG_TOKEN;
-
 const allowedOrigins = [
   "http://localhost:3002/",
   `http://${process.env.HOST}:${process.env.PORTFORAPP}`,
@@ -126,7 +125,7 @@ const pool = new Pool({
   password: process.env.CONNECTION_POOL_PASSWORD,
   port: process.env.CONNECTION_POOL_PORT
 });
-
+const groq = new Groq({ apiKey: process.env.ADMIN_AI_KEY_1 });
 function handleDatabaseError(error, res) {
   // Your error handling logic
   console.error("Database error:", error);
@@ -148,22 +147,7 @@ pool.connect((err, client, release) => {
 
 const clientSubmissions = {}; // { socketId: { userId: Number, submissionIds: Set(Number) } }
 const activeUsersPerSubmission = {};
-/**
- * 
- io.on("connection", (socket) => {
-  console.log(`User connected with socket ID: ${socket.id}`);
 
-  socket.on("register", ({ userId, submissionIds }) => {
-    clientSubmissions[socket.id] = { userId, activeUsers: new Set([userId]), submissionIds: new Set(submissionIds) };
-    console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
-  });
-
-  socket.on("disconnect", () => {
-    console.log(`User disconnected with socket ID: ${socket.id}`);
-    delete clientSubmissions[socket.id];
-  });
-});
- */
 io.on("connection", (socket) => {
   console.log(`User connected with socket ID: ${socket.id}`);
   socket.on("postDeleted", ({ postId, submissionId }) => {
@@ -519,16 +503,16 @@ app.post("/api/register", async (req, res) => {
       floatsMyBoat,
       sex,
       aboutYou,
+      aboutMyBotPal
     } = req.body;
 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     await client.query("BEGIN"); // Start transaction
-    //console.log("Attempting to insert new user");
     // Insert the new User
     const userInsertResult = await client.query(
-      "INSERT INTO users (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+      "INSERT INTO users (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
       [
         username,
         email,
@@ -538,23 +522,12 @@ app.post("/api/register", async (req, res) => {
         floatsMyBoat,
         sex,
         aboutYou,
+        aboutMyBotPal
       ]
     );
-    //console.log("User inserted successfully");
     const newUserId = userInsertResult.rows[0].id;
-
-    // Query to find the existing admin's ID
-    const adminResult = await client.query(
-      "SELECT id FROM users WHERE username='Admin'"
-    );
-
-    // Ensure the admin exists
-    if (adminResult.rows.length === 0) {
-      throw new Error("Admin not found");
-    }
-
     // Extract the admin's ID
-    const existingAdminId = adminResult.rows[0].id;
+    const existingAdminId = parseInt(process.env.SYSTEM_ADMIN_ID);
     const [userOneId, userTwoId] =
       newUserId < existingAdminId
         ? [newUserId, existingAdminId]
@@ -588,13 +561,7 @@ app.post("/api/register", async (req, res) => {
       "INSERT INTO submission_dialog (submission_id, posting_user_id, text_content) VALUES ($1, $2, $3)",
       [submissionId, existingAdminId, process.env.ADMIN_MESSAGE_1]
     );
-    const result = await newUserAdminMessage(newUserId, `Welcome_${username}`);
-    //console.log("newUserAdminMessage-result", result.submissionId);
-    await client.query(
-      "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
-      [result.submissionId, newUserId]
-    );
-  // Send the response to the client
+    // Send the response to the client
     res.json({ id: newUserId, username: username });
   } catch (error) {
     await client.query("ROLLBACK"); // Roll back the transaction on error
@@ -620,6 +587,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     floatsMyBoat,
     sex,
     aboutYou,
+    aboutMyBotPal
   } = req.body;
 
   // Validation for password length if it's not empty
@@ -648,8 +616,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
   sexual_orientation = COALESCE($5, sexual_orientation),
   floats_my_boat = COALESCE($6, floats_my_boat),
   sex = COALESCE($7, sex),
-  about_you = COALESCE($8, about_you)
-  WHERE id = $9
+  about_you = COALESCE($8, about_you),
+  about_my_bot_pal = COALESCE($9, about_my_bot_pal)
+  WHERE id = $10
   RETURNING *;
 `;
 
@@ -662,6 +631,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     floatsMyBoat,
     sex,
     aboutYou,
+    aboutMyBotPal,
     id,
   ];
 
@@ -1487,13 +1457,22 @@ app.post(
         [submissionId, postingUserId, uploadedFilePath]
       );
 
-      res.json(result.rows[0]);
+      const newPost = result.rows[0];
+      // Emit postUpdated event to all clients viewing the same engagement
+      const interestedUsersQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
+      const interestedUsersResult = await pool.query(interestedUsersQuery, [submissionId]);
+      const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
+
+      io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost: newPost, interestedUserIds });
+
+      res.json(newPost);
     } catch (error) {
       console.error(error);
       handleDatabaseError(error, res);
     }
   }
 );
+
 
 app.post(
   "/api/submission-dialog/:dialogId/update-item",
@@ -1722,7 +1701,7 @@ app.get("/api/closed-interaction-zip/:submissionId", async (req, res) => {
       JSON.stringify(posts, null, 2)
     );
 
-    // Determine base directory for images 999
+    // Determine base directory for images 
     const baseDir = isLocal ? path.join(__dirname, "imageUploaded") : path.join(__dirname, "backend/imageUploaded");
 
     // Loop through posts to add any media files to the ZIP
@@ -1783,67 +1762,67 @@ app.post(
     }
   }
 );
-async function newUserAdminMessage(userId, title) {
-  const localZipFilePath = path.join(__dirname, "Welcome_newAdmin.zip");
-  const remoteZipFilePath = process.env.ZIP_LOCATION;
-  const originalFileName = title;
+// async function newUserAdminMessage(userId, title) {
+//   const localZipFilePath = path.join(__dirname, "Welcome_newAdmin.zip");
+//   const remoteZipFilePath = process.env.ZIP_LOCATION;
+//   const originalFileName = title;
 
-  let zipData;
-  console.log(
-    `Attempting to process ZIP file for user: ${userId}, title: ${title}`
-  );
-  // Check if the file exists locally
-  if (fs.existsSync(localZipFilePath)) {
-    console.log(`Local ZIP file found at ${localZipFilePath}`);
-    zipData = fs.readFileSync(localZipFilePath);
-  } else {
-    console.log(
-      `Local ZIP file not found. Attempting to fetch from ${remoteZipFilePath}`
-    );
+//   let zipData;
+//   console.log(
+//     `Attempting to process ZIP file for user: ${userId}, title: ${title}`
+//   );
+//   // Check if the file exists locally
+//   if (fs.existsSync(localZipFilePath)) {
+//     console.log(`Local ZIP file found at ${localZipFilePath}`);
+//     zipData = fs.readFileSync(localZipFilePath);
+//   } else {
+//     console.log(
+//       `Local ZIP file not found. Attempting to fetch from ${remoteZipFilePath}`
+//     );
 
-    // Fetch the ZIP file from the remote URL
-    try {
-      const response = await axios.get(remoteZipFilePath, { responseType: 'arraybuffer' });
+//     // Fetch the ZIP file from the remote URL
+//     try {
+//       const response = await axios.get(remoteZipFilePath, { responseType: 'arraybuffer' });
 
-      if (response.status !== 200) {
-        throw new Error(`Failed to download ZIP file. HTTP status: ${response.status}`);
-      }
+//       if (response.status !== 200) {
+//         throw new Error(`Failed to download ZIP file. HTTP status: ${response.status}`);
+//       }
 
-      console.log(`Successfully fetched ZIP file from ${remoteZipFilePath}`);
-      zipData = Buffer.from(response.data);
-    } catch (error) {
-      console.error(
-        `Error fetching ZIP file from ${remoteZipFilePath}:`,
-        error.message
-      );
-      throw new Error(
-        `Could not fetch ZIP file from remote location: ${error.message}`
-      );
-    }
-  }
+//       console.log(`Successfully fetched ZIP file from ${remoteZipFilePath}`);
+//       zipData = Buffer.from(response.data);
+//     } catch (error) {
+//       console.error(
+//         `Error fetching ZIP file from ${remoteZipFilePath}:`,
+//         error.message
+//       );
+//       throw new Error(
+//         `Could not fetch ZIP file from remote location: ${error.message}`
+//       );
+//     }
+//   }
 
-  // Call processZipFile with the required arguments
-  try {
-    const result = await processZipFile(
-      localZipFilePath,
-      userId,
-      originalFileName,
-      zipData, // Derived from fs.readFileSync or fetch response
-      false
-    );
-    console.log(
-      `Successfully processed ZIP file for user: ${userId}, title: ${title}`
-    );
-    return result;
-  } catch (error) {
-    console.error(
-      `Error processing ZIP file for user: ${userId}, title: ${title}:`,
-      error.message
-    );
-    throw error;
-  }
-}
-//999
+//   // Call processZipFile with the required arguments
+//   try {
+//     const result = await processZipFile(
+//       localZipFilePath,
+//       userId,
+//       originalFileName,
+//       zipData, // Derived from fs.readFileSync or fetch response
+//       false
+//     );
+//     console.log(
+//       `Successfully processed ZIP file for user: ${userId}, title: ${title}`
+//     );
+//     return result;
+//   } catch (error) {
+//     console.error(
+//       `Error processing ZIP file for user: ${userId}, title: ${title}:`,
+//       error.message
+//     );
+//     throw error;
+//   }
+// }
+
 async function deleteExpiredInteractions() {
   await pool.query("BEGIN");
 
@@ -2043,7 +2022,7 @@ app.get("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      "SELECT id, username, email, profile_picture, profile_video, sexual_orientation, hobbies, floats_my_boat, sex, about_you FROM users WHERE id = $1",
+      "SELECT id, username, email, profile_picture, profile_video, sexual_orientation, hobbies, floats_my_boat, sex, about_you, about_my_bot_pal FROM users WHERE id = $1",
       [id] // Make sure to select the new 'sex' column here
     );
     res.json(result.rows[0]);
@@ -2053,9 +2032,103 @@ app.get("/api/users/:id", async (req, res) => {
   }
 });
 
+async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
+  console.log("system_reply-userId", userId);
+  console.log("system_reply-content", content);
+  console.log("system_reply-submissionId", submissionId);
+  console.log("system_reply-interestedUserIds", interestedUserIds);
+
+  let pretrainText = "";
+  const systemInfo = process.env.SYSTEM_SUMMARY;
+  const keywords = [
+    "connection", "diary", "media", "posts", "interaction", "video", "calling",
+    "registry", "login", "Engagements", "Connection Requests", "stage", 
+    "Connections button", "users", "save", "Engagement"
+  ];
+
+  // Fetch user details
+  const userQuery = "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal FROM users WHERE id = $1";
+  const userResult = await pool.query(userQuery, [user_id]);
+  const userInfo = userResult.rows[0];
+
+  const botInfo = userInfo.about_my_bot_pal;
+  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo}`;
+
+  // Include user preferences in the pre-training text
+  const userPreferences = `
+    User's sexual orientation: ${userInfo.sexual_orientation},
+    Hobbies: ${userInfo.hobbies},
+    Floats their boat: ${userInfo.floats_my_boat},
+    Sex: ${userInfo.sex}.
+  `;
+
+  // Check if the content is relevant to system information
+  const isRelevant = keywords.some(keyword => content.toLowerCase().includes(keyword.toLowerCase()));
+
+  if (isRelevant) {
+    pretrainText += ` ${systemInfo}`;
+  }
+
+  pretrainText += ` ${userPreferences}`;
+
+  try {
+    if (!content) {
+      throw new Error("Content is missing for the system reply");
+    }
+
+    const chatCompletion = await groq.chat.completions.create({
+      "messages": [
+        {
+          "role": "system",
+          "content": pretrainText
+        },
+        {
+          "role": "user",
+          "content": content
+        }
+      ],
+      "model": "llama3-8b-8192",
+      "temperature": 1,
+      "max_tokens": 150,
+      "top_p": 1,
+      "stream": false,
+      "stop": null
+    });
+
+    console.log("Chat completion response:", chatCompletion);
+
+    const systemResponse = chatCompletion.choices[0]?.message?.content || '';
+    console.log("System response text:", systemResponse);
+
+    if (!systemResponse) {
+      throw new Error("Received empty response from AI");
+    }
+
+    // Insert the system's reply into the database
+    const insertResult = await pool.query(
+      "INSERT INTO submission_dialog (submission_id, posting_user_id, text_content) VALUES ($1, $2, $3) RETURNING *",
+      [submissionId, userId, systemResponse]
+    );
+
+    const newSystemPost = insertResult.rows[0];
+    newSystemPost.interestedUserIds = interestedUserIds;
+
+    // Emit the post update to interested users
+    io.emit("post update", newSystemPost);
+
+  } catch (error) {
+    console.error('Error generating system reply:', error);
+  }
+}
+
+
+
+
+
 app.post("/api/users/:submissionId/text-entry", async (req, res) => {
   try {
     const submissionId = req.params.submissionId; // Extract submissionId from the URL parameters
+
     const { userId, textContent } = req.body; // Extracting userId and textContent from the request body
 
     // Validate the received data
@@ -2090,29 +2163,46 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
     const userQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
     const resUsers = await pool.query(userQuery, [submissionId]);
     const interestedUserIds = resUsers.rows.map((row) => row.participating_user_id);
-    
-    // Emit the post update to interested users
-    newPost.interestedUserIds = interestedUserIds;
-    //console.log("New io post update", newPost)
-    io.emit("post update", newPost);
+      // Commit the transaction
+      await pool.query("COMMIT");
 
-    // Respond with the new dialog entry
-    res.json({
-      dialogEntry: newPost,
-      submissionUpdate: updateResult.rows[0],
-    });
+      // Respond with the new dialog entry
+      newPost.interestedUserIds = interestedUserIds;
+  
+      // Emit the post update to interested users
+      io.emit("post update", newPost);
+  
+      // Call the system_reply function if the SYSTEM_ADMIN_ID is in interestedUserIds
+      const systemAdminId = parseInt(process.env.SYSTEM_ADMIN_ID, 10);
+      if (interestedUserIds.includes(systemAdminId)) {
+        //userId 999
 
-  } catch (error) {
-    // Rollback the transaction on error
-    await pool.query("ROLLBACK");
-
-    console.error(error);
-    res.status(500).json({
-      message: "An error occurred while updating the interaction.",
-      error: error,
-    });
-  }
-});
+        system_reply({
+          userId: systemAdminId,
+          content: textContent,
+          submissionId,
+          interestedUserIds,
+          user_id: userId,
+        });
+      }
+  
+      // Respond with the new dialog entry
+      res.json({
+        dialogEntry: newPost,
+        submissionUpdate: updateResult.rows[0],
+      });
+  
+    } catch (error) {
+      // Rollback the transaction on error
+      await pool.query("ROLLBACK");
+  
+      console.error(error);
+      res.status(500).json({
+        message: "An error occurred while updating the interaction.",
+        error: error,
+      });
+    }
+  });
 app.post("/api/user_submissions", async (req, res) => {
   try {
     const { user_id, title, userIds } = req.body;
@@ -2334,5 +2424,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*8001*Server running on port ${PORT}`);
+  console.log(`*8004*Server running on port ${PORT}`);
 });

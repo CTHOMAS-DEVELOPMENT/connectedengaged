@@ -42,6 +42,9 @@ const validateUser = (formData, ignoreValidation = false) => {
   if (!formData.aboutYou) {
     errors.aboutYou="Please tell everyone something about you";
   }
+  if (!formData.aboutMyBotPal) {
+    errors.aboutMyBotPal="Please tell your system pal who you want them to be";
+  }
   return errors;
 };
 
