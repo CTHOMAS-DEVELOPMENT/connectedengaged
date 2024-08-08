@@ -2033,10 +2033,7 @@ app.get("/api/users/:id", async (req, res) => {
 });
 
 async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
-  console.log("system_reply-userId", userId);
-  console.log("system_reply-content", content);
-  console.log("system_reply-submissionId", submissionId);
-  console.log("system_reply-interestedUserIds", interestedUserIds);
+
 
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
@@ -2052,7 +2049,7 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
   const userInfo = userResult.rows[0];
 
   const botInfo = userInfo.about_my_bot_pal;
-  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo}`;
+  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and I always answer with less than 150 characters`;
 
   // Include user preferences in the pre-training text
   const userPreferences = `
