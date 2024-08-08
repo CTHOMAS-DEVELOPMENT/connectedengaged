@@ -51,7 +51,10 @@ const allowedOrigins = [
   `http://${process.env.HOST}:${process.env.PROXYPORT}`,
   'https://sage-twilight-26e49d.netlify.app', // Netlify URL
   'https://main--sage-twilight-26e49d.netlify.app', // Netlify branch URL
-  'https://coconut-speckled-asterisk.glitch.me' // Glitch URL
+  'https://coconut-speckled-asterisk.glitch.me', // Glitch URL
+  'https://connectedengager.eu-4.evennode.com',
+  'http://connectedengager.eu-4.evennode.com'
+
 ];
 
 const corsOptions = {
@@ -2033,7 +2036,10 @@ app.get("/api/users/:id", async (req, res) => {
 });
 
 async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
-
+  console.log("system_reply-userId", userId);
+  console.log("system_reply-content", content);
+  console.log("system_reply-submissionId", submissionId);
+  console.log("system_reply-interestedUserIds", interestedUserIds);
 
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
@@ -2049,7 +2055,7 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
   const userInfo = userResult.rows[0];
 
   const botInfo = userInfo.about_my_bot_pal;
-  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and I always answer with less than 150 characters`;
+  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo}`;
 
   // Include user preferences in the pre-training text
   const userPreferences = `
@@ -2421,5 +2427,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*8004*Server running on port ${PORT}`);
+  console.log(`*9999*Server running on port ${PORT}`);
 });
