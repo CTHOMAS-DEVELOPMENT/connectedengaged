@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { carousel_1, carousel_2, carousel_3, carousel_4 } from "./images";
+import { carousel_1, carousel_2, carousel_3, carousel_4, carousel_5, carousel_6, carousel_7, carousel_8 } from "./images";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ArrowRightCircleFill } from "react-bootstrap-icons";
 
 const FloatsMyBoat = ({ onSelectCarousel, selectedCarousel, defaultSize=300, noChexbox=false }) => {
-  const [carouselIndexes, setCarouselIndexes] = useState([0, 0, 0, 0]); // Indexes for each carousel
-  const carousels = [carousel_1, carousel_2, carousel_3, carousel_4];
+  const [carouselIndexes, setCarouselIndexes] = useState([0, 0, 0, 0, 0, 0, 0, 0]); // Indexes for eight carousels
+
+  const carousels = [carousel_1, carousel_2, carousel_3, carousel_4, carousel_5, carousel_6, carousel_7, carousel_8];
   const nextImage = (index) => {
     setCarouselIndexes((prev) => {
       const newIndexes = [...prev];

@@ -10,8 +10,8 @@ const socketIo = require("socket.io");
 const cors = require("cors"); // Assuming you're using the 'cors' package for Express
 const JSZip = require("jszip");
 const util = require("util");
-const axios = require("axios");
 const Groq = require('groq-sdk');
+const { HfInference } = require("@huggingface/inference");
 // Create a new express application
 const app = express();
 const server = http.createServer(app);
@@ -52,8 +52,7 @@ const allowedOrigins = [
   'https://sage-twilight-26e49d.netlify.app', // Netlify URL
   'https://main--sage-twilight-26e49d.netlify.app', // Netlify branch URL
   'https://coconut-speckled-asterisk.glitch.me', // Glitch URL
-  'https://connectedengager.eu-4.evennode.com',
-  'http://connectedengager.eu-4.evennode.com'
+  'https://connectedengager.eu-4.evennode.com'
 
 ];
 
@@ -78,10 +77,34 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // Logging middleware for debugging
+app.use((req, res, next) => {
+  console.log('Incoming Request:', req.method, req.url);
+  console.log('Request Origin:', req.headers.origin);
+  
+  // Capture the original send function to log response details
+  // const originalSend = res.send;
+  // res.send = function(body) {
+  //   console.log('Response Status:', res.statusCode);
+  //   console.log('Response Headers:', res.getHeaders());
+  //   if (res.statusCode === 307 || res.statusCode === 308) {
+  //     console.log('Redirecting to:', res.get('Location'));
+  //   }
+  //   originalSend.call(this, body);
+  // };
+
+  next();
+});
+// Middleware to redirect HTTP to HTTPS
 // app.use((req, res, next) => {
-//   console.log('Incoming Request:', req.method, req.url);
-//   console.log('Request Origin:', req.headers.origin);
-//   next();
+//   if (req.secure) {
+//     next();
+//   } else {
+//     console.log(`Redirecting request from http to https: ${req.url}`);
+//     console.log('Original Headers:', req.headers);
+//     const secureUrl = `https://${req.headers.host}${req.url}`;
+//     console.log(`Redirecting to: ${secureUrl}`);
+//     res.redirect(307, secureUrl);  // Use 307 to maintain the method and body
+//   }
 // });
 
 // Socket.io configuration
@@ -129,6 +152,7 @@ const pool = new Pool({
   port: process.env.CONNECTION_POOL_PORT
 });
 const groq = new Groq({ apiKey: process.env.ADMIN_AI_KEY_1 });
+const hfInference = new HfInference(process.env.HF_TOKEN);
 function handleDatabaseError(error, res) {
   // Your error handling logic
   console.error("Database error:", error);
@@ -2036,26 +2060,15 @@ app.get("/api/users/:id", async (req, res) => {
 });
 
 async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
-  console.log("system_reply-userId", userId);
-  console.log("system_reply-content", content);
-  console.log("system_reply-submissionId", submissionId);
-  console.log("system_reply-interestedUserIds", interestedUserIds);
-
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
-  const keywords = [
-    "connection", "diary", "media", "posts", "interaction", "video", "calling",
-    "registry", "login", "Engagements", "Connection Requests", "stage", 
-    "Connections button", "users", "save", "Engagement"
-  ];
-
   // Fetch user details
   const userQuery = "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal FROM users WHERE id = $1";
   const userResult = await pool.query(userQuery, [user_id]);
   const userInfo = userResult.rows[0];
 
   const botInfo = userInfo.about_my_bot_pal;
-  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo}`;
+  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters`;
 
   // Include user preferences in the pre-training text
   const userPreferences = `
@@ -2065,15 +2078,10 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
     Sex: ${userInfo.sex}.
   `;
 
-  // Check if the content is relevant to system information
-  const isRelevant = keywords.some(keyword => content.toLowerCase().includes(keyword.toLowerCase()));
-
-  if (isRelevant) {
-    pretrainText += ` ${systemInfo}`;
-  }
+  pretrainText += ` ${systemInfo}`;
 
   pretrainText += ` ${userPreferences}`;
-
+  console.log("pretrainText:", pretrainText);
   try {
     if (!content) {
       throw new Error("Content is missing for the system reply");
@@ -2097,8 +2105,7 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
       "stream": false,
       "stop": null
     });
-
-    console.log("Chat completion response:", chatCompletion);
+    
 
     const systemResponse = chatCompletion.choices[0]?.message?.content || '';
     console.log("System response text:", systemResponse);
@@ -2123,10 +2130,6 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
     console.error('Error generating system reply:', error);
   }
 }
-
-
-
-
 
 app.post("/api/users/:submissionId/text-entry", async (req, res) => {
   try {
@@ -2292,7 +2295,7 @@ app.post("/api/password_reset_request", async (req, res) => {
 
     // Create reset URL
     // HOST PORTFORAPP
-    const resetUrl = `http://${process.env.HOST}:${process.env.PORTFORAPP}/password-reset?token=${resetToken}`;
+    const resetUrl = `https://${process.env.HOST}:${process.env.PORTFORAPP}/password-reset?token=${resetToken}`;
 
     // Send email
     const mailOptions = {
@@ -2368,9 +2371,9 @@ app.post("/api/notify_offline_users", async (req, res) => {
           case "Text":
           case "audio":
           case "picture":
-            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: http://${process.env.ROOT_DOMAIN}`;
+            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: https://${process.env.ROOT_DOMAIN}`;
           case "connection_accepted":
-            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: http://${process.env.ROOT_DOMAIN}`;
+            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: https://${process.env.ROOT_DOMAIN}`;
           default:
             return "unknown type";
         }
@@ -2427,5 +2430,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`*9999*Server running on port ${PORT}`);
+  console.log(`**9898**Server running on port ${PORT}`);
 });

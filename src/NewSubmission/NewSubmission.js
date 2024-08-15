@@ -78,6 +78,7 @@ const NewSubmission = () => {
       <Button
         variant="outline-info"
         className="btn-sm"
+        style={{ backgroundColor: "white" }}
         onClick={handleSave}
         disabled={title.length < 3}
       >

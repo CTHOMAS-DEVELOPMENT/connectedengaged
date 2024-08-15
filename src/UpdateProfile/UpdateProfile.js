@@ -285,7 +285,6 @@ const UpdateProfile = () => {
           )}
           <div className="rounded-rectangle-wrapper">
             <h3 className="font-style-4">About You Survey</h3>
-
             <div>
               <div>
                 <Button
@@ -362,6 +361,7 @@ const UpdateProfile = () => {
             )}
 
             <div>
+              <h3 className="font-style-4">About You</h3>
               <textarea
                 id="aboutYou"
                 name="aboutYou"
@@ -375,6 +375,7 @@ const UpdateProfile = () => {
               />
             </div>
             <div>
+              <h3 className="font-style-4">About Your System Admin</h3>
               <textarea
                 id="aboutMyBotPal"
                 name="aboutMyBotPal"

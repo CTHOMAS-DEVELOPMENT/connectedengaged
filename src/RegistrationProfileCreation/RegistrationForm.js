@@ -16,11 +16,12 @@ import AlertMessage from "../system/AlertMessage";
 import validateUser from "../system/userValidation.js";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { Eye, EyeSlash, CheckCircle, XCircle } from "react-bootstrap-icons";
 const RegistrationForm = () => {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
+  const [dummyEmail, setDummyEmail] = useState("");
   const [showFloatsMyBoat, setShowFloatsMyBoat] = useState(false);
   const [selectedCarousel, setSelectedCarousel] = useState(null);
   const [showOrientation, setShowOrientation] = useState(false);
@@ -39,11 +40,12 @@ const RegistrationForm = () => {
     floatsMyBoat: "",
     sex: "",
     aboutYou: "",
-    aboutMyBotPal: ""
+    aboutMyBotPal: "",
   });
   //about_my_bot_pal
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const handleLoginScreenClick = () => {
     if (userId) {
       navigate("/", { state: { username: formData.username } });
@@ -53,10 +55,14 @@ const RegistrationForm = () => {
   };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+    if (name === "dummyEmail") {
+      setDummyEmail(value);
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleImageUpload = (url) => {
@@ -67,22 +73,16 @@ const RegistrationForm = () => {
     const { name, value } = event.target;
     const validationErrors = validateUser({ ...formData, [name]: value });
 
+    if (name === "dummyEmail" && value !== formData.email) {
+      validationErrors["dummyEmail"] = "Emails do not match";
+    }
+
     if (validationErrors[name]) {
-      // Use a functional update for setMessage to ensure the change is always applied
-      setMessage((prevMessage) => {
-        // Check if the new message is the same as the old one
-        if (prevMessage === validationErrors[name]) {
-          // If it's the same, prepend an invisible character to force a re-render
-          return `\u200B${validationErrors[name]}`;
-        }
-        return validationErrors[name];
-      });
-      setAlertKey((prevKey) => prevKey + 1);
+      setMessage(validationErrors[name]);
       setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
     } else {
-      // Clear the message if the field passes validation on blur
-      // Adding a functional update here as well for consistency
-      setMessage((prevMessage) => (prevMessage ? "" : "\u200B")); // Toggle to force re-render
+      setMessage("");
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
     }
@@ -120,6 +120,9 @@ const RegistrationForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const validationErrors = validateUser(formData);
+    if (dummyEmail !== formData.email) {
+      validationErrors["dummyEmail"] = "Emails do not match";
+    }
     if (Object.keys(validationErrors).length === 0) {
       fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
         method: "POST",
@@ -129,13 +132,13 @@ const RegistrationForm = () => {
         body: JSON.stringify(formData),
       })
         .then((response) => {
-            if (!response.ok) {
-                if (response.status === 409) {
-                  throw new Error("Email already exists");
-                }
-                throw new Error("Registration failed");
-              }
-              return response.json();                      
+          if (!response.ok) {
+            if (response.status === 409) {
+              throw new Error("Email already exists");
+            }
+            throw new Error("Registration failed");
+          }
+          return response.json();
         })
         .then((data) => {
           if (data.id) {
@@ -152,7 +155,7 @@ const RegistrationForm = () => {
         })
         .catch((error) => {
           console.error("Registration error:", error);
-          setMessage("Registration failed: "+error.message);
+          setMessage("Registration failed: " + error.message);
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
         });
@@ -191,9 +194,9 @@ const RegistrationForm = () => {
           {uploadedImageUrl && (
             <div className="uploaded-image">
               <img
-                src={`${
-                  process.env.REACT_APP_BACKEND_URL
-                }${convertToMediaPath(uploadedImageUrl)}`}
+                src={`${process.env.REACT_APP_BACKEND_URL}${convertToMediaPath(
+                  uploadedImageUrl
+                )}`}
                 alt="Uploaded Profile"
               />
             </div>
@@ -226,28 +229,65 @@ const RegistrationForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="dummyEmail">Confirm Email</label>
           <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
+            type="email"
+            id="dummyEmail"
+            name="dummyEmail"
+            value={dummyEmail}
             onChange={handleInputChange}
             onBlur={handleBlur}
             required
           />
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"} // Toggle between text and password type
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              onBlur={handleBlur}
+              required
+              style={{ paddingRight: "30px" }} // Ensure there's space for the icon
+            />
+            <Button
+              variant="link"
+              style={{
+                position: "absolute",
+                right: "5px",
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <Eye /> : <EyeSlash />}
+            </Button>
+          </div>
         </div>
         <div className="rounded-rectangle-wrapper">
           <h3 className="font-style-4">About You Survey</h3>
           <div>
             <Button
               variant="outline-info"
-              className="btn-sm"
+              className="btn-sm mb-2"
               onClick={() => setShowGender(!showGender)}
             >
+              {selectedGender === null ? (
+                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              )}
               {showGender
                 ? "Hide Most Like You"
                 : "Show Most Like You Selection"}
+              {selectedGender === null ? (
+                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              )}
             </Button>
           </div>
           {showGender && (
@@ -259,12 +299,22 @@ const RegistrationForm = () => {
           <div>
             <Button
               variant="outline-info"
-              className="btn-sm"
+              className="btn-sm mb-2"
               onClick={() => setShowHobbies(!showHobbies)}
             >
+              {selectedHobby === null ? (
+                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              )}
               {showHobbies
                 ? "Hide Your Favourite Hobby"
                 : "Show Your Favourite Hobby Selection"}
+              {selectedHobby === null ? (
+                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              )}
             </Button>
           </div>
           {showHobbies && (
@@ -276,12 +326,22 @@ const RegistrationForm = () => {
           <div>
             <Button
               variant="outline-info"
-              className="btn-sm"
-              onClick={() => setShowOrientation(!showOrientation)} // State to control visibility
+              className="btn-sm mb-2"
+              onClick={() => setShowOrientation(!showOrientation)}
             >
+              {selectedOrientation === null ? (
+                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              )}
               {showOrientation
                 ? "Hide Your Preferred Company"
                 : "Show Your Preferred Company Selection"}
+              {selectedOrientation === null ? (
+                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              )}
             </Button>
           </div>
           {showOrientation && (
@@ -293,12 +353,22 @@ const RegistrationForm = () => {
           <div>
             <Button
               variant="outline-info"
-              className="btn-sm"
+              className="btn-sm mb-2"
               onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
             >
+              {selectedCarousel === null ? (
+                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              )}
               {showFloatsMyBoat
                 ? "Hide Floats Your Boat"
                 : "Show Floats Your Boat Selection"}
+              {selectedCarousel === null ? (
+                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              )}
             </Button>
           </div>
 
@@ -309,6 +379,7 @@ const RegistrationForm = () => {
             />
           )}
           <div>
+            <h3 className="font-style-4">About You</h3>
             <textarea
               id="aboutYou"
               className="about-you-textarea"
@@ -321,8 +392,9 @@ const RegistrationForm = () => {
               style={{ width: "100%", height: "100px" }} // Adjust styling as needed
             />
           </div>
-          
+
           <div>
+            <h3 className="font-style-4">About Your System Admin</h3>
             <textarea
               id="aboutMyBotPal"
               className="about-you-textarea"
@@ -342,7 +414,14 @@ const RegistrationForm = () => {
           </Button>
         )}
       </form>
-      {message && <AlertMessage key={alertKey} message={message} type={type} centred={type === "error"} />}
+      {message && (
+        <AlertMessage
+          key={alertKey}
+          message={message}
+          type={type}
+          centred={type === "error"}
+        />
+      )}
     </div>
   );
 };

@@ -5,6 +5,10 @@ export const version1Keys = [
   "Nourish or be nourished",
   "Take orders or give them",
   "Nourish or be nourished",
+  "Take orders or give them",
+  "Take orders or give them",
+  "Take orders or give them",
+  "Take orders or give them"
 ];
 export const version1Hobbies = [
   "Arts",
