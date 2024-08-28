@@ -17,6 +17,7 @@ import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { checkAuthorization } from "../system/authService"; // Ensure this path matches your file structure
 import { convertToMediaPath } from "../system/utils";
+import botPalOptions from "../RegistrationProfileCreation/botPalOptions.json";
 const UpdateProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,12 +43,50 @@ const UpdateProfile = () => {
     sex: "",
     aboutYou: "",
     aboutMyBotPal: "",
+    admin_face: "", // Add admin_face here
   });
 
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
+  const [selectedBotPalOption, setSelectedBotPalOption] = useState(null); // Track the selected botPal option
 
+  const getStaticAdminImagePath = (adminFacePath) => {
+    if (!adminFacePath) {
+      return ""; // Return an empty string or a default image path if the value is null or undefined
+    }
+    const relativePath = `/admins/${adminFacePath.split("/").pop()}`;
+    return relativePath;
+  };
+  
+  const adminFace = (gender, orientation) => {
+    if (orientation === "Heterosexual") {
+      return gender === "Female" ? "Man" : "Woman";
+    } else if (orientation === "Lesbian") {
+      return "Woman";
+    } else if (orientation === "Homosexual") {
+      return gender === "Female" ? "Woman" : "Man";
+    }
+    return "Man"; // Default fallback
+  };
+  const getAdminFaceImagePath = (index) => {
+    const selectedOption = botPalOptions.options[index];
+    const face = adminFace(version1Gender[selectedGender], version1Orientations[selectedOrientation]);
+    return `/admins/${selectedOption.botImage}${face}.png`;
+  };
+  
+  const handleRadioChange = (event) => {
+    const index = parseInt(event.target.value);
+    setSelectedBotPalOption(index);
+    
+    // Update the aboutMyBotPal and admin_face in formData
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      aboutMyBotPal: botPalOptions.options[index].value,
+      admin_face: getAdminFaceImagePath(index), // Update the admin_face path based on the selected option
+    }));
+  };
+  
   useEffect(() => {
     if (userId) {
       checkAuthorization(userId).then((isAuthorized) => {
@@ -92,6 +131,9 @@ const UpdateProfile = () => {
     fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`)
       .then((response) => response.json())
       .then((user) => {
+        const selectedOptionIndex = botPalOptions.options.findIndex(
+          (option) => option.value === user.about_my_bot_pal
+        );
         setFormData({
           username: user.username || "",
           email: user.email || "",
@@ -102,7 +144,11 @@ const UpdateProfile = () => {
           sex: user.sex || "",
           aboutYou: user.about_you || "",
           aboutMyBotPal: user.about_my_bot_pal || "",
+          admin_face: getStaticAdminImagePath(user.admin_face) || "", // Set the resolved path for admin_face
         });
+        setSelectedBotPalOption(
+          selectedOptionIndex !== -1 ? selectedOptionIndex : null
+        );
         if (user.profile_video) {
           setProfileVideo(convertToMediaPath(user.profile_video));
         }
@@ -117,6 +163,9 @@ const UpdateProfile = () => {
         setAlertKey((prevKey) => prevKey + 1);
       });
   };
+  
+
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -374,19 +423,49 @@ const UpdateProfile = () => {
                 style={{ width: "100%", height: "100px" }} // Adjust styling as needed
               />
             </div>
+
             <div>
               <h3 className="font-style-4">About Your System Admin</h3>
-              <textarea
-                id="aboutMyBotPal"
-                name="aboutMyBotPal"
-                className="about-you-textarea"
-                value={formData.aboutMyBotPal}
-                placeholder="Favourite hobby is cooking and tasting. I prefer chocolate sweets rather than boring boiled ones!"
-                onChange={handleInputChange}
-                onBlur={handleBlur}
-                required
-                style={{ width: "100%", height: "100px" }} // Adjust styling as needed
-              />
+              {formData.admin_face && (<img src={formData.admin_face} alt="Admin Face" />)}
+              {!formData.admin_face && (<img src={'/admins/thumb-file-admin.JPEG'} alt="Admin Face" />)}
+              
+              {botPalOptions.options.map((option, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex", // Ensure flexbox layout
+                      alignItems: "center", // Center the items vertically
+                      justifyContent: "center", // Center the items horizontally
+                    }}
+                  >
+                    <div
+                      style={{
+                        whiteSpace: "nowrap", // Prevent the text from wrapping
+                      }}
+                    >
+                      {option.label}
+                    </div>
+                    <input
+                      type="radio"
+                      id={`botPalOption${index}`}
+                      name="aboutMyBotPal"
+                      value={index}
+                      checked={selectedBotPalOption === index}
+                      onChange={handleRadioChange}
+                      style={{
+                        marginBottom: "0",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

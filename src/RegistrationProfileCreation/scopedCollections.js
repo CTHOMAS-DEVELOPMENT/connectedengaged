@@ -1,15 +1,16 @@
 export const version1Orientations = ["Heterosexual", "Lesbian", "Homosexual"];
-export const version1Gender = ["Female", "Male", "Other", "Other"];
+export const version1Gender = ["Female", "Male", "Male", "Female"];
 export const version1Keys = [
   "Other (Not Listed)",
   "Nourish or be nourished",
-  "Take orders or give them",
+  "Exchange of power",
   "Nourish or be nourished",
-  "Take orders or give them",
-  "Take orders or give them",
-  "Take orders or give them",
-  "Take orders or give them"
+  "Pets",
+  "Domestic Bottom",
+  "Financial Sub",
+  "Rope Bunny"
 ];
+
 export const version1Hobbies = [
   "Arts",
   "Collecting",

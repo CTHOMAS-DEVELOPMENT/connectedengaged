@@ -11,7 +11,6 @@ const cors = require("cors"); // Assuming you're using the 'cors' package for Ex
 const JSZip = require("jszip");
 const util = require("util");
 const Groq = require('groq-sdk');
-const { HfInference } = require("@huggingface/inference");
 // Create a new express application
 const app = express();
 const server = http.createServer(app);
@@ -152,7 +151,6 @@ const pool = new Pool({
   port: process.env.CONNECTION_POOL_PORT
 });
 const groq = new Groq({ apiKey: process.env.ADMIN_AI_KEY_1 });
-const hfInference = new HfInference(process.env.HF_TOKEN);
 function handleDatabaseError(error, res) {
   // Your error handling logic
   console.error("Database error:", error);
@@ -530,7 +528,8 @@ app.post("/api/register", async (req, res) => {
       floatsMyBoat,
       sex,
       aboutYou,
-      aboutMyBotPal
+      aboutMyBotPal,
+      admin_face // New field from the frontend
     } = req.body;
 
     const saltRounds = 10;
@@ -539,7 +538,7 @@ app.post("/api/register", async (req, res) => {
     await client.query("BEGIN"); // Start transaction
     // Insert the new User
     const userInsertResult = await client.query(
-      "INSERT INTO users (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
+      "INSERT INTO users (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id",
       [
         username,
         email,
@@ -549,10 +548,12 @@ app.post("/api/register", async (req, res) => {
         floatsMyBoat,
         sex,
         aboutYou,
-        aboutMyBotPal
+        aboutMyBotPal,
+        admin_face // Save the admin_face value to the database
       ]
     );
     const newUserId = userInsertResult.rows[0].id;
+    
     // Extract the admin's ID
     const existingAdminId = parseInt(process.env.SYSTEM_ADMIN_ID);
     const [userOneId, userTwoId] =
@@ -565,7 +566,9 @@ app.post("/api/register", async (req, res) => {
       "INSERT INTO connections (user_one_id, user_two_id) VALUES ($1, $2)",
       [userOneId, userTwoId]
     );
+
     await client.query("COMMIT");
+
     // Insert welcome submission for the new user by the admin
     const submissionInsertResult = await client.query(
       "INSERT INTO user_submissions (user_id, title) VALUES ($1, $2) RETURNING id",
@@ -588,6 +591,7 @@ app.post("/api/register", async (req, res) => {
       "INSERT INTO submission_dialog (submission_id, posting_user_id, text_content) VALUES ($1, $2, $3)",
       [submissionId, existingAdminId, process.env.ADMIN_MESSAGE_1]
     );
+    
     // Send the response to the client
     res.json({ id: newUserId, username: username });
   } catch (error) {
@@ -603,6 +607,7 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
+
 app.put("/api/update_profile/:id", async (req, res) => {
   const { id } = req.params;
   let {
@@ -614,7 +619,8 @@ app.put("/api/update_profile/:id", async (req, res) => {
     floatsMyBoat,
     sex,
     aboutYou,
-    aboutMyBotPal
+    aboutMyBotPal,
+    admin_face // Add the admin_face field here
   } = req.body;
 
   // Validation for password length if it's not empty
@@ -644,8 +650,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
   floats_my_boat = COALESCE($6, floats_my_boat),
   sex = COALESCE($7, sex),
   about_you = COALESCE($8, about_you),
-  about_my_bot_pal = COALESCE($9, about_my_bot_pal)
-  WHERE id = $10
+  about_my_bot_pal = COALESCE($9, about_my_bot_pal),
+  admin_face = COALESCE($10, admin_face)  -- Include admin_face here
+  WHERE id = $11
   RETURNING *;
 `;
 
@@ -659,6 +666,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     sex,
     aboutYou,
     aboutMyBotPal,
+    admin_face, // Include the value for admin_face
     id,
   ];
 
@@ -674,6 +682,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     res.status(500).send("Failed to update profile");
   }
 });
+
 
 app.post("/api/filter-users/:userId", async (req, res) => {
   try {
@@ -1052,7 +1061,7 @@ app.delete("/api/delete-connection/:id", async (req, res) => {
 app.get("/api/users", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT id, username, profile_picture, profile_video, email, sexual_orientation, hobbies, floats_my_boat, sex, about_you FROM users ORDER BY username"
+      "SELECT id, username, profile_picture, profile_video, email, sexual_orientation, hobbies, floats_my_boat, sex, about_you, admin_face FROM users ORDER BY username"
     );
     res.json(result.rows);
   } catch (error) {
@@ -1060,6 +1069,7 @@ app.get("/api/users", async (req, res) => {
     res.status(500).send({ message: "An error occurred." });
   }
 });
+
 app.get("/api/connected-users/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -2027,7 +2037,7 @@ app.get("/api/interaction_feed_user_list", async (req, res) => {
     }
 
     const query = `
-      SELECT u.id, u.username, us.title, u.profile_picture 
+      SELECT u.id, u.username, us.title, u.profile_picture, u.admin_face
       FROM submission_members sm 
       JOIN users u ON sm.participating_user_id = u.id 
       JOIN user_submissions us ON sm.submission_id = us.id 
@@ -2049,7 +2059,7 @@ app.get("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      "SELECT id, username, email, profile_picture, profile_video, sexual_orientation, hobbies, floats_my_boat, sex, about_you, about_my_bot_pal FROM users WHERE id = $1",
+      "SELECT id, username, email, profile_picture, profile_video, sexual_orientation, hobbies, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face FROM users WHERE id = $1",
       [id] // Make sure to select the new 'sex' column here
     );
     res.json(result.rows[0]);
@@ -2430,5 +2440,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9898**Server running on port ${PORT}`);
+  console.log(`**9899**Server running on port ${PORT}`);
 });

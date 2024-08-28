@@ -221,3 +221,7 @@ BEGIN
     END IF;
 END
 $$;
+ALTER TYPE floats_my_boaty_type ADD VALUE 'Exchange of power';ALTER TYPE floats_my_boaty_type ADD VALUE 'Pets';
+ALTER TYPE floats_my_boaty_type ADD VALUE 'Domestic Bottom';ALTER TYPE floats_my_boaty_type ADD VALUE 'Financial Sub';ALTER TYPE floats_my_boaty_type ADD VALUE 'Rope Bunny';
+
+ALTER TABLE users ADD COLUMN admin_face CHARACTER VARYING(255);

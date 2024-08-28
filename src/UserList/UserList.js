@@ -198,7 +198,7 @@ const UsersList = () => {
   }, [loggedInUserId, authError]);
   useEffect(() => {
     const socket = io(process.env.REACT_APP_BACKEND_HOST);
-    socketRef.current = socket; 
+    socketRef.current = socket;
     socket.on("connect", () => {
       console.log("Socket connected ");
       socket.emit("register", { userId: loggedInUserId, submissionIds: [] });
@@ -216,18 +216,18 @@ const UsersList = () => {
         setShowConnectionRequests(false);
       }
     });
- // Listen for new_engagement messages
- socket.on("new_engagement", (data) => {
-  console.log("New engagement received:", data);
-  if (data.userIds.includes(loggedInUserId)) {
-    console.log("Triggering fetchConnectedUsers due to new engagement");
-    fetchConnectedUsers();
-    setMessage("A new engagement has been created!");
-    setType("info");
-    setAlertKey((prevKey) => prevKey + 1);
-    setShouldRefreshInteractions(true); // Add this line to trigger refresh
-  }
-});
+    // Listen for new_engagement messages
+    socket.on("new_engagement", (data) => {
+      console.log("New engagement received:", data);
+      if (data.userIds.includes(loggedInUserId)) {
+        console.log("Triggering fetchConnectedUsers due to new engagement");
+        fetchConnectedUsers();
+        setMessage("A new engagement has been created!");
+        setType("info");
+        setAlertKey((prevKey) => prevKey + 1);
+        setShouldRefreshInteractions(true); // Add this line to trigger refresh
+      }
+    });
     // Added the connection_requests_change listener
     socket.on("connection_requests_change", (data) => {
       if (data.requested_id === loggedInUserId) fetchConnectionRequested();
@@ -611,36 +611,28 @@ const UsersList = () => {
               <ul className="no-bullet">
                 {displayedUsers.map((user) => (
                   <li key={user.id} className="user-item">
+                    <span className="user-name font-style-4">{user.username}</span>
                     <div className="user-info-container center-elements">
-                      <span className="user-name">{user.username}</span>
+                      
                       <div className="center-elements">
-                        <Button
-                          variant="danger"
-                          className="btn-sm"
-                          onClick={() =>
-                            deleteContactToBeDeleted(user.connection_id)
-                          }
-                          onMouseEnter={() =>
-                            setHoveredContactToBeDeleted(user.connection_id)
-                          }
-                          onMouseLeave={() =>
-                            setHoveredContactToBeDeleted(null)
-                          }
+                        <div
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                          }}
                         >
-                          {hoveredContactToBeDeleted === user.connection_id ? (
-                            <TrashFill size={25} />
-                          ) : (
-                            <Trash size={25} />
-                          )}
-                        </Button>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            handleCheckboxChange(user.id, user.username)
-                          }
-                          checked={selectedUserIds.has(user.id)}
-                          className="user-checkbox"
-                        />
+                          {lastSelectedUserId !== user.id && (<svg width="30" height="30" style={svgStyle}>
+                            <polygon points="0,0 30,15 0,30" fill="blue" />
+                          </svg>)}
+                          <input
+                            type="checkbox"
+                            onChange={() =>
+                              handleCheckboxChange(user.id, user.username)
+                            }
+                            checked={selectedUserIds.has(user.id)}
+                            className="user-checkbox"
+                          />
+                        </div>
                         {lastSelectedUserId === user.id && (
                           <Button
                             variant="outline-info"
@@ -666,6 +658,23 @@ const UsersList = () => {
                       onClick={() => handleProfileClick(user.id, user.username)}
                     >
                       View Profile
+                    </Button>
+                    <Button
+                      variant="danger"
+                      className="btn-sm"
+                      onClick={() =>
+                        deleteContactToBeDeleted(user.connection_id)
+                      }
+                      onMouseEnter={() =>
+                        setHoveredContactToBeDeleted(user.connection_id)
+                      }
+                      onMouseLeave={() => setHoveredContactToBeDeleted(null)}
+                    >
+                      {hoveredContactToBeDeleted === user.connection_id ? (
+                        <TrashFill size={25} />
+                      ) : (
+                        <Trash size={25} />
+                      )}
                     </Button>
                   </li>
                 ))}
@@ -729,7 +738,7 @@ const UsersList = () => {
                   variant="outline-info"
                   className="btn-sm"
                   onClick={handleToggleRequestsFromOthers}
-                  style={{backgroundColor:'white'}}
+                  style={{ backgroundColor: "white" }}
                 >
                   {showRequestsFromOthers
                     ? "Hide Connection Requests from Others"
@@ -760,7 +769,7 @@ const UsersList = () => {
               accept=".zip"
             />
             <Button
-            style={{backgroundColor:'white'}}
+              style={{ backgroundColor: "white" }}
               variant="outline-info"
               onClick={() => document.getElementById("fileInput").click()}
             >

@@ -17,6 +17,8 @@ import validateUser from "../system/userValidation.js";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Eye, EyeSlash, CheckCircle, XCircle } from "react-bootstrap-icons";
+import botPalOptions from "./botPalOptions.json"; // Import the JSON file
+
 const RegistrationForm = () => {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
@@ -30,6 +32,7 @@ const RegistrationForm = () => {
   const [selectedGender, setSelectedGender] = useState(null);
   const [showHobbies, setShowHobbies] = useState(false);
   const [selectedHobby, setSelectedHobby] = useState(null);
+  const [selectedBotPalOption, setSelectedBotPalOption] = useState(1); // Default to the second option "Warm and friendly"
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -46,6 +49,10 @@ const RegistrationForm = () => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const hiddenTextareaStyle = {
+    display: "none",
+  };
   const handleLoginScreenClick = () => {
     if (userId) {
       navigate("/", { state: { username: formData.username } });
@@ -53,6 +60,33 @@ const RegistrationForm = () => {
       navigate("/"); // Update for v6
     }
   };
+  const getAdminFaceName = () => {
+    const selectedOption = botPalOptions.options[selectedBotPalOption];
+    const face = adminFace(version1Gender[selectedGender], version1Orientations[selectedOrientation]);
+    return `/admins/${selectedOption.botImage}${face}.png`; // Use the static path for saving to the database
+  };
+  
+  
+  const adminFace = (gender, orientation) => {
+    if (orientation === "Heterosexual") {
+      return gender === "Female" ? "Man" : "Woman";
+    } else if (orientation === "Lesbian") {
+      return "Woman";
+    } else if (orientation === "Homosexual") {
+      return gender === "Female" ? "Woman" : "Man";
+    }
+    return "Man"; // Default fallback
+  };  
+  const getAdminImagePath = () => {
+    const selectedOption = botPalOptions.options[selectedBotPalOption];
+    const face = adminFace(version1Gender[selectedGender], version1Orientations[selectedOrientation]);
+    const imagePath = `/admins/${selectedOption.botImage}${face}.png`; // Use the static path from the public directory
+  
+    return imagePath;
+  };
+  
+  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (name === "dummyEmail") {
@@ -64,7 +98,16 @@ const RegistrationForm = () => {
       }));
     }
   };
+  const handleRadioChange = (event) => {
+    const index = parseInt(event.target.value);
+    setSelectedBotPalOption(index);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      aboutMyBotPal: botPalOptions.options[index].value,
+    }));
+  };
 
+  
   const handleImageUpload = (url) => {
     setUploadedImageUrl(url);
   };
@@ -124,12 +167,16 @@ const RegistrationForm = () => {
       validationErrors["dummyEmail"] = "Emails do not match";
     }
     if (Object.keys(validationErrors).length === 0) {
+      const adminFacePath = getAdminFaceName();
       fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          admin_face: adminFacePath, // Include admin_face in the request payload
+        }),
       })
         .then((response) => {
           if (!response.ok) {
@@ -394,18 +441,57 @@ const RegistrationForm = () => {
           </div>
 
           <div>
-            <h3 className="font-style-4">About Your System Admin</h3>
-            <textarea
-              id="aboutMyBotPal"
-              className="about-you-textarea"
-              placeholder="Favourite hobby is cooking and tasting. I prefer chocolate sweets rather than boring boiled ones!"
-              name="aboutMyBotPal"
-              value={formData.aboutMyBotPal}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              required
-              style={{ width: "100%", height: "100px" }} // Adjust styling as needed
-            />
+            {selectedOrientation !== null && selectedGender !== null && (
+              <>
+                <h3 className="font-style-4">About Your System Admin</h3>
+                <img src={getAdminImagePath()} alt="admin" />
+                {botPalOptions.options.map((option, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex", // Ensure flexbox layout
+                        alignItems: "center", // Center the items vertically
+                        justifyContent: "center", // Center the items horizontally
+                      }}
+                    >
+                      <div
+                        style={{
+                          whiteSpace: "nowrap", // Prevent the text from wrapping
+                        }}
+                      >
+                        {option.label}
+                      </div>
+                      <input
+                        type="radio"
+                        id={`botPalOption${index}`}
+                        name="aboutMyBotPal"
+                        value={index}
+                        checked={selectedBotPalOption === index}
+                        onChange={handleRadioChange}
+                        style={{
+                          marginBottom: "0",
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <textarea
+                  id="aboutMyBotPal"
+                  className="about-you-textarea"
+                  name="aboutMyBotPal"
+                  value={formData.aboutMyBotPal}
+                  readOnly
+                  style={hiddenTextareaStyle}
+                />
+              </>
+            )}
           </div>
         </div>
         {!userId && (

@@ -5,7 +5,11 @@ import io from "socket.io-client";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
 import TextEntry from "../TextEntry/TextEntry";
-import { extractFilename, getThumbnailPath } from "../system/utils";
+import {
+  extractFilename,
+  getThumbnailPath,
+  findThumbImage,
+} from "../system/utils";
 import { Button, Spinner } from "react-bootstrap";
 import {
   ArrowLeftCircleFill,
@@ -47,6 +51,7 @@ const FeedScreen = () => {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [loggedInUserName, setLoggedInUsername] = useState("");
+  const [loggedInUserAdmin, setLoggedInUserAdmin] = useState("");
   const [notificationson, setNotificationsOn] = useState(false); //overide default
   const [hovering, setHovering] = useState(false);
   const [alertKey, setAlertKey] = useState(0);
@@ -72,6 +77,7 @@ const FeedScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   // In your FeedScreen component
   const [isRecording, setIsRecording] = useState(false);
+
   let audioURL = null;
 
   const audioRef = useRef(new Audio());
@@ -105,7 +111,11 @@ const FeedScreen = () => {
 
     socket.on("post update", (newPost) => {
       //console.log("Post update received:", newPost);
-      if (newPost && newPost.interestedUserIds && newPost.interestedUserIds.includes(parseInt(userId, 10))) {
+      if (
+        newPost &&
+        newPost.interestedUserIds &&
+        newPost.interestedUserIds.includes(parseInt(userId, 10))
+      ) {
         setUserIsLive(true);
       }
     });
@@ -222,6 +232,7 @@ const FeedScreen = () => {
           const loggedInUser = data.find((user) => user.id === userId);
           if (loggedInUser) {
             setLoggedInUsername(loggedInUser.username);
+            setLoggedInUserAdmin(findThumbImage(loggedInUser.admin_face));
           }
           // Filter out the current logged-in user from the list
           const filteredUsers = data.filter((user) => user.id !== userId);
@@ -589,16 +600,26 @@ const FeedScreen = () => {
             <div className="interaction-icons">
               {associatedUsers.map((user) => (
                 <div key={user.id} className="user-container">
-                  <img
-                    src={`${process.env.REACT_APP_BACKEND_URL}/${
-                      process.env.REACT_APP_IMAGE_FOLDER
-                    }/thumb-${extractFilename(user.profile_picture)}`}
-                    alt={user.username}
-                    className={`post-profile-image ${checkUserIsInActiveList(
-                      user.id,
-                      activeUsersList
-                    )}`}
-                  />
+
+                  {loggedInUserAdmin && (
+                    <img
+                      src={loggedInUserAdmin}
+                      alt="Admin Face"
+                      className={"post-profile-image"}
+                    />
+                  )}
+                  {!loggedInUserAdmin && (
+                    <img
+                      src={`${process.env.REACT_APP_BACKEND_URL}/${
+                        process.env.REACT_APP_IMAGE_FOLDER
+                      }/thumb-${extractFilename(user.profile_picture)}`}
+                      alt={user.username}
+                      className={`post-profile-image ${checkUserIsInActiveList(
+                        user.id,
+                        activeUsersList
+                      )}`}
+                    />
+                  )}
                   <div className="user-info">
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
@@ -804,16 +825,39 @@ const FeedScreen = () => {
           )}
         </>
       )}
-      {/* List of combined posts*/}
+
       {filteredPosts.map((post) => (
         <div key={post.id} className="element-group-box">
-          <img
-            src={`${process.env.REACT_APP_IMAGE_HOST}/${
-              process.env.REACT_APP_IMAGE_FOLDER
-            }/thumb-${extractFilename(post.profile_picture)}`}
-            alt="User Post"
-            className="post-profile-image"
-          />
+          {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
+            post.posting_user_id && (
+            <img
+              src={`${process.env.REACT_APP_IMAGE_HOST}/${
+                process.env.REACT_APP_IMAGE_FOLDER
+              }/thumb-${extractFilename(post.profile_picture)}`}
+              alt="User Post"
+              className="post-profile-image"
+            />
+          )}
+
+          {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+            post.posting_user_id &&
+            loggedInUserAdmin && (
+              <img
+                src={loggedInUserAdmin}
+                alt="Admin Face"
+                className="post-profile-image"
+              />
+            )}
+
+          {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+            post.posting_user_id &&
+            !loggedInUserAdmin && (
+              <img
+                src={"/admins/thumb-file-admin.JPEG"}
+                alt="Admin Face"
+                className="post-profile-image"
+              />
+            )}
 
           {post.type === "text" ? (
             <div className="speech-bubble">

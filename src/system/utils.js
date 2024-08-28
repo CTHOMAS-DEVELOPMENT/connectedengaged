@@ -30,7 +30,25 @@ export const extractFilename = (pathString, imgDefault="") => {
   // The last part of the array should be the filename
   return parts.pop();
 };
+export const findThumbImage = (imagePath) => {
+  // Check if the imagePath is a valid string
+  if (typeof imagePath !== 'string' || !imagePath) {
+    return ""; // Return an empty string or handle the error as needed
+  }
 
+  // Find the last occurrence of the period (.) to locate the file extension
+  const lastDotIndex = imagePath.lastIndexOf('.');
+
+  // If there's no dot in the string, return the original path
+  if (lastDotIndex === -1) {
+    return imagePath;
+  }
+
+  // Construct the new path by inserting '_thumb' before the file extension
+  const thumbImagePath = `${imagePath.slice(0, lastDotIndex)}_thumb${imagePath.slice(lastDotIndex)}`;
+
+  return thumbImagePath;
+};
 export const getThumbnailPath = (dbPath) => {
   // Ensure the path is formatted correctly
   const formattedPath = dbPath.replace(/^backend\\imageUploaded\\|^backend\/imageUploaded\//, "/uploaded-images/");
