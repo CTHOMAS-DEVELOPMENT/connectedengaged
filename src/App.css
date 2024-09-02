@@ -882,6 +882,7 @@ Interaction_entry {
   border: none;
   background-color: transparent;
 }
+
 .text-entry .btn-sm {
   background-color: #007bff;
   border-color: #007bff;
@@ -1058,6 +1059,54 @@ Interaction_entry {
   align-items: center; /* Aligns buttons to the start of the flex container */
   margin-bottom: 20px; /* Adds some space below the button tower */
 }
+.scheduler-container {
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Ensure the container does not overflow the viewport */
+  overflow: auto; /* Allow scrolling if the grid is too large */
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.time-block {
+  padding: 5px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.time-block.today {
+  background-color: #b3cde0; /* Light blue for today */
+}
+
+.time-block.tomorrow {
+  background-color: #ccebc5; /* Light green for tomorrow */
+}
+
+.time-block.day-after-tomorrow {
+  background-color: #fbb4ae; /* Light red for the day after tomorrow */
+}
+
+.time-block.selected {
+  background-color: #ffcc66; /* Highlight selected time block */
+  font-weight: bold;
+}
+
+.scheduler-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+
 /* Dynamic font class added via JS based on user selection */
 .font-style-1 {
   font-family: "Roboto", sans-serif;

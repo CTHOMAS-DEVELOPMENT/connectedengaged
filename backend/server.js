@@ -80,17 +80,6 @@ app.use((req, res, next) => {
   console.log('Incoming Request:', req.method, req.url);
   console.log('Request Origin:', req.headers.origin);
   
-  // Capture the original send function to log response details
-  // const originalSend = res.send;
-  // res.send = function(body) {
-  //   console.log('Response Status:', res.statusCode);
-  //   console.log('Response Headers:', res.getHeaders());
-  //   if (res.statusCode === 307 || res.statusCode === 308) {
-  //     console.log('Redirecting to:', res.get('Location'));
-  //   }
-  //   originalSend.call(this, body);
-  // };
-
   next();
 });
 // Middleware to redirect HTTP to HTTPS
@@ -180,7 +169,6 @@ io.on("connection", (socket) => {
     io.to(`submission-${submissionId}`).emit("postDeleted", { postId });
   });
   socket.on("register", ({ userId, submissionIds }) => {
-    //console.log(`User ${userId} registered with submission IDs:`, submissionIds);
     console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
     if (!clientSubmissions[socket.id]) {
       clientSubmissions[socket.id] = {
@@ -310,6 +298,67 @@ function listDirectoryContents(directoryPath) {
     }
   });
 }
+//999
+function adminFace(gender, orientation){
+  if (orientation === "Heterosexual") {
+    return gender === "Female" ? "Male" : "Female";
+  } else if (orientation === "Lesbian") {
+    return "Female";
+  } else if (orientation === "Homosexual") {
+    return gender === "Female" ? "Female" : "Male";
+  }
+  return "Man"; // Default fallback
+};
+const handleFilterUsers = async (userId, sexpref) => {
+  try {
+    const queryConditions = ["sex = $1"];
+    const queryParams = [sexpref];
+
+    const query = `
+      SELECT id, username, email, sexual_orientation, hobbies, floats_my_boat, sex, about_you 
+      FROM users 
+      WHERE ${queryConditions.join(" AND ")}
+      ORDER BY id DESC
+      LIMIT 5
+    `;
+
+    // Fetch filtered users based on criteria
+    const filteredUsers = await pool.query(query, queryParams);
+
+    // Delete existing connection requests for the user
+    const deleteQuery = `
+      DELETE FROM connection_requests WHERE requester_id = $1
+    `;
+    await pool.query(deleteQuery, [userId]);
+
+    // Populate connection_requests for each filtered user
+    if (filteredUsers.rows.length > 0) {
+      const insertQuery = `
+        INSERT INTO connection_requests (requester_id, requested_id, status)
+        SELECT $1, id, 'pending' 
+        FROM unnest($2::int[]) AS id
+        WHERE id != $1 AND NOT EXISTS (
+          SELECT 1 FROM connection_requests WHERE requester_id = $1 AND requested_id = id
+        )
+      `;
+      await pool.query(insertQuery, [
+        userId,
+        filteredUsers.rows.map((user) => user.id),
+      ]);
+    }
+
+    return {
+      success: true,
+      message: "Connection requests sent.",
+      filteredUsers: filteredUsers.rows,
+    };
+  } catch (error) {
+    console.error("Error in handleFilterUsers:", error);
+    throw new Error("Failed to filter users.");
+  }
+};
+
+
 app.get("/api/authorised/:userId", async (req, res) => {
   let tokenMatches = false;
   let token = "";
@@ -586,12 +635,14 @@ app.post("/api/register", async (req, res) => {
       "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
       [submissionId, newUserId]
     );
-
+    const adminGreet =aboutMyBotPal
     await client.query(
       "INSERT INTO submission_dialog (submission_id, posting_user_id, text_content) VALUES ($1, $2, $3)",
       [submissionId, existingAdminId, process.env.ADMIN_MESSAGE_1]
     );
-    
+    // 999 - Send connection requests
+    const sexpref=adminFace(sex, sexualOrientation);
+    await handleFilterUsers(newUserId, sexpref);
     // Send the response to the client
     res.json({ id: newUserId, username: username });
   } catch (error) {
@@ -683,7 +734,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
   }
 });
 
-
+//999
 app.post("/api/filter-users/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -726,7 +777,7 @@ app.post("/api/filter-users/:userId", async (req, res) => {
       queryConditions.push(`about_you ILIKE '%' || $${paramCounter++} || '%'`);
       queryParams.push(aboutYou);
     }
-
+console.log("filter-users-queryConditions",queryConditions)
     let query = `
       SELECT id, username, email, sexual_orientation, hobbies, floats_my_boat, sex, about_you 
       FROM users 
@@ -927,7 +978,8 @@ app.get("/api/connected/:userId", async (req, res) => {
           hobbies, 
           floats_my_boat, 
           sex,
-          about_you 
+          about_you,
+          admin_face 
         FROM 
           users 
         WHERE 
@@ -944,7 +996,8 @@ app.get("/api/connected/:userId", async (req, res) => {
           U2.hobbies, 
           U2.floats_my_boat, 
           U2.sex,
-          U2.about_you
+          U2.about_you,
+          U2.admin_face
         FROM 
           users U1
           JOIN connections ON U1.id = connections.user_one_id OR U1.id = connections.user_two_id
@@ -962,6 +1015,7 @@ app.get("/api/connected/:userId", async (req, res) => {
     res.status(500).send({ message: "An error occurred." });
   }
 });
+
 
 app.delete("/api/delete-requests-from-me/:userId", async (req, res) => {
   const { userId } = req.params; // Extract userId from the request URL
@@ -1799,66 +1853,7 @@ app.post(
     }
   }
 );
-// async function newUserAdminMessage(userId, title) {
-//   const localZipFilePath = path.join(__dirname, "Welcome_newAdmin.zip");
-//   const remoteZipFilePath = process.env.ZIP_LOCATION;
-//   const originalFileName = title;
 
-//   let zipData;
-//   console.log(
-//     `Attempting to process ZIP file for user: ${userId}, title: ${title}`
-//   );
-//   // Check if the file exists locally
-//   if (fs.existsSync(localZipFilePath)) {
-//     console.log(`Local ZIP file found at ${localZipFilePath}`);
-//     zipData = fs.readFileSync(localZipFilePath);
-//   } else {
-//     console.log(
-//       `Local ZIP file not found. Attempting to fetch from ${remoteZipFilePath}`
-//     );
-
-//     // Fetch the ZIP file from the remote URL
-//     try {
-//       const response = await axios.get(remoteZipFilePath, { responseType: 'arraybuffer' });
-
-//       if (response.status !== 200) {
-//         throw new Error(`Failed to download ZIP file. HTTP status: ${response.status}`);
-//       }
-
-//       console.log(`Successfully fetched ZIP file from ${remoteZipFilePath}`);
-//       zipData = Buffer.from(response.data);
-//     } catch (error) {
-//       console.error(
-//         `Error fetching ZIP file from ${remoteZipFilePath}:`,
-//         error.message
-//       );
-//       throw new Error(
-//         `Could not fetch ZIP file from remote location: ${error.message}`
-//       );
-//     }
-//   }
-
-//   // Call processZipFile with the required arguments
-//   try {
-//     const result = await processZipFile(
-//       localZipFilePath,
-//       userId,
-//       originalFileName,
-//       zipData, // Derived from fs.readFileSync or fetch response
-//       false
-//     );
-//     console.log(
-//       `Successfully processed ZIP file for user: ${userId}, title: ${title}`
-//     );
-//     return result;
-//   } catch (error) {
-//     console.error(
-//       `Error processing ZIP file for user: ${userId}, title: ${title}:`,
-//       error.message
-//     );
-//     throw error;
-//   }
-// }
 
 async function deleteExpiredInteractions() {
   await pool.query("BEGIN");
@@ -2191,7 +2186,6 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
       // Call the system_reply function if the SYSTEM_ADMIN_ID is in interestedUserIds
       const systemAdminId = parseInt(process.env.SYSTEM_ADMIN_ID, 10);
       if (interestedUserIds.includes(systemAdminId)) {
-        //userId 999
 
         system_reply({
           userId: systemAdminId,
@@ -2364,9 +2358,14 @@ app.post("/api/update_user_password", async (req, res) => {
     res.status(500).json({ message: "Server error while updating password" });
   }
 });
+//999
 app.post("/api/notify_offline_users", async (req, res) => {
-  const { type, title, loggedInUserName, associatedUsers } = req.body;
-
+  const { type, title, loggedInUserName, associatedUsers, scheduledTime } = req.body;
+  console.log("type", type)
+  console.log("title", title)
+  console.log("loggedInUserName", loggedInUserName)
+  console.log("associatedUsers", associatedUsers)
+  console.log("scheduledTime", scheduledTime)
   try {
     for (const user of associatedUsers) {
       const { rows } = await pool.query(
@@ -2375,7 +2374,23 @@ app.post("/api/notify_offline_users", async (req, res) => {
       );
       const email = rows[0].email;
       const username = rows[0].username;
-
+      let formattedTime = "";
+      if (scheduledTime) {
+        const dateObj = new Date(scheduledTime); // Convert to Date object
+        const isToday = dateObj.toDateString() === new Date().toDateString();
+        const isTomorrow =
+          dateObj.toDateString() ===
+          new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+        const dayText = isToday
+          ? "today"
+          : isTomorrow
+          ? "tomorrow"
+          : "the day after tomorrow";
+        formattedTime = `${dayText} at ${dateObj.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
+      }
       const getMessage = () => {
         switch (type) {
           case "Text":
@@ -2384,6 +2399,8 @@ app.post("/api/notify_offline_users", async (req, res) => {
             return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: https://${process.env.ROOT_DOMAIN}`;
           case "connection_accepted":
             return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: https://${process.env.ROOT_DOMAIN}`;
+          case "call_request":
+            return `Hey ${username}, ${loggedInUserName} has requested a video call with you ${formattedTime}.\nPlease login to the ConnectedEngaged application to join the call: https://${process.env.ROOT_DOMAIN}`;
           default:
             return "unknown type";
         }
@@ -2397,6 +2414,8 @@ app.post("/api/notify_offline_users", async (req, res) => {
             return `${loggedInUserName} has posted to ${title}`;
           case "connection_accepted":
             return `${loggedInUserName} has accepted your connection request`;
+          case "call_request":
+            return `${loggedInUserName} has requested a video call`;
           default:
             return "unknown type";
         }
@@ -2429,6 +2448,7 @@ app.post("/api/notify_offline_users", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });

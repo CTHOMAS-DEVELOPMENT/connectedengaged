@@ -5,11 +5,13 @@ import io from "socket.io-client";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
 import TextEntry from "../TextEntry/TextEntry";
+import LiveCallCentre from "./LiveCallCentre";
 import {
   extractFilename,
   getThumbnailPath,
   findThumbImage,
 } from "../system/utils";
+import Scheduler from "./Scheduler";
 import { Button, Spinner } from "react-bootstrap";
 import {
   ArrowLeftCircleFill,
@@ -36,6 +38,8 @@ const FeedScreen = () => {
   const [showUploader, setShowUploader] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
   const [showTextUpdate, setShowTextUpdate] = useState(false);
+  const [showLiveCallCentre, setShowLiveCallCentre] = useState(false);
+  const [liveCallCentreUsers, setLiveCallCentreUsers] = useState([]);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [currentText, setCurrentText] = useState("");
   const [posts, setPosts] = useState([]);
@@ -52,11 +56,14 @@ const FeedScreen = () => {
   const [type, setType] = useState("info");
   const [loggedInUserName, setLoggedInUsername] = useState("");
   const [loggedInUserAdmin, setLoggedInUserAdmin] = useState("");
-  const [notificationson, setNotificationsOn] = useState(false); //overide default
+  const [notificationson, setNotificationsOn] = useState(false); //overide default-reset production
   const [hovering, setHovering] = useState(false);
   const [alertKey, setAlertKey] = useState(0);
   const [inCall, setInCall] = useState(false);
   const [caller, setCaller] = useState(null);
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [callRequestedUser, setCallRequestedUser] = useState([]);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -67,6 +74,7 @@ const FeedScreen = () => {
   const userId = location.state ? location.state.userId : null;
   const submissionId = location.state ? location.state.submissionId : null;
   const title = location.state ? location.state.title : null;
+  const [userToSchedule, setUserToSchedule] = useState(null);
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
   };
@@ -372,7 +380,14 @@ const FeedScreen = () => {
       </div>
     );
   }
-  const postTypeForEmail = async (type) => {
+  //999 -send a version of associated users with 1 user about message call
+  //setCallTime (For email)
+  const postTypeForEmail = async (
+    type,
+    associatedUsers,
+    scheduledTime = "",
+    dayType = ""
+  ) => {
     if (!notificationson) {
       return;
     }
@@ -385,10 +400,12 @@ const FeedScreen = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            type: type, // Assume this is captured somewhere in your component's state or props
-            title: title, // Same as above
-            loggedInUserName: loggedInUserName, // Same as above
-            associatedUsers: associatedUsers, // Array of user objects
+            type: type,
+            title: title,
+            loggedInUserName: loggedInUserName,
+            associatedUsers: associatedUsers,
+            scheduledTime: scheduledTime ? scheduledTime.toISOString() : "",
+            dayType: dayType,
           }),
         }
       );
@@ -398,7 +415,6 @@ const FeedScreen = () => {
       }
 
       const result = await response.json();
-      //console.log("Notification sent successfully:", result);
       setMessage("Notification sent successfully:" + result);
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
@@ -430,7 +446,7 @@ const FeedScreen = () => {
       );
       const data = await response.json();
 
-      postTypeForEmail("audio");
+      postTypeForEmail("audio", associatedUsers);
       setMessage("Upload audio successful!");
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
@@ -471,6 +487,21 @@ const FeedScreen = () => {
     });
   };
   const startVideoCall = (userToCall) => {
+    setShowLiveCallCentre(false);
+    const selectedUsername = getUserName(userToCall);
+    const systemTime = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    // Prepare the callRequestedUser array with only the user being called
+    setCallRequestedUser([
+      associatedUsers.find((user) => user.id === userToCall),
+    ]);
+    // Post the event message
+    postMessage(
+      `${loggedInUserName} called ${selectedUsername} at ${systemTime}`
+    );
+    // Send email notification
     setInCall(true);
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -557,6 +588,98 @@ const FeedScreen = () => {
         peerRef.current = peer;
       });
   };
+  //999
+  const launchLiveCallCentre = () => {
+    const updatedAssociatedUsers = associatedUsers.map((user) => {
+      return {
+        ...user,
+        isActive:
+          checkUserIsInActiveList(user.id, activeUsersList) === "active",
+      };
+    });
+    console.log("FeedScreen-updatedAssociatedUsers", updatedAssociatedUsers);
+    console.log("Launch Live Call Centre with the following user data:");
+    console.log(updatedAssociatedUsers);
+
+    setLiveCallCentreUsers(updatedAssociatedUsers); // Set the updated users before showing the modal
+    setShowLiveCallCentre(true); // Show the LiveCallCentre modal
+  };
+  
+
+  const callAction = (userId, action) => {
+    if (action === "Cancel") {
+      console.log(`Do nothing Cancel user ID: ${userId}`);
+      setShowLiveCallCentre(false);
+    } else if (action === "Call") {
+      console.log(`Initiate call with user ID: ${userId}`);
+
+      // Start the video call
+      startVideoCall(userId);
+    } else if (action === "Schedule") {
+      // Show the scheduler
+      setSelectedUser(userId);
+      setShowScheduler(true);
+    }
+  };
+
+  const getUserName = (userId) => {
+    const user = associatedUsers.find((user) => user.id === userId);
+    return user ? user.username : "Unknown User";
+  };
+  const onPostSubmit = () => {
+    fetchPosts(); // Assuming fetchPosts is a function that fetches the updated posts
+  };
+  const postMessage = async (textContent) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/${submissionId}/text-entry`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, textContent }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        if (onPostSubmit) {
+          onPostSubmit(); // Refresh the posts after message submission
+        }
+      } else {
+        throw new Error(data.message || "Error submitting text");
+      }
+    } catch (error) {
+      console.error("Error submitting message:", error);
+    }
+  };
+
+  const handleSchedulerConfirm = (scheduledTime) => {
+    const selectedUsername = getUserNameFromAssociatedUsers(
+      associatedUsers,
+      selectedUser
+    );
+
+    // Prepare the callRequestedUser array with only the user being scheduled
+    const callRequestedUser = [
+      associatedUsers.find((user) => user.id === selectedUser),
+    ];
+
+    postMessage(
+      `${loggedInUserName} requested ${selectedUsername} for a video call at ${scheduledTime.toLocaleString()}`
+    );
+
+    // Send the email notification with call_request type
+    postTypeForEmail("call_request", callRequestedUser, scheduledTime);
+
+    setShowScheduler(false);
+    // Close the Live Call Centre modal
+    setShowLiveCallCentre(false);
+  };
+
+  const handleSchedulerCancel = () => {
+    setShowScheduler(false);
+  };
 
   const endCall = () => {
     setInCall(false);
@@ -600,15 +723,16 @@ const FeedScreen = () => {
             <div className="interaction-icons">
               {associatedUsers.map((user) => (
                 <div key={user.id} className="user-container">
-
-                  {loggedInUserAdmin && (
+                  {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+                    user.id && (
                     <img
                       src={loggedInUserAdmin}
                       alt="Admin Face"
                       className={"post-profile-image"}
                     />
                   )}
-                  {!loggedInUserAdmin && (
+                  {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
+                    user.id && (
                     <img
                       src={`${process.env.REACT_APP_BACKEND_URL}/${
                         process.env.REACT_APP_IMAGE_FOLDER
@@ -670,6 +794,40 @@ const FeedScreen = () => {
             </div>
           )}
 
+          {showLiveCallCentre && (
+            <div
+              className="modal-backdrop"
+              onClick={() => setShowLiveCallCentre(false)}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <LiveCallCentre
+                  users={liveCallCentreUsers}
+                  callAction={callAction}
+                />
+              </div>
+            </div>
+          )}
+
+          {showScheduler && (
+            <div
+              className="modal-backdrop"
+              onClick={() => setShowScheduler(false)}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Scheduler
+                  onTimeSelected={handleSchedulerConfirm}
+                  onCancel={handleSchedulerCancel}
+                />
+              </div>
+            </div>
+          )}
+
           {showUploader && (
             <div className="backdrop" onClick={handleCloseUploader}>
               <div
@@ -686,7 +844,7 @@ const FeedScreen = () => {
                     setType("info");
                     setAlertKey((prevKey) => prevKey + 1);
                     handleCloseUploader(); // Close the uploader modal first
-                    postTypeForEmail("picture");
+                    postTypeForEmail("picture", associatedUsers);
                     socketRef.current.emit("postUpdated", {
                       submissionId,
                       dialogId,
@@ -712,7 +870,7 @@ const FeedScreen = () => {
                 userId={userId}
                 submissionId={submissionId}
                 onPostSubmit={() => {
-                  postTypeForEmail("Text");
+                  postTypeForEmail("Text", associatedUsers);
                   handlePostSubmit();
                 }}
               />
@@ -762,6 +920,19 @@ const FeedScreen = () => {
                 {isImageHovered ? <ImageFill size={25} /> : <Image size={25} />}
               </Button>
             </div>
+            <Button
+              variant="outline-info"
+              className="btn-icon"
+              onClick={launchLiveCallCentre}
+              style={{
+                height: "80px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }} // Adjust height as needed
+            >
+              <Telephone size={25} />
+            </Button>
             <div className="verticle_wrapper">
               <Button
                 variant="outline-info"
@@ -825,7 +996,6 @@ const FeedScreen = () => {
           )}
         </>
       )}
-
       {filteredPosts.map((post) => (
         <div key={post.id} className="element-group-box">
           {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==

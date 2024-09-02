@@ -41,6 +41,7 @@ const UsersList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(true);
   const [message, setMessage] = useState("");
+  const [adminFace, setAdminFace] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
   const helpMessage =
@@ -498,13 +499,15 @@ const UsersList = () => {
   const fetchConnectedUsers = () => {
     if (!authError && loggedInUserId) {
       console.log("Fetching connected users...");
-
       fetch(`${process.env.REACT_APP_API_URL}/api/connected/${loggedInUserId}`)
         .then((response) => response.json())
         .then((data) => {
           console.log("Fetched connected users:", data);
 
           const loggedInUser = data.find((user) => user.id === loggedInUserId);
+          //999
+          console.log("loggedInUser.admin_face", loggedInUser.admin_face);
+          setAdminFace(loggedInUser.admin_face);
           const dbUserlist = data.filter((user) => user.id !== loggedInUserId);
           setUser(loggedInUser);
           setUsers(dbUserlist);
@@ -611,9 +614,10 @@ const UsersList = () => {
               <ul className="no-bullet">
                 {displayedUsers.map((user) => (
                   <li key={user.id} className="user-item">
-                    <span className="user-name font-style-4">{user.username}</span>
+                    <span className="user-name font-style-4">
+                      {user.username}
+                    </span>
                     <div className="user-info-container center-elements">
-                      
                       <div className="center-elements">
                         <div
                           style={{
@@ -621,9 +625,11 @@ const UsersList = () => {
                             display: "inline-block",
                           }}
                         >
-                          {lastSelectedUserId !== user.id && (<svg width="30" height="30" style={svgStyle}>
-                            <polygon points="0,0 30,15 0,30" fill="blue" />
-                          </svg>)}
+                          {lastSelectedUserId !== user.id && (
+                            <svg width="30" height="30" style={svgStyle}>
+                              <polygon points="0,0 30,15 0,30" fill="blue" />
+                            </svg>
+                          )}
                           <input
                             type="checkbox"
                             onChange={() =>
@@ -648,34 +654,58 @@ const UsersList = () => {
                         )}
                       </div>
                     </div>
-                    <div className="thumb-profile-viewer">
-                      <ThumbProfileViewer userId={user.id} />
-                    </div>
-
-                    <Button
-                      variant="outline-info"
-                      className="btn-sm"
-                      onClick={() => handleProfileClick(user.id, user.username)}
-                    >
-                      View Profile
-                    </Button>
-                    <Button
-                      variant="danger"
-                      className="btn-sm"
-                      onClick={() =>
-                        deleteContactToBeDeleted(user.connection_id)
-                      }
-                      onMouseEnter={() =>
-                        setHoveredContactToBeDeleted(user.connection_id)
-                      }
-                      onMouseLeave={() => setHoveredContactToBeDeleted(null)}
-                    >
-                      {hoveredContactToBeDeleted === user.connection_id ? (
-                        <TrashFill size={25} />
-                      ) : (
-                        <Trash size={25} />
+                    {/*999
+                    
+                    */}
+                    {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+                      user.id &&
+                      adminFace && (
+                        <div className="thumb-profile-viewer">
+                          <img src={adminFace} alt="Admin Face" />
+                        </div>
                       )}
-                    </Button>
+                    {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+                      user.id &&
+                      !adminFace && (
+                        <img src={"/admins/file-admin.JPEG"} alt="Admin Face" />
+                      )}
+                    {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
+                      user.id && (
+                      <>
+                        <div className="thumb-profile-viewer">
+                          <ThumbProfileViewer userId={user.id} />
+                        </div>
+
+                        <Button
+                          variant="outline-info"
+                          className="btn-sm"
+                          onClick={() =>
+                            handleProfileClick(user.id, user.username)
+                          }
+                        >
+                          View Profile
+                        </Button>
+                        <Button
+                          variant="danger"
+                          className="btn-sm"
+                          onClick={() =>
+                            deleteContactToBeDeleted(user.connection_id)
+                          }
+                          onMouseEnter={() =>
+                            setHoveredContactToBeDeleted(user.connection_id)
+                          }
+                          onMouseLeave={() =>
+                            setHoveredContactToBeDeleted(null)
+                          }
+                        >
+                          {hoveredContactToBeDeleted === user.connection_id ? (
+                            <TrashFill size={25} />
+                          ) : (
+                            <Trash size={25} />
+                          )}
+                        </Button>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>

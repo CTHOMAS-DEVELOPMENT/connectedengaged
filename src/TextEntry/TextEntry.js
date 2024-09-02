@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AlertMessage from "../system/AlertMessage";
-
 import { Rocket, RocketFill } from "react-bootstrap-icons";
+
 const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
   const [textContent, setTextContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -11,12 +11,13 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!textContent.trim()) {
       setMessage("Please enter some text");
       setType("error");
-      setAlertKey(prevKey => prevKey + 1);
+      setAlertKey((prevKey) => prevKey + 1);
       return;
     }
     setIsSubmitting(true); // Set submitting state to true
@@ -28,7 +29,7 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
         },
         body: JSON.stringify({ userId, textContent }), // Including userId in the request body
       });
-//999 add new field value
+
       const data = await response.json();
       if (response.ok) {
         setTextContent("");
@@ -53,7 +54,7 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
             value={textContent}
             onChange={(e) => setTextContent(e.target.value)}
             placeholder="What's on your mind?"
-            disabled={isSubmitting}
+            disabled={isSubmitting} // Disable textarea while submitting
           />
 
           <Button
@@ -62,11 +63,23 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
             className="btn-icon"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
+            disabled={isSubmitting} // Disable button while submitting
           >
-            {isImageHovered ? <RocketFill size={25} /> : <Rocket size={25} />}
+            {isSubmitting ? (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : isImageHovered ? (
+              <RocketFill size={25} />
+            ) : (
+              <Rocket size={25} />
+            )}
           </Button>
           {message && <AlertMessage key={alertKey} message={message} type={type} />}
-
         </div>
       </form>
     </div>
