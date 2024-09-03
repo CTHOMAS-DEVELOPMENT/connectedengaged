@@ -63,7 +63,7 @@ const FeedScreen = () => {
   const [caller, setCaller] = useState(null);
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [callRequestedUser, setCallRequestedUser] = useState([]);
+  //999 const [callRequestedUser, setCallRequestedUser] = useState([]);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -74,7 +74,6 @@ const FeedScreen = () => {
   const userId = location.state ? location.state.userId : null;
   const submissionId = location.state ? location.state.submissionId : null;
   const title = location.state ? location.state.title : null;
-  const [userToSchedule, setUserToSchedule] = useState(null);
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
   };
@@ -494,9 +493,9 @@ const FeedScreen = () => {
       minute: "2-digit",
     });
     // Prepare the callRequestedUser array with only the user being called
-    setCallRequestedUser([
-      associatedUsers.find((user) => user.id === userToCall),
-    ]);
+    // setCallRequestedUser([
+    //   associatedUsers.find((user) => user.id === userToCall),
+    // ]);
     // Post the event message
     postMessage(
       `${loggedInUserName} called ${selectedUsername} at ${systemTime}`
@@ -604,7 +603,6 @@ const FeedScreen = () => {
     setLiveCallCentreUsers(updatedAssociatedUsers); // Set the updated users before showing the modal
     setShowLiveCallCentre(true); // Show the LiveCallCentre modal
   };
-  
 
   const callAction = (userId, action) => {
     if (action === "Cancel") {

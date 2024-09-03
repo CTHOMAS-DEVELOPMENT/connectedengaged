@@ -43,7 +43,7 @@ const RegistrationForm = () => {
     floatsMyBoat: "",
     sex: "",
     aboutYou: "",
-    aboutMyBotPal: "",
+    aboutMyBotPal: botPalOptions.options[1].value,
   });
   //about_my_bot_pal
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);

@@ -50,7 +50,19 @@ const UpdateProfile = () => {
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
   const [selectedBotPalOption, setSelectedBotPalOption] = useState(null); // Track the selected botPal option
-
+  const fixedBottomStyle = {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    backgroundColor: "white",
+    padding: "10px",
+    boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.1)",
+    zIndex: 1000, // Ensures it stays on top of other elements
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
   const getStaticAdminImagePath = (adminFacePath) => {
     if (!adminFacePath) {
       return ""; // Return an empty string or a default image path if the value is null or undefined
@@ -58,7 +70,7 @@ const UpdateProfile = () => {
     const relativePath = `/admins/${adminFacePath.split("/").pop()}`;
     return relativePath;
   };
-  
+
   const adminFace = (gender, orientation) => {
     if (orientation === "Heterosexual") {
       return gender === "Female" ? "Man" : "Woman";
@@ -71,14 +83,17 @@ const UpdateProfile = () => {
   };
   const getAdminFaceImagePath = (index) => {
     const selectedOption = botPalOptions.options[index];
-    const face = adminFace(version1Gender[selectedGender], version1Orientations[selectedOrientation]);
+    const face = adminFace(
+      version1Gender[selectedGender],
+      version1Orientations[selectedOrientation]
+    );
     return `/admins/${selectedOption.botImage}${face}.png`;
   };
-  
+
   const handleRadioChange = (event) => {
     const index = parseInt(event.target.value);
     setSelectedBotPalOption(index);
-    
+
     // Update the aboutMyBotPal and admin_face in formData
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -86,7 +101,7 @@ const UpdateProfile = () => {
       admin_face: getAdminFaceImagePath(index), // Update the admin_face path based on the selected option
     }));
   };
-  
+
   useEffect(() => {
     if (userId) {
       checkAuthorization(userId).then((isAuthorized) => {
@@ -163,9 +178,6 @@ const UpdateProfile = () => {
         setAlertKey((prevKey) => prevKey + 1);
       });
   };
-  
-
-
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -283,7 +295,7 @@ const UpdateProfile = () => {
       </div>
       <form noValidate onSubmit={handleSubmit}>
         <div className="system-form">
-          <div>
+          <div style={fixedBottomStyle}>
             <Button
               style={{ backgroundColor: "white" }}
               variant="outline-info"
@@ -292,6 +304,9 @@ const UpdateProfile = () => {
             >
               Update Profile
             </Button>
+            {message && (
+              <AlertMessage key={alertKey} message={message} type={type} />
+            )}
           </div>
           <div>
             <label htmlFor="username">Username</label>
@@ -329,9 +344,7 @@ const UpdateProfile = () => {
               onChange={handleInputChange}
             />
           </div>
-          {message && (
-            <AlertMessage key={alertKey} message={message} type={type} />
-          )}
+
           <div className="rounded-rectangle-wrapper">
             <h3 className="font-style-4">About You Survey</h3>
             <div>
@@ -426,9 +439,13 @@ const UpdateProfile = () => {
 
             <div>
               <h3 className="font-style-4">About Your System Admin</h3>
-              {formData.admin_face && (<img src={formData.admin_face} alt="Admin Face" />)}
-              {!formData.admin_face && (<img src={'/admins/thumb-file-admin.JPEG'} alt="Admin Face" />)}
-              
+              {formData.admin_face && (
+                <img src={formData.admin_face} alt="Admin Face" />
+              )}
+              {!formData.admin_face && (
+                <img src={"/admins/thumb-file-admin.JPEG"} alt="Admin Face" />
+              )}
+
               {botPalOptions.options.map((option, index) => (
                 <div
                   key={index}
