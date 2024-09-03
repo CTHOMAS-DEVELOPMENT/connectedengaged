@@ -717,7 +717,7 @@ const FeedScreen = () => {
           >
             <ArrowLeftCircleFill size={25} />
           </Button>
-          <span>{process.env.REACT_APP_BACKEND_URL}</span>
+          
           <div>
             <div className="interaction-icons">
               {associatedUsers.map((user) => (

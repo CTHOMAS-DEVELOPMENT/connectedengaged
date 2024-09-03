@@ -50,6 +50,7 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
     <div className="text-entry">
       <form onSubmit={handleSubmit}>
         <div className="text-input-and-button">
+        <span>{process.env.REACT_APP_BACKEND_URL}</span>
           <textarea
             value={textContent}
             onChange={(e) => setTextContent(e.target.value)}
