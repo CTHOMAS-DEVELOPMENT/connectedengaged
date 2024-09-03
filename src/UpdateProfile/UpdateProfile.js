@@ -424,7 +424,6 @@ const UpdateProfile = () => {
 
             <div>
               <h3 className="font-style-4">About You</h3>
-              <span>{process.env.REACT_APP_BACKEND_URL}</span>
               <textarea
                 id="aboutYou"
                 name="aboutYou"
