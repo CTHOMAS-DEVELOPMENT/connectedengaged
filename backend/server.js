@@ -52,7 +52,9 @@ const allowedOrigins = [
   'https://sage-twilight-26e49d.netlify.app', // Netlify URL
   'https://main--sage-twilight-26e49d.netlify.app', // Netlify branch URL
   'https://coconut-speckled-asterisk.glitch.me', // Glitch URL
-  'https://connectedengager.eu-4.evennode.com'
+  'https://connectedengager.eu-4.evennode.com',
+  'https://connectedengager.com',
+  'https://api.connectedengager.com'
 
 ];
 
@@ -141,7 +143,7 @@ const pool = new Pool({
   port: process.env.CONNECTION_POOL_PORT
 });
 const groq = new Groq({ apiKey: process.env.ADMIN_AI_KEY_1 });
-
+const openaiAPIKey = process.env.ADMIN_AI_KEY_2;
 function handleDatabaseError(error, res) {
   // Your error handling logic
   console.error("Database error:", error);
@@ -2069,7 +2071,7 @@ app.get("/api/users/:id", async (req, res) => {
 async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
-  // Fetch user details
+  
   const userQuery = "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal FROM users WHERE id = $1";
   const userResult = await pool.query(userQuery, [user_id]);
   const userInfo = userResult.rows[0];
@@ -2077,7 +2079,6 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
   const botInfo = userInfo.about_my_bot_pal;
   pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters`;
 
-  // Include user preferences in the pre-training text
   const userPreferences = `
     User's sexual orientation: ${userInfo.sexual_orientation},
     Hobbies: ${userInfo.hobbies},
@@ -2086,41 +2087,55 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
   `;
 
   pretrainText += ` ${systemInfo}`;
-
   pretrainText += ` ${userPreferences}`;
-  console.log("pretrainText:", pretrainText);
-  /*
-  const baseURL = "https://api.aimlapi.com/v1";
-const apiKey = "my_key";
-  */
+
   try {
     if (!content) {
       throw new Error("Content is missing for the system reply");
     }
 
-    const chatCompletion = await groq.chat.completions.create({
-      "messages": [
-        {
-          "role": "system",
-          "content": pretrainText
-        },
-        {
-          "role": "user",
-          "content": content
-        }
-      ],
-      "model": "llama3-8b-8192",
-      "temperature": 1,
-      "max_tokens": 150,
-      "top_p": 1,
-      "stream": false,
-      "stop": null
-    });
-//"model": "llama3-8b-8192"-Llama3 Groq 8b 8192  
-//Llama3 8b 8192  
+    let systemResponse;
+    if (process.env.AI_ENGINE === '1') {
+      // Use Groq
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: pretrainText
+          },
+          {
+            role: "user",
+            content: content
+          }
+        ],
+        model: "llama3-8b-8192",
+        temperature: 1,
+        max_tokens: 150,
+        top_p: 1,
+        stream: false,
+        stop: null
+      });
+      systemResponse = chatCompletion.choices[0]?.message?.content || '';
 
-    const systemResponse = chatCompletion.choices[0]?.message?.content || '';
-    console.log("System response text:", systemResponse);
+    } else if (process.env.AI_ENGINE === '2') {
+      // Use OpenAI with the new AI/ML engine and custom baseURL
+      const api = new OpenAI({
+        apiKey: openaiAPIKey,
+        baseURL: "https://api.aimlapi.com/v1",  // Custom base URL
+      });
+
+      const chatCompletion = await api.chat.completions.create({
+        model: "mistralai/Mistral-7B-Instruct-v0.2",
+        messages: [
+          { role: "system", content: pretrainText },
+          { role: "user", content: content }
+        ],
+        temperature: 0.7,
+        max_tokens: 150,
+      });
+
+      systemResponse = chatCompletion.choices[0]?.message?.content || '';
+    }
 
     if (!systemResponse) {
       throw new Error("Received empty response from AI");
@@ -2467,5 +2482,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9901**Server running on port ${PORT}`);
+  console.log(`**9903**Server running on port ${PORT}`);
 });

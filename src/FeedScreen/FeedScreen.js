@@ -63,7 +63,6 @@ const FeedScreen = () => {
   const [caller, setCaller] = useState(null);
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  //999 const [callRequestedUser, setCallRequestedUser] = useState([]);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -100,7 +99,6 @@ const FeedScreen = () => {
     });
 
     socket.on("incomingCall", (data) => {
-      //console.log("Incoming call:", data);
       setCaller(data);
     });
 
@@ -492,10 +490,7 @@ const FeedScreen = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
-    // Prepare the callRequestedUser array with only the user being called
-    // setCallRequestedUser([
-    //   associatedUsers.find((user) => user.id === userToCall),
-    // ]);
+
     // Post the event message
     postMessage(
       `${loggedInUserName} called ${selectedUsername} at ${systemTime}`
