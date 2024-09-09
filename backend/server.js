@@ -11,6 +11,7 @@ const cors = require("cors"); // Assuming you're using the 'cors' package for Ex
 const JSZip = require("jszip");
 const util = require("util");
 const Groq = require('groq-sdk');
+const { OpenAI } = require("openai");
 // Create a new express application
 const app = express();
 const server = http.createServer(app);
@@ -140,6 +141,7 @@ const pool = new Pool({
   port: process.env.CONNECTION_POOL_PORT
 });
 const groq = new Groq({ apiKey: process.env.ADMIN_AI_KEY_1 });
+
 function handleDatabaseError(error, res) {
   // Your error handling logic
   console.error("Database error:", error);
@@ -2087,6 +2089,10 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
 
   pretrainText += ` ${userPreferences}`;
   console.log("pretrainText:", pretrainText);
+  /*
+  const baseURL = "https://api.aimlapi.com/v1";
+const apiKey = "my_key";
+  */
   try {
     if (!content) {
       throw new Error("Content is missing for the system reply");
@@ -2110,7 +2116,8 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
       "stream": false,
       "stop": null
     });
-    
+//"model": "llama3-8b-8192"-Llama3 Groq 8b 8192  
+//Llama3 8b 8192  
 
     const systemResponse = chatCompletion.choices[0]?.message?.content || '';
     console.log("System response text:", systemResponse);
@@ -2460,5 +2467,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9900**Server running on port ${PORT}`);
+  console.log(`**9901**Server running on port ${PORT}`);
 });

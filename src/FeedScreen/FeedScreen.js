@@ -700,6 +700,8 @@ const FeedScreen = () => {
     }
     peerRef.current = null;
     socketRef.current = null;
+
+    setAlertKey((prevKey) => prevKey + 1); // or any state update
   };
 
   return (
