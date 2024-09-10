@@ -89,7 +89,9 @@ const FeedScreen = () => {
   const audioRef = useRef(new Audio());
   const mediaRecorderRef = useRef(null);
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_BACKEND_HOST);
+    const socket = io(process.env.REACT_APP_BACKEND_HOST, {
+      transports: ['websocket', 'polling'] // Add this to enable both WebSocket and polling
+    });
     socketRef.current = socket; // Save socket instance
 
     socket.on("connect", () => {

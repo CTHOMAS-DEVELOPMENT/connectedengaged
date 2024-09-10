@@ -115,7 +115,9 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
       });
   };
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_BACKEND_HOST);
+    const socket = io(process.env.REACT_APP_BACKEND_HOST, {
+      transports: ['websocket', 'polling'] // Add this to enable both WebSocket and polling
+    });
 
     // Added the connection_requests_change listener
     socket.on("connection_requests_change", (data) => {

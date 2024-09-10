@@ -85,19 +85,12 @@ app.use((req, res, next) => {
   
   next();
 });
-// Middleware to redirect HTTP to HTTPS
-// app.use((req, res, next) => {
-//   if (req.secure) {
-//     next();
-//   } else {
-//     console.log(`Redirecting request from http to https: ${req.url}`);
-//     console.log('Original Headers:', req.headers);
-//     const secureUrl = `https://${req.headers.host}${req.url}`;
-//     console.log(`Redirecting to: ${secureUrl}`);
-//     res.redirect(307, secureUrl);  // Use 307 to maintain the method and body
-//   }
-// });
 
+/**
+ ,
+  transports: process.env.NODE_ENV === 'development' ? ["polling"] : ["websocket", "polling"], // Only use polling locally, enable websocket in production
+
+ */
 // Socket.io configuration
 const io = socketIo(server, {
   cors: {
@@ -105,8 +98,9 @@ const io = socketIo(server, {
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  },
+  }
 });
+//const io = socketIo(server, {
 const transporter = nodemailer.createTransport({
   service: process.env.RESET_EMAIL_PROVIDER, // Example using Gmail
   auth: {
@@ -243,7 +237,9 @@ io.on("connection", (socket) => {
       console.log(`Caller not found for ${to}`);
     }
   });
-
+  socket.on("error", (err) => {
+    console.error(`Socket.io Error: ${err}`);
+  });
   socket.on("disconnect", () => {
     console.log(`User disconnected with socket ID: ${socket.id}`);
     //console.log(`Socket disconnected: ${socket.id}`);
@@ -2482,5 +2478,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9903**Server running on port ${PORT}`);
+  console.log(`**9904**Server running on port ${PORT}`);
 });

@@ -198,7 +198,9 @@ const UsersList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId, authError]);
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_BACKEND_HOST);
+    const socket = io(process.env.REACT_APP_BACKEND_HOST, {
+      transports: ['websocket', 'polling'] // Add this to enable both WebSocket and polling
+    });
     socketRef.current = socket;
     socket.on("connect", () => {
       console.log("Socket connected ");
