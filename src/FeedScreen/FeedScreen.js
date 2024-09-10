@@ -56,7 +56,7 @@ const FeedScreen = () => {
   const [type, setType] = useState("info");
   const [loggedInUserName, setLoggedInUsername] = useState("");
   const [loggedInUserAdmin, setLoggedInUserAdmin] = useState("");
-  const [notificationson, setNotificationsOn] = useState(false); //overide default-reset production
+  const [notificationson, setNotificationsOn] = useState(process.env.REACT_APP_ENV !== 'local');
   const [hovering, setHovering] = useState(false);
   const [alertKey, setAlertKey] = useState(0);
   const [inCall, setInCall] = useState(false);
@@ -379,8 +379,6 @@ const FeedScreen = () => {
       </div>
     );
   }
-  //999 -send a version of associated users with 1 user about message call
-  //setCallTime (For email)
   const postTypeForEmail = async (
     type,
     associatedUsers,

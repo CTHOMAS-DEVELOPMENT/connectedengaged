@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 
-
 const Scheduler = ({ onTimeSelected, onCancel }) => {
   const [selectedTime, setSelectedTime] = useState(null);
-  
+
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Clear time part to compare only dates
 
@@ -20,7 +19,11 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
     const endTime = new Date(startTime);
     endTime.setHours(startTime.getHours() + 48);
 
-    for (let time = new Date(startTime); time <= endTime; time.setMinutes(time.getMinutes() + 15)) {
+    for (
+      let time = new Date(startTime);
+      time <= endTime;
+      time.setMinutes(time.getMinutes() + 15)
+    ) {
       blocks.push(new Date(time));
     }
 
@@ -47,18 +50,21 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
     const selectedDate = new Date(selectedTime);
     selectedDate.setHours(0, 0, 0, 0); // Clear time part to compare only dates
 
-    console.log("Selected Time in formatButtonText:", selectedTime);
-    console.log("Today's Date:", today);
-
     const isToday = selectedDate.getTime() === today.getTime();
-    const isTomorrow = selectedDate.getTime() === new Date(today.getTime() + 24 * 60 * 60 * 1000).getTime();
+    const isTomorrow =
+      selectedDate.getTime() ===
+      new Date(today.getTime() + 24 * 60 * 60 * 1000).getTime();
 
-    console.log("Is Today:", isToday);
-    console.log("Is Tomorrow:", isTomorrow);
+    const dayText = isToday
+      ? "today"
+      : isTomorrow
+      ? "tomorrow"
+      : "the day after tomorrow";
 
-    const dayText = isToday ? "today" : isTomorrow ? "tomorrow" : "the day after tomorrow";
-
-    return `Schedule for ${dayText} at ${selectedTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    return `Schedule for ${dayText} at ${selectedTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
   };
 
   useEffect(() => {
@@ -66,13 +72,23 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
       const buttonText = formatButtonText();
       console.log("Button Text:", buttonText);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTime]);
 
   return (
-    <div className="scheduler-container">
+    <div
+      className="scheduler-container"
+      style={{ position: "relative", height: "100vh" }}
+    >
       <h3>Schedule a Call</h3>
-      <div className="time-grid">
+
+      <div
+        className="time-grid"
+        style={{
+          overflowY: "scroll",
+          maxHeight: "80vh",
+          paddingBottom: "60px",
+        }}
+      >
         {timeBlocks.map((time, index) => (
           <div
             key={index}
@@ -89,11 +105,30 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
             }`}
             onClick={() => handleTimeClick(time)}
           >
-            {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            {time.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </div>
         ))}
       </div>
-      <div className="scheduler-actions">
+
+      <div
+        className="scheduler-actions"
+        style={{
+          position: "fixed",
+          bottom: "0px",
+          width: "100%",
+          background: "#fff",
+          padding: "10px",
+          display: "flex",
+          justifyContent: "space-between",
+          boxSizing: "border-box",
+          left: "0", // Ensure buttons are aligned with the viewport
+          zIndex: 1000, // Ensures the buttons are on top
+        }}
+      >
+        {" "}
         <Button
           variant="outline-info"
           onClick={handleConfirm}
