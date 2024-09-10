@@ -72,6 +72,7 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
       const buttonText = formatButtonText();
       console.log("Button Text:", buttonText);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTime]);
 
   return (
