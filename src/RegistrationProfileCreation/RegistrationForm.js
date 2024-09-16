@@ -54,16 +54,12 @@ const RegistrationForm = () => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [coordinates, setCoordinates] = useState({ worldX: 0, worldY: 0 });
 
   const handleOpenLocation = () => {
     setShowLocation(true);
   };
   const handleSelectCoordinates = (selectedCoordinates) => {
-    setCoordinates({
-      worldX: selectedCoordinates.x,
-      worldY: selectedCoordinates.y,
-    });
+
     setLocationSelected(true);
     // Update formData with the new coordinates
     setFormData((prevFormData) => ({

@@ -35,7 +35,6 @@ const UpdateProfile = () => {
   const [selectedHobby, setSelectedHobby] = useState(null);
   const [showHobbies, setShowHobbies] = useState(false);
   const [showLocation, setShowLocation] = useState(false); // Manage visibility
-  const [coordinates, setCoordinates] = useState({ worldX: 0, worldY: 0 }); // Capture coordinates
 
   const [formData, setFormData] = useState({
     username: "",
@@ -76,11 +75,6 @@ const UpdateProfile = () => {
     justifyContent: "center",
   };
   const handleSelectCoordinates = (selectedCoordinates) => {
-    setCoordinates({
-      worldX: selectedCoordinates.x,
-      worldY: selectedCoordinates.y,
-    });
-
     // Update formData with the new coordinates
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -266,50 +260,7 @@ const UpdateProfile = () => {
       floatsMyBoat: version1Keys[index],
     }));
   };
-  const handleSubmitX = (event) => {
-    event.preventDefault();
-
-    // Reset the message and type to ensure the component re-renders
-    setMessage("");
-    setType("info");
-    setAlertKey((prevKey) => prevKey + 1);
-
-    const validationErrors = validateUser(formData, true);
-    if (Object.keys(validationErrors).length === 0) {
-      // No validation errors, proceed with form submission
-      fetch(`${process.env.REACT_APP_API_URL}/api/update_profile/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Profile update failed");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setMessage("Profile updated successfully");
-          setType("success");
-          setAlertKey((prevKey) => prevKey + 1);
-        })
-        .catch((error) => {
-          console.error("Update profile error:", error);
-          setMessage("Profile update failed: " + error.message);
-          setType("error");
-          setAlertKey((prevKey) => prevKey + 1);
-        });
-    } else {
-      // Set the first validation error message
-      const firstErrorKey = Object.keys(validationErrors)[0];
-
-      setTimeout(() => {
-        setMessage(validationErrors[firstErrorKey]);
-        setType("error");
-        setAlertKey((prevKey) => prevKey + 1);
-      }, 0);
-    }
-  };
+ 
   const handleSubmit = (event) => {
     event.preventDefault();
 
