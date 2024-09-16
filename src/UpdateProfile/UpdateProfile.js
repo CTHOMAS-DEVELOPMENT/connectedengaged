@@ -7,6 +7,7 @@ import FloatsMyBoat from "../RegistrationProfileCreation/FloatsMyBoat.js";
 import Gender from "../RegistrationProfileCreation/Gender.js";
 import Orientation from "../RegistrationProfileCreation/Orientation.js";
 import Hobbies from "../RegistrationProfileCreation/Hobbies.js";
+import Location from "../RegistrationProfileCreation/Location.js";
 import {
   version1Orientations,
   version1Gender,
@@ -33,6 +34,9 @@ const UpdateProfile = () => {
   const [showOrientation, setShowOrientation] = useState(false);
   const [selectedHobby, setSelectedHobby] = useState(null);
   const [showHobbies, setShowHobbies] = useState(false);
+  const [showLocation, setShowLocation] = useState(false); // Manage visibility
+  const [coordinates, setCoordinates] = useState({ worldX: 0, worldY: 0 }); // Capture coordinates
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -43,7 +47,9 @@ const UpdateProfile = () => {
     sex: "",
     aboutYou: "",
     aboutMyBotPal: "",
-    admin_face: "", // Add admin_face here
+    admin_face: "",
+    worldX: 0, // Add worldX here
+    worldY: 0, // Add worldY here
   });
 
   const [message, setMessage] = useState("");
@@ -62,6 +68,27 @@ const UpdateProfile = () => {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  };
+  const centerWrapperStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+  const handleSelectCoordinates = (selectedCoordinates) => {
+    setCoordinates({
+      worldX: selectedCoordinates.x,
+      worldY: selectedCoordinates.y,
+    });
+
+    // Update formData with the new coordinates
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      worldX: selectedCoordinates.x,
+      worldY: selectedCoordinates.y,
+    }));
+
+    console.log("selectedCoordinates", selectedCoordinates); // For debugging
   };
   const getStaticAdminImagePath = (adminFacePath) => {
     if (!adminFacePath) {
@@ -94,11 +121,10 @@ const UpdateProfile = () => {
     const index = parseInt(event.target.value);
     setSelectedBotPalOption(index);
 
-    // Update the aboutMyBotPal and admin_face in formData
     setFormData((prevFormData) => ({
       ...prevFormData,
       aboutMyBotPal: botPalOptions.options[index].value,
-      admin_face: getAdminFaceImagePath(index), // Update the admin_face path based on the selected option
+      admin_face: getAdminFaceImagePath(index),
     }));
   };
 
@@ -142,28 +168,43 @@ const UpdateProfile = () => {
       setSelectedHobby(index);
     }
   }, [formData.hobby]);
+  useEffect(() => {
+    const selectedOptionIndex = botPalOptions.options.findIndex(
+      (option) => option.value === formData.aboutMyBotPal
+    );
+    setSelectedBotPalOption(
+      selectedOptionIndex !== -1 ? selectedOptionIndex : null
+    );
+  }, [formData.aboutMyBotPal]);
+
   const fetchUserData = () => {
     fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`)
       .then((response) => response.json())
       .then((user) => {
-        const selectedOptionIndex = botPalOptions.options.findIndex(
-          (option) => option.value === user.about_my_bot_pal
-        );
         setFormData({
           username: user.username || "",
           email: user.email || "",
-          password: "", // Password should not be fetched for security reasons
+          password: "", // Do not fetch password for security reasons
           hobby: user.hobbies || "",
           sexualOrientation: user.sexual_orientation || "",
           floatsMyBoat: user.floats_my_boat || "",
           sex: user.sex || "",
           aboutYou: user.about_you || "",
           aboutMyBotPal: user.about_my_bot_pal || "",
-          admin_face: getStaticAdminImagePath(user.admin_face) || "", // Set the resolved path for admin_face
+          admin_face: getStaticAdminImagePath(user.admin_face) || "",
+          worldX: user.worldx || 0,  // Update
+          worldY: user.worldy || 0,  // Update
         });
+
+        // Add this block to set selectedBotPalOption
+        const selectedOptionIndex = botPalOptions.options.findIndex(
+          (option) => option.value === user.about_my_bot_pal
+        );
         setSelectedBotPalOption(
           selectedOptionIndex !== -1 ? selectedOptionIndex : null
         );
+
+        // Other profile image/video logic
         if (user.profile_video) {
           setProfileVideo(convertToMediaPath(user.profile_video));
         }
@@ -225,7 +266,7 @@ const UpdateProfile = () => {
       floatsMyBoat: version1Keys[index],
     }));
   };
-  const handleSubmit = (event) => {
+  const handleSubmitX = (event) => {
     event.preventDefault();
 
     // Reset the message and type to ensure the component re-renders
@@ -269,6 +310,47 @@ const UpdateProfile = () => {
       }, 0);
     }
   };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Reset message and type for re-rendering
+    setMessage("");
+    setType("info");
+    setAlertKey((prevKey) => prevKey + 1);
+
+    const validationErrors = validateUser(formData, true);
+    if (Object.keys(validationErrors).length === 0) {
+      fetch(`${process.env.REACT_APP_API_URL}/api/update_profile/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), // Ensure worldX and worldY are included
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Profile update failed");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setMessage("Profile updated successfully");
+          setType("success");
+          setAlertKey((prevKey) => prevKey + 1);
+        })
+        .catch((error) => {
+          console.error("Update profile error:", error);
+          setMessage("Profile update failed: " + error.message);
+          setType("error");
+          setAlertKey((prevKey) => prevKey + 1);
+        });
+    } else {
+      const firstErrorKey = Object.keys(validationErrors)[0];
+      setTimeout(() => {
+        setMessage(validationErrors[firstErrorKey]);
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+      }, 0);
+    }
+  };
 
   if (authError) {
     return <div>Unauthorized. Please log in.</div>;
@@ -283,15 +365,16 @@ const UpdateProfile = () => {
       >
         Back to messages
       </Button>
+      <div style={centerWrapperStyle}>
+        <h2 className="font-style-4">Update Profile</h2>
 
-      <h2 className="font-style-4">Update Profile</h2>
-
-      <div className="button-group">
-        <ViewImage
-          userId={userId}
-          profileVideo={profileVideo}
-          profileImage={profileImage}
-        />
+        <div className="button-group">
+          <ViewImage
+            userId={userId}
+            profileVideo={profileVideo}
+            profileImage={profileImage}
+          />
+        </div>
       </div>
       <form noValidate onSubmit={handleSubmit}>
         <div className="system-form">
@@ -421,7 +504,15 @@ const UpdateProfile = () => {
                 selectedCarousel={selectedCarousel}
               />
             )}
-
+            <div>
+              <Button
+                variant="outline-info"
+                className="btn-sm"
+                onClick={() => setShowLocation(true)} // Open the Location component
+              >
+                Show Location
+              </Button>
+            </div>
             <div>
               <h3 className="font-style-4">About You</h3>
               <textarea
@@ -436,6 +527,14 @@ const UpdateProfile = () => {
                 style={{ width: "100%", height: "100px" }} // Adjust styling as needed
               />
             </div>
+
+            {showLocation && (
+              <Location
+                onClose={() => setShowLocation(false)}
+                onSelectCoordinates={handleSelectCoordinates}
+                initialCoordinates={{ x: formData.worldX, y: formData.worldY }} // Pass initial coordinates
+              />
+            )}
 
             <div>
               <h3 className="font-style-4">About Your System Admin</h3>

@@ -11,6 +11,7 @@ import {
   version1Hobbies,
   version1Keys,
 } from "./scopedCollections.js";
+import Location from "./Location";
 import { convertToMediaPath } from "../system/utils";
 import AlertMessage from "../system/AlertMessage";
 import validateUser from "../system/userValidation.js";
@@ -33,6 +34,8 @@ const RegistrationForm = () => {
   const [showHobbies, setShowHobbies] = useState(false);
   const [selectedHobby, setSelectedHobby] = useState(null);
   const [selectedBotPalOption, setSelectedBotPalOption] = useState(1); // Default to the second option "Warm and friendly"
+  const [locationSelected, setLocationSelected] = useState(false); // Assume location is false for now
+  const [showLocation, setShowLocation] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -44,15 +47,37 @@ const RegistrationForm = () => {
     sex: "",
     aboutYou: "",
     aboutMyBotPal: botPalOptions.options[1].value,
+    worldX: 0, // New field for worldX
+    worldY: 0, // New field for worldY
   });
   //about_my_bot_pal
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [coordinates, setCoordinates] = useState({ worldX: 0, worldY: 0 });
+
+  const handleOpenLocation = () => {
+    setShowLocation(true);
+  };
+  const handleSelectCoordinates = (selectedCoordinates) => {
+    setCoordinates({
+      worldX: selectedCoordinates.x,
+      worldY: selectedCoordinates.y,
+    });
+    setLocationSelected(true);
+    // Update formData with the new coordinates
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      worldX: selectedCoordinates.x,
+      worldY: selectedCoordinates.y,
+    }));
+
+  };
 
   const hiddenTextareaStyle = {
     display: "none",
   };
+
   const handleLoginScreenClick = () => {
     if (userId) {
       navigate("/", { state: { username: formData.username } });
@@ -62,11 +87,13 @@ const RegistrationForm = () => {
   };
   const getAdminFaceName = () => {
     const selectedOption = botPalOptions.options[selectedBotPalOption];
-    const face = adminFace(version1Gender[selectedGender], version1Orientations[selectedOrientation]);
+    const face = adminFace(
+      version1Gender[selectedGender],
+      version1Orientations[selectedOrientation]
+    );
     return `/admins/${selectedOption.botImage}${face}.png`; // Use the static path for saving to the database
   };
-  
-  
+
   const adminFace = (gender, orientation) => {
     if (orientation === "Heterosexual") {
       return gender === "Female" ? "Man" : "Woman";
@@ -76,24 +103,26 @@ const RegistrationForm = () => {
       return gender === "Female" ? "Woman" : "Man";
     }
     return "Man"; // Default fallback
-  };  
+  };
   const getAdminImagePath = () => {
     const selectedOption = botPalOptions.options[selectedBotPalOption];
-    const face = adminFace(version1Gender[selectedGender], version1Orientations[selectedOrientation]);
+    const face = adminFace(
+      version1Gender[selectedGender],
+      version1Orientations[selectedOrientation]
+    );
     const imagePath = `/admins/${selectedOption.botImage}${face}.png`; // Use the static path from the public directory
-  
+
     return imagePath;
   };
-  
-  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (name === "dummyEmail") {
-      setDummyEmail(value);
+      setDummyEmail(value); // Update the dummyEmail state
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
+
         [name]: value,
       }));
     }
@@ -107,7 +136,6 @@ const RegistrationForm = () => {
     }));
   };
 
-  
   const handleImageUpload = (url) => {
     setUploadedImageUrl(url);
   };
@@ -162,57 +190,64 @@ const RegistrationForm = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Perform validation using the validateUser function
     const validationErrors = validateUser(formData);
-    if (dummyEmail !== formData.email) {
-      validationErrors["dummyEmail"] = "Emails do not match";
-    }
-    if (Object.keys(validationErrors).length === 0) {
-      const adminFacePath = getAdminFaceName();
-      fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          admin_face: adminFacePath, // Include admin_face in the request payload
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            if (response.status === 409) {
-              throw new Error("Email already exists");
-            }
-            throw new Error("Registration failed");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data.id) {
-            setUserId(data.id);
-            setMessage("Registration successful");
-            setType("success");
-            setAlertKey((prevKey) => prevKey + 1);
-            window.scrollTo(0, 0);
-          } else if (data.message) {
-            setMessage(data.message);
-            setType("error");
-            setAlertKey((prevKey) => prevKey + 1);
-          }
-        })
-        .catch((error) => {
-          console.error("Registration error:", error);
-          setMessage("Registration failed: " + error.message);
-          setType("error");
-          setAlertKey((prevKey) => prevKey + 1);
-        });
-    } else {
-      // Show the first validation error
+
+    if (Object.keys(validationErrors).length > 0) {
+      // If there are validation errors, set the first error message and stop the submission
       const firstErrorKey = Object.keys(validationErrors)[0];
       setMessage(validationErrors[firstErrorKey]);
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
+      return; // Exit early if there are validation errors
     }
+
+    if (dummyEmail !== formData.email) {
+      setMessage("Emails do not match");
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+      return; // Stop form submission if emails don't match
+    }
+
+    // Proceed to send data to the server if there are no validation errors
+    fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...formData,
+        admin_face: getAdminFaceName(),
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 409) {
+            throw new Error("Email already exists");
+          }
+          throw new Error("Registration failed");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.id) {
+          setUserId(data.id);
+          setMessage("Registration successful");
+          setType("success");
+          setAlertKey((prevKey) => prevKey + 1);
+          window.scrollTo(0, 0);
+        } else {
+          setMessage("Registration failed");
+          setType("error");
+          setAlertKey((prevKey) => prevKey + 1);
+        }
+      })
+      .catch((error) => {
+        setMessage("Registration failed: " + error.message);
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+      });
   };
 
   return (
@@ -425,6 +460,27 @@ const RegistrationForm = () => {
               selectedCarousel={selectedCarousel}
             />
           )}
+
+          <div>
+            <Button
+              variant="outline-info"
+              className="btn-sm mb-2"
+              onClick={handleOpenLocation}
+            >
+              {locationSelected ? (
+                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+              )}
+              {locationSelected ? "Location Selected" : "Select Location"}
+              {locationSelected ? (
+                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              ) : (
+                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+              )}
+            </Button>
+          </div>
+
           <div>
             <h3 className="font-style-4">About You</h3>
             <textarea
@@ -494,6 +550,14 @@ const RegistrationForm = () => {
             )}
           </div>
         </div>
+
+        {showLocation && (
+          <Location
+            onClose={() => setShowLocation(false)}
+            onSelectCoordinates={handleSelectCoordinates} // Pass the handler to the Location component
+          />
+        )}
+
         {!userId && (
           <Button type="submit" variant="outline-info" className="btn-sm">
             Register

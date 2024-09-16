@@ -1,5 +1,5 @@
 export const version1Orientations = ["Heterosexual", "Lesbian", "Homosexual"];
-export const version1Gender = ["Female", "Male", "Male", "Female"];
+export const version1Gender = ["Female", "Male", "Masculine", "Feminine"];
 export const version1Keys = [
   "Other (Not Listed)",
   "Nourish or be nourished",

@@ -578,16 +578,23 @@ app.post("/api/register", async (req, res) => {
       sex,
       aboutYou,
       aboutMyBotPal,
-      admin_face // New field from the frontend
+      admin_face, // New field from the frontend
+      worldX, // New field for the X coordinate
+      worldY  // New field for the Y coordinate
     } = req.body;
 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     await client.query("BEGIN"); // Start transaction
-    // Insert the new User
+    
+    // Insert the new User along with worldX and worldY coordinates
     const userInsertResult = await client.query(
-      "INSERT INTO users (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id",
+      `INSERT INTO users 
+        (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face, worldX, worldY) 
+      VALUES 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+      RETURNING id`,
       [
         username,
         email,
@@ -598,9 +605,12 @@ app.post("/api/register", async (req, res) => {
         sex,
         aboutYou,
         aboutMyBotPal,
-        admin_face // Save the admin_face value to the database
+        admin_face, // Save the admin_face value to the database
+        worldX,     // Save the X coordinate
+        worldY      // Save the Y coordinate
       ]
     );
+    
     const newUserId = userInsertResult.rows[0].id;
     
     // Extract the admin's ID
@@ -635,14 +645,16 @@ app.post("/api/register", async (req, res) => {
       "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
       [submissionId, newUserId]
     );
-    const adminGreet =aboutMyBotPal
+    
     await client.query(
       "INSERT INTO submission_dialog (submission_id, posting_user_id, text_content) VALUES ($1, $2, $3)",
       [submissionId, existingAdminId, process.env.ADMIN_MESSAGE_1]
     );
-    // 999 - Send connection requests
-    const sexpref=adminFace(sex, sexualOrientation);
+    
+    // Send connection requests based on user preferences
+    const sexpref = adminFace(sex, sexualOrientation);
     await handleFilterUsers(newUserId, sexpref);
+
     // Send the response to the client
     res.json({ id: newUserId, username: username });
   } catch (error) {
@@ -659,6 +671,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 
+
 app.put("/api/update_profile/:id", async (req, res) => {
   const { id } = req.params;
   let {
@@ -671,7 +684,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
     sex,
     aboutYou,
     aboutMyBotPal,
-    admin_face // Add the admin_face field here
+    admin_face,
+    worldX,  // Add worldX to the request body
+    worldY   // Add worldY to the request body
   } = req.body;
 
   // Validation for password length if it's not empty
@@ -686,26 +701,27 @@ app.put("/api/update_profile/:id", async (req, res) => {
     : undefined;
 
   // Substitute empty strings with specified default values for enum fields
-  sexualOrientation =
-    sexualOrientation === "" ? "Undisclosed" : sexualOrientation;
+  sexualOrientation = sexualOrientation === "" ? "Undisclosed" : sexualOrientation;
   hobby = hobby === "" ? "Other" : hobby;
   floatsMyBoat = floatsMyBoat === "" ? "Other (Not Listed)" : floatsMyBoat;
 
   const updateQuery = `
-  UPDATE users SET
-  username = COALESCE($1, username),
-  email = COALESCE($2, email),
-  password = COALESCE($3, password),
-  hobbies = COALESCE($4, hobbies),
-  sexual_orientation = COALESCE($5, sexual_orientation),
-  floats_my_boat = COALESCE($6, floats_my_boat),
-  sex = COALESCE($7, sex),
-  about_you = COALESCE($8, about_you),
-  about_my_bot_pal = COALESCE($9, about_my_bot_pal),
-  admin_face = COALESCE($10, admin_face)  -- Include admin_face here
-  WHERE id = $11
-  RETURNING *;
-`;
+    UPDATE users SET
+    username = COALESCE($1, username),
+    email = COALESCE($2, email),
+    password = COALESCE($3, password),
+    hobbies = COALESCE($4, hobbies),
+    sexual_orientation = COALESCE($5, sexual_orientation),
+    floats_my_boat = COALESCE($6, floats_my_boat),
+    sex = COALESCE($7, sex),
+    about_you = COALESCE($8, about_you),
+    about_my_bot_pal = COALESCE($9, about_my_bot_pal),
+    admin_face = COALESCE($10, admin_face),
+    worldX = COALESCE($11, worldX),  -- Include worldX
+    worldY = COALESCE($12, worldY)   -- Include worldY
+    WHERE id = $13
+    RETURNING *;
+  `;
 
   const values = [
     username,
@@ -717,7 +733,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
     sex,
     aboutYou,
     aboutMyBotPal,
-    admin_face, // Include the value for admin_face
+    admin_face,
+    worldX,  // Include the value for worldX
+    worldY,  // Include the value for worldY
     id,
   ];
 
@@ -733,6 +751,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     res.status(500).send("Failed to update profile");
   }
 });
+
 
 //999
 app.post("/api/filter-users/:userId", async (req, res) => {
@@ -2054,8 +2073,23 @@ app.get("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      "SELECT id, username, email, profile_picture, profile_video, sexual_orientation, hobbies, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face FROM users WHERE id = $1",
-      [id] // Make sure to select the new 'sex' column here
+      `SELECT 
+        id, 
+        username, 
+        email, 
+        profile_picture, 
+        profile_video, 
+        sexual_orientation, 
+        hobbies, 
+        floats_my_boat, 
+        sex, 
+        about_you, 
+        about_my_bot_pal, 
+        admin_face, 
+        worldX,   
+        worldY    
+      FROM users WHERE id = $1`,
+      [id]
     );
     res.json(result.rows[0]);
   } catch (error) {
@@ -2063,6 +2097,7 @@ app.get("/api/users/:id", async (req, res) => {
     res.status(500).send({ message: "An error occurred." });
   }
 });
+
 
 async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
   let pretrainText = "";
@@ -2414,11 +2449,11 @@ app.post("/api/notify_offline_users", async (req, res) => {
           case "Text":
           case "audio":
           case "picture":
-            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: https://${process.env.ROOT_DOMAIN}`;
+            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: ${process.env.ROOT_DOMAIN}`;
           case "connection_accepted":
-            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: https://${process.env.ROOT_DOMAIN}`;
+            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: ${process.env.ROOT_DOMAIN}`;
           case "call_request":
-            return `Hey ${username}, ${loggedInUserName} has requested a video call with you ${formattedTime}.\nPlease login to the ConnectedEngaged application to join the call: https://${process.env.ROOT_DOMAIN}`;
+            return `Hey ${username}, ${loggedInUserName} has requested a video call with you ${formattedTime}.\nPlease login to the ConnectedEngaged application to join the call: ${process.env.ROOT_DOMAIN}`;
           default:
             return "unknown type";
         }
@@ -2478,5 +2513,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9904**Server running on port ${PORT}`);
+  console.log(`**9905**Server running on port ${PORT}`);
 });

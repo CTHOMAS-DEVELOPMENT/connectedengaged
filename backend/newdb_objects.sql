@@ -225,3 +225,12 @@ ALTER TYPE floats_my_boaty_type ADD VALUE 'Exchange of power';ALTER TYPE floats_
 ALTER TYPE floats_my_boaty_type ADD VALUE 'Domestic Bottom';ALTER TYPE floats_my_boaty_type ADD VALUE 'Financial Sub';ALTER TYPE floats_my_boaty_type ADD VALUE 'Rope Bunny';
 
 ALTER TABLE users ADD COLUMN admin_face CHARACTER VARYING(255);
+CREATE EXTENSION postgis;
+
+ALTER TABLE users ADD COLUMN worldX DECIMAL(4, 2), ADD COLUMN worldY DECIMAL(4, 2);
+
+CREATE TYPE sex_type_new AS ENUM ('Male', 'Female', 'Masculine', 'Feminine');
+ALTER TABLE users ALTER COLUMN sex DROP DEFAULT;ALTER TABLE users ALTER COLUMN sex TYPE sex_type_new USING sex::text::sex_type_new;
+ALTER TABLE users ALTER COLUMN sex SET DEFAULT 'Male';  -- Change 'Male' to whatever the new default should be
+DROP TYPE sex_type;
+ALTER TYPE sex_type_new RENAME TO sex_type;

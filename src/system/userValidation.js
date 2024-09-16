@@ -45,6 +45,12 @@ const validateUser = (formData, ignoreValidation = false) => {
   if (!formData.aboutMyBotPal) {
     errors.aboutMyBotPal="Please tell your system admin who you want them to be";
   }
+  if (!formData.worldX) {
+    errors.worldX="Please Select your Location";
+  }
+  if (!formData.worldY) {
+    errors.worldY="Please Select your Location";
+  }
   return errors;
 };
 

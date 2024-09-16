@@ -15,6 +15,8 @@ import FloatsMyBoat from "../RegistrationProfileCreation/FloatsMyBoat.js";
 import Gender from "../RegistrationProfileCreation/Gender.js";
 import Orientation from "../RegistrationProfileCreation/Orientation.js";
 import Hobbies from "../RegistrationProfileCreation/Hobbies.js";
+import LocationDisplay from "../RegistrationProfileCreation/LocationDisplay.js"; // Import the LocationDisplay component
+
 const UserProfile = () => {
   const { userId } = useParams();
   const location = useLocation();
@@ -28,13 +30,24 @@ const UserProfile = () => {
   const [selectedHobby, setSelectedHobby] = useState(null);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+
   const getIndexOfValue = (arrayOf, value) => {
     return arrayOf.indexOf(value);
   };
+
   const handleNewInteraction = () => {
     navigate("/newsubmission", {
       state: { selectedUser: userId, userId: loggedInUserId },
     });
+  };
+
+  const centerWrapperStyle = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: "20px"
   };
 
   const handleVideoDisplay = () => {
@@ -53,8 +66,10 @@ const UserProfile = () => {
       );
       setSelectedHobby(getIndexOfValue(version1Hobbies, user.hobbies));
       setSelectedCarousel(getIndexOfValue(version1Keys, user.floats_my_boat));
+      console.log("User's Location:", user.worldx, user.worldy); // Updated property names
     }
   }, [user]);
+
   useEffect(() => {
     if (loggedInUserId) {
       checkAuthorization(loggedInUserId).then((isAuthorized) => {
@@ -71,7 +86,10 @@ const UserProfile = () => {
   const fetchUserProfile = () => {
     fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`)
       .then((response) => response.json())
-      .then((data) => setUser(data))
+      .then((data) => {
+        setUser(data);
+        console.log("data", data);
+      })
       .catch((error) => console.error("Error fetching user:", error));
   };
 
@@ -145,6 +163,10 @@ const UserProfile = () => {
           {user.username}'s Most Like You Selection
         </p>
         <Gender onSelectGender={() => {}} selected={selectedGender} />
+        <div style={centerWrapperStyle}>
+          <p className="font-style-4">{user.username}'s Location</p>
+          <LocationDisplay worldX={user.worldx} worldY={user.worldy} />
+        </div>
         <p className="font-style-4">{user.username}'s about you</p>
         <textarea readOnly className="about-you-textarea">
           {user.about_you
