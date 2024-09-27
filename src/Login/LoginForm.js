@@ -181,20 +181,23 @@ const LoginForm = () => {
 
   const resetImages = () => {
     shuffleConsentImages();
+  
     const randomRotation = () => {
-      const angles = [0, 90, 180, 270];
+      const angles = [0, 90, 180, 270]; // Possible rotations
       return angles[Math.floor(Math.random() * angles.length)];
     };
-
+  
     const selectRandomImage = (images) => {
       return images[Math.floor(Math.random() * images.length)];
     };
-
-    setManRotation(randomRotation());
-    setWomanRotation(randomRotation());
-    setManImage(selectRandomImage(manImages));
-    setWomanImage(selectRandomImage(womanImages));
+  
+    setManRotation(randomRotation()); // Randomize man image rotation
+    setWomanRotation(randomRotation()); // Randomize woman image rotation
+  
+    setManImage(selectRandomImage(manImages)); // Randomize man image
+    setWomanImage(selectRandomImage(womanImages)); // Randomize woman image
   };
+  
 
   const scoreClickConsent = (consertId) => {
     switch (consertId) {
@@ -235,12 +238,8 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    let shuffled = [...consentImages];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    setConsentImagesState(shuffled);
+    resetImages(); // Call resetImages to randomize images and rotation on component mount
+    setConsentImagesState(consentImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage, pageTranslations]); // Add selectedLanguage and pageTranslations to the dependency array
 
