@@ -1,0 +1,62 @@
+{
+  "en": {
+    "userList": {
+      "createdText": "Created",
+      "expectedEnd": "Expected end",
+      "ended": "Ended",
+      "invited": "Invited",
+      "save": "Save",
+      "endIt": "End it"
+    }
+  },
+  "es": {
+    "userList": {
+      "createdText": "Creado",
+      "expectedEnd": "Fecha prevista de finalización",
+      "ended": "Finalizado",
+      "invited": "Invitado",
+      "save": "Guardar",
+      "endIt": "Finalizar"
+    }
+  },
+  "fr": {
+    "userList": {
+      "createdText": "Créé",
+      "expectedEnd": "Fin prévue",
+      "ended": "Terminé",
+      "invited": "Invité",
+      "save": "Enregistrer",
+      "endIt": "Terminer"
+    }
+  },
+  "de": {
+    "userList": {
+      "createdText": "Erstellt",
+      "expectedEnd": "Voraussichtliches Ende",
+      "ended": "Beendet",
+      "invited": "Eingeladen",
+      "save": "Speichern",
+      "endIt": "Beenden"
+    }
+  },
+  "ar": {
+    "userList": {
+      "createdText": "تم الإنشاء",
+      "expectedEnd": "النهاية المتوقعة",
+      "ended": "انتهى",
+	  "invited": "مدعو",
+      "save": "حفظ",
+      "endIt": "إنهاء"      
+    }
+  },
+  "zh": {
+    "userList": {
+      "createdText": "创建于",
+      "expectedEnd": "预计结束",
+      "ended": "已结束",
+      "invited": "已邀请",
+      "save": "保存",
+      "endIt": "结束"
+    }
+  }
+}

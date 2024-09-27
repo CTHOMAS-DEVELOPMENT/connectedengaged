@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import { Trash, TrashFill } from "react-bootstrap-icons";
 import AlertMessage from "../system/AlertMessage";
 import ScrollingHelpText from "../system/ScrollingHelpText";
-
+import translations from './translations.json';
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   version1Orientations,
@@ -20,6 +20,7 @@ const ConnectionRequested = ({
   userId,
   onEnableSelectedConnections,
   showRequestsOfOthers,
+  languageCode
 }) => {
   const [connectionRequested, setConnectionRequested] = useState([]);
   const [selectedUserIds, setSelectedUserIds] = useState(new Set());
@@ -35,7 +36,7 @@ const ConnectionRequested = ({
     return arrayOf.indexOf(value);
   };
   const helpMessage =
-    process.env.REACT_APP_CONNECTION_REQUEST_TO_YOU ||
+    translations[languageCode]?.connectionRequested?.helpMessage || 
     "No help message configured.";
   const handleCheckboxChange = (requesterId, isChecked, username) => {
     setSelectedUserIds((prevSelectedUserIds) => {
@@ -60,10 +61,6 @@ const ConnectionRequested = ({
 
   };
   
-
-  
-
-
   const deleteAllRequests = () => {
     // Call the API to delete all connection requests to the user
     fetch(`${process.env.REACT_APP_API_URL}/api/delete-requests-to-me/${userId}`, {
@@ -74,7 +71,7 @@ const ConnectionRequested = ({
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to delete all connection requests");
+          throw new Error(translations[languageCode]?.connectionRequested?.errorLoadingMessage || "Error loading connection requests:");
         }
         return response.json(); // Assuming the server responds with JSON
       })
@@ -151,22 +148,24 @@ const ConnectionRequested = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  if (isLoading) return <div>Loading connection requests...</div>;
-  if (error) return <div>Error loading connection requests: {error}</div>;
+  if (isLoading) return <div>{translations[languageCode]?.connectionRequested?.loadingMessage || "Loading connection requests..."}</div>;
+  if (error) return <div>{translations[languageCode]?.connectionRequested?.errorLoadingMessage || "Error loading connection requests:"} {error}</div>;
 
   return (
     <div>
       <div className="connection-requests-container">
-        <h2 className="font-style-4">Connection Requests to You</h2>
+      <h2 className="font-style-4">
+          {translations[languageCode]?.connectionRequested?.title || "Connection Requests to You"}
+        </h2>
         <ScrollingHelpText message={helpMessage} width="auto" />
         {connectionRequested.length > 0 && (
           <Button
-            variant="danger"
-            onClick={deleteAllRequests}
-            className="logout-button"
-          >
-            Delete All Requests
-          </Button>
+          variant="danger"
+          onClick={deleteAllRequests}
+          className="logout-button"
+        >
+          {translations[languageCode]?.connectionRequested?.deleteAllRequestsButton || "Delete All Requests"}
+        </Button>
         )}
         {connectionRequested.length > 0 ? (
           <ul className="connection-requests-list">
@@ -212,7 +211,7 @@ const ConnectionRequested = ({
                           className="btn-sm"
                           onClick={handleEnableSelectedConnectionsClick}
                         >
-                          Enable Selected Connections
+                          {translations[languageCode]?.connectionRequested?.enableSelectedConnectionsButton || "Enable Selected Connections"}
                         </Button>
                       )}
                       </div>
@@ -259,7 +258,7 @@ const ConnectionRequested = ({
                       value={
                         request.about_you
                           ? request.about_you
-                          : request.username + " has not entered anything yet.."
+                          : translations[languageCode]?.connectionRequested?.aboutYouPlaceholder?.replace("{username}", request.username) || `${request.username} has not entered anything yet..`
                       }
                     />
                   </div>
@@ -268,7 +267,8 @@ const ConnectionRequested = ({
             ))}
           </ul>
         ) : (
-          <p>No connection requests found.</p>
+          <p>{translations[languageCode]?.connectionRequested?.noConnectionRequests || "No connection requests found."}</p>
+       
         )}
         {selectedUserIds.size > 0 && (
           <Button

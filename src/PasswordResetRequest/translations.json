@@ -1,0 +1,68 @@
+{
+  "en": {
+    "passwordReset": {
+      "backToLogin": "Back to Login",
+      "title": "Password Reset",
+      "emailPlaceholder": "Enter your email",
+      "sendLink": "Send Reset Link",
+      "emailSent": "Please check your email for the password reset link.",
+      "emailFailed": "Unable to send password reset link. Please try again later.",
+      "networkError": "Network error while trying to send reset link."
+    }
+  },
+  "es": {
+    "passwordReset": {
+      "backToLogin": "Volver al inicio de sesión",
+      "title": "Restablecer contraseña",
+      "emailPlaceholder": "Ingresa tu correo electrónico",
+      "sendLink": "Enviar enlace de restablecimiento",
+      "emailSent": "Por favor, revisa tu correo electrónico para el enlace de restablecimiento de contraseña.",
+      "emailFailed": "No se pudo enviar el enlace de restablecimiento. Inténtalo de nuevo más tarde.",
+      "networkError": "Error de red al intentar enviar el enlace de restablecimiento."
+    }
+  },
+  "fr": {
+    "passwordReset": {
+      "backToLogin": "Retour à la connexion",
+      "title": "Réinitialisation du mot de passe",
+      "emailPlaceholder": "Entrez votre email",
+      "sendLink": "Envoyer le lien de réinitialisation",
+      "emailSent": "Veuillez vérifier votre e-mail pour le lien de réinitialisation du mot de passe.",
+      "emailFailed": "Impossible d'envoyer le lien de réinitialisation du mot de passe. Veuillez réessayer plus tard.",
+      "networkError": "Erreur réseau lors de l'envoi du lien de réinitialisation."
+    }
+  },
+  "de": {
+    "passwordReset": {
+      "backToLogin": "Zurück zum Login",
+      "title": "Passwort zurücksetzen",
+      "emailPlaceholder": "Geben Sie Ihre E-Mail-Adresse ein",
+      "sendLink": "Link zum Zurücksetzen senden",
+      "emailSent": "Bitte überprüfen Sie Ihre E-Mails auf den Link zum Zurücksetzen des Passworts.",
+      "emailFailed": "Der Link zum Zurücksetzen des Passworts konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
+      "networkError": "Netzwerkfehler beim Senden des Zurücksetzungslinks."
+    }
+  },
+  "ar": {
+    "passwordReset": {
+      "backToLogin": "العودة إلى تسجيل الدخول",
+      "title": "إعادة تعيين كلمة المرور",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "sendLink": "إرسال رابط إعادة التعيين",
+      "emailSent": "يرجى التحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور.",
+      "emailFailed": "تعذر إرسال رابط إعادة تعيين كلمة المرور. الرجاء المحاولة لاحقًا.",
+      "networkError": "خطأ في الشبكة أثناء محاولة إرسال رابط إعادة التعيين."
+    }
+  },
+  "zh": {
+    "passwordReset": {
+      "backToLogin": "返回登录",
+      "title": "重置密码",
+      "emailPlaceholder": "输入你的电子邮件",
+      "sendLink": "发送重置链接",
+      "emailSent": "请检查您的电子邮件以获取密码重置链接。",
+      "emailFailed": "无法发送密码重置链接。请稍后再试。",
+      "networkError": "发送重置链接时出现网络错误。"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 /* General App Styles */
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&display=swap&family=Barrio:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Barrio:wght@400;700&family=Amiri:wght@400;700&family=Noto+Sans:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+
 .App {
   text-align: center;
   font-family: "Quicksand", sans-serif; /* Consistent with your header font */
@@ -1136,6 +1137,22 @@ Interaction_entry {
   width: 100%;
   height: auto;
 }
+.custom-file-input {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-file-label {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.custom-file-label:hover {
+  background-color: #0056b3;
+}
 /* Dynamic font class added via JS based on user selection */
 .font-style-1 {
   font-family: "Roboto", sans-serif;
@@ -1146,6 +1163,40 @@ Interaction_entry {
 .font-style-3 {
   font-family: "Montserrat", sans-serif;
 }
+/* Use !important to override Bootstrap styles */
 .font-style-4 {
-  font-family: "Barrio", sans-serif;
+  font-family: "Barrio", sans-serif !important;
 }
+
+/* Languages with specific fallbacks */
+
+/* Spanish (es) - Barrio supports Spanish */
+.font-style-4:lang(es) {
+  font-family: "Barrio", sans-serif !important;
+}
+
+/* French (fr) - Barrio supports French */
+.font-style-4:lang(fr) {
+  font-family: "Barrio", sans-serif !important;
+}
+
+/* German (de) - Barrio supports German */
+.font-style-4:lang(de) {
+  font-family: "Barrio", sans-serif !important;
+}
+
+/* Arabic (ar) - Barrio does not support Arabic */
+.font-style-4:lang(ar) {
+  font-family: "Amiri", serif !important;
+}
+
+/* Chinese (zh) - Barrio does not support Chinese */
+.font-style-4:lang(zh) {
+  font-family: "Noto Sans SC", sans-serif !important;
+}
+
+/* English (en) - Barrio supports English */
+.font-style-4:lang(en) {
+  font-family: "Barrio", sans-serif !important;
+}
+

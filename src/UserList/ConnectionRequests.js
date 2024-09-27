@@ -15,7 +15,13 @@ import FloatsMyBoat from "../RegistrationProfileCreation/FloatsMyBoat.js";
 import Gender from "../RegistrationProfileCreation/Gender.js";
 import Orientation from "../RegistrationProfileCreation/Orientation.js";
 import Hobbies from "../RegistrationProfileCreation/Hobbies.js";
-const ConnectionRequests = ({ userId, showConnectRequests }) => {
+import translations from "./translations.json";
+
+const ConnectionRequests = ({
+  userId,
+  showConnectRequests,
+  languageCode = "en",
+}) => {
   const [connectionRequests, setConnectionRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredMyContactRequestId, setHoveredMyContactRequestId] =
@@ -24,6 +30,7 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
   const [error, setError] = useState("");
+  const isLocal = process.env.REACT_APP_ENV === "local";
   const getIndexOfValue = (arrayOf, value) => {
     return arrayOf.indexOf(value);
   };
@@ -32,12 +39,15 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
     if (!userId) return;
 
     // Call the new endpoint to delete all requests from the user
-    fetch(`${process.env.REACT_APP_API_URL}/api/delete-requests-from-me/${userId}`, {
-      method: "DELETE", // Make sure to use the correct HTTP method
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      `${process.env.REACT_APP_API_URL}/api/delete-requests-from-me/${userId}`,
+      {
+        method: "DELETE", // Make sure to use the correct HTTP method
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           // If the server response is not OK, throw an error
@@ -61,12 +71,15 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
   };
 
   const deleteMyContactRequestId = (id) => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/delete-from-connection-requests/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      `${process.env.REACT_APP_API_URL}/api/delete-from-connection-requests/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to delete connection request");
@@ -115,10 +128,14 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
       });
   };
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_BACKEND_HOST, {
-      transports: ['websocket', 'polling'] // Add this to enable both WebSocket and polling
-    });
-
+    // const socket = io(process.env.REACT_APP_BACKEND_HOST, {
+    //   transports: ['websocket', 'polling'] // Add this to enable both WebSocket and polling
+    // });
+    const socket = isLocal
+      ? io(process.env.REACT_APP_BACKEND_HOST) // Development environment, no transport options needed
+      : io(process.env.REACT_APP_BACKEND_HOST, {
+          transports: ["websocket", "polling"], // Production environment, add WebSocket and polling options
+        });
     // Added the connection_requests_change listener
     socket.on("connection_requests_change", (data) => {
       if (data.requested_id === userId) fetchConnectionRequests();
@@ -140,14 +157,18 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
 
   return (
     <div className="connection-requests-container">
-      <h2 className="font-style-4">Connection Requests</h2>
+      <h2 className="font-style-4">
+        {translations[languageCode]?.connectionRequests?.title ||
+          "Connection Requests"}
+      </h2>
       {connectionRequests.length > 0 && (
         <Button
           variant="danger"
           onClick={deleteAllRequests}
           className="logout-button"
         >
-          Delete All My Requests
+          {translations[languageCode]?.connectionRequests
+            ?.deleteAllRequestsButton || "Delete All My Requests"}
         </Button>
       )}
       {connectionRequests.length > 0 ? (
@@ -226,7 +247,10 @@ const ConnectionRequests = ({ userId, showConnectRequests }) => {
           ))}
         </ul>
       ) : (
-        <p>No connection requests found.</p>
+        <p>
+          {translations[languageCode]?.connectionRequests?.noRequestsFound ||
+            "No connection requests found."}
+        </p>
       )}
       {message && <AlertMessage key={alertKey} message={message} type={type} />}
     </div>

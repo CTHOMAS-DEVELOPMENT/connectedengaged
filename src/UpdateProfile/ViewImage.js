@@ -4,8 +4,13 @@ import LoadAVideo from "../Video/LoadAVideo";
 import { convertToMediaPath } from "../system/utils";
 import { Button, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
+import translations from "./translations.json";
+const ViewImage = ({
+  userId,
+  profileVideo = "",
+  profileImage = "",
+  selectedLanguage = "en",
+}) => {
   const [profilePicture, setProfilePicture] = useState("");
   const [showUploader, setShowUploader] = useState(false);
   const [showVideoUploader, setShowVideoUploader] = useState(false);
@@ -54,7 +59,7 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
     setVideoPath(`${backendUrl}${convertToMediaPath(data.user.profile_video)}`);
     handleCloseVideoUploader();
   };
-
+  const translationsForLang = translations[selectedLanguage]?.viewImage || {};
   return (
     <div className="profile-picture-container">
       {profilePicture ? (
@@ -66,7 +71,7 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
             className="btn-sm"
             onClick={handleProfilePictureUpdate}
           >
-            Update Profile Image
+            {translationsForLang.updateProfileImage || "Update Profile Image"}
           </Button>
           <Button
             style={{ backgroundColor: "white" }}
@@ -75,8 +80,10 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
             onClick={handleProfileVideo}
           >
             {videoPath
-              ? "Update Profile Video (Max 30 seconds)"
-              : "Add Profile Video (Max 30 seconds)"}
+              ? translationsForLang.updateProfileVideo ||
+                "Update Profile Video (Max 30 seconds)"
+              : translationsForLang.addProfileVideo ||
+                "Add Profile Video (Max 30 seconds)"}
           </Button>
         </div>
       ) : (
@@ -88,7 +95,7 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
             className="btn-sm"
             onClick={handleProfilePictureUpdate}
           >
-            Add a Profile Image
+            {translationsForLang.addProfileImage || "Add a Profile Image"}
           </Button>
         </div>
       )}
@@ -100,16 +107,21 @@ const ViewImage = ({ userId, profileVideo = "", profileImage = "" }) => {
       )}
       <Modal show={showUploader} onHide={handleCloseUploader}>
         <Modal.Header closeButton>
-          <Modal.Title>Add/Update Profile Picture</Modal.Title>
+          <Modal.Title>
+            {translationsForLang.addUpdateProfileImage ||
+              "Add/Update Profile Picture"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ImageUploader userId={userId} onUpload={handleUploadSuccess} />
+          <ImageUploader userId={userId} onUpload={handleUploadSuccess} selectedLanguage={selectedLanguage}/>
         </Modal.Body>
       </Modal>
       <Modal show={showVideoUploader} onHide={handleCloseVideoUploader}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {videoPath ? "Update Profile Video" : "Add Profile Video"}
+            {videoPath
+              ? translationsForLang.updateProfileVideo || "Update Profile Video"
+              : translationsForLang.addProfileVideo || "Add Profile Video"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import translations from "./translations.json"; // Adjust the import path as necessary
 import AlertMessage from "../system/AlertMessage";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -8,6 +9,7 @@ const InteractionTitles = ({
   loggedInUserId,
   shouldRefreshInteractions,
   resetRefreshTrigger,
+  languageCode = "en",
 }) => {
   const [interactions, setInteractions] = useState([]);
   const [message, setMessage] = useState("");
@@ -27,7 +29,9 @@ const InteractionTitles = ({
   };
 
   const fetchInteractions = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/my_interaction_titles?logged_in_id=${loggedInUserId}`)
+    fetch(
+      `${process.env.REACT_APP_API_URL}/api/my_interaction_titles?logged_in_id=${loggedInUserId}`
+    )
       .then((response) => response.json())
       .then((data) => {
         setInteractions(data);
@@ -36,7 +40,7 @@ const InteractionTitles = ({
         console.error("Error fetching Engagements:", error);
         setMessage(`Error fetching Engagements:${error}`);
         setType("error");
-        setAlertKey(prevKey => prevKey + 1);
+        setAlertKey((prevKey) => prevKey + 1);
       });
   };
 
@@ -75,9 +79,11 @@ const InteractionTitles = ({
         submissionId: data.submission_id,
         userId: loggedInUserId,
         title: data.title,
+        languageCode: languageCode // Pass the language code here
       },
     });
   };
+  
 
   const handleEditClick = (interaction, event) => {
     event.stopPropagation(); // Prevent triggering handleTitleClick
@@ -88,12 +94,25 @@ const InteractionTitles = ({
       },
     });
   };
-
+  const translateDate = (dateString, languageCode = "en") => {
+    const date = new Date(dateString); // Assuming interaction.formatted_created_at is a valid date string
+    return new Intl.DateTimeFormat(languageCode, {
+      weekday: "long", // full weekday name
+      year: "numeric", // full year
+      month: "long", // full month name
+      day: "numeric", // day of the month
+      hour: "2-digit", // hour
+      minute: "2-digit", // minute
+      second: "2-digit", // second if needed
+    }).format(date);
+  };
   const handleDownloadAndEndItClick = (interaction, event) => {
     event.preventDefault(); // Prevent default button behavior
 
     // API endpoint to call
-    const apiUrl = `${process.env.REACT_APP_API_URL}/api/closed-interaction-zip/${
+    const apiUrl = `${
+      process.env.REACT_APP_API_URL
+    }/api/closed-interaction-zip/${
       interaction.submission_id
     }?title=${encodeURIComponent(interaction.title)}`;
 
@@ -139,7 +158,7 @@ const InteractionTitles = ({
         if (!response.ok) {
           setMessage(`Network response was not ok`);
           setType("error");
-          setAlertKey(prevKey => prevKey + 1);
+          setAlertKey((prevKey) => prevKey + 1);
           throw new Error("Network response was not ok");
         }
         return response.json();
@@ -147,7 +166,7 @@ const InteractionTitles = ({
       .then((data) => {
         setType("info");
         setMessage(`The Engagement has been removed`);
-        setAlertKey(prevKey => prevKey + 1);
+        setAlertKey((prevKey) => prevKey + 1);
         setEndedInteractions((oldArray) => [
           ...oldArray,
           interaction.submission_id,
@@ -157,14 +176,17 @@ const InteractionTitles = ({
         console.error("Error ending Engagement:", error);
         setMessage(`Error this Engagement was not removed:${error}`);
         setType("error");
-        setAlertKey(prevKey => prevKey + 1);
+        setAlertKey((prevKey) => prevKey + 1);
       });
   };
 
   const calculateRemainingTime = (endTimestamp) => {
     const endTime = new Date(endTimestamp).getTime();
     const currentTime = new Date().getTime();
-    const totalSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+    const totalSeconds = Math.max(
+      0,
+      Math.floor((endTime - currentTime) / 1000)
+    );
 
     const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor((totalSeconds % 86400) / 3600);
@@ -208,15 +230,23 @@ const InteractionTitles = ({
                   className="interaction-date"
                   title={interaction.formatted_created_at}
                 >
-                  Created: {interaction.formatted_created_at}
+                  {translations[languageCode]?.interactionTitles?.createdText ||
+                    "Created"}
+                  :{" "}
+                  {translateDate(
+                    interaction.formatted_created_at,
+                    languageCode
+                  )}
                 </span>
                 <span
                   className="interaction-expected-end"
                   title={interaction.expected_end}
                 >
-                  Expected end:{" "}
+                  {translations[languageCode]?.userList?.expectedEnd ||
+                    "Expected end"}
+                  :{" "}
                   {endedInteractions.includes(interaction.submission_id)
-                    ? "Ended"
+                    ? translations[languageCode]?.userList?.ended || "Ended"
                     : calculateRemainingTime(interaction.end_timestamp)}
                 </span>
               </div>
@@ -224,30 +254,29 @@ const InteractionTitles = ({
                 {interaction.user_id === loggedInUserId &&
                 !endedInteractions.includes(interaction.submission_id) ? (
                   <>
-                    <Button
-                      variant="outline-info"
-                      className="btn-sm interaction-edit"
-                      onClick={(event) => handleEditClick(interaction, event)}
-                    >
-                      Invited
-                    </Button>
+              <Button
+                variant="outline-info"
+                className="btn-sm interaction-edit"
+                onClick={(event) => handleEditClick(interaction, event)}
+              >
+                {translations[languageCode]?.userList?.invited || "Invited"}
+              </Button>
 
-                    <Button
-                      variant="outline-info"
-                      className="btn-sm interaction-edit"
-                      onClick={(event) =>
-                        handleDownloadAndEndItClick(interaction, event)
-                      }
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="danger"
-                      className="btn-sm interaction-edit"
-                      onClick={(event) => handleEndItClick(interaction, event)}
-                    >
-                      End it
-                    </Button>
+              <Button
+                variant="outline-info"
+                className="btn-sm interaction-edit"
+                onClick={(event) => handleDownloadAndEndItClick(interaction, event)}
+              >
+                {translations[languageCode]?.userList?.save || "Save"}
+              </Button>
+
+              <Button
+                variant="danger"
+                className="btn-sm interaction-edit"
+                onClick={(event) => handleEndItClick(interaction, event)}
+              >
+                {translations[languageCode]?.userList?.endIt || "End it"}
+              </Button>
                   </>
                 ) : (
                   <span className="interaction-username">

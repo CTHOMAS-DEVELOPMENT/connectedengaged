@@ -30,32 +30,22 @@ const Location = ({ onClose, onSelectCoordinates, initialCoordinates }) => {
   
     // Ensure xPercent and yPercent are within bounds (0-100)
     xPercent = Math.max(0, Math.min(100, xPercent));
-    yPercent = Math.max(0, Math.min(100, yPercent));
-  
-    console.log("xPercent", xPercent);
-    console.log("yPercent", yPercent);
-  
+    yPercent = Math.max(0, Math.min(100, yPercent)); 
     setDotPosition({ x: svgX, y: svgY });
     onSelectCoordinates({ x: xPercent, y: yPercent });
   };
 
   // Set initial dot position
   useEffect(() => {
-    console.log("Initial coordinates received:", initialCoordinates);
-
     if (initialCoordinates) {
       const svgElement = svgRef.current;
       
       if (svgElement) {
-        console.log("SVG element found:", svgElement);
         const viewBox = svgElement.viewBox.baseVal;
-        console.log("SVG viewBox:", viewBox);
         
         // Convert the percentage-based coordinates to the viewBox's internal coordinate system
         const dotX = (initialCoordinates.x / 100) * viewBox.width;
         const dotY = (initialCoordinates.y / 100) * viewBox.height;
-
-        console.log("Calculated dot position:", { x: dotX, y: dotY });
 
         // Set the dot position
         setDotPosition({ x: dotX, y: dotY });

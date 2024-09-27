@@ -234,3 +234,5 @@ ALTER TABLE users ALTER COLUMN sex DROP DEFAULT;ALTER TABLE users ALTER COLUMN s
 ALTER TABLE users ALTER COLUMN sex SET DEFAULT 'Male';  -- Change 'Male' to whatever the new default should be
 DROP TYPE sex_type;
 ALTER TYPE sex_type_new RENAME TO sex_type;
+
+ALTER TABLE users ADD COLUMN language_code VARCHAR(2) DEFAULT 'en';

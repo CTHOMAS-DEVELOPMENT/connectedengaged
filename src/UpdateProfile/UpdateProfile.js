@@ -14,11 +14,20 @@ import {
   version1Hobbies,
   version1Keys,
 } from "../RegistrationProfileCreation/scopedCollections.js";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { checkAuthorization } from "../system/authService"; // Ensure this path matches your file structure
 import { convertToMediaPath } from "../system/utils";
 import botPalOptions from "../RegistrationProfileCreation/botPalOptions.json";
+import translations from "./translations.json";
+const languageMap = {
+  en: "English",
+  es: "Español",
+  fr: "Français",
+  de: "Deutsch",
+  ar: "العربية", // Arabic
+  zh: "中文", // Chinese
+};
 const UpdateProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,7 +44,7 @@ const UpdateProfile = () => {
   const [selectedHobby, setSelectedHobby] = useState(null);
   const [showHobbies, setShowHobbies] = useState(false);
   const [showLocation, setShowLocation] = useState(false); // Manage visibility
-
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -82,7 +91,6 @@ const UpdateProfile = () => {
       worldY: selectedCoordinates.y,
     }));
 
-    console.log("selectedCoordinates", selectedCoordinates); // For debugging
   };
   const getStaticAdminImagePath = (adminFacePath) => {
     if (!adminFacePath) {
@@ -121,7 +129,10 @@ const UpdateProfile = () => {
       admin_face: getAdminFaceImagePath(index),
     }));
   };
-
+  const handleLanguageChange = (eventKey) => {
+    setSelectedLanguage(eventKey);
+    // Save the language preference (if needed) by making an API call
+  };
   useEffect(() => {
     if (userId) {
       checkAuthorization(userId).then((isAuthorized) => {
@@ -186,10 +197,10 @@ const UpdateProfile = () => {
           aboutYou: user.about_you || "",
           aboutMyBotPal: user.about_my_bot_pal || "",
           admin_face: getStaticAdminImagePath(user.admin_face) || "",
-          worldX: user.worldx || 0,  // Update
-          worldY: user.worldy || 0,  // Update
+          worldX: user.worldx || 0, // Update
+          worldY: user.worldy || 0, // Update
         });
-
+        setSelectedLanguage(user.language_code || "en");
         // Add this block to set selectedBotPalOption
         const selectedOptionIndex = botPalOptions.options.findIndex(
           (option) => option.value === user.about_my_bot_pal
@@ -260,21 +271,29 @@ const UpdateProfile = () => {
       floatsMyBoat: version1Keys[index],
     }));
   };
- 
+
   const handleSubmit = (event) => {
     event.preventDefault();
-
+  
     // Reset message and type for re-rendering
     setMessage("");
     setType("info");
     setAlertKey((prevKey) => prevKey + 1);
-
+  
+    // Validate the form data (you can customize this validation logic if needed)
     const validationErrors = validateUser(formData, true);
     if (Object.keys(validationErrors).length === 0) {
+      // Include selectedLanguage in the payload sent to the backend
+      const payload = {
+        ...formData,
+        language_code: selectedLanguage, // Pass the selected language
+      };
+  
+      // Send the updated form data including language_code to the backend
       fetch(`${process.env.REACT_APP_API_URL}/api/update_profile/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData), // Ensure worldX and worldY are included
+        body: JSON.stringify(payload), // Send the form data including the selected language
       })
         .then((response) => {
           if (!response.ok) {
@@ -302,10 +321,13 @@ const UpdateProfile = () => {
       }, 0);
     }
   };
+  
 
   if (authError) {
     return <div>Unauthorized. Please log in.</div>;
   }
+  const pageTranslations = translations[selectedLanguage]?.updateProfile || {};
+console.log("pageTranslations",pageTranslations)
   return (
     <div>
       <Button
@@ -314,16 +336,49 @@ const UpdateProfile = () => {
         className="btn-sm"
         onClick={() => navigate("/userlist", { state: { userId } })}
       >
-        Back to messages
+        {pageTranslations.backToMessages || "Back to messages"}
       </Button>
       <div style={centerWrapperStyle}>
-        <h2 className="font-style-4">Update Profile</h2>
-
+        <h2 className="font-style-4">
+          {pageTranslations.title || "Update Profile"}
+        </h2>
+        <div style={{ textAlign: "center", margin: "20px" }}>
+          <Dropdown onSelect={handleLanguageChange}>
+            <Dropdown.Toggle
+              variant="primary"
+              id="language-dropdown"
+              className={`font-style-4`}
+            >
+              {languageMap[selectedLanguage]}{" "}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="en" className="font-style-4" lang="en">
+                English
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="es" className="font-style-4" lang="es">
+                Español
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="fr" className="font-style-4" lang="fr">
+                Français
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="de" className="font-style-4" lang="de">
+                Deutsch
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="ar" className="font-style-4" lang="ar">
+                العربية
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="zh" className="font-style-4" lang="zh">
+                中文
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
         <div className="button-group">
           <ViewImage
             userId={userId}
             profileVideo={profileVideo}
             profileImage={profileImage}
+            selectedLanguage={selectedLanguage}
           />
         </div>
       </div>
@@ -336,14 +391,16 @@ const UpdateProfile = () => {
               className="btn-sm"
               type="submit"
             >
-              Update Profile
+              {pageTranslations.submitButton || "Update Profile"}
             </Button>
             {message && (
               <AlertMessage key={alertKey} message={message} type={type} />
             )}
           </div>
           <div>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">
+              {pageTranslations.usernameLabel || "Username"}
+            </label>
             <input
               type="text"
               id="username"
@@ -355,7 +412,9 @@ const UpdateProfile = () => {
             />
           </div>
           <div>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">
+              {pageTranslations.emailLabel || "Email"}
+            </label>
             <input
               type="email"
               id="email"
@@ -368,7 +427,8 @@ const UpdateProfile = () => {
           </div>
           <div>
             <label htmlFor="password">
-              Password (leave blank to keep the same)
+              {pageTranslations.passwordLabel ||
+                "Password (leave blank to keep the same)"}
             </label>
             <input
               type="password"
@@ -380,7 +440,9 @@ const UpdateProfile = () => {
           </div>
 
           <div className="rounded-rectangle-wrapper">
-            <h3 className="font-style-4">About You Survey</h3>
+            <h3 className="font-style-4">
+              {pageTranslations.aboutYouLabel || "About You Survey"}
+            </h3>
             <div>
               <div>
                 <Button
@@ -389,8 +451,10 @@ const UpdateProfile = () => {
                   onClick={() => setShowGender(!showGender)}
                 >
                   {showGender
-                    ? "Hide Most Like You"
-                    : "Show Most Like You Selection"}
+                    ? pageTranslations.genderToggle?.hide ||
+                      "Hide Most Like You"
+                    : pageTranslations.genderToggle?.show ||
+                      "Show Most Like You Selection"}
                 </Button>
               </div>
 
@@ -408,14 +472,18 @@ const UpdateProfile = () => {
                 onClick={() => setShowHobbies(!showHobbies)}
               >
                 {showHobbies
-                  ? "Hide Your Favourite Hobby"
-                  : "Show Your Favourite Hobby Selection"}
+                  ? pageTranslations.hobbiesToggle?.hide ||
+                    "Hide Your Favourite Hobby"
+                  : pageTranslations.hobbiesToggle?.show ||
+                    "Show Your Favourite Hobby Selection"}
               </Button>
             </div>
             {showHobbies && (
               <Hobbies
                 onSelectHobby={handleHobbySelection}
                 selected={selectedHobby}
+                selectedLanguage={selectedLanguage}
+                hobbies={pageTranslations.hobbies} 
               />
             )}
             <div>
@@ -426,8 +494,10 @@ const UpdateProfile = () => {
                   onClick={() => setShowOrientation(!showOrientation)}
                 >
                   {showOrientation
-                    ? "Hide Your Preferred Company"
-                    : "Show Your Preferred Company Selection"}
+                    ? pageTranslations.orientationToggle?.hide ||
+                      "Hide Your Preferred Company"
+                    : pageTranslations.orientationToggle?.show ||
+                      "Show Your Preferred Company Selection"}
                 </Button>
               </div>
               {showOrientation && (
@@ -444,8 +514,10 @@ const UpdateProfile = () => {
                 onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
               >
                 {showFloatsMyBoat
-                  ? "Hide Floats Your Boat"
-                  : "Show Floats Your Boat Selection"}
+                  ? pageTranslations.floatsMyBoatToggle?.hide ||
+                    "Hide Floats Your Boat"
+                  : pageTranslations.floatsMyBoatToggle?.show ||
+                    "Show Floats Your Boat Selection"}
               </Button>
             </div>
 
@@ -461,17 +533,22 @@ const UpdateProfile = () => {
                 className="btn-sm"
                 onClick={() => setShowLocation(true)} // Open the Location component
               >
-                Show Location
+                {pageTranslations.locationButton || "Show Location"}
               </Button>
             </div>
             <div>
-              <h3 className="font-style-4">About You</h3>
+              <h3 className="font-style-4">
+                {pageTranslations.aboutYouLabel || "About You"}
+              </h3>
               <textarea
                 id="aboutYou"
                 name="aboutYou"
                 className="about-you-textarea"
                 value={formData.aboutYou}
-                placeholder="I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
+                placeholder={
+                  pageTranslations.aboutYouTextArea ||
+                  "I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
+                }
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 required
@@ -488,51 +565,59 @@ const UpdateProfile = () => {
             )}
 
             <div>
-              <h3 className="font-style-4">About Your System Admin</h3>
+              <h3 className="font-style-4">
+                {pageTranslations.aboutAdminLabel || "About Your System Admin"}
+              </h3>
               {formData.admin_face && (
-                <img src={formData.admin_face} alt="Admin Face" />
+                <img
+                  src={formData.admin_face}
+                  alt={pageTranslations.adminFaceAlt || "Admin Face"}
+                />
               )}
               {!formData.admin_face && (
                 <img src={"/admins/thumb-file-admin.JPEG"} alt="Admin Face" />
               )}
 
-              {botPalOptions.options.map((option, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex", // Ensure flexbox layout
-                      alignItems: "center", // Center the items vertically
-                      justifyContent: "center", // Center the items horizontally
-                    }}
-                  >
-                    <div
-                      style={{
-                        whiteSpace: "nowrap", // Prevent the text from wrapping
-                      }}
-                    >
-                      {option.label}
-                    </div>
-                    <input
-                      type="radio"
-                      id={`botPalOption${index}`}
-                      name="aboutMyBotPal"
-                      value={index}
-                      checked={selectedBotPalOption === index}
-                      onChange={handleRadioChange}
-                      style={{
-                        marginBottom: "0",
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
+{(
+    translations[selectedLanguage]?.updateProfile?.adminLabels || 
+    botPalOptions.options.map(option => option.label)
+  ).map((label, index) => (
+    <div
+      key={index}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            whiteSpace: "nowrap",
+          }}
+        >
+          {label}
+        </div>
+        <input
+          type="radio"
+          id={`botPalOption${index}`}
+          name="aboutMyBotPal"
+          value={index}
+          checked={selectedBotPalOption === index}
+          onChange={handleRadioChange}
+          style={{
+            marginBottom: "0",
+          }}
+        />
+      </div>
+    </div>
+  ))}
             </div>
           </div>
         </div>

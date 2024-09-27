@@ -17,7 +17,14 @@ const app = express();
 const server = http.createServer(app);
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-
+const languageMap = {
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  ar: "Arabic", 
+  zh: "Chinese", 
+};
 function loadEnvVariables() {
   // Adjust if your .env file is located elsewhere. Using __dirname ensures it looks in the same directory as your server.js file.
   const envPath = path.join(__dirname, ".env");
@@ -161,13 +168,12 @@ const clientSubmissions = {}; // { socketId: { userId: Number, submissionIds: Se
 const activeUsersPerSubmission = {};
 
 io.on("connection", (socket) => {
-  console.log(`User connected with socket ID: ${socket.id}`);
+  //console.log(`User connected with socket ID: ${socket.id}`);
   socket.on("postDeleted", ({ postId, submissionId }) => {
-    //console.log(`Post deleted with ID: ${postId} in submission: ${submissionId}`);
     io.to(`submission-${submissionId}`).emit("postDeleted", { postId });
   });
   socket.on("register", ({ userId, submissionIds }) => {
-    console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
+    //console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
     if (!clientSubmissions[socket.id]) {
       clientSubmissions[socket.id] = {
         userId,
@@ -207,8 +213,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("callUser", ({ userToCall, signalData, from }) => {
-    console.log(`User ${from} calling user ${userToCall}`);
-    console.log("Current clientSubmissions:", clientSubmissions);
+    //console.log(`User ${from} calling user ${userToCall}`);
+    //console.log("Current clientSubmissions:", clientSubmissions);
     const recipientSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === userToCall
     );
@@ -241,7 +247,7 @@ io.on("connection", (socket) => {
     console.error(`Socket.io Error: ${err}`);
   });
   socket.on("disconnect", () => {
-    console.log(`User disconnected with socket ID: ${socket.id}`);
+    //console.log(`User disconnected with socket ID: ${socket.id}`);
     //console.log(`Socket disconnected: ${socket.id}`);
     if (clientSubmissions[socket.id]) {
       const { userId, submissionIds } = clientSubmissions[socket.id];
@@ -580,7 +586,8 @@ app.post("/api/register", async (req, res) => {
       aboutMyBotPal,
       admin_face, // New field from the frontend
       worldX, // New field for the X coordinate
-      worldY  // New field for the Y coordinate
+      worldY, // New field for the Y coordinate
+      language_code 
     } = req.body;
 
     const saltRounds = 10;
@@ -591,9 +598,9 @@ app.post("/api/register", async (req, res) => {
     // Insert the new User along with worldX and worldY coordinates
     const userInsertResult = await client.query(
       `INSERT INTO users 
-        (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face, worldX, worldY) 
+        (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face, worldX, worldY, language_code) 
       VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
       RETURNING id`,
       [
         username,
@@ -607,7 +614,8 @@ app.post("/api/register", async (req, res) => {
         aboutMyBotPal,
         admin_face, // Save the admin_face value to the database
         worldX,     // Save the X coordinate
-        worldY      // Save the Y coordinate
+        worldY,     // Save the Y coordinate
+        language_code  // New field for storing the user's language preference
       ]
     );
     
@@ -670,8 +678,6 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-
-
 app.put("/api/update_profile/:id", async (req, res) => {
   const { id } = req.params;
   let {
@@ -686,7 +692,8 @@ app.put("/api/update_profile/:id", async (req, res) => {
     aboutMyBotPal,
     admin_face,
     worldX,  // Add worldX to the request body
-    worldY   // Add worldY to the request body
+    worldY,  // Add worldY to the request body
+    language_code  // Add language_code to the request body
   } = req.body;
 
   // Validation for password length if it's not empty
@@ -718,8 +725,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
     about_my_bot_pal = COALESCE($9, about_my_bot_pal),
     admin_face = COALESCE($10, admin_face),
     worldX = COALESCE($11, worldX),  -- Include worldX
-    worldY = COALESCE($12, worldY)   -- Include worldY
-    WHERE id = $13
+    worldY = COALESCE($12, worldY),  -- Include worldY
+    language_code = COALESCE($13, language_code)  -- Include language_code
+    WHERE id = $14
     RETURNING *;
   `;
 
@@ -736,6 +744,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     admin_face,
     worldX,  // Include the value for worldX
     worldY,  // Include the value for worldY
+    language_code,  // Include the value for language_code
     id,
   ];
 
@@ -751,6 +760,7 @@ app.put("/api/update_profile/:id", async (req, res) => {
     res.status(500).send("Failed to update profile");
   }
 });
+
 
 
 //999
@@ -796,7 +806,6 @@ app.post("/api/filter-users/:userId", async (req, res) => {
       queryConditions.push(`about_you ILIKE '%' || $${paramCounter++} || '%'`);
       queryParams.push(aboutYou);
     }
-console.log("filter-users-queryConditions",queryConditions)
     let query = `
       SELECT id, username, email, sexual_orientation, hobbies, floats_my_boat, sex, about_you 
       FROM users 
@@ -998,7 +1007,8 @@ app.get("/api/connected/:userId", async (req, res) => {
           floats_my_boat, 
           sex,
           about_you,
-          admin_face 
+          admin_face, 
+          language_code
         FROM 
           users 
         WHERE 
@@ -1016,7 +1026,8 @@ app.get("/api/connected/:userId", async (req, res) => {
           U2.floats_my_boat, 
           U2.sex,
           U2.about_you,
-          U2.admin_face
+          U2.admin_face,
+          U2.language_code
         FROM 
           users U1
           JOIN connections ON U1.id = connections.user_one_id OR U1.id = connections.user_two_id
@@ -1819,7 +1830,6 @@ app.get("/api/closed-interaction-zip/:submissionId", async (req, res) => {
       // Resolve the full path for the uploaded file based on the environment
       const sanitizedPath = post.uploaded_path.replace("uploaded-images\\", "").replace("uploaded-images/", "");
       const fullPath = path.join(baseDir, sanitizedPath);
-      console.log("fullPath", fullPath);
 
       // Ensure the file exists before attempting to add it to the ZIP
       if (fs.existsSync(fullPath)) {
@@ -2087,7 +2097,8 @@ app.get("/api/users/:id", async (req, res) => {
         about_my_bot_pal, 
         admin_face, 
         worldX,   
-        worldY    
+        worldY,
+        language_code   -- Include language_code here
       FROM users WHERE id = $1`,
       [id]
     );
@@ -2099,16 +2110,20 @@ app.get("/api/users/:id", async (req, res) => {
 });
 
 
+
 async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
   
-  const userQuery = "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal FROM users WHERE id = $1";
+  const userQuery = "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal, language_code FROM users WHERE id = $1";
   const userResult = await pool.query(userQuery, [user_id]);
   const userInfo = userResult.rows[0];
 
   const botInfo = userInfo.about_my_bot_pal;
-  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters`;
+
+
+  const language = languageMap[userInfo.language_code]
+  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters and speaks in the ${language} language`;
 
   const userPreferences = `
     User's sexual orientation: ${userInfo.sexual_orientation},
@@ -2269,7 +2284,6 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
 app.post("/api/user_submissions", async (req, res) => {
   try {
     const { user_id, title, userIds } = req.body;
-    console.log("Received request:", { user_id, title, userIds }); // Log request data
 
     if (!user_id || !title || !userIds || !Array.isArray(userIds)) {
       return res
@@ -2284,7 +2298,6 @@ app.post("/api/user_submissions", async (req, res) => {
     );
 
     const submissionId = submissionResult.rows[0].id;
-    console.log("Inserted submission:", submissionResult.rows[0]); // Log the inserted submission
 
     // Insert into submission_members table
     await Promise.all(
@@ -2298,18 +2311,15 @@ app.post("/api/user_submissions", async (req, res) => {
 
     // Emit the 'new_engagement' event to the users
     userIds.forEach((userId) => {
-      console.log("Current clientSubmissions:", clientSubmissions); // Log current state
       const recipientSocketId = Object.keys(clientSubmissions).find(
         (socketId) => clientSubmissions[socketId].userId === userId
       );
-
-      console.log(`User ${userId} has recipient socket ID: ${recipientSocketId}`); // Log recipient socket ID
 
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("new_engagement", {
           userIds,
         });
-        console.log(`Emitted new_engagement to user ${userId} with socket ID ${recipientSocketId}`); // Log emission
+        //console.log(`Emitted new_engagement to user ${userId} with socket ID ${recipientSocketId}`); // Log emission
       } else {
         console.log(`No recipient socket ID found for user ${userId}`); // Log missing socket ID
       }
@@ -2411,96 +2421,86 @@ app.post("/api/update_user_password", async (req, res) => {
     res.status(500).json({ message: "Server error while updating password" });
   }
 });
-//999
-app.post("/api/notify_offline_users", async (req, res) => {
-  const { type, title, loggedInUserName, associatedUsers, scheduledTime } = req.body;
-  console.log("type", type)
-  console.log("title", title)
-  console.log("loggedInUserName", loggedInUserName)
-  console.log("associatedUsers", associatedUsers)
-  console.log("scheduledTime", scheduledTime)
-  try {
-    for (const user of associatedUsers) {
-      const { rows } = await pool.query(
-        "SELECT email, username FROM users WHERE id = $1",
-        [user.id]
-      );
-      const email = rows[0].email;
-      const username = rows[0].username;
-      let formattedTime = "";
-      if (scheduledTime) {
-        const dateObj = new Date(scheduledTime); // Convert to Date object
-        const isToday = dateObj.toDateString() === new Date().toDateString();
-        const isTomorrow =
-          dateObj.toDateString() ===
-          new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
-        const dayText = isToday
-          ? "today"
-          : isTomorrow
-          ? "tomorrow"
-          : "the day after tomorrow";
-        formattedTime = `${dayText} at ${dateObj.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}`;
+//French
+const emailTemplates = require('./emailTemplates.json');
+const getLocalizedContent = (type, language, replacements) => {
+  const template = emailTemplates[language]?.[type] || emailTemplates['en'][type];
+  let message = template.message;
+  let subject = template.subject;
+
+  // Replace placeholders with actual data
+  Object.keys(replacements).forEach(key => {
+    const value = replacements[key];
+    message = message.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    subject = subject.replace(new RegExp(`{{${key}}}`, 'g'), value);
+  });
+
+  return { message, subject };
+};
+  // console.log("type", type)
+  // console.log("title", title)
+  // console.log("loggedInUserName", loggedInUserName)
+  // console.log("associatedUsers", associatedUsers)
+  // console.log("scheduledTime", scheduledTime)
+  app.post("/api/notify_offline_users", async (req, res) => {
+    const { type, title, loggedInUserName, associatedUsers, scheduledTime } = req.body;
+  
+    try {
+      for (const user of associatedUsers) {
+        const { rows } = await pool.query(
+          "SELECT email, username, language_code FROM users WHERE id = $1",
+          [user.id]
+        );
+        const email = rows[0].email;
+        const username = rows[0].username;
+        const language = rows[0].language_code || 'en'; // Default to English
+
+        let formattedTime = "";
+        if (scheduledTime) {
+          const dateObj = new Date(scheduledTime);
+          const isToday = dateObj.toDateString() === new Date().toDateString();
+          const isTomorrow =
+            dateObj.toDateString() === new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+          const dayText = isToday ? "today" : isTomorrow ? "tomorrow" : "the day after tomorrow";
+          formattedTime = `${dayText} at ${dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+        }
+  
+        // Generate localized email content
+        const { message, subject } = getLocalizedContent(type, language, {
+          username,
+          loggedInUserName,
+          title,
+          type,
+          domain: process.env.ROOT_DOMAIN,
+          formattedTime
+        });
+  
+        const mailOptions = {
+          from: process.env.RESET_EMAIL,
+          to: email,
+          subject: subject,
+          text: message,
+        };
+  
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email to:", email, error);
+          } else {
+            console.log("Email sent:", info.response);
+          }
+        });
       }
-      const getMessage = () => {
-        switch (type) {
-          case "Text":
-          case "audio":
-          case "picture":
-            return `Hey ${username}, ${loggedInUserName} has added a ${type} post to the '${title}' interaction you are part of in the ConnectedEngaged application.\n Please login to catch up at: ${process.env.ROOT_DOMAIN}`;
-          case "connection_accepted":
-            return `Hey ${username}, ${loggedInUserName} has accepted your connection request you made in the ConnectedEngaged application.\n Please login to catch up at: ${process.env.ROOT_DOMAIN}`;
-          case "call_request":
-            return `Hey ${username}, ${loggedInUserName} has requested a video call with you ${formattedTime}.\nPlease login to the ConnectedEngaged application to join the call: ${process.env.ROOT_DOMAIN}`;
-          default:
-            return "unknown type";
-        }
-      };
-
-      const getSubject = () => {
-        switch (type) {
-          case "Text":
-          case "audio":
-          case "picture":
-            return `${loggedInUserName} has posted to ${title}`;
-          case "connection_accepted":
-            return `${loggedInUserName} has accepted your connection request`;
-          case "call_request":
-            return `${loggedInUserName} has requested a video call`;
-          default:
-            return "unknown type";
-        }
-      };
-
-      const message = getMessage();
-      const subject = getSubject();
-
-      const mailOptions = {
-        from: process.env.RESET_EMAIL,
-        to: email,
-        subject: subject,
-        text: message,
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error("Error sending email to:", email, error);
-        } else {
-          console.log("Email sent:", info.response);
-        }
+  
+      res.status(200).json({
+        success: true,
+        message: "Email notifications have been sent.",
       });
+    } catch (error) {
+      console.error("Error notifying users:", error);
+      res.status(500).json({ message: "Server error" });
     }
-    res.status(200).json({
-      success: true,
-      message: "Email notifications have been sent.",
-    });
-  } catch (error) {
-    console.error("Error notifying users:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+  });
+  
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
@@ -2513,5 +2513,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9905**Server running on port ${PORT}`);
+  console.log(`**9906+json**Server running on port ${PORT}`);
 });

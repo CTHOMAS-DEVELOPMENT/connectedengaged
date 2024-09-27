@@ -1,18 +1,19 @@
-import React, { useRef } from "react";
-import { hobbyTypes } from "./images";
+import React, { useRef } from "react"; 
+import { hobbyTypes } from "./images"; // Image sources for hobbies
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   ArrowLeftCircleFill,
   ArrowRightCircleFill,
 } from "react-bootstrap-icons";
-import { version1Hobbies } from "./scopedCollections";
+
 const Hobbies = ({
   onSelectHobby,
   selected,
   defaultSize = 300,
   noTitle = false,
   noChexbox = false,
+  hobbies = [], // Receive the hobbies from the parent component (translated)
 }) => {
   const carouselRef = useRef(null);
 
@@ -38,18 +39,21 @@ const Hobbies = ({
   return (
     <div>
       {selected !== null ? (
-        // Display only the selected item
         <div style={{ textAlign: "center" }}>
           <img
             src={hobbyTypes[selected]}
-            alt={version1Hobbies[selected]}
+            alt={hobbies[selected] || "Unknown Hobby"}
             style={{
               width: "100%",
               maxHeight: `${defaultSize}px`,
               objectFit: "contain",
             }}
           />
-          {!noTitle && <div>{version1Hobbies[selected]}</div>}
+          {!noTitle && (
+            <div>
+              {hobbies[selected] || "Unknown Hobby"}
+            </div>
+          )}
           {!noChexbox && (
             <input
               type="checkbox"
@@ -60,7 +64,6 @@ const Hobbies = ({
           )}
         </div>
       ) : (
-        // Display the entire carousel
         <div>
           <div
             ref={carouselRef}
@@ -82,7 +85,7 @@ const Hobbies = ({
               >
                 <img
                   src={imageSrc}
-                  alt={version1Hobbies[index]}
+                  alt={hobbies[index] || "Unknown Hobby"}
                   onClick={() => handleSelect(index)}
                   style={{
                     width: "100%",
@@ -92,7 +95,9 @@ const Hobbies = ({
                     objectFit: "contain",
                   }}
                 />
-                <div>{version1Hobbies[index]}</div>
+                <div>
+                  {hobbies[index] || "Unknown Hobby"}
+                </div>
                 <input
                   type="checkbox"
                   checked={selected === index}

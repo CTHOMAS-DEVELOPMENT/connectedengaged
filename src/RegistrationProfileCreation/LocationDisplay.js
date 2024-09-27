@@ -7,21 +7,15 @@ const LocationDisplay = ({ worldX, worldY }) => {
 
   // Set initial dot position
   useEffect(() => {
-    console.log("worldX received:", worldX); // Log the initial coordinates
-    console.log("worldY received:", worldY); // Log the initial coordinates
 
     if (worldX !== undefined && worldY !== undefined) {
       const svgElement = svgRef.current; // Use ref to access the SVG element
       if (svgElement) {
-        console.log("SVG element found:", svgElement); // Log SVG element existence
         const viewBox = svgElement.viewBox.baseVal;
-        console.log("SVG viewBox:", viewBox); // Log the viewBox details
         
         // Convert the percentage-based coordinates to the viewBox's internal coordinate system
         const dotX = (worldX / 100) * viewBox.width;
         const dotY = (worldY / 100) * viewBox.height;
-
-        console.log("Calculated dot position:", { x: dotX, y: dotY }); // Log the calculated dot position
 
         // Set the dot position
         setDotPosition({ x: dotX, y: dotY });

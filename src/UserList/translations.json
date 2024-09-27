@@ -1,0 +1,302 @@
+{
+  "en": {
+    "usersList": {
+      "viewProfile": "View Profile",
+      "afterLoginMessage": "After login landing page",
+      "engagementsTab": "Engagements",
+      "engagementsTitle": "Engagements",
+      "loadEngagementButton": "Load Previously Saved Engagement",
+      "logoutText": "Logout",
+      "connectionsTab": "Connections",
+      "connectionCentreTitle": "Connection Centre",
+      "helpMessage": "Welcome to the Connection Centre to create a new Engagement with the Connected Engagers you want to include, you will need to reach the 'Create New Submissions' screen. Select the check box(s) next to the bin belonging to the Connected users/engagers you want to interact with and continue selecting from your Connected users/engager list. When you are satisfied with your choices just click on the floating button.",
+      "searchPlaceholder": "Search",
+      "replaceConnectionRequestsButton": "Replace Your Connection Requests",
+      "hideConnectionRequests": "Hide Your Connection Requests",
+      "showConnectionRequests": "Show Your Connection Requests",
+      "hideRequestsFromOthers": "Hide Connection Requests from Others",
+      "showRequestsFromOthers": "Show Connection Requests from Others",
+      "profileButton": "Profile"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "Username",
+      "aboutYouPlaceholder": "About You",
+      "showFilterByOrientation": "Show Filter by Orientation",
+      "hideFilterByOrientation": "Hide Filter by Orientation",
+      "showFilterByHobbies": "Show Filter by Hobbies",
+      "hideFilterByHobbies": "Hide Filter by Hobbies",
+      "showFilterByFloatsMyBoat": "Show Filter by Floats My Boat",
+      "hideFilterByFloatsMyBoat": "Hide Filter by Floats My Boat",
+      "showFilterByGender": "Show Filter by Gender",
+      "hideFilterByGender": "Hide Filter by Gender",
+      "applyFilters": "Apply Filters",
+      "close": "Close"
+    },
+    "connectionRequested": {
+      "title": "Connection Requests to You",
+      "deleteAllRequestsButton": "Delete All Requests",
+      "noConnectionRequests": "No connection requests found.",
+      "aboutYouPlaceholder": "{username} has not entered anything yet.",
+      "enableSelectedConnectionsButton": "Enable Selected Connections",
+      "loadingMessage": "Loading connection requests...",
+      "errorLoadingMessage": "Error loading connection requests:",
+      "helpMessage": "Select the checkboxes next to the red bin and go to the 'Enable Selected Connection' button which appears as you check boxes and click it to gain the additional connected engager(s)"
+    },
+    "connectionRequests": {
+      "title": "Connection Requests",
+      "deleteAllRequestsButton": "Delete All My Requests",
+      "noRequestsFound": "No connection requests found.",
+      "noAboutText": "has not entered anything yet.."
+    }
+  },
+  "es": {
+    "usersList": {
+      "viewProfile": "Ver perfil",
+      "afterLoginMessage": "Página de inicio después de iniciar sesión",
+      "engagementsTab": "Compromisos",
+      "engagementsTitle": "Compromisos",
+      "loadEngagementButton": "Cargar compromiso guardado anteriormente",
+      "logoutText": "Cerrar sesión",
+      "connectionsTab": "Conexiones",
+      "connectionCentreTitle": "Centro de Conexión",
+      "helpMessage": "Bienvenido al Centro de Conexión para crear un nuevo Compromiso con los Engagers Conectados que deseas incluir, necesitarás llegar a la pantalla 'Crear Nuevas Presentaciones'. Selecciona la casilla junto al cubo de basura que pertenece a los usuarios/engagers Conectados con los que deseas interactuar y continúa seleccionando de tu lista de usuarios/engagers Conectados. Cuando estés satisfecho con tus elecciones, solo haz clic en el botón flotante.",
+      "searchPlaceholder": "Buscar",
+      "replaceConnectionRequestsButton": "Reemplazar tus solicitudes de conexión",
+      "hideConnectionRequests": "Ocultar tus solicitudes de conexión",
+      "showConnectionRequests": "Mostrar tus solicitudes de conexión",
+      "hideRequestsFromOthers": "Ocultar solicitudes de conexión de otros",
+      "showRequestsFromOthers": "Mostrar solicitudes de conexión de otros",
+      "profileButton": "Perfil"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "Nombre de usuario",
+      "aboutYouPlaceholder": "Acerca de ti",
+      "showFilterByOrientation": "Mostrar filtro por Orientación",
+      "hideFilterByOrientation": "Ocultar filtro por Orientación",
+      "showFilterByHobbies": "Mostrar filtro por Hobbies",
+      "hideFilterByHobbies": "Ocultar filtro por Hobbies",
+      "showFilterByFloatsMyBoat": "Mostrar filtro por Floats My Boat",
+      "hideFilterByFloatsMyBoat": "Ocultar filtro por Floats My Boat",
+      "showFilterByGender": "Mostrar filtro por Género",
+      "hideFilterByGender": "Ocultar filtro por Género",
+      "applyFilters": "Aplicar filtros",
+      "close": "Cerrar"
+    },
+    "connectionRequested": {
+      "title": "Solicitudes de conexión hacia ti",
+      "deleteAllRequestsButton": "Eliminar todas las solicitudes",
+      "noConnectionRequests": "No se encontraron solicitudes de conexión.",
+      "aboutYouPlaceholder": "{username} aún no ha ingresado nada.",
+      "enableSelectedConnectionsButton": "Habilitar conexiones seleccionadas",
+      "loadingMessage": "Cargando solicitudes de conexión...",
+      "errorLoadingMessage": "Error al cargar las solicitudes de conexión:",
+      "helpMessage": "Seleccione las casillas de verificación junto al bote rojo y vaya al botón 'Habilitar conexión seleccionada' que aparece cuando marca las casillas y haga clic en él para obtener el(los) nuevo(s) participante(s) conectado(s)."
+    },
+    "connectionRequests": {
+      "title": "Solicitudes de conexión",
+      "deleteAllRequestsButton": "Eliminar todas mis solicitudes",
+      "noRequestsFound": "No se encontraron solicitudes de conexión.",
+      "noAboutText": "no ha ingresado nada aún.."
+    }
+  },
+  "fr": {
+    "usersList": {
+      "viewProfile": "Voir le profil",
+      "afterLoginMessage": "Page d'accueil après connexion",
+      "engagementsTab": "Engagements",
+      "engagementsTitle": "Engagements",
+      "loadEngagementButton": "Charger un engagement enregistré",
+      "logoutText": "Se déconnecter",
+      "connectionsTab": "Connexions",
+      "connectionCentreTitle": "Centre de Connexion",
+      "helpMessage": "Bienvenue au Centre de Connexion pour créer un nouvel Engagement avec les Engagers Connectés que vous souhaitez inclure, vous devrez accéder à l'écran 'Créer de Nouvelles Soumissions'. Sélectionnez la case à côté de la poubelle appartenant aux utilisateurs/engagers Connectés avec lesquels vous souhaitez interagir et continuez à sélectionner dans votre liste d'utilisateurs/engagers Connectés. Lorsque vous êtes satisfait de vos choix, il vous suffit de cliquer sur le bouton flottant.",
+      "searchPlaceholder": "Rechercher",
+      "replaceConnectionRequestsButton": "Remplacer vos demandes de connexion",
+      "hideConnectionRequests": "Masquer vos demandes de connexion",
+      "showConnectionRequests": "Afficher vos demandes de connexion",
+      "hideRequestsFromOthers": "Masquer les demandes de connexion des autres",
+      "showRequestsFromOthers": "Afficher les demandes de connexion des autres",
+      "profileButton": "Profil"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "Nom d'utilisateur",
+      "aboutYouPlaceholder": "À propos de vous",
+      "showFilterByOrientation": "Afficher le filtre par Orientation",
+      "hideFilterByOrientation": "Masquer le filtre par Orientation",
+      "showFilterByHobbies": "Afficher le filtre par Loisirs",
+      "hideFilterByHobbies": "Masquer le filtre par Loisirs",
+      "showFilterByFloatsMyBoat": "Afficher le filtre par Floats My Boat",
+      "hideFilterByFloatsMyBoat": "Masquer le filtre par Floats My Boat",
+      "showFilterByGender": "Afficher le filtre par Sexe",
+      "hideFilterByGender": "Masquer le filtre par Sexe",
+      "applyFilters": "Appliquer les filtres",
+      "close": "Fermer"
+    },
+    "connectionRequested": {
+      "title": "Demandes de connexion à vous",
+      "deleteAllRequestsButton": "Supprimer toutes les demandes",
+      "noConnectionRequests": "Aucune demande de connexion trouvée.",
+      "aboutYouPlaceholder": "{username} n'a encore rien entré.",
+      "enableSelectedConnectionsButton": "Activer les connexions sélectionnées",
+      "loadingMessage": "Chargement des demandes de connexion...",
+      "errorLoadingMessage": "Erreur lors du chargement des demandes de connexion:",
+      "helpMessage": "Sélectionnez les cases à cocher à côté de la poubelle rouge, puis cliquez sur le bouton 'Activer la connexion sélectionnée' qui apparaît lorsque vous cochez les cases pour obtenir les nouveaux engageurs connectés."
+    },
+    "connectionRequests": {
+      "title": "Demandes de connexion",
+      "deleteAllRequestsButton": "Supprimer toutes mes demandes",
+      "noRequestsFound": "Aucune demande de connexion trouvée.",
+      "noAboutText": "n'a encore rien saisi.."
+    }
+  },
+  "de": {
+    "usersList": {
+      "viewProfile": "Profil anzeigen",
+      "afterLoginMessage": "Nach dem Login-Startseite",
+      "engagementsTab": "Engagements",
+      "engagementsTitle": "Engagements",
+      "loadEngagementButton": "Zuvor gespeichertes Engagement laden",
+      "logoutText": "Abmelden",
+      "connectionsTab": "Verbindungen",
+      "connectionCentreTitle": "Verbindungszentrum",
+      "helpMessage": "Willkommen im Verbindungszentrum. Um ein neues Engagement mit den verbundenen Engagierten zu erstellen, die Sie einbeziehen möchten, müssen Sie den Bildschirm 'Neue Einreichungen erstellen' erreichen. Wählen Sie das Kontrollkästchen neben dem Mülleimer der verbundenen Benutzer/Engagierten aus, mit denen Sie interagieren möchten, und fahren Sie mit der Auswahl aus Ihrer Liste der verbundenen Benutzer/Engagierten fort. Wenn Sie mit Ihren Entscheidungen zufrieden sind, klicken Sie einfach auf die Schaltfläche.",
+      "searchPlaceholder": "Suche",
+      "replaceConnectionRequestsButton": "Ersetze deine Verbindungsanfragen",
+      "hideConnectionRequests": "Verstecke deine Verbindungsanfragen",
+      "showConnectionRequests": "Zeige deine Verbindungsanfragen",
+      "hideRequestsFromOthers": "Verstecke Verbindungsanfragen von anderen",
+      "showRequestsFromOthers": "Zeige Verbindungsanfragen von anderen",
+      "profileButton": "Profil"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "Benutzername",
+      "aboutYouPlaceholder": "Über dich",
+      "showFilterByOrientation": "Filter nach Orientierung anzeigen",
+      "hideFilterByOrientation": "Filter nach Orientierung ausblenden",
+      "showFilterByHobbies": "Filter nach Hobbys anzeigen",
+      "hideFilterByHobbies": "Filter nach Hobbys ausblenden",
+      "showFilterByFloatsMyBoat": "Filter nach Floats My Boat anzeigen",
+      "hideFilterByFloatsMyBoat": "Filter nach Floats My Boat ausblenden",
+      "showFilterByGender": "Filter nach Geschlecht anzeigen",
+      "hideFilterByGender": "Filter nach Geschlecht ausblenden",
+      "applyFilters": "Filter anwenden",
+      "close": "Schließen"
+    },
+    "connectionRequested": {
+      "title": "Verbindungsanfragen an Sie",
+      "deleteAllRequestsButton": "Alle Anfragen löschen",
+      "noConnectionRequests": "Keine Verbindungsanfragen gefunden.",
+      "aboutYouPlaceholder": "{username} hat noch nichts eingegeben.",
+      "enableSelectedConnectionsButton": "Ausgewählte Verbindungen aktivieren",
+      "loadingMessage": "Verbindungsanfragen werden geladen...",
+      "errorLoadingMessage": "Fehler beim Laden der Verbindungsanfragen:",
+      "helpMessage": "Wählen Sie die Kontrollkästchen neben dem roten Mülleimer aus und gehen Sie zum Button 'Ausgewählte Verbindung aktivieren', der erscheint, wenn Sie Kästchen ankreuzen, und klicken Sie darauf, um die zusätzlichen verbundenen Teilnehmer zu erhalten."
+    },
+    "connectionRequests": {
+      "title": "Verbindungsanfragen",
+      "deleteAllRequestsButton": "Alle meine Anfragen löschen",
+      "noRequestsFound": "Keine Verbindungsanfragen gefunden.",
+      "noAboutText": "hat noch nichts eingegeben.."
+    }
+  },
+  "ar": {
+    "usersList": {
+      "viewProfile": "عرض الملف الشخصي",
+      "afterLoginMessage": "صفحة الهبوط بعد تسجيل الدخول",
+      "engagementsTab": "الارتباطات",
+      "engagementsTitle": "الارتباطات",
+      "loadEngagementButton": "تحميل الارتباط المحفوظ مسبقًا",
+      "logoutText": "تسجيل خروج",
+      "connectionsTab": "الاتصالات",
+      "connectionCentreTitle": "مركز الاتصال",
+      "helpMessage": "مرحبًا بك في مركز الاتصال لإنشاء مشاركة جديدة مع المتصلين الذين تريد تضمينهم، ستحتاج للوصول إلى شاشة 'إنشاء إرساليات جديدة'. حدد مربع الاختيار بجوار سلة المهملات الخاصة بالمستخدمين/المتصلين الذين تريد التفاعل معهم واستمر في الاختيار من قائمة المستخدمين/المتصلين المتصلين لديك. عندما تكون راضيًا عن اختياراتك، فقط اضغط على الزر العائم.",
+      "searchPlaceholder": "بحث",
+      "replaceConnectionRequestsButton": "استبدل طلبات الاتصال الخاصة بك",
+      "hideConnectionRequests": "إخفاء طلبات الاتصال الخاصة بك",
+      "showConnectionRequests": "إظهار طلبات الاتصال الخاصة بك",
+      "hideRequestsFromOthers": "إخفاء طلبات الاتصال من الآخرين",
+      "showRequestsFromOthers": "إظهار طلبات الاتصال من الآخرين",
+      "profileButton": "الملف الشخصي"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "اسم المستخدم",
+      "aboutYouPlaceholder": "حولك",
+      "showFilterByOrientation": "عرض الفلتر حسب التوجه",
+      "hideFilterByOrientation": "إخفاء الفلتر حسب التوجه",
+      "showFilterByHobbies": "عرض الفلتر حسب الهوايات",
+      "hideFilterByHobbies": "إخفاء الفلتر حسب الهوايات",
+      "showFilterByFloatsMyBoat": "عرض الفلتر حسب Floats My Boat",
+      "hideFilterByFloatsMyBoat": "إخفاء الفلتر حسب Floats My Boat",
+      "showFilterByGender": "عرض الفلتر حسب الجنس",
+      "hideFilterByGender": "إخفاء الفلتر حسب الجنس",
+      "applyFilters": "تطبيق الفلاتر",
+      "close": "إغلاق"
+    },
+    "connectionRequested": {
+      "title": "طلبات الاتصال إليك",
+      "deleteAllRequestsButton": "حذف جميع الطلبات",
+      "noConnectionRequests": "لم يتم العثور على طلبات اتصال.",
+      "aboutYouPlaceholder": "لم يقم {username} بإدخال أي شيء بعد.",
+      "enableSelectedConnectionsButton": "تفعيل الاتصالات المختارة",
+      "loadingMessage": "جارٍ تحميل طلبات الاتصال...",
+      "errorLoadingMessage": "خطأ في تحميل طلبات الاتصال:",
+      "helpMessage": "حدد مربعات الاختيار بجوار سلة المهملات الحمراء ثم انتقل إلى زر 'تمكين الاتصال المحدد' الذي يظهر عند تحديد المربعات وانقر عليه للحصول على المشاركين المتصلين الإضافيين."
+    },
+    "connectionRequests": {
+      "title": "طلبات الاتصال",
+      "deleteAllRequestsButton": "حذف جميع طلباتي",
+      "noRequestsFound": "لم يتم العثور على طلبات الاتصال.",
+      "noAboutText": "لم يدخل شيئًا بعد.."
+    }
+  },
+  "zh": {
+    "usersList": {
+      "viewProfile": "查看资料",
+      "afterLoginMessage": "登录后的着陆页",
+      "engagementsTab": "互动",
+      "engagementsTitle": "互动",
+      "loadEngagementButton": "加载以前保存的互动",
+      "logoutText": "退出登录",
+      "connectionsTab": "连接",
+      "connectionCentreTitle": "连接中心",
+      "helpMessage": "欢迎来到连接中心，您需要到达“创建新提交”屏幕，以便与您想要包含的已连接参与者创建新交互。选中与您想要互动的已连接用户/参与者的垃圾桶旁的复选框，然后从您的已连接用户/参与者列表中继续选择。当您对选择满意时，只需点击浮动按钮。",
+      "searchPlaceholder": "搜索",
+      "replaceConnectionRequestsButton": "替换您的连接请求",
+      "hideConnectionRequests": "隐藏您的连接请求",
+      "showConnectionRequests": "显示您的连接请求",
+      "hideRequestsFromOthers": "隐藏他人的连接请求",
+      "showRequestsFromOthers": "显示他人的连接请求",
+      "profileButton": "个人资料"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "用户名",
+      "aboutYouPlaceholder": "关于你",
+      "showFilterByOrientation": "按性取向过滤",
+      "hideFilterByOrientation": "隐藏性取向过滤",
+      "showFilterByHobbies": "按爱好过滤",
+      "hideFilterByHobbies": "隐藏爱好过滤",
+      "showFilterByFloatsMyBoat": "按 Floats My Boat 过滤",
+      "hideFilterByFloatsMyBoat": "隐藏 Floats My Boat 过滤",
+      "showFilterByGender": "按性别过滤",
+      "hideFilterByGender": "隐藏性别过滤",
+      "applyFilters": "应用过滤器",
+      "close": "关闭"
+    },
+    "connectionRequested": {
+      "title": "向您的连接请求",
+      "deleteAllRequestsButton": "删除所有请求",
+      "noConnectionRequests": "未找到连接请求。",
+      "aboutYouPlaceholder": "{username} 还没有输入任何内容。",
+      "enableSelectedConnectionsButton": "启用选定的连接",
+      "loadingMessage": "正在加载连接请求...",
+      "errorLoadingMessage": "加载连接请求时出错:",
+      "helpMessage": "选择红色垃圾桶旁边的复选框，点击出现的“启用所选连接”按钮，以获得额外的连接参与者。"
+    },
+    "connectionRequests": {
+      "title": "连接请求",
+      "deleteAllRequestsButton": "删除我所有的请求",
+      "noRequestsFound": "未找到连接请求。",
+      "noAboutText": "还没有输入任何内容.."
+    }
+  }
+}

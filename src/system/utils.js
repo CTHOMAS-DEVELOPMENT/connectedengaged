@@ -63,4 +63,23 @@ export const convertToMediaPath = (dbPath) => {
     
     return rtnValue ? rtnValue : "";
   };
+// utils.js
+
+// Function to get the current page name from the router
+export const getPageName = (location) => {
+  // Use location.pathname to get the current route
+  const path = location.pathname;
+
+  // You can map your routes to readable names if needed
+  const routeNameMap = {
+    '/': 'login',
+    '/register': 'registration',
+    '/userlist': 'userlist',
+    '/profile': 'profile',
+    // Add more routes as needed
+  };
+
+  // Return the mapped name or the path itself if no mapping is provided
+  return routeNameMap[path] || path;
+};
   

@@ -1,56 +1,63 @@
-// userValidation.js
+import translations from './translations.json'; // Import the validation translations
 
-const validateUser = (formData, ignoreValidation = false) => {
-  //console.log("formData", formData);
+const validateUser = (formData, ignoreValidation = false, languageCode = "en") => {
+  // Use fallback to "en" if the language code is not available
+  const validationMessages = translations[languageCode]?.validation || translations["en"].validation;
+
   const errors = {};
 
   // Username validation
   if (!formData.username.trim()) {
-    errors.username = "Username is required";
+    errors.username = validationMessages.usernameRequired;
   } else if (formData.username.length < 8) {
-    errors.username = "Username must be at least 8 characters long";
+    errors.username = validationMessages.usernameMinLength;
   }
 
   // Email validation
   const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   if (!formData.email.match(emailPattern)) {
-    errors.email = "Invalid email format";
+    errors.email = validationMessages.invalidEmail;
   }
+
   if (ignoreValidation) {
     return errors;
   }
-  // Password validation may be validated at the backend
+
+  // Password validation
   if (formData.password.length < 8) {
-    errors.password = "Password must be at least 8 characters long";
+    errors.password = validationMessages.passwordMinLength;
   } else if (!/[A-Z]/.test(formData.password)) {
-    errors.password = "Password must contain at least 1 uppercase letter";
+    errors.password = validationMessages.passwordUppercase;
   } else if (!/[0-9]/.test(formData.password)) {
-    errors.password = "Password must contain at least 1 number";
+    errors.password = validationMessages.passwordNumber;
   }
+
+  // Additional field validations
   if (!formData.sexualOrientation) {
-    errors.sexualOrientation="Please enter a value for 'Preferred Company'";
+    errors.sexualOrientation = validationMessages.preferredCompanyRequired;
   }
   if (!formData.sex) {
-    errors.sex="Please enter a value for 'Most Like You'";
+    errors.sex = validationMessages.mostLikeYouRequired;
   }
   if (!formData.hobby) {
-    errors.hobby="Please enter a value for 'Favourite Hobby'";
+    errors.hobby = validationMessages.favouriteHobbyRequired;
   }
   if (!formData.floatsMyBoat) {
-    errors.floatsMyBoat="Please enter a value for 'Floats Your Boat'";
+    errors.floatsMyBoat = validationMessages.floatsYourBoatRequired;
   }
   if (!formData.aboutYou) {
-    errors.aboutYou="Please tell everyone something about you";
+    errors.aboutYou = validationMessages.aboutYouRequired;
   }
   if (!formData.aboutMyBotPal) {
-    errors.aboutMyBotPal="Please tell your system admin who you want them to be";
+    errors.aboutMyBotPal = validationMessages.adminRequired;
   }
   if (!formData.worldX) {
-    errors.worldX="Please Select your Location";
+    errors.worldX = validationMessages.locationXRequired;
   }
   if (!formData.worldY) {
-    errors.worldY="Please Select your Location";
+    errors.worldY = validationMessages.locationYRequired;
   }
+
   return errors;
 };
 

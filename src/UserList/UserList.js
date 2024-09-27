@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import JSZip from "jszip";
 import { useLocation, useNavigate } from "react-router-dom";
+import translations from "./translations.json";
 import InteractionTitles from "../InteractionTitles/InteractionTitles";
 import ThumbProfileViewer from "./ThumbProfileViewer";
 import ConnectionRequests from "./ConnectionRequests";
@@ -44,9 +45,12 @@ const UsersList = () => {
   const [adminFace, setAdminFace] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
+  const [languageCode, setLanguageCode] = useState("en");
+  const isLocal = process.env.REACT_APP_ENV === "local";
   const helpMessage =
-    process.env.REACT_APP_COMMUNICATION_CENTRE_HELP ||
+    translations[languageCode]?.usersList?.helpMessage ||
     "No help message configured.";
+
   const navigate = useNavigate();
   const location = useLocation();
   const loggedInUserId = location.state ? location.state.userId : null;
@@ -198,9 +202,14 @@ const UsersList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId, authError]);
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_BACKEND_HOST, {
-      transports: ['websocket', 'polling'] // Add this to enable both WebSocket and polling
-    });
+    // const socket = io(process.env.REACT_APP_BACKEND_HOST, {
+    //   transports: ["websocket", "polling"], // Add this to enable both WebSocket and polling
+    // });
+    const socket = isLocal
+      ? io(process.env.REACT_APP_BACKEND_HOST) // Development environment, no transport options needed
+      : io(process.env.REACT_APP_BACKEND_HOST, {
+          transports: ["websocket", "polling"], // Production environment, add WebSocket and polling options
+        });
     socketRef.current = socket;
     socket.on("connect", () => {
       console.log("Socket connected ");
@@ -221,9 +230,7 @@ const UsersList = () => {
     });
     // Listen for new_engagement messages
     socket.on("new_engagement", (data) => {
-      console.log("New engagement received:", data);
       if (data.userIds.includes(loggedInUserId)) {
-        console.log("Triggering fetchConnectedUsers due to new engagement");
         fetchConnectedUsers();
         setMessage("A new engagement has been created!");
         setType("info");
@@ -299,14 +306,17 @@ const UsersList = () => {
   };
 
   const handleProfileClick = (selectedUserId, selectedUsername) => {
+    console.log("handleProfileClick-languageCode", languageCode);
     navigate(`/userprofile/${selectedUserId}`, {
       state: {
         selectedUser: selectedUserId,
         loggedInUserId: loggedInUserId,
         selectedUsername: selectedUsername,
+        languageCode: languageCode, // Pass the languageCode to UserProfile
       },
     });
   };
+
   const uploadZipFile = (file, userId) => {
     const formData = new FormData();
 
@@ -396,9 +406,11 @@ const UsersList = () => {
       state: {
         selectedUserIds: Array.from(selectedUserIds),
         userId: loggedInUserId,
-      }, // Passing loggedInUserId to NewSubmission
+        languageCode: languageCode, // Pass the languageCode to NewSubmission
+      },
     });
   };
+  
   const informConnectionSuccess = async (
     selectedUserIds,
     selectedUserNames
@@ -500,15 +512,13 @@ const UsersList = () => {
 
   const fetchConnectedUsers = () => {
     if (!authError && loggedInUserId) {
-      console.log("Fetching connected users...");
       fetch(`${process.env.REACT_APP_API_URL}/api/connected/${loggedInUserId}`)
         .then((response) => response.json())
         .then((data) => {
-          console.log("Fetched connected users:", data);
+          //console.log("Fetched connected users:", data);
 
           const loggedInUser = data.find((user) => user.id === loggedInUserId);
-          //999
-          console.log("loggedInUser.admin_face", loggedInUser.admin_face);
+          setLanguageCode(loggedInUser.language_code);
           setAdminFace(loggedInUser.admin_face);
           const dbUserlist = data.filter((user) => user.id !== loggedInUserId);
           setUser(loggedInUser);
@@ -552,11 +562,16 @@ const UsersList = () => {
   );
 
   const displayedUsers = searchTerm.length >= 3 ? filteredUsers : currentUsers;
-
+  if (!languageCode) {
+    return <div>Loading...</div>;
+  }
   return (
     <div>
       {showMessage && (
-        <div className="message-box">After login landing page</div>
+        <div className="message-box">
+          {translations[languageCode]?.usersList?.afterLoginMessage ||
+            "After login landing page"}
+        </div>
       )}
       <div className="button-container">
         <Button
@@ -564,7 +579,8 @@ const UsersList = () => {
           onClick={handleLogoutClick}
           className="logout-button"
         >
-          Logout {user ? user.username : ""}?
+          {translations[languageCode]?.usersList?.logoutText || "Logout"}{" "}
+          {user ? user.username : ""}?
         </Button>
         <div
           style={{
@@ -577,7 +593,8 @@ const UsersList = () => {
             variant={activeTab === "Interactions" ? "info" : "outline-info"}
             onClick={handleInteractionsTabClick}
           >
-            Engagements
+            {translations[languageCode]?.usersList?.engagementsTab ||
+              "Engagements"}
           </Button>
           <Button
             variant={
@@ -585,19 +602,24 @@ const UsersList = () => {
             }
             onClick={handleCommunicationCentreTabClick}
           >
-            Connections
+            {translations[languageCode]?.usersList?.connectionsTab ||
+              "Connections"}
           </Button>
+
           <Button
             variant="outline-info"
             onClick={() => handleUpdateProfileClick(user.id)}
           >
-            Profile
+            {translations[languageCode]?.usersList?.profileButton || "Profile"}
           </Button>
         </div>
         {activeTab === "Communication Centre" && (
           <div className="section-container">
             <div>
-              <h2 className="font-style-4">Connection Centre</h2>
+              <h2 className="font-style-4">
+                {translations[languageCode]?.usersList?.connectionCentreTitle ||
+                  "Connection Centre"}
+              </h2>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <ScrollingHelpText message={helpMessage} width="400px" />
               </div>
@@ -605,7 +627,10 @@ const UsersList = () => {
                 <Form.Group controlId="search">
                   <Form.Control
                     type="text"
-                    placeholder="Search"
+                    placeholder={
+                      translations[languageCode]?.usersList
+                        ?.searchPlaceholder || "Search"
+                    }
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -685,8 +710,10 @@ const UsersList = () => {
                             handleProfileClick(user.id, user.username)
                           }
                         >
-                          View Profile
+                          {translations[languageCode]?.usersList?.viewProfile ||
+                            "View Profile"}
                         </Button>
+
                         <Button
                           variant="danger"
                           className="btn-sm"
@@ -736,12 +763,15 @@ const UsersList = () => {
                 className="btn-sm"
                 onClick={toggleFilter}
               >
-                Replace Your Connection Requests
+                {translations[languageCode]?.usersList
+                  ?.replaceConnectionRequestsButton ||
+                  "Replace Your Connection Requests"}
               </Button>
               {showFilter && (
                 <FilterUsers
                   applyFilter={applyFilter}
                   closeWindow={toggleFilter}
+                  languageCode={languageCode}
                 />
               )}
               <Button
@@ -751,13 +781,20 @@ const UsersList = () => {
                 onClick={handleToggleConnectionRequests} // Use this handler to toggle the visibility
               >
                 {showConnectionRequests
-                  ? "Hide Your Connection Requests"
-                  : `Show Your Connection Requests (${connectionRequests})`}
+                  ? translations[languageCode]?.usersList
+                      ?.hideConnectionRequests ||
+                    "Hide Your Connection Requests"
+                  : `${
+                      translations[languageCode]?.usersList
+                        ?.showConnectionRequests ||
+                      "Show Your Connection Requests"
+                    } (${connectionRequests})`}
               </Button>
               {showConnectionRequests && (
                 <ConnectionRequests
                   userId={loggedInUserId}
                   showConnectRequests={showConnectRequests}
+                  languageCode={languageCode}
                 />
               )}
               <div style={{ position: "relative", display: "inline-block" }}>
@@ -773,8 +810,14 @@ const UsersList = () => {
                   style={{ backgroundColor: "white" }}
                 >
                   {showRequestsFromOthers
-                    ? "Hide Connection Requests from Others"
-                    : `Show Connection Requests from Others (${requestsFromOthers})`}
+                    ? translations[languageCode]?.usersList
+                        ?.hideRequestsFromOthers ||
+                      "Hide Connection Requests from Others"
+                    : `${
+                        translations[languageCode]?.usersList
+                          ?.showRequestsFromOthers ||
+                        "Show Connection Requests from Others"
+                      } (${requestsFromOthers})`}
                 </Button>
 
                 {showRequestsFromOthers && (
@@ -782,6 +825,7 @@ const UsersList = () => {
                     userId={loggedInUserId}
                     onEnableSelectedConnections={enableSelectedConnections}
                     showRequestsOfOthers={showRequestsOfOthers}
+                    languageCode={languageCode}
                   />
                 )}
               </div>
@@ -791,7 +835,11 @@ const UsersList = () => {
       </div>
       {activeTab === "Interactions" && (
         <div className="section-container center-interaction-elements">
-          <h2 className="font-style-4">Engagements</h2>
+          <h2 className="font-style-4">
+            {translations[languageCode]?.usersList?.engagementsTitle ||
+              "Engagements"}
+          </h2>
+
           <div>
             <input
               type="file"
@@ -805,13 +853,15 @@ const UsersList = () => {
               variant="outline-info"
               onClick={() => document.getElementById("fileInput").click()}
             >
-              Load Previously Saved Engagement
+              {translations[languageCode]?.usersList?.loadEngagementButton ||
+                "Load Previously Saved Engagement"}
             </Button>
           </div>
           <InteractionTitles
             loggedInUserId={loggedInUserId}
             shouldRefreshInteractions={shouldRefreshInteractions}
             resetRefreshTrigger={() => setShouldRefreshInteractions(false)}
+            languageCode={languageCode}
           />
         </div>
       )}

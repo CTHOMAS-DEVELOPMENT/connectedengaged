@@ -1,0 +1,440 @@
+{
+  "en": {
+    "updateProfile": {
+      "title": "Update Profile",
+      "backToMessages": "Back to messages",
+      "submitButton": "Update Profile",
+      "usernameLabel": "Username",
+      "emailLabel": "Email",
+      "passwordLabel": "Password (leave blank to keep the same)",
+      "aboutYouLabel": "About You Survey",
+      "genderToggle": {
+        "show": "Show Most Like You Selection",
+        "hide": "Hide Most Like You"
+      },
+      "hobbiesToggle": {
+        "show": "Show Your Favourite Hobby Selection",
+        "hide": "Hide Your Favourite Hobby"
+      },
+      "orientationToggle": {
+        "show": "Show Your Preferred Company Selection",
+        "hide": "Hide Your Preferred Company"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Show Floats Your Boat Selection",
+        "hide": "Hide Floats Your Boat"
+      },
+      "aboutYouTextArea": "I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre.",
+      "locationButton": "Show Location",
+      "aboutAdminLabel": "About Your System Admin",
+      "adminFaceAlt": "Admin Face",
+      "adminLabels": [
+        "Dominant and objectionable",
+        "Warm and friendly",
+        "Energetic and outgoing",
+        "Fun and makes jokes",
+        "Sad and lonely",
+        "Shakespeare Fan",
+        "Stupid",
+        "Thin is in",
+        "Submissive and subservient",
+        "Plus Size and Hungry"
+      ],
+      "hobbies": [
+        "Arts",
+        "Collecting",
+        "Cooking",
+        "Crafting",
+        "Dance",
+        "Education",
+        "Fitness",
+        "Gaming",
+        "Gardening",
+        "Meditation",
+        "Music",
+        "Other",
+        "Photography",
+        "Reading",
+        "Sports",
+        "Technology",
+        "Travel",
+        "The Unknown",
+        "Volunteering",
+        "Writing"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "Update Profile Image",
+      "addProfileImage": "Add a Profile Image",
+      "noProfilePicture": "No profile picture",
+      "updateProfileVideo": "Update Profile Video (Max 30 seconds)",
+      "addProfileVideo": "Add Profile Video (Max 30 seconds)",
+      "addUpdateProfileImage": "Add/Update Profile Picture"
+    }
+  },
+  "es": {
+    "updateProfile": {
+      "title": "Actualizar perfil",
+      "backToMessages": "Volver a los mensajes",
+      "submitButton": "Actualizar perfil",
+      "usernameLabel": "Nombre de usuario",
+      "emailLabel": "Correo electrónico",
+      "passwordLabel": "Contraseña (dejar en blanco para mantener la misma)",
+      "aboutYouLabel": "Encuesta sobre ti",
+      "genderToggle": {
+        "show": "Mostrar selección más parecida a ti",
+        "hide": "Ocultar más parecido a ti"
+      },
+      "hobbiesToggle": {
+        "show": "Mostrar selección de tus hobbies favoritos",
+        "hide": "Ocultar tus hobbies favoritos"
+      },
+      "orientationToggle": {
+        "show": "Mostrar tu compañía preferida",
+        "hide": "Ocultar tu compañía preferida"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Mostrar lo que te gusta",
+        "hide": "Ocultar lo que te gusta"
+      },
+      "aboutYouTextArea": "Estoy buscando una relación a largo plazo. Espera mi solicitud de conexión desde el Centro de Comunicaciones.",
+      "locationButton": "Mostrar ubicación",
+      "aboutAdminLabel": "Sobre tu administrador del sistema",
+      "adminFaceAlt": "Cara del administrador",
+      "adminLabels": [
+        "Dominante y objetable",
+        "Cálido y amigable",
+        "Enérgico y extrovertido",
+        "Divertido y hace bromas",
+        "Triste y solitario",
+        "Fan de Shakespeare",
+        "Estúpido",
+        "Delgado es mejor",
+        "Sumiso y subordinado",
+        "Talla grande y hambriento"
+      ],
+      "hobbies": [
+        "Artes",
+        "Coleccionar",
+        "Cocinar",
+        "Manualidades",
+        "Baile",
+        "Educación",
+        "Ejercicio",
+        "Juegos",
+        "Jardinería",
+        "Meditación",
+        "Música",
+        "Otro",
+        "Fotografía",
+        "Lectura",
+        "Deportes",
+        "Tecnología",
+        "Viajar",
+        "Lo Desconocido",
+        "Voluntariado",
+        "Escritura"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "Actualizar imagen de perfil",
+      "addProfileImage": "Agregar una imagen de perfil",
+      "noProfilePicture": "Sin imagen de perfil",
+      "updateProfileVideo": "Actualizar video de perfil (máximo 30 segundos)",
+      "addProfileVideo": "Agregar video de perfil (máximo 30 segundos)",
+      "addUpdateProfileImage": "Agregar/Actualizar imagen de perfil"
+    }
+  },
+  "fr": {
+    "updateProfile": {
+      "title": "Mettre à jour le profil",
+      "backToMessages": "Retour aux messages",
+      "submitButton": "Mettre à jour le profil",
+      "usernameLabel": "Nom d'utilisateur",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Mot de passe (laisser vide pour conserver le même)",
+      "aboutYouLabel": "Enquête sur vous",
+      "genderToggle": {
+        "show": "Afficher la sélection la plus proche de vous",
+        "hide": "Masquer la sélection la plus proche de vous"
+      },
+      "hobbiesToggle": {
+        "show": "Afficher la sélection de votre passe-temps favori",
+        "hide": "Masquer la sélection de votre passe-temps favori"
+      },
+      "orientationToggle": {
+        "show": "Afficher votre compagnie préférée",
+        "hide": "Masquer votre compagnie préférée"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Afficher ce qui vous plaît",
+        "hide": "Masquer ce qui vous plaît"
+      },
+      "aboutYouTextArea": "Je recherche une relation à long terme. Recherchez ma demande de connexion depuis le centre de communication.",
+      "locationButton": "Afficher l'emplacement",
+      "aboutAdminLabel": "À propos de votre administrateur système",
+      "adminFaceAlt": "Visage de l'administrateur",
+      "adminLabels": [
+        "Dominant et objectionnable",
+        "Chaleureux et amical",
+        "Énergique et extraverti",
+        "Amusant et fait des blagues",
+        "Triste et solitaire",
+        "Fan de Shakespeare",
+        "Stupide",
+        "Minci est dans",
+        "Soumis et subordonné",
+        "Grande taille et affamé"
+      ],
+      "hobbies": [
+        "Arts",
+        "Collectionner",
+        "Cuisine",
+        "Artisanat",
+        "Danse",
+        "Éducation",
+        "Forme physique",
+        "Jeux",
+        "Jardinage",
+        "Méditation",
+        "Musique",
+        "Autre",
+        "Photographie",
+        "Lecture",
+        "Sports",
+        "Technologie",
+        "Voyage",
+        "L'Inconnu",
+        "Bénévolat",
+        "Écriture"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "Mettre à jour l'image de profil",
+      "addProfileImage": "Ajouter une image de profil",
+      "noProfilePicture": "Pas d'image de profil",
+      "updateProfileVideo": "Mettre à jour la vidéo de profil (maximum 30 secondes)",
+      "addProfileVideo": "Ajouter une vidéo de profil (maximum 30 secondes)",
+      "addUpdateProfileImage": "Ajouter/Mettre à jour l'image de profil"
+    }
+  },
+  "de": {
+    "updateProfile": {
+      "title": "Profil aktualisieren",
+      "backToMessages": "Zurück zu den Nachrichten",
+      "submitButton": "Profil aktualisieren",
+      "usernameLabel": "Benutzername",
+      "emailLabel": "E-Mail",
+      "passwordLabel": "Passwort (leer lassen, um es zu behalten)",
+      "aboutYouLabel": "Über dich Umfrage",
+      "genderToggle": {
+        "show": "Zeige Auswahl, die am meisten wie du ist",
+        "hide": "Verberge Auswahl, die am meisten wie du ist"
+      },
+      "hobbiesToggle": {
+        "show": "Zeige deine Lieblingshobby-Auswahl",
+        "hide": "Verberge deine Lieblingshobby-Auswahl"
+      },
+      "orientationToggle": {
+        "show": "Zeige deine bevorzugte Gesellschaft",
+        "hide": "Verberge deine bevorzugte Gesellschaft"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Zeige, was dir gefällt",
+        "hide": "Verberge, was dir gefällt"
+      },
+      "aboutYouTextArea": "Ich suche eine langfristige Beziehung. Achten Sie auf meine Verbindungsanfrage vom Kommunikationszentrum.",
+      "locationButton": "Standort anzeigen",
+      "aboutAdminLabel": "Über Ihren Systemadministrator",
+      "adminFaceAlt": "Administratorgesicht",
+      "adminLabels": [
+        "Dominant und anstößig",
+        "Warm und freundlich",
+        "Energisch und aufgeschlossen",
+        "Lustig und macht Witze",
+        "Traurig und einsam",
+        "Shakespeare-Fan",
+        "Dumm",
+        "Dünn ist in",
+        "Unterwürfig und gehorsam",
+        "Übergröße und hungrig"
+      ],
+      "hobbies": [
+        "Kunst",
+        "Sammeln",
+        "Kochen",
+        "Basteln",
+        "Tanzen",
+        "Bildung",
+        "Fitness",
+        "Spielen",
+        "Gartenarbeit",
+        "Meditation",
+        "Musik",
+        "Andere",
+        "Fotografie",
+        "Lesen",
+        "Sport",
+        "Technologie",
+        "Reisen",
+        "Das Unbekannte",
+        "Freiwilligenarbeit",
+        "Schreiben"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "Profilbild aktualisieren",
+      "addProfileImage": "Ein Profilbild hinzufügen",
+      "noProfilePicture": "Kein Profilbild",
+      "updateProfileVideo": "Profilvideo aktualisieren (max. 30 Sekunden)",
+      "addProfileVideo": "Profilvideo hinzufügen (max. 30 Sekunden)",
+      "addUpdateProfileImage": "Profilbild hinzufügen/aktualisieren"
+    }
+  },
+  "ar": {
+    "updateProfile": {
+      "title": "تحديث الملف الشخصي",
+      "backToMessages": "العودة إلى الرسائل",
+      "submitButton": "تحديث الملف الشخصي",
+      "usernameLabel": "اسم المستخدم",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور (اتركه فارغًا للحفاظ على نفس الكلمة)",
+      "aboutYouLabel": "استطلاع حولك",
+      "genderToggle": {
+        "show": "إظهار التحديد الأكثر شبهاً بك",
+        "hide": "إخفاء التحديد الأكثر شبهاً بك"
+      },
+      "hobbiesToggle": {
+        "show": "إظهار اختيار هوايتك المفضلة",
+        "hide": "إخفاء اختيار هوايتك المفضلة"
+      },
+      "orientationToggle": {
+        "show": "إظهار الشركة المفضلة لديك",
+        "hide": "إخفاء الشركة المفضلة لديك"
+      },
+      "floatsMyBoatToggle": {
+        "show": "إظهار ما يعجبك",
+        "hide": "إخفاء ما يعجبك"
+      },
+      "aboutYouTextArea": "أبحث عن علاقة طويلة الأمد. ابحث عن طلب الاتصال الخاص بي من مركز الاتصالات.",
+      "locationButton": "إظهار الموقع",
+      "aboutAdminLabel": "حول مدير النظام الخاص بك",
+      "adminFaceAlt": "وجه المدير",
+      "adminLabels": [
+        "مسيطر ومعترض",
+        "دافئ وودود",
+        "نشيط ومنفتح",
+        "ممتع ويطلق النكات",
+        "حزين ووحيد",
+        "معجب بشكسبير",
+        "غبي",
+        "النحافة هي الأفضل",
+        "خاضع وخانع",
+        "مقاس كبير وجائع"
+      ],
+      "hobbies": [
+        "الفنون",
+        "جمع",
+        "الطبخ",
+        "الحرف اليدوية",
+        "الرقص",
+        "التعليم",
+        "اللياقة البدنية",
+        "الألعاب",
+        "البستنة",
+        "التأمل",
+        "الموسيقى",
+        "آخر",
+        "التصوير الفوتوغرافي",
+        "القراءة",
+        "الرياضة",
+        "التكنولوجيا",
+        "السفر",
+        "المجهول",
+        "التطوع",
+        "الكتابة"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "تحديث صورة الملف الشخصي",
+      "addProfileImage": "إضافة صورة الملف الشخصي",
+      "noProfilePicture": "لا توجد صورة للملف الشخصي",
+      "updateProfileVideo": "تحديث فيديو الملف الشخصي (بحد أقصى 30 ثانية)",
+      "addProfileVideo": "إضافة فيديو الملف الشخصي (بحد أقصى 30 ثانية)",
+      "addUpdateProfileImage": "إضافة/تحديث صورة الملف الشخصي"
+    }
+  },
+  "zh": {
+    "updateProfile": {
+      "title": "更新个人资料",
+      "backToMessages": "返回消息",
+      "submitButton": "更新个人资料",
+      "usernameLabel": "用户名",
+      "emailLabel": "电子邮件",
+      "passwordLabel": "密码（留空保持不变）",
+      "aboutYouLabel": "关于您的调查",
+      "genderToggle": {
+        "show": "显示最像您的选择",
+        "hide": "隐藏最像您的选择"
+      },
+      "hobbiesToggle": {
+        "show": "显示您最喜欢的爱好选择",
+        "hide": "隐藏您最喜欢的爱好选择"
+      },
+      "orientationToggle": {
+        "show": "显示您喜欢的公司",
+        "hide": "隐藏您喜欢的公司"
+      },
+      "floatsMyBoatToggle": {
+        "show": "显示您喜欢的内容",
+        "hide": "隐藏您喜欢的内容"
+      },
+      "aboutYouTextArea": "我正在寻找长期关系。请留意我的连接请求，它会从通信中心发送。",
+      "locationButton": "显示位置",
+      "aboutAdminLabel": "关于您的系统管理员",
+      "adminFaceAlt": "管理员脸",
+      "adminLabels": [
+        "专横令人反感",
+        "温暖友好",
+        "精力充沛、外向",
+        "有趣且爱开玩笑",
+        "悲伤和孤独",
+        "莎士比亚粉丝",
+        "愚蠢的",
+        "瘦身潮流",
+        "顺从和屈从",
+        "大码和饥饿"
+      ],
+      "hobbies": [
+        "艺术",
+        "收集",
+        "烹饪",
+        "手工艺",
+        "舞蹈",
+        "教育",
+        "健身",
+        "游戏",
+        "园艺",
+        "冥想",
+        "音乐",
+        "其他",
+        "摄影",
+        "阅读",
+        "运动",
+        "技术",
+        "旅行",
+        "未知",
+        "志愿服务",
+        "写作"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "更新个人资料图片",
+      "addProfileImage": "添加个人资料图片",
+      "noProfilePicture": "没有个人资料图片",
+      "updateProfileVideo": "更新个人资料视频（最多30秒）",
+      "addProfileVideo": "添加个人资料视频（最多30秒）",
+      "addUpdateProfileImage": "添加/更新个人资料图片"
+    }
+  }
+}

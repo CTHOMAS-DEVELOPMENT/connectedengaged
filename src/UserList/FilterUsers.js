@@ -11,8 +11,8 @@ import {
   version1Hobbies,
   version1Keys,
 } from "../RegistrationProfileCreation/scopedCollections.js";
-
-const FilterUsers = ({ applyFilter, closeWindow }) => {
+import translations from "./translations.json";
+const FilterUsers = ({ applyFilter, closeWindow, languageCode }) => {
   const [filters, setFilters] = useState({
     username: "",
     sexualOrientation: "",
@@ -97,7 +97,10 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
         className="form-control mb-2" // Added Bootstrap classes for styling
         value={filters.username}
         onChange={handleChange}
-        placeholder="Username"
+        placeholder={
+          translations[languageCode]?.filterUsers?.usernamePlaceholder ||
+          "Username"
+        }
       />
 
       <div>
@@ -107,8 +110,10 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
           onClick={() => setShowOrientation(!showOrientation)}
         >
           {showOrientation
-            ? "Hide Filter by Orientation"
-            : "Show Filter by Orientation"}
+            ? translations[languageCode]?.filterUsers
+                ?.hideFilterByOrientation || "Hide Filter by Orientation"
+            : translations[languageCode]?.filterUsers
+                ?.showFilterByOrientation || "Show Filter by Orientation"}
         </Button>
       </div>
       {showOrientation && (
@@ -123,7 +128,11 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
           className="btn-sm"
           onClick={() => setShowHobbies(!showHobbies)}
         >
-          {showHobbies ? "Hide Filter by Hobbies" : "*Show Filter by Hobbies"}
+          {showHobbies
+            ? translations[languageCode]?.filterUsers?.hideFilterByHobbies ||
+              "Hide Filter by Hobbies"
+            : translations[languageCode]?.filterUsers?.showFilterByHobbies ||
+              "Show Filter by Hobbies"}
         </Button>
       </div>
       {showHobbies && (
@@ -139,8 +148,10 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
           onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
         >
           {showFloatsMyBoat
-            ? "Hide Filter by Floats My Boat"
-            : "Show Filter by Floats My Boat"}
+            ? translations[languageCode]?.filterUsers
+                ?.hideFilterByFloatsMyBoat || "Hide Filter by Floats My Boat"
+            : translations[languageCode]?.filterUsers
+                ?.showFilterByFloatsMyBoat || "Show Filter by Floats My Boat"}
         </Button>
       </div>
 
@@ -156,7 +167,11 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
           className="btn-sm"
           onClick={() => setShowGender(!showGender)}
         >
-          {showGender ? "Hide Filter by Gender" : "Show Filter by Gender"}
+          {showGender
+            ? translations[languageCode]?.filterUsers?.hideFilterByGender ||
+              "Hide Filter by Gender"
+            : translations[languageCode]?.filterUsers?.showFilterByGender ||
+              "Show Filter by Gender"}
         </Button>
       </div>
 
@@ -172,7 +187,10 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
         className="form-control mb-2"
         value={filters.aboutYou}
         onChange={handleChange}
-        placeholder="About You"
+        placeholder={
+          translations[languageCode]?.filterUsers?.aboutYouPlaceholder ||
+          "About You"
+        }
       />
 
       <div style={{ position: "relative", display: "inline-block" }}>
@@ -183,12 +201,13 @@ const FilterUsers = ({ applyFilter, closeWindow }) => {
         )}
         {showButton && (
           <Button variant="outline-info" onClick={() => applyFilter(filters)}>
-            Apply Filters
+            {translations[languageCode]?.filterUsers?.applyFilters ||
+              "Apply Filters"}
           </Button>
         )}
       </div>
       <Button variant="outline-info" onClick={() => closeWindow()}>
-        Close
+        {translations[languageCode]?.filterUsers?.close || "Close"}
       </Button>
     </div>
   );

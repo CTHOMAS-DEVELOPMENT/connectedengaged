@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom"; // New import
+import { getPageName } from "../system/utils.js"; // New import
 import ImageUploader from "./imageUploader";
 import FloatsMyBoat from "./FloatsMyBoat";
 import Orientation from "./Orientation"; // Make sure to import the Orientation component
@@ -15,12 +17,18 @@ import Location from "./Location";
 import { convertToMediaPath } from "../system/utils";
 import AlertMessage from "../system/AlertMessage";
 import validateUser from "../system/userValidation.js";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap"; // Import Dropdown from react-bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Eye, EyeSlash, CheckCircle, XCircle } from "react-bootstrap-icons";
 import botPalOptions from "./botPalOptions.json"; // Import the JSON file
+import translations from "./translations.json";
+import Cookies from "js-cookie";
 
 const RegistrationForm = () => {
+  // Initialize selectedLanguage first
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    return Cookies.get("preferredLanguage") || "en"; // Default to 'en' if no cookie is set
+  });
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
@@ -36,7 +44,11 @@ const RegistrationForm = () => {
   const [selectedBotPalOption, setSelectedBotPalOption] = useState(1); // Default to the second option "Warm and friendly"
   const [locationSelected, setLocationSelected] = useState(false); // Assume location is false for now
   const [showLocation, setShowLocation] = useState(false);
-  const navigate = useNavigate();
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Initialize formData state
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -47,19 +59,45 @@ const RegistrationForm = () => {
     sex: "",
     aboutYou: "",
     aboutMyBotPal: botPalOptions.options[1].value,
-    worldX: 0, // New field for worldX
-    worldY: 0, // New field for worldY
+    worldX: 0,
+    worldY: 0,
+    language_code: selectedLanguage, // Use selectedLanguage in formData
   });
-  //about_my_bot_pal
-  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
 
+  const navigate = useNavigate();
+  const location = useLocation(); // Get the location object
+  const currentPage = getPageName(location); // Use the utility function to get the current page name
+
+  const pageTranslations = translations[selectedLanguage]?.[currentPage] || {}; // Get the translation for the current page
+  const translatedAdminLabels =
+    pageTranslations.adminLabels ||
+    botPalOptions.options.map((option) => option.label); // fallback to default labels
+
+  // console.log("currentPage", currentPage);
+  // console.log("selectedLanguage", selectedLanguage);
+  // console.log("translations", translations);
+  // console.log("pageTranslations", pageTranslations);
+  const languageMap = {
+    en: "English",
+    es: "Español",
+    fr: "Français",
+    de: "Deutsch",
+    ar: "العربية", // Arabic
+    zh: "中文", // Chinese
+  };
   const handleOpenLocation = () => {
     setShowLocation(true);
   };
-  const handleSelectCoordinates = (selectedCoordinates) => {
+  const handleLanguageChange = (languageCode) => {
+    setSelectedLanguage(languageCode); // Update the selected language
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      language_code: languageCode, // Update the language_code in formData
+    }));
+    Cookies.set("preferredLanguage", languageCode, { expires: 365 }); // Store the language preference in cookies
+  };
 
+  const handleSelectCoordinates = (selectedCoordinates) => {
     setLocationSelected(true);
     // Update formData with the new coordinates
     setFormData((prevFormData) => ({
@@ -67,7 +105,6 @@ const RegistrationForm = () => {
       worldX: selectedCoordinates.x,
       worldY: selectedCoordinates.y,
     }));
-
   };
 
   const hiddenTextareaStyle = {
@@ -141,7 +178,7 @@ const RegistrationForm = () => {
     const validationErrors = validateUser({ ...formData, [name]: value });
 
     if (name === "dummyEmail" && value !== formData.email) {
-      validationErrors["dummyEmail"] = "Emails do not match";
+      validationErrors["dummyEmail"] = pageTranslations.emailsDoNotMatch || "Emails do not match";
     }
 
     if (validationErrors[name]) {
@@ -181,30 +218,36 @@ const RegistrationForm = () => {
     setSelectedHobby(index);
     setFormData((prevFormData) => ({
       ...prevFormData,
-      hobby: version1Hobbies[index] || "", // Make sure version1Hobbies is accessible here
+      hobby: version1Hobbies[index] || "",
     }));
   };
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Perform validation using the validateUser function
-    const validationErrors = validateUser(formData);
+    // Perform validation using the selected language
+    const validationErrors = validateUser(formData, false, selectedLanguage);
 
     if (Object.keys(validationErrors).length > 0) {
-      // If there are validation errors, set the first error message and stop the submission
+      // Display the first validation error
       const firstErrorKey = Object.keys(validationErrors)[0];
       setMessage(validationErrors[firstErrorKey]);
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
-      return; // Exit early if there are validation errors
+      return;
     }
 
     if (dummyEmail !== formData.email) {
-      setMessage("Emails do not match");
+      setMessage(pageTranslations.emailsDoNotMatch || "Emails do not match");
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
       return; // Stop form submission if emails don't match
     }
+
+    // Log the data that will be sent to the backend
+    // console.log("Form data being sent to the backend:", {
+    //   ...formData,
+    //   admin_face: getAdminFaceName(),
+    // });
 
     // Proceed to send data to the server if there are no validation errors
     fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
@@ -220,27 +263,27 @@ const RegistrationForm = () => {
       .then((response) => {
         if (!response.ok) {
           if (response.status === 409) {
-            throw new Error("Email already exists");
+            throw new Error(pageTranslations.emailAlreadyExists || "Email already exists");
           }
-          throw new Error("Registration failed");
+          throw new Error(pageTranslations.registrationFailed || "Registration failed");
         }
         return response.json();
       })
       .then((data) => {
         if (data.id) {
           setUserId(data.id);
-          setMessage("Registration successful");
+          setMessage(pageTranslations.registrationSuccessful || "Registration successful");
           setType("success");
           setAlertKey((prevKey) => prevKey + 1);
           window.scrollTo(0, 0);
         } else {
-          setMessage("Registration failed");
+          setMessage(pageTranslations.registrationFailed || "Registration failed");
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
         }
       })
       .catch((error) => {
-        setMessage("Registration failed: " + error.message);
+        setMessage(`${pageTranslations.registrationFailed || "Registration failed"}: ${error.message}`);
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -248,7 +291,40 @@ const RegistrationForm = () => {
 
   return (
     <div>
-      <h2 className="font-style-4">User Registration</h2>
+      <h2 className="font-style-4">
+        {pageTranslations.title || "User Registration"}
+      </h2>
+      <div style={{ textAlign: "center", margin: "20px" }}>
+        <Dropdown onSelect={handleLanguageChange}>
+          <Dropdown.Toggle
+            variant="primary"
+            id="language-dropdown"
+            className={`font-style-4`}
+          >
+            {languageMap[selectedLanguage]}{" "}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item eventKey="en" className="font-style-4" lang="en">
+              English
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="es" className="font-style-4" lang="es">
+              Español
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="fr" className="font-style-4" lang="fr">
+              Français
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="de" className="font-style-4" lang="de">
+              Deutsch
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="ar" className="font-style-4" lang="ar">
+              العربية
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="zh" className="font-style-4" lang="zh">
+              中文
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       {userId && ( // Only render this section if userId exists
         <div className="dummy">
           <div className="button-container">
@@ -258,14 +334,14 @@ const RegistrationForm = () => {
               className="logout-button"
             >
               {uploadedImageUrl
-                ? `Login ${formData.username}`
-                : `Login ${formData.username} without profile image`}
+                ? `${pageTranslations.loginWithProfileImage || "Login"} ${formData.username}`
+                : `${pageTranslations.loginWithoutProfileImage || "Login without profile image"} ${formData.username}`}
             </Button>
           </div>
 
           {!uploadedImageUrl && (
             <div className="profile-image-buttons">
-              <ImageUploader userId={userId} onUpload={handleImageUpload} />
+              <ImageUploader userId={userId} onUpload={handleImageUpload} selectedLanguage={selectedLanguage}/>
             </div>
           )}
 
@@ -283,7 +359,9 @@ const RegistrationForm = () => {
       )}
       <form noValidate className="system-form" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username">
+            {pageTranslations.usernameLabel || "Username"}
+          </label>{" "}
           <input
             type="text"
             id="username"
@@ -295,7 +373,9 @@ const RegistrationForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">
+            {pageTranslations.emailLabel || "Email"}
+          </label>
           <input
             type="email"
             id="email"
@@ -307,7 +387,9 @@ const RegistrationForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="dummyEmail">Confirm Email</label>
+          <label htmlFor="dummyEmail">
+            {pageTranslations.confirmEmailLabel || "Confirm Email"}
+          </label>{" "}
           <input
             type="email"
             id="dummyEmail"
@@ -319,7 +401,9 @@ const RegistrationForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">
+            {pageTranslations.passwordLabel || "Password"}
+          </label>
           <div style={{ position: "relative" }}>
             <input
               type={showPassword ? "text" : "password"} // Toggle between text and password type
@@ -346,7 +430,9 @@ const RegistrationForm = () => {
           </div>
         </div>
         <div className="rounded-rectangle-wrapper">
-          <h3 className="font-style-4">About You Survey</h3>
+          <h3 className="font-style-4">
+            {pageTranslations.aboutYouSurveyTitle || "About You Survey"}
+          </h3>{" "}
           <div>
             <Button
               variant="outline-info"
@@ -359,8 +445,8 @@ const RegistrationForm = () => {
                 <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
               )}
               {showGender
-                ? "Hide Most Like You"
-                : "Show Most Like You Selection"}
+                ? pageTranslations.hideGender || "Hide Most Like You"
+                : pageTranslations.showGender || "Show Most Like You Selection"}
               {selectedGender === null ? (
                 <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
               ) : (
@@ -386,8 +472,9 @@ const RegistrationForm = () => {
                 <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
               )}
               {showHobbies
-                ? "Hide Your Favourite Hobby"
-                : "Show Your Favourite Hobby Selection"}
+                ? pageTranslations.hideHobbies || "Hide Your Favourite Hobby"
+                : pageTranslations.showHobbies ||
+                  "Show Your Favourite Hobby Selection"}
               {selectedHobby === null ? (
                 <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
               ) : (
@@ -399,6 +486,8 @@ const RegistrationForm = () => {
             <Hobbies
               onSelectHobby={handleHobbySelection}
               selected={selectedHobby}
+              selectedLanguage={selectedLanguage}
+              hobbies={pageTranslations.hobbies} // Pass the translated hobbies
             />
           )}
           <div>
@@ -413,8 +502,10 @@ const RegistrationForm = () => {
                 <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
               )}
               {showOrientation
-                ? "Hide Your Preferred Company"
-                : "Show Your Preferred Company Selection"}
+                ? pageTranslations.hideOrientation ||
+                  "Hide Your Preferred Company"
+                : pageTranslations.showOrientation ||
+                  "Show Your Preferred Company Selection"}
               {selectedOrientation === null ? (
                 <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
               ) : (
@@ -440,8 +531,9 @@ const RegistrationForm = () => {
                 <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
               )}
               {showFloatsMyBoat
-                ? "Hide Floats Your Boat"
-                : "Show Floats Your Boat Selection"}
+                ? pageTranslations.hideFloatsMyBoat || "Hide Floats Your Boat"
+                : pageTranslations.showFloatsMyBoat ||
+                  "Show Floats Your Boat Selection"}
               {selectedCarousel === null ? (
                 <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
               ) : (
@@ -449,14 +541,12 @@ const RegistrationForm = () => {
               )}
             </Button>
           </div>
-
           {showFloatsMyBoat && (
             <FloatsMyBoat
               onSelectCarousel={handleCarouselSelection}
               selectedCarousel={selectedCarousel}
             />
           )}
-
           <div>
             <Button
               variant="outline-info"
@@ -468,7 +558,9 @@ const RegistrationForm = () => {
               ) : (
                 <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
               )}
-              {locationSelected ? "Location Selected" : "Select Location"}
+              {locationSelected
+                ? pageTranslations.locationSelected || "Location Selected"
+                : pageTranslations.selectLocation || "Select Location"}{" "}
               {locationSelected ? (
                 <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
               ) : (
@@ -476,13 +568,17 @@ const RegistrationForm = () => {
               )}
             </Button>
           </div>
-
           <div>
-            <h3 className="font-style-4">About You</h3>
+            <h3 className="font-style-4">
+              {pageTranslations.aboutYou || "About You"}
+            </h3>
             <textarea
               id="aboutYou"
               className="about-you-textarea"
-              placeholder="I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
+              placeholder={
+                pageTranslations.aboutYouPlaceholder ||
+                "I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
+              }
               name="aboutYou"
               value={formData.aboutYou}
               onChange={handleInputChange}
@@ -491,13 +587,15 @@ const RegistrationForm = () => {
               style={{ width: "100%", height: "100px" }} // Adjust styling as needed
             />
           </div>
-
           <div>
             {selectedOrientation !== null && selectedGender !== null && (
               <>
-                <h3 className="font-style-4">About Your System Admin</h3>
+                <h3 className="font-style-4">
+                  {pageTranslations.aboutYourSystemAdmin ||
+                    "About Your System Admin"}
+                </h3>
                 <img src={getAdminImagePath()} alt="admin" />
-                {botPalOptions.options.map((option, index) => (
+                {translatedAdminLabels.map((label, index) => (
                   <div
                     key={index}
                     style={{
@@ -518,7 +616,7 @@ const RegistrationForm = () => {
                           whiteSpace: "nowrap", // Prevent the text from wrapping
                         }}
                       >
-                        {option.label}
+                        {label} {/* Use the translated label */}
                       </div>
                       <input
                         type="radio"
@@ -556,7 +654,7 @@ const RegistrationForm = () => {
 
         {!userId && (
           <Button type="submit" variant="outline-info" className="btn-sm">
-            Register
+            {pageTranslations.registerButton || "Register"}
           </Button>
         )}
       </form>

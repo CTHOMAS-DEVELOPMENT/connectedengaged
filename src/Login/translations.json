@@ -1,0 +1,146 @@
+{
+  "en": {
+    "login": {
+      "title": "Are you Connected Engaged?",
+      "helpMessage": "Rotate the images so they are the right way up before Logging in. Please Accept or Reject Cookies before logging in.",
+      "loginButton": "Login",
+      "noAccountText": "Don't have an account?",
+      "registerLink": "Register here",
+      "forgottenPasswordLink": "Forgotten password?",
+      "consent": {
+        "customize": "Customize",
+        "acceptAll": "Accept All",
+        "rejectAll": "Reject All",
+        "info": "Information"
+      },
+      "modalTitle": "Cookie Information",
+      "closeButton": "Close",
+      "rejectAllMessage": "We have removed all cookies",
+      "infoMessage": "We have two cookies which are for remembering your username and your language preference to remove the inconvenience of remembering your username or having to reselect your language preference the next time you login",
+      "customizeMessage": "You can either accept the application specific cookies or reject them.",
+      "passwordLengthError": "Password must be at least 8 characters",
+      "cookieConsentError": "Please accept or reject cookies before logging in.",
+      "imageOrientationError": "Please correctly orient the images before submitting."
+    }
+  },
+  "es": {
+    "login": {
+      "title": "¿Estás Conectado Comprometido?",
+      "helpMessage": "Gira las imágenes para que estén del lado correcto antes de iniciar sesión. Acepte o rechace las cookies antes de iniciar sesión.",
+      "loginButton": "Iniciar sesión",
+      "noAccountText": "¿No tienes una cuenta?",
+      "registerLink": "Regístrate aquí",
+      "forgottenPasswordLink": "¿Olvidaste tu contraseña?",
+      "consent": {
+        "customize": "Personalizar",
+        "acceptAll": "Aceptar todo",
+        "rejectAll": "Rechazar todo",
+        "info": "Información"
+      },
+      "modalTitle": "Información de cookies",
+      "closeButton": "Cerrar",
+      "rejectAllMessage": "Hemos eliminado todas las cookies",
+      "infoMessage": "Tenemos dos cookies para recordar tu nombre de usuario y tu preferencia de idioma para evitar la molestia de tener que recordar tu nombre de usuario o volver a seleccionar tu preferencia de idioma la próxima vez que inicies sesión",
+      "customizeMessage": "Puedes aceptar las cookies específicas de la aplicación o rechazarlas.",
+      "passwordLengthError": "La contraseña debe tener al menos 8 caracteres",
+      "cookieConsentError": "Por favor, acepte o rechace las cookies antes de iniciar sesión.",
+      "imageOrientationError": "Por favor, oriente correctamente las imágenes antes de enviar."
+    }
+  },
+  "fr": {
+    "login": {
+      "title": "Êtes-vous Connecté Engagé?",
+      "helpMessage": "Faites pivoter les images pour qu'elles soient dans le bon sens avant de vous connecter. Veuillez accepter ou rejeter les cookies avant de vous connecter.",
+      "loginButton": "Connexion",
+      "noAccountText": "Vous n'avez pas de compte?",
+      "registerLink": "Inscrivez-vous ici",
+      "forgottenPasswordLink": "Mot de passe oublié?",
+      "consent": {
+        "customize": "Personnaliser",
+        "acceptAll": "Tout accepter",
+        "rejectAll": "Tout rejeter",
+        "info": "Information"
+      },
+      "modalTitle": "Informations sur les cookies",
+      "closeButton": "Fermer",
+      "rejectAllMessage": "Nous avons supprimé tous les cookies",
+      "infoMessage": "Nous avons deux cookies pour mémoriser votre nom d'utilisateur et votre préférence de langue afin d'éviter la gêne de devoir mémoriser votre nom d'utilisateur ou de devoir à nouveau sélectionner votre préférence de langue la prochaine fois que vous vous connectez",
+      "customizeMessage": "Vous pouvez accepter les cookies spécifiques à l'application ou les rejeter.",
+      "passwordLengthError": "Le mot de passe doit comporter au moins 8 caractères",
+      "cookieConsentError": "Veuillez accepter ou refuser les cookies avant de vous connecter.",
+      "imageOrientationError": "Veuillez orienter correctement les images avant de soumettre."
+    }
+  },
+  "de": {
+    "login": {
+      "title": "Bist du Verbunden Engagiert?",
+      "helpMessage": "Drehen Sie die Bilder, damit sie richtig sind, bevor Sie sich einloggen. Bitte akzeptieren oder lehnen Sie Cookies ab, bevor Sie sich einloggen.",
+      "loginButton": "Anmelden",
+      "noAccountText": "Haben Sie kein Konto?",
+      "registerLink": "Hier registrieren",
+      "forgottenPasswordLink": "Passwort vergessen?",
+      "consent": {
+        "customize": "Anpassen",
+        "acceptAll": "Alles akzeptieren",
+        "rejectAll": "Alles ablehnen",
+        "info": "Information"
+      },
+      "modalTitle": "Cookie-Informationen",
+      "closeButton": "Schließen",
+      "rejectAllMessage": "Wir haben alle Cookies entfernt",
+      "infoMessage": "Wir haben zwei Cookies, die dazu dienen, Ihren Benutzernamen und Ihre Sprachpräferenz zu speichern, um die Unannehmlichkeit zu vermeiden, sich an Ihren Benutzernamen erinnern oder Ihre Sprachpräferenz beim nächsten Login erneut auswählen zu müssen",
+      "customizeMessage": "Sie können die anwendungsspezifischen Cookies entweder akzeptieren oder ablehnen.",
+      "passwordLengthError": "Das Passwort muss mindestens 8 Zeichen lang sein",
+      "cookieConsentError": "Bitte akzeptieren oder lehnen Sie Cookies ab, bevor Sie sich einloggen.",
+      "imageOrientationError": "Bitte richten Sie die Bilder korrekt aus, bevor Sie sie einreichen."
+    }
+  },
+  "ar": {
+    "login": {
+      "title": "هل أنت متصل وملتزم؟",
+      "helpMessage": "قم بتدوير الصور بحيث تكون في الاتجاه الصحيح قبل تسجيل الدخول. الرجاء قبول أو رفض ملفات تعريف الارتباط قبل تسجيل الدخول.",
+      "loginButton": "تسجيل الدخول",
+      "noAccountText": "ليس لديك حساب؟",
+      "registerLink": "سجل هنا",
+      "forgottenPasswordLink": "نسيت كلمة المرور؟",
+      "consent": {
+        "customize": "تخصيص",
+        "acceptAll": "قبول الكل",
+        "rejectAll": "رفض الكل",
+        "info": "معلومات"
+      },
+      "modalTitle": "معلومات ملفات تعريف الارتباط",
+      "closeButton": "إغلاق",
+      "rejectAllMessage": "لقد أزلنا جميع ملفات تعريف الارتباط",
+      "infoMessage": "لدينا ملفا تعريف ارتباط لتذكر اسم المستخدم وتفضيل اللغة الخاص بك لتجنب متاعب تذكر اسم المستخدم الخاص بك أو الحاجة إلى إعادة تحديد تفضيل اللغة الخاص بك في المرة التالية التي تقوم فيها بتسجيل الدخول",
+      "customizeMessage": "يمكنك إما قبول ملفات تعريف الارتباط الخاصة بالتطبيق أو رفضها.",
+      "passwordLengthError": "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل",
+      "cookieConsentError": "يرجى قبول أو رفض ملفات تعريف الارتباط قبل تسجيل الدخول.",
+      "imageOrientationError": "يرجى توجيه الصور بشكل صحيح قبل الإرسال."
+    }
+  },
+  "zh": {
+    "login": {
+      "title": "你已连接并参与吗？",
+      "helpMessage": "在登录之前，请将图像旋转到正确的位置。请在登录前接受或拒绝cookie。",
+      "loginButton": "登录",
+      "noAccountText": "没有账号？",
+      "registerLink": "在这里注册",
+      "forgottenPasswordLink": "忘记密码？",
+      "consent": {
+        "customize": "自定义",
+        "acceptAll": "全部接受",
+        "rejectAll": "全部拒绝",
+        "info": "信息"
+      },
+      "modalTitle": "Cookie信息",
+      "closeButton": "关闭",
+      "rejectAllMessage": "我们已删除所有cookie",
+      "infoMessage": "我们有两个cookie，用于记住您的用户名和语言偏好，以避免下次登录时必须记住用户名或重新选择语言偏好的麻烦",
+      "customizeMessage": "您可以接受应用程序特定的cookie或拒绝它们。",
+      "passwordLengthError": "密码至少需要 8 个字符",
+      "cookieConsentError": "请在登录前接受或拒绝 Cookie。",
+      "imageOrientationError": "请在提交前正确调整图像的方向。"
+    }
+  }
+}

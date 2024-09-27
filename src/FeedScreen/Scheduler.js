@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 
 const Scheduler = ({ onTimeSelected, onCancel }) => {
@@ -34,8 +34,8 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
 
   const handleTimeClick = (time) => {
     setSelectedTime(time);
-    console.log("Clicked Time:", time);
-    console.log("Current Time:", today);
+    //console.log("Clicked Time:", time);
+    //console.log("Current Time:", today);
   };
 
   const handleConfirm = () => {
@@ -66,14 +66,6 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
       minute: "2-digit",
     })}`;
   };
-
-  useEffect(() => {
-    if (selectedTime) {
-      const buttonText = formatButtonText();
-      console.log("Button Text:", buttonText);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTime]);
 
   return (
     <div

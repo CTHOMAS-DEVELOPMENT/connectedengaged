@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import translations from './translations.json'; // Adjust the path if necessary
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const NewSubmission = () => {
@@ -11,17 +12,16 @@ const NewSubmission = () => {
   const loggedInUserId = location.state?.userId;
   const selectedUser = location.state?.selectedUser;
   const selectedUserIds = location.state?.selectedUserIds;
+  const languageCode = location.state?.languageCode || 'en'; // Default to 'en' if not provided
   const navigate = useNavigate();
 
   const handleBackToMessagesClick = () => {
-    navigate("/userlist", { state: { userId: loggedInUserId } }); // Update for v6
+    navigate("/userlist", { state: { userId: loggedInUserId } });
   };
 
   const handleSave = () => {
-    let userIds = [loggedInUserId]; // Start with logged-in user
+    let userIds = [loggedInUserId];
 
-    // If selectedUserIds is populated (and is an array), add it to userIds;
-    // otherwise, add selectedUser (if it's not null)
     if (Array.isArray(selectedUserIds) && selectedUserIds.length > 0) {
       userIds = [...userIds, ...selectedUserIds];
     } else if (selectedUser) {
@@ -34,7 +34,6 @@ const NewSubmission = () => {
       userIds: userIds,
     };
 
-    // POST request to backend to save data
     fetch(`${process.env.REACT_APP_API_URL}/api/user_submissions`, {
       method: "POST",
       headers: {
@@ -44,9 +43,9 @@ const NewSubmission = () => {
     })
       .then((response) => {
         if (response.ok) {
-          return response.json(); // Parse JSON response
+          return response.json();
         } else {
-          throw new Error("Submission failed");
+          throw new Error(translations[languageCode]?.newSubmission?.submissionFailed || "Submission failed");
         }
       })
       .then((data) => {
@@ -56,6 +55,7 @@ const NewSubmission = () => {
             userId: data.user_id,
             title: data.title,
             selectedUser: selectedUser,
+            languageCode: languageCode, // Pass the languageCode to the FeedScreen
           },
         });
       })
@@ -76,17 +76,19 @@ const NewSubmission = () => {
         className="btn-sm"
         onClick={handleBackToMessagesClick}
       >
-        Back to messages
-      </Button>{" "}
-      <h2 className="font-style-4">Create New Submission</h2>
+        {translations[languageCode]?.newSubmission?.backToMessages || "Back to messages"}
+      </Button>
+      <h2 className="font-style-4">
+        {translations[languageCode]?.newSubmission?.createNewSubmission || "Create New Submission"}
+      </h2>
       <div style={{ position: "relative", display: "inline-block" }}>
         <input
           type="text"
           value={title}
           onChange={handleTitleChange}
-          placeholder="Title"
-          maxLength={maxLength} // Limit to 60 characters
-          style={{ paddingRight: "40px" }} // Add padding to make space for the counter
+          placeholder={translations[languageCode]?.newSubmission?.titlePlaceholder || "Title"}
+          maxLength={maxLength}
+          style={{ paddingRight: "40px" }}
         />
         <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}>
           {maxLength - title.length}
@@ -99,8 +101,8 @@ const NewSubmission = () => {
         onClick={handleSave}
         disabled={title.length < 3}
       >
-        Save
-      </Button>{" "}
+        {translations[languageCode]?.newSubmission?.save || "Save"}
+      </Button>
     </div>
   );
 };
