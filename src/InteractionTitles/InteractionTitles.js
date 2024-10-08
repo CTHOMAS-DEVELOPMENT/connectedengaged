@@ -37,8 +37,12 @@ const InteractionTitles = ({
         setInteractions(data);
       })
       .catch((error) => {
-        console.error("Error fetching Engagements:", error);
-        setMessage(`Error fetching Engagements:${error}`);
+        setMessage(
+          `${
+            translations[languageCode]?.interactionTitles?.fetchingError ||
+            "Error fetching engagements"
+          }: ${error}`
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -79,11 +83,10 @@ const InteractionTitles = ({
         submissionId: data.submission_id,
         userId: loggedInUserId,
         title: data.title,
-        languageCode: languageCode // Pass the language code here
+        languageCode: languageCode, // Pass the language code here
       },
     });
   };
-  
 
   const handleEditClick = (interaction, event) => {
     event.stopPropagation(); // Prevent triggering handleTitleClick
@@ -91,6 +94,7 @@ const InteractionTitles = ({
       state: {
         submissionId: interaction.submission_id,
         loggedInUserId: loggedInUserId,
+        languageCode: languageCode, // Pass the language code here
       },
     });
   };
@@ -120,7 +124,10 @@ const InteractionTitles = ({
     fetch(apiUrl)
       .then((response) => {
         if (response.ok) return response.blob();
-        throw new Error("Network response was not ok.");
+        throw new Error(
+          translations[languageCode]?.interactionTitles?.networkError ||
+            "Network response was not ok"
+        );
       })
       .then((blob) => {
         // Create a new URL for the blob
@@ -156,16 +163,25 @@ const InteractionTitles = ({
     })
       .then((response) => {
         if (!response.ok) {
-          setMessage(`Network response was not ok`);
+          setMessage(
+            translations[languageCode]?.interactionTitles?.networkError ||
+              "Network response was not ok"
+          );
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
-          throw new Error("Network response was not ok");
+          throw new Error(
+            translations[languageCode]?.interactionTitles?.networkError ||
+              "Network response was not ok"
+          );
         }
         return response.json();
       })
       .then((data) => {
         setType("info");
-        setMessage(`The Engagement has been removed`);
+        setMessage(
+          translations[languageCode]?.interactionTitles?.endSuccess ||
+            "The engagement has been removed"
+        );
         setAlertKey((prevKey) => prevKey + 1);
         setEndedInteractions((oldArray) => [
           ...oldArray,
@@ -174,8 +190,9 @@ const InteractionTitles = ({
       })
       .catch((error) => {
         console.error("Error ending Engagement:", error);
-        setMessage(`Error this Engagement was not removed:${error}`);
-        setType("error");
+        setMessage(
+          `${translations[languageCode]?.interactionTitles?.endError || "Error: this engagement was not removed"}: ${error}`
+        );        setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
   };
@@ -254,29 +271,32 @@ const InteractionTitles = ({
                 {interaction.user_id === loggedInUserId &&
                 !endedInteractions.includes(interaction.submission_id) ? (
                   <>
-              <Button
-                variant="outline-info"
-                className="btn-sm interaction-edit"
-                onClick={(event) => handleEditClick(interaction, event)}
-              >
-                {translations[languageCode]?.userList?.invited || "Invited"}
-              </Button>
+                    <Button
+                      variant="outline-info"
+                      className="btn-sm interaction-edit"
+                      onClick={(event) => handleEditClick(interaction, event)}
+                    >
+                      {translations[languageCode]?.userList?.invited ||
+                        "Invited"}
+                    </Button>
 
-              <Button
-                variant="outline-info"
-                className="btn-sm interaction-edit"
-                onClick={(event) => handleDownloadAndEndItClick(interaction, event)}
-              >
-                {translations[languageCode]?.userList?.save || "Save"}
-              </Button>
+                    <Button
+                      variant="outline-info"
+                      className="btn-sm interaction-edit"
+                      onClick={(event) =>
+                        handleDownloadAndEndItClick(interaction, event)
+                      }
+                    >
+                      {translations[languageCode]?.userList?.save || "Save"}
+                    </Button>
 
-              <Button
-                variant="danger"
-                className="btn-sm interaction-edit"
-                onClick={(event) => handleEndItClick(interaction, event)}
-              >
-                {translations[languageCode]?.userList?.endIt || "End it"}
-              </Button>
+                    <Button
+                      variant="danger"
+                      className="btn-sm interaction-edit"
+                      onClick={(event) => handleEndItClick(interaction, event)}
+                    >
+                      {translations[languageCode]?.userList?.endIt || "End it"}
+                    </Button>
                   </>
                 ) : (
                   <span className="interaction-username">

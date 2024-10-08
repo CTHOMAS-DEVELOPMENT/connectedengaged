@@ -181,18 +181,20 @@ const UsersList = () => {
   useEffect(() => {
     if (submitSuccess) {
       // Perform actions on success, e.g., show a success message, redirect, etc.
-      setMessage("Successfully sent connection requests!");
+      setMessage(
+        translations[languageCode]?.usersList?.connectionRequestsSuccess ||
+          "Successfully sent connection requests!"
+      );
       setType("info");
       setAlertKey((prevKey) => prevKey + 1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitSuccess]);
   useEffect(() => {
     if (loggedInUserId) {
       checkAuthorization(loggedInUserId).then((isAuthorized) => {
         if (!isAuthorized) {
           setAuthError(true); // Handle unauthorized access
-          // Optionally, redirect the user
-          // navigate("/login");
         }
       });
     }
@@ -202,9 +204,6 @@ const UsersList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId, authError]);
   useEffect(() => {
-    // const socket = io(process.env.REACT_APP_BACKEND_HOST, {
-    //   transports: ["websocket", "polling"], // Add this to enable both WebSocket and polling
-    // });
     const socket = isLocal
       ? io(process.env.REACT_APP_BACKEND_HOST) // Development environment, no transport options needed
       : io(process.env.REACT_APP_BACKEND_HOST, {
@@ -218,7 +217,10 @@ const UsersList = () => {
     socket.on("connections_change", (data) => {
       if (data.user_two_id === loggedInUserId) {
         fetchConnectedUsers();
-        setMessage("A connection request has been accepted!");
+        setMessage(
+          translations[languageCode]?.usersList?.connectionRequestAccepted ||
+            "A connection request has been accepted!"
+        );
         setType("info");
         setAlertKey((prevKey) => prevKey + 1);
       }
@@ -232,8 +234,10 @@ const UsersList = () => {
     socket.on("new_engagement", (data) => {
       if (data.userIds.includes(loggedInUserId)) {
         fetchConnectedUsers();
-        setMessage("A new engagement has been created!");
-        setType("info");
+        setMessage(
+          translations[languageCode]?.usersList?.newEngagementMessage ||
+            "A new engagement has been created!"
+        );        setType("info");
         setAlertKey((prevKey) => prevKey + 1);
         setShouldRefreshInteractions(true); // Add this line to trigger refresh
       }
@@ -343,7 +347,10 @@ const UsersList = () => {
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (!file) {
-      setMessage("No file selected.");
+      setMessage(
+        translations[languageCode]?.usersList?.noFileSelected ||
+          "No file selected."
+      );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
       return;
@@ -351,7 +358,10 @@ const UsersList = () => {
 
     // Check if file.type includes 'zip'
     if (file.type.indexOf("zip") === -1) {
-      setMessage("File is not a ZIP archive.");
+      setMessage(
+        translations[languageCode]?.usersList?.notZipArchive ||
+          "File is not a ZIP archive."
+      );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
       event.target.value = null;
@@ -379,8 +389,10 @@ const UsersList = () => {
         }
 
         if (!isValid) {
-          setMessage("ZIP archive contents are invalid.");
-          setType("error");
+          setMessage(
+            translations[languageCode]?.usersList?.invalidZipContents ||
+              "ZIP archive contents are invalid."
+          );          setType("error");
           setAlertKey((prevKey) => prevKey + 1);
           event.target.value = null;
           return;
@@ -491,7 +503,10 @@ const UsersList = () => {
       await response.json(); // Assuming the server responds with JSON
 
       // Handle the successful response here
-      setMessage("Connections successfully enabled");
+      setMessage(
+        translations[languageCode]?.usersList?.connectionsEnabledSuccess ||
+          "Connections successfully enabled"
+      );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
 

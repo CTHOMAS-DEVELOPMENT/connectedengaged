@@ -3,8 +3,9 @@ import { Button, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AlertMessage from "../system/AlertMessage";
 import { Rocket, RocketFill } from "react-bootstrap-icons";
+import translations from "./translations.json"; // Adjust the path as necessary
 
-const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
+const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) => {
   const [textContent, setTextContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
@@ -12,10 +13,12 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
 
+  const pageTranslations = translations[languageCode]?.textEntry || {};
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!textContent.trim()) {
-      setMessage("Please enter some text");
+      setMessage(pageTranslations.emptyTextError || "Please enter some text");
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
       return;
@@ -37,10 +40,13 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
           onPostSubmit(); // Trigger the callback to re-fetch posts
         }
       } else {
-        throw new Error(data.message || "Error submitting text");
+        throw new Error(data.message || pageTranslations.submitError || "Error submitting text");
       }
     } catch (error) {
       console.error("Error submitting text:", error);
+      setMessage(pageTranslations.submitError || "Error submitting text");
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
     } finally {
       setIsSubmitting(false); // Reset submitting state regardless of the outcome
     }
@@ -53,7 +59,7 @@ const TextEntry = ({ userId, submissionId, onPostSubmit }) => {
           <textarea
             value={textContent}
             onChange={(e) => setTextContent(e.target.value)}
-            placeholder="What's on your mind?"
+            placeholder={pageTranslations.placeholder || "What's on your mind?"}
             disabled={isSubmitting} // Disable textarea while submitting
           />
 

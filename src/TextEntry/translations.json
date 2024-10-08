@@ -1,0 +1,45 @@
+{
+    "en": {
+      "textEntry": {
+        "placeholder": "What's on your mind?",
+        "emptyTextError": "Please enter some text",
+        "submitError": "Error submitting text"
+      }
+    },
+    "es": {
+      "textEntry": {
+        "placeholder": "¿Qué tienes en mente?",
+        "emptyTextError": "Por favor ingresa algo de texto",
+        "submitError": "Error al enviar el texto"
+      }
+    },
+    "fr": {
+      "textEntry": {
+        "placeholder": "À quoi penses-tu?",
+        "emptyTextError": "Veuillez entrer du texte",
+        "submitError": "Erreur lors de la soumission du texte"
+      }
+    },
+    "de": {
+      "textEntry": {
+        "placeholder": "Was denkst du?",
+        "emptyTextError": "Bitte geben Sie einen Text ein",
+        "submitError": "Fehler beim Senden des Textes"
+      }
+    },
+    "ar": {
+      "textEntry": {
+        "placeholder": "بم تفكر؟",
+        "emptyTextError": "الرجاء إدخال نص",
+        "submitError": "خطأ في إرسال النص"
+      }
+    },
+    "zh": {
+      "textEntry": {
+        "placeholder": "你在想什么？",
+        "emptyTextError": "请输入一些文字",
+        "submitError": "提交文本时出错"
+      }
+    }
+  }
+  

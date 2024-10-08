@@ -50,22 +50,30 @@ const ConnectionRequests = ({
     )
       .then((response) => {
         if (!response.ok) {
-          // If the server response is not OK, throw an error
-          throw new Error("Network response was not ok");
+          throw new Error(
+            translations[languageCode]?.connectionRequests?.deleteAllError ||
+              "Error deleting all requests"
+          );
         }
         return response.json(); // Assuming the server responds with JSON
       })
       .then((data) => {
         // Log the success message from the server
         setType("info");
-        setMessage(data.message);
+        setMessage(
+          translations[languageCode]?.connectionRequests?.deleteAllSuccess ||
+            "Connection Requests successfully deleted"
+        );
         setAlertKey((prevKey) => prevKey + 1);
         // Refresh the list of connection requests
         fetchConnectionRequests();
       })
       .catch((error) => {
         setType("error");
-        setMessage("Error deleting all requests:" + error);
+        setMessage(
+          translations[languageCode]?.connectionRequests?.deleteAllError ||
+            "Error deleting all requests: " + error
+        );
         setAlertKey((prevKey) => prevKey + 1);
       });
   };
@@ -82,20 +90,29 @@ const ConnectionRequests = ({
     )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to delete connection request");
+          throw new Error(
+            translations[languageCode]?.connectionRequests?.deleteError ||
+              "Failed to delete connection request"
+          );
         }
         return response.json();
       })
       .then((data) => {
         setType("info");
-        setMessage("Connection request successfully deleted:" + data);
+        setMessage(
+          translations[languageCode]?.connectionRequests?.deleteSuccess ||
+            "Connection request successfully deleted"
+        );
         setAlertKey((prevKey) => prevKey + 1);
         // Call fetchConnectionRequests to refresh the list
         fetchConnectionRequests();
       })
       .catch((err) => {
         setType("error");
-        setMessage("Error:" + err);
+        setMessage(
+          translations[languageCode]?.connectionRequests?.deleteError ||
+            "Error: " + err
+        );
         setAlertKey((prevKey) => prevKey + 1);
       });
   };
@@ -107,7 +124,10 @@ const ConnectionRequests = ({
     fetch(`${process.env.REACT_APP_API_URL}/api/connection-requests/${userId}`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to fetch connection requests");
+          throw new Error(
+            translations[languageCode]?.connectionRequests?.fetchError ||
+              "Failed to fetch connection requests"
+          );
         }
         return response.json();
       })
@@ -152,9 +172,20 @@ const ConnectionRequests = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  if (isLoading) return <div>Loading connection requests...</div>;
-  if (error) return <div>Error loading connection requests: {error}</div>;
-
+  if (isLoading)
+    return (
+      <div>
+        {translations[languageCode]?.connectionRequests?.loadingMessage ||
+          "Loading connection requests..."}
+      </div>
+    );
+  if (error) return (
+    <div>
+      {translations[languageCode]?.connectionRequests?.errorLoadingMessage ||
+        "Error loading connection requests:"}{" "}
+      {error}
+    </div>
+  );
   return (
     <div className="connection-requests-container">
       <h2 className="font-style-4">

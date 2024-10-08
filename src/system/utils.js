@@ -82,4 +82,8 @@ export const getPageName = (location) => {
   // Return the mapped name or the path itself if no mapping is provided
   return routeNameMap[path] || path;
 };
-  
+
+
+
+
+

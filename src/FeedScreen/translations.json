@@ -17,7 +17,14 @@
         "incomingCallFrom": "Incoming call from",
         "answerButton": "Answer",
         "declineButton": "Decline",
-        "searchPlaceholder": "Type your search"
+        "searchPlaceholder": "Type your search",
+        "uploadAudioSuccess": "Upload audio successful!",
+        "uploadFailed": "Upload failed!",
+        "deletePostFailed": "Failed to delete the post.",
+        "deletePostError": "Error deleting the post.",
+        "notificationSent": "Notification sent successfully.",
+        "cameraOrMicError": "Error accessing camera or microphone. Please check your device settings."
+   
       }
     },
     "es": {
@@ -38,7 +45,14 @@
         "incomingCallFrom": "Llamada entrante de",
         "answerButton": "Responder",
         "declineButton": "Rechazar",
-        "searchPlaceholder": "Escriba su búsqueda"
+        "searchPlaceholder": "Escriba su búsqueda",
+        "uploadAudioSuccess": "¡Subida de audio exitosa!",
+        "uploadFailed": "¡La subida falló!",
+        "deletePostFailed": "No se pudo eliminar la publicación.",
+        "deletePostError": "Error al eliminar la publicación.",
+        "notificationSent": "Notificación enviada con éxito.",
+        "cameraOrMicError": "Error al acceder a la cámara o al micrófono. Verifique la configuración de su dispositivo."
+  
       }
     },
     "fr": {
@@ -59,7 +73,14 @@
         "incomingCallFrom": "Appel entrant de",
         "answerButton": "Répondre",
         "declineButton": "Décliner",
-        "searchPlaceholder": "Tapez votre recherche"
+        "searchPlaceholder": "Tapez votre recherche",
+        "uploadAudioSuccess": "Téléchargement audio réussi !",
+        "uploadFailed": "Échec du téléchargement !",
+        "deletePostFailed": "Échec de la suppression de la publication.",
+        "deletePostError": "Erreur lors de la suppression de la publication.",
+        "notificationSent": "Notification envoyée avec succès.",
+        "cameraOrMicError": "Erreur lors de l'accès à la caméra ou au microphone. Veuillez vérifier les paramètres de votre appareil."
+  
       }
     },
     "de": {
@@ -80,7 +101,42 @@
         "incomingCallFrom": "Eingehender Anruf von",
         "answerButton": "Annehmen",
         "declineButton": "Ablehnen",
-        "searchPlaceholder": "Geben Sie Ihre Suche ein"
+        "searchPlaceholder": "Geben Sie Ihre Suche ein",
+        "uploadAudioSuccess": "Audiodatei erfolgreich hochgeladen!",
+        "uploadFailed": "Hochladen fehlgeschlagen!",
+        "deletePostFailed": "Löschen des Beitrags fehlgeschlagen.",
+        "deletePostError": "Fehler beim Löschen des Beitrags.",
+        "notificationSent": "Benachrichtigung erfolgreich gesendet.",
+        "cameraOrMicError": "Fehler beim Zugriff auf Kamera oder Mikrofon. Überprüfen Sie Ihre Geräteeinstellungen."
+  
+      }
+    },
+    "ar": {
+      "feedScreen": {
+        "unauthorizedAccess": "الوصول غير مصرح به. الرجاء تسجيل الدخول.",
+        "screenTitle": "شاشة التغذية",
+        "backToMessages": "العودة إلى الرسائل",
+        "uploading": "جارٍ التحميل...",
+        "updateButton": "تحديث",
+        "deleteButton": "حذف",
+        "uploadSuccess": "تم تحميل الصوت بنجاح!",
+        "errorDeletingPost": "حدث خطأ أثناء حذف المنشور.",
+        "postUpdated": "تم تحديث المنشور برقم المعرف:",
+        "errorFetchingPosts": "حدث خطأ أثناء استرجاع المنشورات:",
+        "newPostSubmitted": "تم إرسال منشور جديد. جاري استرجاع المنشورات...",
+        "imageUploadedSuccess": "تم تحميل الصورة بنجاح",
+        "errorAccessingMedia": "حدث خطأ في الوصول إلى الكاميرا أو الميكروفون. يرجى التحقق من إعدادات الجهاز.",
+        "incomingCallFrom": "مكالمة واردة من",
+        "answerButton": "إجابة",
+        "declineButton": "رفض",
+        "searchPlaceholder": "اكتب بحثك",
+        "uploadAudioSuccess": "تم تحميل الصوت بنجاح!",
+        "uploadFailed": "فشل التحميل!",
+        "deletePostFailed": "فشل في حذف المنشور.",
+        "deletePostError": "خطأ في حذف المنشور.",
+        "notificationSent": "تم إرسال الإخطار بنجاح.",
+        "cameraOrMicError": "حدث خطأ في الوصول إلى الكاميرا أو الميكروفون. يرجى التحقق من إعدادات جهازك."
+  
       }
     },
     "zh": {
@@ -101,29 +157,15 @@
         "incomingCallFrom": "来自 的来电",
         "answerButton": "接听",
         "declineButton": "拒绝",
-        "searchPlaceholder": "输入您的搜索内容"
-      }
-    },
-    "it": {
-      "feedScreen": {
-        "unauthorizedAccess": "Accesso non autorizzato. Si prega di accedere.",
-        "screenTitle": "Schermata dei Feed",
-        "backToMessages": "Torna ai messaggi",
-        "uploading": "Caricamento in corso...",
-        "updateButton": "Aggiorna",
-        "deleteButton": "Elimina",
-        "uploadSuccess": "Audio caricato con successo!",
-        "errorDeletingPost": "Errore durante l'eliminazione del post.",
-        "postUpdated": "Post aggiornato con ID:",
-        "errorFetchingPosts": "Errore durante il recupero dei post:",
-        "newPostSubmitted": "Nuovo post inviato. Recupero dei post in corso...",
-        "imageUploadedSuccess": "Immagine caricata con successo",
-        "errorAccessingMedia": "Errore nell'accesso alla fotocamera o al microfono. Controllare le impostazioni del dispositivo.",
-        "incomingCallFrom": "Chiamata in arrivo da",
-        "answerButton": "Rispondi",
-        "declineButton": "Rifiuta",
-        "searchPlaceholder": "Digita la tua ricerca"
+        "searchPlaceholder": "输入您的搜索内容",
+        "uploadAudioSuccess": "音频上传成功！",
+      "uploadFailed": "上传失败！",
+      "deletePostFailed": "删除帖子失败。",
+      "deletePostError": "删除帖子时出错。",
+      "notificationSent": "通知发送成功。",
+      "cameraOrMicError": "访问摄像头或麦克风时出错。请检查您的设备设置。"
       }
     }
+
   }
   

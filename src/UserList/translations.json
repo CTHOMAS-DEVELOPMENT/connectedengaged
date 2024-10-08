@@ -16,7 +16,14 @@
       "showConnectionRequests": "Show Your Connection Requests",
       "hideRequestsFromOthers": "Hide Connection Requests from Others",
       "showRequestsFromOthers": "Show Connection Requests from Others",
-      "profileButton": "Profile"
+      "profileButton": "Profile",
+      "connectionRequestsSuccess": "Successfully sent connection requests!",
+      "connectionRequestAccepted": "A connection request has been accepted!",
+      "newEngagementMessage": "A new engagement has been created!",
+      "noFileSelected": "No file selected.",
+      "notZipArchive": "File is not a ZIP archive.",
+      "invalidZipContents": "ZIP archive contents are invalid.",
+      "connectionsEnabledSuccess": "Connections successfully enabled"
     },
     "filterUsers": {
       "usernamePlaceholder": "Username",
@@ -40,13 +47,24 @@
       "enableSelectedConnectionsButton": "Enable Selected Connections",
       "loadingMessage": "Loading connection requests...",
       "errorLoadingMessage": "Error loading connection requests:",
-      "helpMessage": "Select the checkboxes next to the red bin and go to the 'Enable Selected Connection' button which appears as you check boxes and click it to gain the additional connected engager(s)"
+      "helpMessage": "Select the checkboxes next to the red bin and go to the 'Enable Selected Connection' button which appears as you check boxes and click it to gain the additional connected engager(s)",
+      "deleteAllSuccess": "All connection requests deleted successfully.",
+      "deleteAllError": "Error deleting connection requests.",
+      "deleteRequestSuccess": "Connection request deleted successfully.",
+      "deleteRequestError": "Error deleting connection request."
     },
     "connectionRequests": {
       "title": "Connection Requests",
       "deleteAllRequestsButton": "Delete All My Requests",
+      "deleteAllSuccess": "Connection Requests successfully deleted",
+      "deleteAllError": "Error deleting all requests",
+      "deleteSuccess": "Connection request successfully deleted",
+      "deleteError": "Failed to delete connection request",
+      "fetchError": "Failed to fetch connection requests",
+      "loadingMessage": "Loading connection requests...",
+      "errorLoadingMessage": "Error loading connection requests:",
       "noRequestsFound": "No connection requests found.",
-      "noAboutText": "has not entered anything yet.."
+      "noAboutText": "{username} has not entered anything yet.."
     }
   },
   "es": {
@@ -66,7 +84,14 @@
       "showConnectionRequests": "Mostrar tus solicitudes de conexión",
       "hideRequestsFromOthers": "Ocultar solicitudes de conexión de otros",
       "showRequestsFromOthers": "Mostrar solicitudes de conexión de otros",
-      "profileButton": "Perfil"
+      "profileButton": "Perfil",
+      "connectionRequestsSuccess": "¡Solicitudes de conexión enviadas con éxito!",
+      "connectionRequestAccepted": "¡Una solicitud de conexión ha sido aceptada!",
+      "newEngagementMessage": "¡Se ha creado una nueva interacción!",
+      "noFileSelected": "No se ha seleccionado ningún archivo.",
+      "notZipArchive": "El archivo no es un archivo ZIP.",
+      "invalidZipContents": "El contenido del archivo ZIP no es válido.",
+      "connectionsEnabledSuccess": "Conexiones habilitadas con éxito"
     },
     "filterUsers": {
       "usernamePlaceholder": "Nombre de usuario",
@@ -90,13 +115,24 @@
       "enableSelectedConnectionsButton": "Habilitar conexiones seleccionadas",
       "loadingMessage": "Cargando solicitudes de conexión...",
       "errorLoadingMessage": "Error al cargar las solicitudes de conexión:",
-      "helpMessage": "Seleccione las casillas de verificación junto al bote rojo y vaya al botón 'Habilitar conexión seleccionada' que aparece cuando marca las casillas y haga clic en él para obtener el(los) nuevo(s) participante(s) conectado(s)."
+      "helpMessage": "Seleccione las casillas de verificación junto al bote rojo y vaya al botón 'Habilitar conexión seleccionada' que aparece cuando marca las casillas y haga clic en él para obtener el(los) nuevo(s) participante(s) conectado(s).",
+      "deleteAllSuccess": "Todas las solicitudes de conexión eliminadas con éxito.",
+      "deleteAllError": "Error al eliminar las solicitudes de conexión.",
+      "deleteRequestSuccess": "Solicitud de conexión eliminada con éxito.",
+      "deleteRequestError": "Error al eliminar la solicitud de conexión."
     },
     "connectionRequests": {
-      "title": "Solicitudes de conexión",
+      "title": "Solicitudes de Conexión",
       "deleteAllRequestsButton": "Eliminar todas mis solicitudes",
+      "deleteAllSuccess": "Solicitudes de conexión eliminadas con éxito",
+      "deleteAllError": "Error al eliminar todas las solicitudes",
+      "deleteSuccess": "Solicitud de conexión eliminada con éxito",
+      "deleteError": "Error al eliminar la solicitud de conexión",
+      "fetchError": "Error al obtener las solicitudes de conexión",
+      "loadingMessage": "Cargando solicitudes de conexión...",
+      "errorLoadingMessage": "Error al cargar las solicitudes de conexión:",
       "noRequestsFound": "No se encontraron solicitudes de conexión.",
-      "noAboutText": "no ha ingresado nada aún.."
+      "noAboutText": "{username} aún no ha ingresado nada."
     }
   },
   "fr": {
@@ -116,7 +152,14 @@
       "showConnectionRequests": "Afficher vos demandes de connexion",
       "hideRequestsFromOthers": "Masquer les demandes de connexion des autres",
       "showRequestsFromOthers": "Afficher les demandes de connexion des autres",
-      "profileButton": "Profil"
+      "profileButton": "Profil",
+      "connectionRequestsSuccess": "Les demandes de connexion ont été envoyées avec succès !",
+      "connectionRequestAccepted": "Une demande de connexion a été acceptée !",
+      "newEngagementMessage": "Un nouvel engagement a été créé !",
+      "noFileSelected": "Aucun fichier sélectionné.",
+      "notZipArchive": "Le fichier n'est pas une archive ZIP.",
+      "invalidZipContents": "Le contenu de l'archive ZIP est invalide.",
+      "connectionsEnabledSuccess": "Connexions activées avec succès"
     },
     "filterUsers": {
       "usernamePlaceholder": "Nom d'utilisateur",
@@ -140,13 +183,24 @@
       "enableSelectedConnectionsButton": "Activer les connexions sélectionnées",
       "loadingMessage": "Chargement des demandes de connexion...",
       "errorLoadingMessage": "Erreur lors du chargement des demandes de connexion:",
-      "helpMessage": "Sélectionnez les cases à cocher à côté de la poubelle rouge, puis cliquez sur le bouton 'Activer la connexion sélectionnée' qui apparaît lorsque vous cochez les cases pour obtenir les nouveaux engageurs connectés."
+      "helpMessage": "Sélectionnez les cases à cocher à côté de la poubelle rouge, puis cliquez sur le bouton 'Activer la connexion sélectionnée' qui apparaît lorsque vous cochez les cases pour obtenir les nouveaux engageurs connectés.",
+      "deleteAllSuccess": "Toutes les demandes de connexion ont été supprimées avec succès.",
+      "deleteAllError": "Erreur lors de la suppression des demandes de connexion.",
+      "deleteRequestSuccess": "Demande de connexion supprimée avec succès.",
+      "deleteRequestError": "Erreur lors de la suppression de la demande de connexion."
     },
     "connectionRequests": {
       "title": "Demandes de connexion",
       "deleteAllRequestsButton": "Supprimer toutes mes demandes",
+      "deleteAllSuccess": "Demandes de connexion supprimées avec succès",
+      "deleteAllError": "Erreur lors de la suppression de toutes les demandes",
+      "deleteSuccess": "Demande de connexion supprimée avec succès",
+      "deleteError": "Échec de la suppression de la demande de connexion",
+      "fetchError": "Échec de la récupération des demandes de connexion",
+      "loadingMessage": "Chargement des demandes de connexion...",
+      "errorLoadingMessage": "Erreur lors du chargement des demandes de connexion:",
       "noRequestsFound": "Aucune demande de connexion trouvée.",
-      "noAboutText": "n'a encore rien saisi.."
+      "noAboutText": "{username} n'a encore rien saisi."
     }
   },
   "de": {
@@ -166,7 +220,14 @@
       "showConnectionRequests": "Zeige deine Verbindungsanfragen",
       "hideRequestsFromOthers": "Verstecke Verbindungsanfragen von anderen",
       "showRequestsFromOthers": "Zeige Verbindungsanfragen von anderen",
-      "profileButton": "Profil"
+      "profileButton": "Profil",
+      "connectionRequestsSuccess": "Verbindungsanfragen erfolgreich gesendet!",
+      "connectionRequestAccepted": "Eine Verbindungsanfrage wurde angenommen!",
+      "newEngagementMessage": "Eine neue Verbindung wurde erstellt!",
+      "noFileSelected": "Keine Datei ausgewählt.",
+      "notZipArchive": "Die Datei ist kein ZIP-Archiv.",
+      "invalidZipContents": "Der Inhalt des ZIP-Archivs ist ungültig.",
+      "connectionsEnabledSuccess": "Verbindungen erfolgreich aktiviert"
     },
     "filterUsers": {
       "usernamePlaceholder": "Benutzername",
@@ -190,13 +251,24 @@
       "enableSelectedConnectionsButton": "Ausgewählte Verbindungen aktivieren",
       "loadingMessage": "Verbindungsanfragen werden geladen...",
       "errorLoadingMessage": "Fehler beim Laden der Verbindungsanfragen:",
-      "helpMessage": "Wählen Sie die Kontrollkästchen neben dem roten Mülleimer aus und gehen Sie zum Button 'Ausgewählte Verbindung aktivieren', der erscheint, wenn Sie Kästchen ankreuzen, und klicken Sie darauf, um die zusätzlichen verbundenen Teilnehmer zu erhalten."
+      "helpMessage": "Wählen Sie die Kontrollkästchen neben dem roten Mülleimer aus und gehen Sie zum Button 'Ausgewählte Verbindung aktivieren', der erscheint, wenn Sie Kästchen ankreuzen, und klicken Sie darauf, um die zusätzlichen verbundenen Teilnehmer zu erhalten.",
+      "deleteAllSuccess": "Alle Verbindungsanfragen wurden erfolgreich gelöscht.",
+      "deleteAllError": "Fehler beim Löschen der Verbindungsanfragen.",
+      "deleteRequestSuccess": "Verbindungsanfrage erfolgreich gelöscht.",
+      "deleteRequestError": "Fehler beim Löschen der Verbindungsanfrage."
     },
     "connectionRequests": {
       "title": "Verbindungsanfragen",
       "deleteAllRequestsButton": "Alle meine Anfragen löschen",
+      "deleteAllSuccess": "Verbindungsanfragen erfolgreich gelöscht",
+      "deleteAllError": "Fehler beim Löschen aller Anfragen",
+      "deleteSuccess": "Verbindungsanfrage erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Verbindungsanfrage",
+      "fetchError": "Fehler beim Abrufen der Verbindungsanfragen",
+      "loadingMessage": "Verbindungsanfragen werden geladen...",
+      "errorLoadingMessage": "Fehler beim Laden der Verbindungsanfragen:",
       "noRequestsFound": "Keine Verbindungsanfragen gefunden.",
-      "noAboutText": "hat noch nichts eingegeben.."
+      "noAboutText": "{username} hat noch nichts eingegeben."
     }
   },
   "ar": {
@@ -216,7 +288,14 @@
       "showConnectionRequests": "إظهار طلبات الاتصال الخاصة بك",
       "hideRequestsFromOthers": "إخفاء طلبات الاتصال من الآخرين",
       "showRequestsFromOthers": "إظهار طلبات الاتصال من الآخرين",
-      "profileButton": "الملف الشخصي"
+      "profileButton": "الملف الشخصي",
+      "connectionRequestsSuccess": "تم إرسال طلبات الاتصال بنجاح!",
+      "connectionRequestAccepted": "تم قبول طلب الاتصال!",
+      "newEngagementMessage": "تم إنشاء تفاعل جديد!",
+      "noFileSelected": "لم يتم تحديد ملف.",
+      "notZipArchive": "الملف ليس أرشيف ZIP.",
+      "invalidZipContents": "محتويات أرشيف ZIP غير صالحة.",
+      "connectionsEnabledSuccess": "تم تمكين الاتصالات بنجاح"
     },
     "filterUsers": {
       "usernamePlaceholder": "اسم المستخدم",
@@ -240,13 +319,24 @@
       "enableSelectedConnectionsButton": "تفعيل الاتصالات المختارة",
       "loadingMessage": "جارٍ تحميل طلبات الاتصال...",
       "errorLoadingMessage": "خطأ في تحميل طلبات الاتصال:",
-      "helpMessage": "حدد مربعات الاختيار بجوار سلة المهملات الحمراء ثم انتقل إلى زر 'تمكين الاتصال المحدد' الذي يظهر عند تحديد المربعات وانقر عليه للحصول على المشاركين المتصلين الإضافيين."
+      "helpMessage": "حدد مربعات الاختيار بجوار سلة المهملات الحمراء ثم انتقل إلى زر 'تمكين الاتصال المحدد' الذي يظهر عند تحديد المربعات وانقر عليه للحصول على المشاركين المتصلين الإضافيين.",
+      "deleteAllSuccess": "تم حذف جميع طلبات الاتصال بنجاح.",
+      "deleteAllError": "خطأ في حذف طلبات الاتصال.",
+      "deleteRequestSuccess": "تم حذف طلب الاتصال بنجاح.",
+      "deleteRequestError": "خطأ في حذف طلب الاتصال."
     },
     "connectionRequests": {
       "title": "طلبات الاتصال",
       "deleteAllRequestsButton": "حذف جميع طلباتي",
+      "deleteAllSuccess": "تم حذف طلبات الاتصال بنجاح",
+      "deleteAllError": "خطأ في حذف جميع الطلبات",
+      "deleteSuccess": "تم حذف طلب الاتصال بنجاح",
+      "deleteError": "فشل في حذف طلب الاتصال",
+      "fetchError": "فشل في جلب طلبات الاتصال",
+      "loadingMessage": "جارٍ تحميل طلبات الاتصال...",
+      "errorLoadingMessage": "خطأ في تحميل طلبات الاتصال:",
       "noRequestsFound": "لم يتم العثور على طلبات الاتصال.",
-      "noAboutText": "لم يدخل شيئًا بعد.."
+      "noAboutText": "{username} لم يدخل أي شيء بعد."
     }
   },
   "zh": {
@@ -266,7 +356,14 @@
       "showConnectionRequests": "显示您的连接请求",
       "hideRequestsFromOthers": "隐藏他人的连接请求",
       "showRequestsFromOthers": "显示他人的连接请求",
-      "profileButton": "个人资料"
+      "profileButton": "个人资料",
+      "connectionRequestsSuccess": "连接请求已成功发送！",
+      "connectionRequestAccepted": "连接请求已被接受！",
+      "newEngagementMessage": "创建了一个新连接！",
+      "noFileSelected": "未选择文件。",
+      "notZipArchive": "该文件不是ZIP存档。",
+      "invalidZipContents": "ZIP存档内容无效。",
+      "connectionsEnabledSuccess": "连接已成功启用"
     },
     "filterUsers": {
       "usernamePlaceholder": "用户名",
@@ -290,13 +387,24 @@
       "enableSelectedConnectionsButton": "启用选定的连接",
       "loadingMessage": "正在加载连接请求...",
       "errorLoadingMessage": "加载连接请求时出错:",
-      "helpMessage": "选择红色垃圾桶旁边的复选框，点击出现的“启用所选连接”按钮，以获得额外的连接参与者。"
+      "helpMessage": "选择红色垃圾桶旁边的复选框，点击出现的“启用所选连接”按钮，以获得额外的连接参与者。",
+      "deleteAllSuccess": "所有连接请求已成功删除。",
+      "deleteAllError": "删除连接请求时出错。",
+      "deleteRequestSuccess": "连接请求已成功删除。",
+      "deleteRequestError": "删除连接请求时出错。"
     },
     "connectionRequests": {
       "title": "连接请求",
-      "deleteAllRequestsButton": "删除我所有的请求",
+      "deleteAllRequestsButton": "删除我的所有请求",
+      "deleteAllSuccess": "连接请求已成功删除",
+      "deleteAllError": "删除所有请求时出错",
+      "deleteSuccess": "连接请求已成功删除",
+      "deleteError": "删除连接请求失败",
+      "fetchError": "获取连接请求失败",
+      "loadingMessage": "正在加载连接请求...",
+      "errorLoadingMessage": "加载连接请求时出错:",
       "noRequestsFound": "未找到连接请求。",
-      "noAboutText": "还没有输入任何内容.."
+      "noAboutText": "{username} 尚未输入任何内容。"
     }
   }
 }

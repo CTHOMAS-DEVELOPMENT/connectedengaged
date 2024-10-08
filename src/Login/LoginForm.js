@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
+import { Link, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
 import Cookies from "js-cookie";
 import translations from "./translations.json";
 import AlertMessage from "../system/AlertMessage";
@@ -11,7 +11,6 @@ import CustomizeIcon from "./customize.svg";
 import ScrollingHelpText from "../system/ScrollingHelpText.js";
 import { Button, Modal, Dropdown } from "react-bootstrap"; // Add Dropdown to imports
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getPageName } from "../system/utils.js";
 
 const LoginForm = () => {
   const [showModal, setShowModal] = useState(false);
@@ -25,12 +24,26 @@ const LoginForm = () => {
   const [womanImage, setWomanImage] = useState(womanImages[0]);
   const [consentGiven, setConsentGiven] = useState(false);
   const [consentImagesState, setConsentImagesState] = useState([]);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [manImage, setManImage] = useState(manImages[0]);
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     return Cookies.get("preferredLanguage") || "en"; // Default to 'en' if no cookie is set
   });
+  const verticleWrapper = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center", // Center vertically
+    width: "100%", // Ensure the wrapper takes full width
+  };
 
+  const horizontalWrapper = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center", // Center vertically
+    width: "100%",
+  };
   const languageMap = {
     en: "English",
     es: "Español",
@@ -40,8 +53,7 @@ const LoginForm = () => {
     zh: "中文", // Chinese
   };
 
-  const currentPage = getPageName(useLocation()); // Use the utility function to get the current page name
-  const pageTranslations = translations[selectedLanguage]?.[currentPage] || {}; // Get the translation for the current page
+  const pageTranslations = translations[selectedLanguage]?.["login"] || {}; // Get the translation for the current page
   const navigate = useNavigate();
   const helpMessage =
     pageTranslations.helpMessage || "No help message configured";
@@ -153,7 +165,7 @@ const LoginForm = () => {
         })
         .then((data) => {
           if (data.success) {
-            setMessage("Login successful");
+            setMessage(pageTranslations.loginSuccess || "Login successful");
             setType("success");
             setAlertKey((prevKey) => prevKey + 1);
             localStorage.setItem("token", data.token);
@@ -171,7 +183,10 @@ const LoginForm = () => {
         })
         .catch((error) => {
           console.error("Login error:", error);
-          setMessage("Login failed due to network error");
+          setMessage(
+            pageTranslations.loginFailedNetwork ||
+              "Login failed due to network error"
+          );
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
           resetImages();
@@ -181,23 +196,22 @@ const LoginForm = () => {
 
   const resetImages = () => {
     shuffleConsentImages();
-  
+
     const randomRotation = () => {
       const angles = [0, 90, 180, 270]; // Possible rotations
       return angles[Math.floor(Math.random() * angles.length)];
     };
-  
+
     const selectRandomImage = (images) => {
       return images[Math.floor(Math.random() * images.length)];
     };
-  
+
     setManRotation(randomRotation()); // Randomize man image rotation
     setWomanRotation(randomRotation()); // Randomize woman image rotation
-  
+
     setManImage(selectRandomImage(manImages)); // Randomize man image
     setWomanImage(selectRandomImage(womanImages)); // Randomize woman image
   };
-  
 
   const scoreClickConsent = (consertId) => {
     switch (consertId) {
@@ -236,7 +250,15 @@ const LoginForm = () => {
     setShowModal(false);
     setConsentGiven(true); // Set consent given upon closing the modal
   };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   useEffect(() => {
     resetImages(); // Call resetImages to randomize images and rotation on component mount
     setConsentImagesState(consentImages);
@@ -295,7 +317,7 @@ const LoginForm = () => {
         </Dropdown>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={isMobile ? verticleWrapper : horizontalWrapper}>
         <div className="image-panel">
           <img
             src={manImage}
@@ -389,9 +411,14 @@ const LoginForm = () => {
               <div className="">
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "15px",
+                    display: "grid",
+                    gridTemplateColumns: isMobile
+                      ? "1fr 1fr"
+                      : "repeat(4, 1fr)", // 2 columns on mobile, 4 on larger
+                    gridGap: "15px", // Adds space between items
+                    justifyContent: "center", // Centers the grid
+                    alignItems: "center", // Centers items vertically
+                    marginTop: "20px", // Space at the top
                   }}
                 >
                   {consentImagesState.map(

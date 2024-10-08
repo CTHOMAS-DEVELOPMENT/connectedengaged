@@ -1,71 +1,88 @@
-// PasswordReset.js
 import React, { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AlertMessage from "../system/AlertMessage";
+import translations from "./translations.json"; // Adjust the path to where your translations are located
 
 const PasswordReset = () => {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams.get("token");         // Extract the token from the URL
+  const languageCode = searchParams.get("language") || "en"; // Extract the language code or default to "en"
+  
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
   const navigate = useNavigate();
+
   const backToLogin = () => {
-    navigate("/"); // Update for v6
+    navigate("/"); // Redirect back to login
   };
+
   const handlePasswordReset = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match.");
+      setMessage(
+        translations[languageCode]?.passwordReset?.passwordMismatch || 
+        "Passwords do not match."
+      );
       setType("warning");
-      setAlertKey(prevKey => prevKey + 1); 
+      setAlertKey((prevKey) => prevKey + 1);
       return;
     }
+
     fetch(`${process.env.REACT_APP_API_URL}/api/update_user_password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token, password }),
+      body: JSON.stringify({ token, password, languageCode }),  // Include the token, new password, and languageCode in the request
     })
       .then((response) => response.json())
       .then((data) => {
-        // Handle the response from the server
-        setMessage(data.message);
-        setAlertKey(prevKey => prevKey + 1); 
+        setMessage(
+          data.message || 
+          translations[languageCode]?.passwordReset?.successMessage ||
+          "Password reset successful!"
+        );
+        setType("success");
+        setAlertKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
         console.error("Error:", error);
-        setMessage(error);
+        setMessage(
+          translations[languageCode]?.passwordReset?.errorMessage ||
+          "Error resetting password. Please try again."
+        );
         setType("error");
-        setAlertKey(prevKey => prevKey + 1); 
+        setAlertKey((prevKey) => prevKey + 1);
       });
   };
 
   return (
     <div>
-              <Button variant="danger" onClick={backToLogin} className="logout-button">
-        Back to Login
+      <Button variant="danger" onClick={backToLogin} className="logout-button">
+        {translations[languageCode]?.passwordReset?.backToLogin || "Back to Login"}
       </Button>
-      <h2 className="font-style-4">Reset Your Password</h2>
+      <h2 className="font-style-4">
+        {translations[languageCode]?.passwordReset?.title || "Reset Your Password"}
+      </h2>
       <div className="wrapper-container">
         <form onSubmit={handlePasswordReset}>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="New Password"
+            placeholder={translations[languageCode]?.passwordReset?.newPasswordPlaceholder || "New Password"}
             required
           />
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm New Password"
+            placeholder={translations[languageCode]?.passwordReset?.confirmPasswordPlaceholder || "Confirm New Password"}
             required
           />
           <Button
@@ -73,7 +90,7 @@ const PasswordReset = () => {
             className="btn-sm view-profile-btn"
             type="submit"
           >
-            Reset Password
+            {translations[languageCode]?.passwordReset?.submitButton || "Reset Password"}
           </Button>
         </form>
       </div>

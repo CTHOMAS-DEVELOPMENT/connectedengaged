@@ -627,6 +627,7 @@ const RegistrationForm = () => {
                         onChange={handleRadioChange}
                         style={{
                           marginBottom: "0",
+                          width: "20px"
                         }}
                       />
                     </div>

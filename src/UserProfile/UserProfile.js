@@ -32,6 +32,7 @@ const UserProfile = () => {
   const [selectedHobby, setSelectedHobby] = useState(null);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const pageTranslations = translations[languageCode]?.userProfile || {};
 
   const getIndexOfValue = (arrayOf, value) => {
     return arrayOf.indexOf(value);
@@ -96,16 +97,15 @@ const UserProfile = () => {
   if (authError) {
     return (
       <div>
-        Unauthorized access. Please <a href="/">log in</a>.
+        {pageTranslations.unauthorizedAccess || "Unauthorized access."}{" "}
+        <a href="/">{pageTranslations.logIn || "log in"}</a>.
       </div>
     );
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div>{pageTranslations.loading || "Loading..."}</div>;
   }
-
-  const pageTranslations = translations[languageCode]?.userProfile || {};
 
   return (
     <div
@@ -126,7 +126,9 @@ const UserProfile = () => {
       </Button>
       <div className="profile-container" style={{ textAlign: "center" }}>
         <h2 className="font-style-4">
-          {pageTranslations.profileTitle.replace("{username}", user.username) || `${user.username}'s Profile`}
+          {pageTranslations.profileTitle
+            ? pageTranslations.profileTitle.replace("{username}", user.username)
+            : `${user.username}'s Profile`}
         </h2>
         {user.profile_video && (
           <Button
@@ -147,48 +149,73 @@ const UserProfile = () => {
           />
         )}
         {!showVideo && <ProfileViewer userId={userId} />}
+
         <p style={{ marginTop: "20px" }} className="font-style-4">
-          {pageTranslations.preferredCompanySelection.replace("{username}", user.username) ||
-            `${user.username}'s Preferred Company Selection`}
+          {pageTranslations.preferredCompanySelection
+            ? pageTranslations.preferredCompanySelection.replace(
+                "{username}",
+                user.username
+              )
+            : `${user.username}'s Preferred Company Selection`}
         </p>
+
         <Orientation
           onSelectOrientation={() => {}}
           selected={selectedOrientation}
         />
         <p className="font-style-4">
-          {pageTranslations.favouriteHobbySelection.replace("{username}", user.username) ||
-            `${user.username}'s Favourite Hobby Selection`}
+          {pageTranslations.favouriteHobbySelection.replace(
+            "{username}",
+            user.username
+          ) || `${user.username}'s Favourite Hobby Selection`}
         </p>
-        <Hobbies onSelectHobby={() => {}} selected={selectedHobby} selectedLanguage={languageCode} hobbies={pageTranslations.hobbies} />
+        <Hobbies
+          onSelectHobby={() => {}}
+          selected={selectedHobby}
+          selectedLanguage={languageCode}
+          hobbies={pageTranslations.hobbies}
+        />
         <p className="font-style-4">
-          {pageTranslations.floatsMyBoatSelection.replace("{username}", user.username) ||
-            `${user.username}'s Floats Your Boat Selection`}
+          {pageTranslations.floatsMyBoatSelection.replace(
+            "{username}",
+            user.username
+          ) || `${user.username}'s Floats Your Boat Selection`}
         </p>
         <FloatsMyBoat
           onSelectCarousel={() => {}}
           selectedCarousel={selectedCarousel}
         />
         <p className="font-style-4">
-          {pageTranslations.mostLikeYouSelection.replace("{username}", user.username) ||
-            `${user.username}'s Most Like You Selection`}
+          {pageTranslations.mostLikeYouSelection.replace(
+            "{username}",
+            user.username
+          ) || `${user.username}'s Most Like You Selection`}
         </p>
         <Gender onSelectGender={() => {}} selected={selectedGender} />
         <div style={centerWrapperStyle}>
           <p className="font-style-4">
-            {pageTranslations.locationLabel.replace("{username}", user.username) ||
-              `${user.username}'s Location`}
+            {pageTranslations.locationLabel.replace(
+              "{username}",
+              user.username
+            ) || `${user.username}'s Location`}
           </p>
           <LocationDisplay worldX={user.worldx} worldY={user.worldy} />
         </div>
         <p className="font-style-4">
-          {pageTranslations.aboutYouLabel.replace("{username}", user.username) ||
-            `${user.username}'s about you`}
+          {pageTranslations.aboutYouLabel.replace(
+            "{username}",
+            user.username
+          ) || `${user.username}'s about you`}
         </p>
         <textarea readOnly className="about-you-textarea">
           {user.about_you
             ? user.about_you
-            : pageTranslations.aboutYouPlaceholder.replace("{username}", user.username) ||
-              `${user.username} has not entered anything yet..`}
+            : pageTranslations.aboutYouPlaceholder
+            ? pageTranslations.aboutYouPlaceholder.replace(
+                "{username}",
+                user.username
+              )
+            : `${user.username} has not entered anything yet.`}
         </textarea>
         <Button
           variant="outline-info"

@@ -292,19 +292,7 @@ app.get("/test-db", async (req, res) => {
     res.status(500).send("Error while testing database");
   }
 });
-function listDirectoryContents(directoryPath) {
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      console.error(`Error listing directory contents: ${err.message}`);
-    } else {
-      console.log(`Contents of ${directoryPath}:`);
-      files.forEach(file => {
-        console.log(file);
-      });
-    }
-  });
-}
-//999
+
 function adminFace(gender, orientation){
   if (orientation === "Heterosexual") {
     return gender === "Female" ? "Male" : "Female";
@@ -2171,7 +2159,7 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
       });
 
       const chatCompletion = await api.chat.completions.create({
-        model: "mistralai/Mistral-7B-Instruct-v0.2",
+        model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
         messages: [
           { role: "system", content: pretrainText },
           { role: "user", content: content }
@@ -2339,7 +2327,9 @@ app.post("/api/user_submissions", async (req, res) => {
 const crypto = require("crypto");
 //email ex
 app.post("/api/password_reset_request", async (req, res) => {
-  const { email } = req.body;
+  //const { email } = req.body;
+  const { email, languageCode } = req.body;  // Extract languageCode from the request
+
 
   try {
     // Check if the email exists in the database
@@ -2362,8 +2352,9 @@ app.post("/api/password_reset_request", async (req, res) => {
 
     // Create reset URL
     // HOST PORTFORAPP
-    const resetUrl = `https://${process.env.HOST}:${process.env.PORTFORAPP}/password-reset?token=${resetToken}`;
-
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const resetUrl = `${protocol}://${process.env.HOST}:${process.env.PORTFORAPP}/password-reset?token=${resetToken}&language=${languageCode}`;
+    
     // Send email
     const mailOptions = {
       from: process.env.RESET_EMAIL,
@@ -2513,5 +2504,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9906+json**Server running on port ${PORT}`);
+  console.log(`**9907**Internationalisation ${PORT}`);
 });

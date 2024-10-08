@@ -148,7 +148,7 @@
 }
 .verticle_wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 .login-layout {
   display: flex;
@@ -812,7 +812,10 @@ Interaction_entry {
   display: flex;
   align-items: center;
 }
-
+.small-button-wrapper {
+  display: flex;
+  align-items: center;
+}
 .search-input {
   display: none;
   margin-left: 10px;

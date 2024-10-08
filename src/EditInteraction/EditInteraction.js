@@ -16,11 +16,12 @@ import {
 } from "../RegistrationProfileCreation/scopedCollections.js";
 import ScrollingHelpText from "../system/ScrollingHelpText";
 import "bootstrap/dist/css/bootstrap.min.css";
+import translations from "./translations.json"; // Adjust the path to where your translations file is located
 
 const EditInteraction = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { submissionId, loggedInUserId } = location.state;
+  const { submissionId, loggedInUserId, languageCode = "en" } = location.state;
   const [authError, setAuthError] = useState(false);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
@@ -51,10 +52,11 @@ const EditInteraction = () => {
   const [showFloatsMyBoat, setShowFloatsMyBoat] = useState(false);
 
   const [filterFloatsMyBoat, setFilterFloatsMyBoat] = useState("");
-  
+  const pageTranslations = translations[languageCode]?.editInteraction || {};
   const helpMessage =
-    process.env.REACT_APP_FILTERING_CONNECTED_ENGAGERS ||
-    "No help message configured.";
+    pageTranslations.helpMessage ||
+    "Filter your connected engagers on what their selected preferences were.";
+
   //
   useEffect(() => {
     if (loggedInUserId) {
@@ -156,7 +158,10 @@ const EditInteraction = () => {
       })
       .catch((error) => {
         console.error("Error fetching Engagement details:", error);
-        setMessage("Error fetching Engagement details");
+        setMessage(
+          pageTranslations.errorFetchingEngagementDetails ||
+            "Error fetching engagement details."
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -175,7 +180,9 @@ const EditInteraction = () => {
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
-        setMessage("Error fetching users");
+        setMessage(
+          pageTranslations.errorFetchingUsers || "Error fetching users."
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -240,18 +247,30 @@ const EditInteraction = () => {
         if (response.ok) {
           return response.json();
         } else {
-          setMessage("Failed to update the group");
+          setMessage(
+            pageTranslations.failedToUpdateGroup ||
+              "Failed to update the group."
+          );
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
-          throw new Error("Failed to update the group");
+          throw new Error(
+            pageTranslations.failedToUpdateGroup ||
+              "Failed to update the group."
+          );
         }
       })
       .then((data) => {
-        setMessage("Group updated successfully");
+        setMessage(
+          pageTranslations.groupUpdatedSuccessfully ||
+            "Group updated successfully."
+        );
+        setType("info");
         setAlertKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
-        setMessage("Group updated successfully");
+        setMessage(
+          pageTranslations.errorUpdatingGroup || "Error updating the group."
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -317,7 +336,11 @@ const EditInteraction = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   if (authError) {
-    return <div>Unauthorized. Please log in.</div>;
+    return (
+      <div>
+        {pageTranslations.unauthorizedMessage || "Unauthorized. Please log in."}
+      </div>
+    );
   }
 
   return (
@@ -328,7 +351,7 @@ const EditInteraction = () => {
         className="btn-sm"
         onClick={handleBackToMessagesClick}
       >
-        Back to messages
+        {pageTranslations.backToMessages || "Back to messages"}
       </Button>{" "}
       <div>
         <div className="edit-interaction-container">
@@ -351,7 +374,10 @@ const EditInteraction = () => {
                   type="text"
                   id="username"
                   className="form-control"
-                  placeholder="Enter a partial username at least"
+                  placeholder={
+                    pageTranslations.usernamePlaceholder ||
+                    "Enter a partial username at least"
+                  }
                   value={usernameFilter}
                   onChange={(e) => setUsernameFilter(e.target.value)}
                 />
@@ -365,8 +391,10 @@ const EditInteraction = () => {
                   onClick={() => setShowGender(!showGender)}
                 >
                   {showGender
-                    ? "Hide Thier 'Most Like You'"
-                    : "Show Thier 'Most Like You' Selection"}
+                    ? pageTranslations.hideMostLikeYou ||
+                      "Hide Their 'Most Like You'"
+                    : pageTranslations.showMostLikeYou ||
+                      "Show Their 'Most Like You' Selection"}
                 </Button>
               </div>
               {showGender && (
@@ -382,14 +410,18 @@ const EditInteraction = () => {
                   onClick={() => setShowHobbies(!showHobbies)}
                 >
                   {showHobbies
-                    ? "Hide Thier 'Favourite Hobby'"
-                    : "Show Thier 'Favourite Hobby' Selection"}
+                    ? pageTranslations.hideFavouriteHobby ||
+                      "Hide Their 'Favourite Hobby'"
+                    : pageTranslations.showFavouriteHobby ||
+                      "Show Their 'Favourite Hobby' Selection"}
                 </Button>
               </div>
               {showHobbies && (
                 <Hobbies
                   onSelectHobby={handleHobbySelection}
                   selected={selectedHobby}
+                  selectedLanguage={languageCode}
+                  hobbies={pageTranslations.hobbies} // Pass the translated hobbies
                 />
               )}
             </div>
@@ -402,8 +434,10 @@ const EditInteraction = () => {
                   onClick={() => setShowOrientation(!showOrientation)}
                 >
                   {showOrientation
-                    ? "Hide Thier 'Preferred Company'"
-                    : "Show Thier 'Preferred Company' Selection"}
+                    ? pageTranslations.hidePreferredCompany ||
+                      "Hide Their 'Preferred Company'"
+                    : pageTranslations.showPreferredCompany ||
+                      "Show Their 'Preferred Company' Selection"}
                 </Button>
               </div>
               {showOrientation && (
@@ -422,8 +456,10 @@ const EditInteraction = () => {
                   onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
                 >
                   {showFloatsMyBoat
-                    ? "Hide Thier 'Floats Your Boat'"
-                    : "Show 'Floats Their Boat' Selection"}
+                    ? pageTranslations.hideFloatsYourBoat ||
+                      "Hide Their 'Floats Your Boat'"
+                    : pageTranslations.showFloatsYourBoat ||
+                      "Show Their 'Floats Your Boat' Selection"}
                 </Button>
               </div>
 
@@ -441,7 +477,10 @@ const EditInteraction = () => {
                   name="aboutYou"
                   className="about-you-textarea"
                   value={aboutYouFilter}
-                  placeholder="Enter something they must have said in their bio"
+                  placeholder={
+                    pageTranslations.aboutYouPlaceholder ||
+                    "Enter something they must have said in their bio"
+                  }
                   onChange={handleInputChange}
                   style={{ width: "100%", height: "100px" }} // Adjust styling as needed
                 />
@@ -476,7 +515,9 @@ const EditInteraction = () => {
                   color: "#fff", // White text
                 }}
               >
-                <span style={{ marginRight: "30px" }}>Show Selected Users</span>
+                <span style={{ marginRight: "30px" }}>
+                  {pageTranslations.showSelectedUsers || "Show Selected Users"}
+                </span>
                 <input
                   className="form-check-input"
                   type="checkbox"
@@ -488,25 +529,25 @@ const EditInteraction = () => {
             </div>
           </div>
           <div className="scrollable-content">
-          <ul className="no-bullet">
-            {currentUsers.map((user) => (
-              <li key={user.id} className="user-edit-item">
-                <div className="user-edit-info">
-                  <img
-                    src={grabUserPicture(user.profile_picture, user.sex)}
-                    alt={user.username}
-                    className="post-profile-image"
-                  />
-                  <span className="username">{user.username}</span>
-                  <input
-                    type="checkbox"
-                    checked={selectedUserIds.has(user.id)}
-                    onChange={() => handleCheckboxChange(user.id)}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
+            <ul className="no-bullet">
+              {currentUsers.map((user) => (
+                <li key={user.id} className="user-edit-item">
+                  <div className="user-edit-info">
+                    <img
+                      src={grabUserPicture(user.profile_picture, user.sex)}
+                      alt={user.username}
+                      className="post-profile-image"
+                    />
+                    <span className="username">{user.username}</span>
+                    <input
+                      type="checkbox"
+                      checked={selectedUserIds.has(user.id)}
+                      onChange={() => handleCheckboxChange(user.id)}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
           {totalPages > 1 && (
             <div className="pagination">
@@ -540,7 +581,6 @@ const EditInteraction = () => {
           )}
         </div>
       </div>
-      
     </div>
   );
 };

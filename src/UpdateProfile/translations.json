@@ -61,7 +61,12 @@
         "The Unknown",
         "Volunteering",
         "Writing"
-      ]
+      ],
+      "profileUpdateSuccess": "Profile updated successfully.",
+      "profileUpdateError": "Profile update failed: ",
+      "emailValidationError": "Please enter a valid email address.",
+      "loadUserDataError": "Failed to load user data.",
+      "unauthorizedMessage": "Unauthorized. Please log in."
     },
     "viewImage": {
       "updateProfileImage": "Update Profile Image",
@@ -113,6 +118,11 @@
         "Sumiso y subordinado",
         "Talla grande y hambriento"
       ],
+      "profileUpdateSuccess": "Perfil actualizado con éxito.",
+      "profileUpdateError": "Error al actualizar el perfil: ",
+      "emailValidationError": "Por favor ingrese una dirección de correo electrónico válida.",
+      "loadUserDataError": "Error al cargar los datos del usuario.",
+      "unauthorizedMessage": "No autorizado. Por favor, inicie sesión.",
       "hobbies": [
         "Artes",
         "Coleccionar",
@@ -186,6 +196,11 @@
         "Soumis et subordonné",
         "Grande taille et affamé"
       ],
+      "profileUpdateSuccess": "Profil mis à jour avec succès.",
+      "profileUpdateError": "Échec de la mise à jour du profil: ",
+      "emailValidationError": "Veuillez entrer une adresse email valide.",
+      "loadUserDataError": "Échec du chargement des données de l'utilisateur.",
+      "unauthorizedMessage": "Non autorisé. Veuillez vous connecter.",
       "hobbies": [
         "Arts",
         "Collectionner",
@@ -259,6 +274,11 @@
         "Unterwürfig und gehorsam",
         "Übergröße und hungrig"
       ],
+      "profileUpdateSuccess": "Profil erfolgreich aktualisiert.",
+      "profileUpdateError": "Profilaktualisierung fehlgeschlagen: ",
+      "emailValidationError": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+      "loadUserDataError": "Benutzerdaten konnten nicht geladen werden.",
+      "unauthorizedMessage": "Unbefugt. Bitte einloggen.",
       "hobbies": [
         "Kunst",
         "Sammeln",
@@ -332,6 +352,11 @@
         "خاضع وخانع",
         "مقاس كبير وجائع"
       ],
+      "profileUpdateSuccess": "تم تحديث الملف الشخصي بنجاح.",
+      "profileUpdateError": "فشل تحديث الملف الشخصي: ",
+      "emailValidationError": "الرجاء إدخال عنوان بريد إلكتروني صالح.",
+      "loadUserDataError": "فشل تحميل بيانات المستخدم.",
+      "unauthorizedMessage": "غير مصرح. يرجى تسجيل الدخول.",
       "hobbies": [
         "الفنون",
         "جمع",
@@ -405,6 +430,11 @@
         "顺从和屈从",
         "大码和饥饿"
       ],
+      "profileUpdateSuccess": "个人资料更新成功。",
+      "profileUpdateError": "个人资料更新失败：",
+      "emailValidationError": "请输入有效的电子邮件地址。",
+      "loadUserDataError": "加载用户数据失败。",
+      "unauthorizedMessage": "未经授权。请登录。",
       "hobbies": [
         "艺术",
         "收集",

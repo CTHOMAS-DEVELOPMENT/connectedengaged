@@ -68,7 +68,7 @@ const FloatsMyBoat = ({ onSelectCarousel, selectedCarousel, defaultSize=300, noC
                 type="checkbox"
                 checked={selectedCarousel === idx}
                 onChange={() => handleCheckboxChange(idx)}
-                style={{ marginLeft: "10px" }}
+                style={{ marginLeft: "10px", width: "20px" }}
               />}
             </div>
           </div>

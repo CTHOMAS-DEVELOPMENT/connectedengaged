@@ -219,7 +219,7 @@ const UpdateProfile = () => {
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
-        setMessage("Failed to load user data");
+        setMessage(pageTranslations.loadUserDataError || "Failed to load user data.");
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -297,18 +297,17 @@ const UpdateProfile = () => {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Profile update failed");
+            throw new Error(pageTranslations.profileUpdateError || "Profile update failed");
           }
           return response.json();
         })
         .then((data) => {
-          setMessage("Profile updated successfully");
+          setMessage(pageTranslations.profileUpdateSuccess || "Profile updated successfully.");
           setType("success");
           setAlertKey((prevKey) => prevKey + 1);
         })
         .catch((error) => {
-          console.error("Update profile error:", error);
-          setMessage("Profile update failed: " + error.message);
+          setMessage(`${pageTranslations.profileUpdateError || "Profile update failed: "} ${error.message}`);
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
         });
@@ -322,12 +321,10 @@ const UpdateProfile = () => {
     }
   };
   
-
-  if (authError) {
-    return <div>Unauthorized. Please log in.</div>;
-  }
   const pageTranslations = translations[selectedLanguage]?.updateProfile || {};
-console.log("pageTranslations",pageTranslations)
+  if (authError) {
+    return <div>{pageTranslations.unauthorizedMessage || "Unauthorized. Please log in."}</div>;
+  }
   return (
     <div>
       <Button
@@ -537,9 +534,6 @@ console.log("pageTranslations",pageTranslations)
               </Button>
             </div>
             <div>
-              <h3 className="font-style-4">
-                {pageTranslations.aboutYouLabel || "About You"}
-              </h3>
               <textarea
                 id="aboutYou"
                 name="aboutYou"
@@ -613,6 +607,7 @@ console.log("pageTranslations",pageTranslations)
           onChange={handleRadioChange}
           style={{
             marginBottom: "0",
+            width: "20px"
           }}
         />
       </div>

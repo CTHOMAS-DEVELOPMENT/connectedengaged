@@ -27,7 +27,10 @@ const PasswordResetRequest = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({
+        email: email,
+        languageCode: languageCode,  // Send selectedLanguage to the backend
+      }),
     })
       .then((response) => response.json())
       .then((data) => {

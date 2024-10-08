@@ -1,5 +1,11 @@
 {
   "en": {
+    "interactionTitles": {
+      "fetchingError": "Error fetching engagements",
+      "endSuccess": "The engagement has been removed",
+      "endError": "Error: this engagement was not removed",
+      "networkError": "Network response was not ok"
+    },
     "userList": {
       "createdText": "Created",
       "expectedEnd": "Expected end",
@@ -10,6 +16,12 @@
     }
   },
   "es": {
+    "interactionTitles": {
+      "fetchingError": "Error al obtener los compromisos",
+      "endSuccess": "El compromiso ha sido eliminado",
+      "endError": "Error: este compromiso no fue eliminado",
+      "networkError": "La respuesta de la red no fue satisfactoria"
+    },
     "userList": {
       "createdText": "Creado",
       "expectedEnd": "Fecha prevista de finalización",
@@ -20,6 +32,12 @@
     }
   },
   "fr": {
+    "interactionTitles": {
+      "fetchingError": "Erreur lors de la récupération des engagements",
+      "endSuccess": "L'engagement a été supprimé",
+      "endError": "Erreur : cet engagement n'a pas été supprimé",
+      "networkError": "La réponse du réseau n'était pas correcte"
+    },
     "userList": {
       "createdText": "Créé",
       "expectedEnd": "Fin prévue",
@@ -30,6 +48,12 @@
     }
   },
   "de": {
+    "interactionTitles": {
+      "fetchingError": "Fehler beim Abrufen der Engagements",
+      "endSuccess": "Das Engagement wurde entfernt",
+      "endError": "Fehler: Dieses Engagement wurde nicht entfernt",
+      "networkError": "Die Netzwerkantwort war nicht in Ordnung"
+    },
     "userList": {
       "createdText": "Erstellt",
       "expectedEnd": "Voraussichtliches Ende",
@@ -40,6 +64,12 @@
     }
   },
   "ar": {
+    "interactionTitles": {
+      "fetchingError": "خطأ في استرجاع الالتزامات",
+      "endSuccess": "تم إزالة الالتزام",
+      "endError": "خطأ: لم يتم إزالة هذا الالتزام",
+      "networkError": "الاستجابة من الشبكة لم تكن جيدة"
+    },
     "userList": {
       "createdText": "تم الإنشاء",
       "expectedEnd": "النهاية المتوقعة",
@@ -50,6 +80,12 @@
     }
   },
   "zh": {
+    "interactionTitles": {
+      "fetchingError": "获取参与时出错",
+      "endSuccess": "参与已被删除",
+      "endError": "错误：此参与未被删除",
+      "networkError": "网络响应不正确"
+    },
     "userList": {
       "createdText": "创建于",
       "expectedEnd": "预计结束",

@@ -76,14 +76,20 @@ const ConnectionRequested = ({
         return response.json(); // Assuming the server responds with JSON
       })
       .then(() => {
-        setMessage("All connection requests deleted successfully");
+        setMessage(
+          translations[languageCode]?.connectionRequested?.deleteAllSuccess ||
+          "All connection requests deleted successfully."
+        );
         setType("success");
         setAlertKey((prevKey) => prevKey + 1);
         // Refresh the connection requested list
         fetchConnectionRequested();
       })
       .catch((error) => {
-        setMessage("Error deleting connection requests: " + error);
+        setMessage(
+          translations[languageCode]?.connectionRequested?.deleteAllError ||
+          "Error deleting connection requests: " + error
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -104,15 +110,19 @@ const ConnectionRequested = ({
         return response.json(); // Assuming the server responds with JSON
       })
       .then(() => {
-        setMessage("Connection request deleted successfully");
-        setType("info");
+        setMessage(
+          translations[languageCode]?.connectionRequested?.deleteRequestSuccess ||
+          "Connection request deleted successfully."
+        );        setType("info");
         setAlertKey((prevKey) => prevKey + 1);
         // Refresh the connection requested list
         fetchConnectionRequested();
       })
       .catch((error) => {
-        setMessage("Error deleting connection request:" + error);
-        setType("error");
+        setMessage(
+          translations[languageCode]?.connectionRequested?.deleteRequestError ||
+          "Error deleting connection request: " + error
+        );        setType("error");
         setAlertKey((prevKey) => prevKey + 1);
         //setError(error.message);
       });

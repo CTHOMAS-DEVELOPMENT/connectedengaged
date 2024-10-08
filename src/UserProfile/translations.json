@@ -34,7 +34,10 @@
         "The Unknown",
         "Volunteering",
         "Writing"
-      ]
+      ],
+      "unauthorizedAccess": "Unauthorized access.",
+      "logIn": "log in",
+      "loading": "Loading..."
     }
   },
   "es": {
@@ -72,7 +75,10 @@
         "Lo Desconocido",
         "Voluntariado",
         "Escritura"
-      ]
+      ],
+      "unauthorizedAccess": "Acceso no autorizado.",
+      "logIn": "iniciar sesión",
+      "loading": "Cargando..."
     }
   },
   "fr": {
@@ -110,7 +116,10 @@
         "L'Inconnu",
         "Bénévolat",
         "Écriture"
-      ]
+      ],
+      "unauthorizedAccess": "Accès non autorisé.",
+      "logIn": "se connecter",
+      "loading": "Chargement..."
     }
   },
   "de": {
@@ -148,7 +157,10 @@
         "Das Unbekannte",
         "Freiwilligenarbeit",
         "Schreiben"
-      ]
+      ],
+      "unauthorizedAccess": "Unbefugter Zugriff.",
+      "logIn": "einloggen",
+      "loading": "Laden..."
     }
   },
   "ar": {
@@ -186,7 +198,10 @@
         "المجهول",
         "التطوع",
         "الكتابة"
-      ]
+      ],
+      "unauthorizedAccess": "الوصول غير مصرح به.",
+      "logIn": "تسجيل الدخول",
+      "loading": "جار التحميل..."
     }
   },
   "zh": {
@@ -224,7 +239,10 @@
         "未知",
         "志愿服务",
         "写作"
-      ]
+      ],
+      "unauthorizedAccess": "未经授权的访问。",
+      "logIn": "登录",
+      "loading": "加载中..."
     }
   }
 }
