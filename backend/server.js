@@ -352,7 +352,10 @@ const handleFilterUsers = async (userId, sexpref) => {
   }
 };
 
-
+app.get('/api/get-ip', (req, res) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  res.json({ ip });
+});
 app.get("/api/authorised/:userId", async (req, res) => {
   let tokenMatches = false;
   let token = "";
@@ -2504,5 +2507,5 @@ process.on('unhandledRejection', (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9907**Internationalisation ${PORT}`);
+  console.log(`**9908**Video uploader update ${PORT}`);
 });

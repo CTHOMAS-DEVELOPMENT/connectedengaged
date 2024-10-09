@@ -251,14 +251,38 @@ const LoginForm = () => {
     setConsentGiven(true); // Set consent given upon closing the modal
   };
   useEffect(() => {
+    // This function handles window resize events
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 768);  // Set mobile flag based on window width
     };
-
+  
+    // Set up event listener for window resize
     window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
+  
+    // Call handleResize immediately to set the initial isMobile state
+    handleResize();
+  
+    // Perform other logic, such as an IP address fetch example
+    const fetchIpAddress = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-ip`); // Call to the backend or third-party IP API
+        const data = await response.json();
+        console.log("data.ip",data.ip)
+        //setIpAddress(data.ip); // Assume you are setting the state for IP address
+      } catch (error) {
+        console.error("Error fetching IP address:", error);
+      }
+    };
+  
+    // Call the fetchIpAddress function
+    fetchIpAddress();
+  
+    // Cleanup function for removing the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
+  
   useEffect(() => {
     resetImages(); // Call resetImages to randomize images and rotation on component mount
     setConsentImagesState(consentImages);

@@ -125,7 +125,7 @@ const ViewImage = ({
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <LoadAVideo userId={userId} onUpload={handleVideoUploadSuccess} />
+          <LoadAVideo userId={userId} onUpload={handleVideoUploadSuccess} selectedLanguage={ selectedLanguage }/>
         </Modal.Body>
       </Modal>
     </div>
