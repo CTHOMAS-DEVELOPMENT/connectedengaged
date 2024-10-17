@@ -160,5 +160,32 @@
       "loginFailed": "登录失败",
       "loginFailedNetwork": "由于网络错误，登录失败"
     }
+  },
+  "ga": {
+    "login": {
+      "title": "An bhfuil tú Ceangailte agus Rannpháirteach?",
+      "helpMessage": "Rothlaigh na híomhánna chun iad a bheith dírithe i gceart sula logálann tú isteach. Glac nó diúltaigh fianáin sula logálann tú isteach.",
+      "loginButton": "Logáil Isteach",
+      "noAccountText": "Níl cuntas agat?",
+      "registerLink": "Cláraigh anseo",
+      "forgottenPasswordLink": "Pasfhocal dearmadta?",
+      "consent": {
+        "customize": "Saincheap",
+        "acceptAll": "Glac le Gach Rud",
+        "rejectAll": "Diúltaigh do Gach Rud",
+        "info": "Eolas"
+      },
+      "modalTitle": "Eolas Fianáin",
+      "closeButton": "Dún",
+      "rejectAllMessage": "Tá gach fianán bainte againn",
+      "infoMessage": "Tá dhá fhianán againn le haghaidh do ainm úsáideora agus do rogha teanga a mheabhrú, ionas nach mbeidh ort cuimhneamh ar do ainm úsáideora nó an rogha teanga a athrú an chéad uair eile a logálann tú isteach.",
+      "customizeMessage": "Is féidir leat glacadh le fianáin sonracha don fheidhmchlár nó diúltú dóibh.",
+      "passwordLengthError": "Caithfidh an pasfhocal a bheith ar a laghad 8 gcarachtar",
+      "cookieConsentError": "Glac nó diúltaigh fianáin sula logálann tú isteach.",
+      "imageOrientationError": "Déan cinnte go bhfuil na híomhánna dírithe i gceart sula gcuireann tú isteach iad.",
+      "loginSuccess": "Logáil isteach rathúil",
+      "loginFailed": "Theip ar logáil isteach",
+      "loginFailedNetwork": "Theip ar logáil isteach de bharr earráid líonra"
+    }
   }
 }

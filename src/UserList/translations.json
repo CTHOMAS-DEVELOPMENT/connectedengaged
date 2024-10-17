@@ -406,5 +406,73 @@
       "noRequestsFound": "未找到连接请求。",
       "noAboutText": "{username} 尚未输入任何内容。"
     }
+  },
+  "ga": {
+    "usersList": {
+      "viewProfile": "Féach ar Phróifíl",
+      "afterLoginMessage": "Leathanach tuirlingthe tar éis logáil isteach",
+      "engagementsTab": "Gealltanais",
+      "engagementsTitle": "Gealltanais",
+      "loadEngagementButton": "Lódáil Gealltanas Sábháilte Roimhe Seo",
+      "logoutText": "Logáil Amach",
+      "connectionsTab": "Naisc",
+      "connectionCentreTitle": "Ionad Ceangail",
+      "helpMessage": "Fáilte go dtí an tIonad Ceangail chun Gealltanas Nua a chruthú leis na hEngagers Ceangailte ar mhaith leat iad a áireamh, beidh ort an scáileán 'Cruthaigh Aighneachtaí Nua' a bhaint amach. Roghnaigh an bosca seiceála in aice leis an mbosca bruscair a bhaineann leis na húsáideoirí/engagers Ceangailte ar mhaith leat idirghníomhú leo agus lean ort ag roghnú ó do liosta úsáideoirí/engagers Ceangailte. Nuair a bheidh tú sásta le do roghanna, cliceáil ar an gcnaipe snámh.",
+      "searchPlaceholder": "Cuardaigh",
+      "replaceConnectionRequestsButton": "Athsholáthar Do Iarratais Ceangail",
+      "hideConnectionRequests": "Folaigh Do Iarratais Ceangail",
+      "showConnectionRequests": "Taispeáin Do Iarratais Ceangail",
+      "hideRequestsFromOthers": "Folaigh Iarratais Ceangail ó Dhaoine Eile",
+      "showRequestsFromOthers": "Taispeáin Iarratais Ceangail ó Dhaoine Eile",
+      "profileButton": "Próifíl",
+      "connectionRequestsSuccess": "Iarratais ceangail seolta go rathúil!",
+      "connectionRequestAccepted": "Glacadh le hiarratas ceangail!",
+      "newEngagementMessage": "Cruthaíodh gealltanas nua!",
+      "noFileSelected": "Níl aon chomhad roghnaithe.",
+      "notZipArchive": "Níl an comhad ina chartlann ZIP.",
+      "invalidZipContents": "Tá ábhar an ZIP neamhdhleathach.",
+      "connectionsEnabledSuccess": "Naisc cumasaithe go rathúil"
+    },
+    "filterUsers": {
+      "usernamePlaceholder": "Ainm úsáideora",
+      "aboutYouPlaceholder": "Fút Féin",
+      "showFilterByOrientation": "Taispeáin Scagaire de réir Claonadh",
+      "hideFilterByOrientation": "Folaigh Scagaire de réir Claonadh",
+      "showFilterByHobbies": "Taispeáin Scagaire de réir Caitheamh Aimsire",
+      "hideFilterByHobbies": "Folaigh Scagaire de réir Caitheamh Aimsire",
+      "showFilterByFloatsMyBoat": "Taispeáin Scagaire de réir 'Cad is Maith Leat'",
+      "hideFilterByFloatsMyBoat": "Folaigh Scagaire de réir 'Cad is Maith Leat'",
+      "showFilterByGender": "Taispeáin Scagaire de réir Inscne",
+      "hideFilterByGender": "Folaigh Scagaire de réir Inscne",
+      "applyFilters": "Cuir Scagairí i bhFeidhm",
+      "close": "Dún"
+    },
+    "connectionRequested": {
+      "title": "Iarratais Ceangail Ort",
+      "deleteAllRequestsButton": "Scrios Gach Iarratas",
+      "noConnectionRequests": "Níor aimsíodh iarratais ceangail.",
+      "aboutYouPlaceholder": "Níl aon rud curtha isteach ag {username} fós.",
+      "enableSelectedConnectionsButton": "Cumasú Naisc Roghnaithe",
+      "loadingMessage": "Ag lódáil iarratais ceangail...",
+      "errorLoadingMessage": "Earráid ag lódáil iarratais ceangail:",
+      "helpMessage": "Roghnaigh na boscaí seiceála in aice leis an mbosca dearg agus téigh chuig an gcnaipe 'Cumasú Nasc Roghnaithe' a thaispeánfar de réir mar a sheiceálann tú boscaí, agus cliceáil air chun na hEngagers ceangailte breise a fháil.",
+      "deleteAllSuccess": "Scriosadh gach iarratas ceangail go rathúil.",
+      "deleteAllError": "Earráid ag scriosadh gach iarratas ceangail.",
+      "deleteRequestSuccess": "Scriosadh an t-iarratas ceangail go rathúil.",
+      "deleteRequestError": "Earráid ag scriosadh an t-iarratas ceangail."
+    },
+    "connectionRequests": {
+      "title": "Iarratais Ceangail",
+      "deleteAllRequestsButton": "Scrios Gach Iarratas",
+      "deleteAllSuccess": "Scriosadh gach iarratas ceangail go rathúil.",
+      "deleteAllError": "Earráid ag scriosadh gach iarratas.",
+      "deleteSuccess": "Scriosadh an t-iarratas ceangail go rathúil.",
+      "deleteError": "Theip ar scriosadh an t-iarratas ceangail.",
+      "fetchError": "Theip ar aisghabháil na n-iarratas ceangail.",
+      "loadingMessage": "Ag lódáil iarratais ceangail...",
+      "errorLoadingMessage": "Earráid ag lódáil iarratais ceangail:",
+      "noRequestsFound": "Níor aimsíodh iarratais ceangail.",
+      "noAboutText": "Níl aon rud curtha isteach ag {username} fós."
+    }
   }
 }

@@ -3,14 +3,14 @@ const { Pool } = require("pg");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 const jwt = require("jsonwebtoken");
 const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors"); // Assuming you're using the 'cors' package for Express
 const JSZip = require("jszip");
 const util = require("util");
-const Groq = require('groq-sdk');
+const Groq = require("groq-sdk");
 const { OpenAI } = require("openai");
 // Create a new express application
 const app = express();
@@ -22,8 +22,9 @@ const languageMap = {
   es: "Spanish",
   fr: "French",
   de: "German",
-  ar: "Arabic", 
-  zh: "Chinese", 
+  ar: "Arabic",
+  zh: "Chinese",
+  ga: "Irish",
 };
 function loadEnvVariables() {
   // Adjust if your .env file is located elsewhere. Using __dirname ensures it looks in the same directory as your server.js file.
@@ -56,40 +57,39 @@ const allowedOrigins = [
   "http://localhost:3002/",
   `http://${process.env.HOST}:${process.env.PORTFORAPP}`,
   `http://${process.env.HOST}:${process.env.PROXYPORT}`,
-  'https://sage-twilight-26e49d.netlify.app', // Netlify URL
-  'https://main--sage-twilight-26e49d.netlify.app', // Netlify branch URL
-  'https://coconut-speckled-asterisk.glitch.me', // Glitch URL
-  'https://connectedengager.eu-4.evennode.com',
-  'https://connectedengager.com',
-  'https://api.connectedengager.com'
-
+  "https://sage-twilight-26e49d.netlify.app", // Netlify URL
+  "https://main--sage-twilight-26e49d.netlify.app", // Netlify branch URL
+  "https://coconut-speckled-asterisk.glitch.me", // Glitch URL
+  "https://connectedengager.eu-4.evennode.com",
+  "https://connectedengager.com",
+  "https://api.connectedengager.com",
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log('Origin:', origin); // Log the origin for debugging
+    //console.log('Origin:', origin); // Log the origin for debugging
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
 
 // Handle pre-flight requests for all routes
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // Logging middleware for debugging
 app.use((req, res, next) => {
-  console.log('Incoming Request:', req.method, req.url);
-  console.log('Request Origin:', req.headers.origin);
-  
+  //console.log('Incoming Request:', req.method, req.url);
+  //console.log('Request Origin:', req.headers.origin);
+
   next();
 });
 
@@ -105,14 +105,14 @@ const io = socketIo(server, {
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  }
+  },
 });
 //const io = socketIo(server, {
 const transporter = nodemailer.createTransport({
   service: process.env.RESET_EMAIL_PROVIDER, // Example using Gmail
   auth: {
     user: process.env.RESET_EMAIL,
-    pass: `${process.env.RESET_EMAIL_CODE_1} ${process.env.RESET_EMAIL_CODE_2} ${process.env.RESET_EMAIL_CODE_3} ${process.env.RESET_EMAIL_CODE_4}`
+    pass: `${process.env.RESET_EMAIL_CODE_1} ${process.env.RESET_EMAIL_CODE_2} ${process.env.RESET_EMAIL_CODE_3} ${process.env.RESET_EMAIL_CODE_4}`,
   },
   tls: {
     rejectUnauthorized: false,
@@ -120,7 +120,7 @@ const transporter = nodemailer.createTransport({
 });
 app.use(express.json());
 // Serve static files from the 'backend/imageUploaded' directory
-const isLocal = process.env.NODE_ENV === 'development';
+const isLocal = process.env.NODE_ENV === "development";
 
 if (isLocal) {
   // Local environment configuration
@@ -130,10 +130,14 @@ if (isLocal) {
   );
 } else {
   // Remote environment configuration
-  app.use('/uploaded-images', (req, res, next) => {
-    //console.log('Serving static file:', req.path);
-    next();
-  }, express.static(path.join(__dirname, 'backend/imageUploaded')));
+  app.use(
+    "/uploaded-images",
+    (req, res, next) => {
+      //console.log('Serving static file:', req.path);
+      next();
+    },
+    express.static(path.join(__dirname, "backend/imageUploaded"))
+  );
 }
 // PostgreSQL connection configuration
 const pool = new Pool({
@@ -141,7 +145,7 @@ const pool = new Pool({
   host: process.env.CONNECTION_POOL_HOST,
   database: process.env.CONNECTION_POOL_DATABASE,
   password: process.env.CONNECTION_POOL_PASSWORD,
-  port: process.env.CONNECTION_POOL_PORT
+  port: process.env.CONNECTION_POOL_PORT,
 });
 const groq = new Groq({ apiKey: process.env.ADMIN_AI_KEY_1 });
 const openaiAPIKey = process.env.ADMIN_AI_KEY_2;
@@ -279,8 +283,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-app.get('/test-image', (req, res) => {
-  res.sendFile(path.join(__dirname, 'backend/imageUploaded/file-1719702423262.JPEG'));
+app.get("/test-image", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "backend/imageUploaded/file-1719702423262.JPEG")
+  );
 });
 // Define a test route
 app.get("/test-db", async (req, res) => {
@@ -293,7 +299,7 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-function adminFace(gender, orientation){
+function adminFace(gender, orientation) {
   if (orientation === "Heterosexual") {
     return gender === "Female" ? "Male" : "Female";
   } else if (orientation === "Lesbian") {
@@ -302,7 +308,7 @@ function adminFace(gender, orientation){
     return gender === "Female" ? "Female" : "Male";
   }
   return "Man"; // Default fallback
-};
+}
 const handleFilterUsers = async (userId, sexpref) => {
   try {
     const queryConditions = ["sex = $1"];
@@ -352,9 +358,98 @@ const handleFilterUsers = async (userId, sexpref) => {
   }
 };
 
-app.get('/api/get-ip', (req, res) => {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  res.json({ ip });
+let countryIpBlocks;
+
+function loadCountryIpBlocks() {
+  const filePath = path.join(__dirname, "country-code-ipblocks.json");
+  const rawData = fs.readFileSync(filePath);
+  countryIpBlocks = JSON.parse(rawData); // Load the IP blocks in memory
+}
+
+loadCountryIpBlocks(); // Load at the start
+
+function lookupLanguageForIp(ipAddress) {
+  let binaryIp;
+  let isIPv6 = false;
+
+  // Determine if the IP is IPv4 or IPv6 and convert to binary
+  if (ipAddress.includes(":")) {
+    //console.log(`IPv6 address detected: ${ipAddress}`);
+    binaryIp = ipToBinary(ipAddress, 128); // Convert to 128-bit binary for IPv6
+    isIPv6 = true;
+  } else {
+    console.log(`IPv4 address detected: ${ipAddress}`);
+    binaryIp = ipToBinary(ipAddress, 32); // Convert to 32-bit binary for IPv4
+  }
+
+  // Iterate through the country blocks
+  for (const entry of countryIpBlocks) {
+    if (!entry.ranges || !Array.isArray(entry.ranges)) {
+      continue; // Skip invalid entries
+    }
+
+    // Check each range
+    for (const range of entry.ranges) {
+      const startBinary = ipToBinary(range.start, isIPv6 ? 128 : 32);
+      const finishBinary = ipToBinary(range.finish, isIPv6 ? 128 : 32);
+
+      // Compare IP within range
+      if (binaryIp >= startBinary && binaryIp <= finishBinary) {
+        //console.log(`Match found: ${entry.Country} -> ${entry.language}`);
+        return {
+          country: entry.Country,
+          language: entry.language,
+          ip: ipAddress,
+        };
+      }
+    }
+  }
+
+  // If no match is found, log and return a default result
+  console.log(`No match found for IP: ${ipAddress}`);
+  return { country: undefined, language: "en" }; // Default to 'en' if no match is found
+}
+
+function ipToBinary(ip, bitSize) {
+  if (bitSize === 32) {
+    // Handle IPv4
+    return ip
+      .split(".")
+      .map((octet) => parseInt(octet, 10).toString(2).padStart(8, "0"))
+      .join("");
+  } else if (bitSize === 128) {
+    // Handle IPv6
+    const segments = ip.split(":").map((segment) => {
+      if (segment === "") return "0000000000000000"; // Handle compressed '::'
+      return parseInt(segment, 16).toString(2).padStart(16, "0");
+    });
+    return segments.join("").padEnd(128, "0"); // Ensure it's 128 bits long
+  }
+  return "";
+}
+
+// Example usage:
+app.get("/api/get-ip", (req, res) => {
+  let ipAddress =
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+  // Start the timer
+  const startTime = process.hrtime();
+
+  // Perform the lookup
+  const result = lookupLanguageForIp(ipAddress);
+
+  // End the timer
+  const endTime = process.hrtime(startTime);
+  const milliseconds = (endTime[0] * 1e9 + endTime[1]) / 1e6;
+
+  // Log the time taken and result
+  console.log(`Lookup time: ${milliseconds.toFixed(2)} ms`);
+  console.log("result", result);
+
+  // Return the result and IP as part of the response
+
+  res.json(result);
 });
 app.get("/api/authorised/:userId", async (req, res) => {
   let tokenMatches = false;
@@ -578,20 +673,22 @@ app.post("/api/register", async (req, res) => {
       admin_face, // New field from the frontend
       worldX, // New field for the X coordinate
       worldY, // New field for the Y coordinate
-      language_code 
+      language_code,
+      country_name, // New field for the user's country
+      registered_ip_address, // New field for the user's IP address
     } = req.body;
 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     await client.query("BEGIN"); // Start transaction
-    
-    // Insert the new User along with worldX and worldY coordinates
+
+    // Insert the new User along with country_name, registered_ip_address, and coordinates
     const userInsertResult = await client.query(
       `INSERT INTO users 
-        (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face, worldX, worldY, language_code) 
+        (username, email, password, hobbies, sexual_orientation, floats_my_boat, sex, about_you, about_my_bot_pal, admin_face, worldX, worldY, language_code, country_name, registered_ip_address) 
       VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) 
       RETURNING id`,
       [
         username,
@@ -604,14 +701,45 @@ app.post("/api/register", async (req, res) => {
         aboutYou,
         aboutMyBotPal,
         admin_face, // Save the admin_face value to the database
-        worldX,     // Save the X coordinate
-        worldY,     // Save the Y coordinate
-        language_code  // New field for storing the user's language preference
+        worldX, // Save the X coordinate
+        worldY, // Save the Y coordinate
+        language_code, // New field for storing the user's language preference
+        country_name, // Save the country_name
+        registered_ip_address, // Save the registered_ip_address
       ]
     );
-    
+    //language_code
+    // Language map for environment variables
+    const languageEnvMap = {
+      en: "EN",
+      es: "ES",
+      fr: "FR",
+      de: "DE",
+      ar: "AR", // Arabic
+      zh: "ZH", // Chinese
+      ga: "GA", // Gaelic
+    };
+
+    // Assuming you have `selectedLanguage` representing the user's chosen language
+    const selectedLanguageCode = languageEnvMap[language_code] || "EN"; // Default to "EN" if no match
+
+    // Construct the environment variable key
+    const adminMessageKey = `ADMIN_MESSAGE_${selectedLanguageCode}`;
+
+    // Access the environment variable
+    let adminMessage = process.env[adminMessageKey];
+    const cleanAdminMessage = (message) => {
+      if (message) {
+        return message.replace(/"/g, ""); // Removes all double quotes
+      }
+      return message;
+    };
+
+    // Clean the admin message
+    adminMessage = cleanAdminMessage(adminMessage);
+
     const newUserId = userInsertResult.rows[0].id;
-    
+
     // Extract the admin's ID
     const existingAdminId = parseInt(process.env.SYSTEM_ADMIN_ID);
     const [userOneId, userTwoId] =
@@ -644,12 +772,12 @@ app.post("/api/register", async (req, res) => {
       "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
       [submissionId, newUserId]
     );
-    
+
     await client.query(
       "INSERT INTO submission_dialog (submission_id, posting_user_id, text_content) VALUES ($1, $2, $3)",
-      [submissionId, existingAdminId, process.env.ADMIN_MESSAGE_1]
+      [submissionId, existingAdminId, adminMessage]
     );
-    
+
     // Send connection requests based on user preferences
     const sexpref = adminFace(sex, sexualOrientation);
     await handleFilterUsers(newUserId, sexpref);
@@ -682,9 +810,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
     aboutYou,
     aboutMyBotPal,
     admin_face,
-    worldX,  // Add worldX to the request body
-    worldY,  // Add worldY to the request body
-    language_code  // Add language_code to the request body
+    worldX, // Add worldX to the request body
+    worldY, // Add worldY to the request body
+    language_code, // Add language_code to the request body
   } = req.body;
 
   // Validation for password length if it's not empty
@@ -699,7 +827,8 @@ app.put("/api/update_profile/:id", async (req, res) => {
     : undefined;
 
   // Substitute empty strings with specified default values for enum fields
-  sexualOrientation = sexualOrientation === "" ? "Undisclosed" : sexualOrientation;
+  sexualOrientation =
+    sexualOrientation === "" ? "Undisclosed" : sexualOrientation;
   hobby = hobby === "" ? "Other" : hobby;
   floatsMyBoat = floatsMyBoat === "" ? "Other (Not Listed)" : floatsMyBoat;
 
@@ -733,9 +862,9 @@ app.put("/api/update_profile/:id", async (req, res) => {
     aboutYou,
     aboutMyBotPal,
     admin_face,
-    worldX,  // Include the value for worldX
-    worldY,  // Include the value for worldY
-    language_code,  // Include the value for language_code
+    worldX, // Include the value for worldX
+    worldY, // Include the value for worldY
+    language_code, // Include the value for language_code
     id,
   ];
 
@@ -751,8 +880,6 @@ app.put("/api/update_profile/:id", async (req, res) => {
     res.status(500).send("Failed to update profile");
   }
 });
-
-
 
 //999
 app.post("/api/filter-users/:userId", async (req, res) => {
@@ -905,48 +1032,52 @@ app.get("/api/connection-requested/:userId", async (req, res) => {
       .send("An error occurred while fetching connection requests.");
   }
 });
-app.post("/api/enable-selected-connections/:loggedInUserId", async (req, res) => {
-  const { loggedInUserId } = req.params;
-  const { selectedUserIds } = req.body;
+app.post(
+  "/api/enable-selected-connections/:loggedInUserId",
+  async (req, res) => {
+    const { loggedInUserId } = req.params;
+    const { selectedUserIds } = req.body;
 
-  try {
-    await pool.query("BEGIN");
+    try {
+      await pool.query("BEGIN");
 
-    for (const requestedId of selectedUserIds) {
-      const requesterIdInt = parseInt(requestedId, 10);
-      const requestedIdInt = parseInt(loggedInUserId, 10);
+      for (const requestedId of selectedUserIds) {
+        const requesterIdInt = parseInt(requestedId, 10);
+        const requestedIdInt = parseInt(loggedInUserId, 10);
 
-      await pool.query(
-        `DELETE FROM connection_requests WHERE requester_id = $1 AND requested_id = $2`,
-        [requesterIdInt, requestedIdInt]
-      );
+        await pool.query(
+          `DELETE FROM connection_requests WHERE requester_id = $1 AND requested_id = $2`,
+          [requesterIdInt, requestedIdInt]
+        );
 
-      const [userOneId, userTwoId] = requesterIdInt < requestedIdInt
-        ? [requesterIdInt, requestedIdInt]
-        : [requestedIdInt, requesterIdInt];
+        const [userOneId, userTwoId] =
+          requesterIdInt < requestedIdInt
+            ? [requesterIdInt, requestedIdInt]
+            : [requestedIdInt, requesterIdInt];
 
-      await pool.query(
-        `INSERT INTO connections (user_one_id, user_two_id) VALUES ($1, $2)`,
-        [userOneId, userTwoId]
-      );
+        await pool.query(
+          `INSERT INTO connections (user_one_id, user_two_id) VALUES ($1, $2)`,
+          [userOneId, userTwoId]
+        );
 
-      io.emit('connections_change', {
-        user_one_id: userOneId,
-        user_two_id: userTwoId,
+        io.emit("connections_change", {
+          user_one_id: userOneId,
+          user_two_id: userTwoId,
+        });
+      }
+
+      await pool.query("COMMIT");
+      res.json({ success: true, message: "Connections successfully enabled." });
+    } catch (error) {
+      await pool.query("ROLLBACK");
+      console.error("Error enabling connections:", error);
+      res.status(500).send({
+        success: false,
+        message: "An error occurred while enabling connections.",
       });
     }
-
-    await pool.query("COMMIT");
-    res.json({ success: true, message: "Connections successfully enabled." });
-  } catch (error) {
-    await pool.query("ROLLBACK");
-    console.error("Error enabling connections:", error);
-    res.status(500).send({
-      success: false,
-      message: "An error occurred while enabling connections.",
-    });
   }
-});
+);
 app.post("/api/delete-from-connection-requests/:id", async (req, res) => {
   const { id } = req.params; // Extracting the id from the request parameters
 
@@ -966,7 +1097,9 @@ app.post("/api/delete-from-connection-requests/:id", async (req, res) => {
       const deletedRequest = result.rows[0];
 
       // Emit connection_requests_change event
-      io.emit("connection_requests_change", { requested_id: deletedRequest.requested_id });
+      io.emit("connection_requests_change", {
+        requested_id: deletedRequest.requested_id,
+      });
 
       res.json({
         success: true,
@@ -1037,7 +1170,6 @@ app.get("/api/connected/:userId", async (req, res) => {
   }
 });
 
-
 app.delete("/api/delete-requests-from-me/:userId", async (req, res) => {
   const { userId } = req.params; // Extract userId from the request URL
 
@@ -1051,8 +1183,10 @@ app.delete("/api/delete-requests-from-me/:userId", async (req, res) => {
     // Check if rows were deleted
     if (result.rowCount > 0) {
       // Emit connection_requests_change event for each deleted request
-      result.rows.forEach(deletedRequest => {
-        io.emit("connection_requests_change", { requested_id: deletedRequest.requested_id });
+      result.rows.forEach((deletedRequest) => {
+        io.emit("connection_requests_change", {
+          requested_id: deletedRequest.requested_id,
+        });
       });
 
       res.json({
@@ -1121,7 +1255,7 @@ app.delete("/api/delete-connection/:id", async (req, res) => {
 
     // Emit the connection change event
     const deletedConnection = result.rows[0];
-    io.emit('connections_change', {
+    io.emit("connections_change", {
       user_one_id: deletedConnection.user_one_id,
       user_two_id: deletedConnection.user_two_id,
     });
@@ -1197,11 +1331,15 @@ app.post("/api/upload-audio", upload.single("audio"), async (req, res) => {
     // Fetch interested users
     const userQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
     const resUsers = await pool.query(userQuery, [submissionId]);
-    const interestedUserIds = resUsers.rows.map((row) => row.participating_user_id);
-    
+    const interestedUserIds = resUsers.rows.map(
+      (row) => row.participating_user_id
+    );
+
     // Emit the post update to interested users
     newPost.interestedUserIds = interestedUserIds;
-    io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost: newPost });
+    io.to(`submission-${submissionId}`).emit("postUpdated", {
+      updatedPost: newPost,
+    });
 
     res.json(newPost); // Return the new database entry
   } catch (error) {
@@ -1209,7 +1347,6 @@ app.post("/api/upload-audio", upload.single("audio"), async (req, res) => {
     res.status(500).send("Error uploading audio file.");
   }
 });
-
 
 app.get("/api/users/:userId/profile-picture", async (req, res) => {
   const { userId } = req.params;
@@ -1284,16 +1421,17 @@ async function restoreOriginalProfilePicture(client, userId, originalFilePath) {
 
 async function generateThumbnail(filePath, thumbnailPath) {
   try {
-      // Ensure the directory exists
-      const dir = path.dirname(thumbnailPath);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-  
-    const image = await Jimp.read(filePath);
-    const longerDimension = image.bitmap.width > image.bitmap.height ? 'width' : 'height';
+    // Ensure the directory exists
+    const dir = path.dirname(thumbnailPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
 
-    if (longerDimension === 'width') {
+    const image = await Jimp.read(filePath);
+    const longerDimension =
+      image.bitmap.width > image.bitmap.height ? "width" : "height";
+
+    if (longerDimension === "width") {
       image.resize(100, Jimp.AUTO); // Resize keeping the width as 100
     } else {
       image.resize(Jimp.AUTO, 100); // Resize keeping the height as 100
@@ -1572,10 +1710,17 @@ app.post(
       const newPost = result.rows[0];
       // Emit postUpdated event to all clients viewing the same engagement
       const interestedUsersQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
-      const interestedUsersResult = await pool.query(interestedUsersQuery, [submissionId]);
-      const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
+      const interestedUsersResult = await pool.query(interestedUsersQuery, [
+        submissionId,
+      ]);
+      const interestedUserIds = interestedUsersResult.rows.map(
+        (row) => row.participating_user_id
+      );
 
-      io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost: newPost, interestedUserIds });
+      io.to(`submission-${submissionId}`).emit("postUpdated", {
+        updatedPost: newPost,
+        interestedUserIds,
+      });
 
       res.json(newPost);
     } catch (error) {
@@ -1584,7 +1729,6 @@ app.post(
     }
   }
 );
-
 
 app.post(
   "/api/submission-dialog/:dialogId/update-item",
@@ -1636,10 +1780,17 @@ app.post(
         const updatedPost = updateResult.rows[0];
         const submissionId = updatedPost.submission_id;
         const interestedUsersQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
-        const interestedUsersResult = await pool.query(interestedUsersQuery, [submissionId]);
-        const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
+        const interestedUsersResult = await pool.query(interestedUsersQuery, [
+          submissionId,
+        ]);
+        const interestedUserIds = interestedUsersResult.rows.map(
+          (row) => row.participating_user_id
+        );
 
-        io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost, interestedUserIds });
+        io.to(`submission-${submissionId}`).emit("postUpdated", {
+          updatedPost,
+          interestedUserIds,
+        });
         //console.log("updatedPost", updatedPost);
         res.json(updatedPost); // Send back the updated record
       } else {
@@ -1653,7 +1804,6 @@ app.post(
     }
   }
 );
-
 
 app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
   const dialogId = req.params.dialogId;
@@ -1682,9 +1832,14 @@ app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
       // Emit postUpdated event to all clients viewing the same engagement
       const query = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
       const interestedUsersResult = await pool.query(query, [submissionId]);
-      const interestedUserIds = interestedUsersResult.rows.map((row) => row.participating_user_id);
+      const interestedUserIds = interestedUsersResult.rows.map(
+        (row) => row.participating_user_id
+      );
 
-      io.to(`submission-${submissionId}`).emit("postUpdated", { updatedPost, interestedUserIds });
+      io.to(`submission-${submissionId}`).emit("postUpdated", {
+        updatedPost,
+        interestedUserIds,
+      });
 
       res.json(updatedPost); // Send back the updated record
     } else {
@@ -1699,7 +1854,6 @@ app.patch("/api/submission-dialog/:dialogId", async (req, res) => {
       .send("Server error occurred while updating the text content.");
   }
 });
-
 
 app.get("/api/users/:submissionId/posts", async (req, res) => {
   try {
@@ -1813,13 +1967,17 @@ app.get("/api/closed-interaction-zip/:submissionId", async (req, res) => {
       JSON.stringify(posts, null, 2)
     );
 
-    // Determine base directory for images 
-    const baseDir = isLocal ? path.join(__dirname, "imageUploaded") : path.join(__dirname, "backend/imageUploaded");
+    // Determine base directory for images
+    const baseDir = isLocal
+      ? path.join(__dirname, "imageUploaded")
+      : path.join(__dirname, "backend/imageUploaded");
 
     // Loop through posts to add any media files to the ZIP
     for (const post of posts.filter((post) => post.uploaded_path)) {
       // Resolve the full path for the uploaded file based on the environment
-      const sanitizedPath = post.uploaded_path.replace("uploaded-images\\", "").replace("uploaded-images/", "");
+      const sanitizedPath = post.uploaded_path
+        .replace("uploaded-images\\", "")
+        .replace("uploaded-images/", "");
       const fullPath = path.join(baseDir, sanitizedPath);
 
       // Ensure the file exists before attempting to add it to the ZIP
@@ -1874,7 +2032,6 @@ app.post(
   }
 );
 
-
 async function deleteExpiredInteractions() {
   await pool.query("BEGIN");
 
@@ -1889,7 +2046,9 @@ async function deleteExpiredInteractions() {
     `);
 
     // Determine base directory for images
-    const baseDir = isLocal ? path.join(__dirname, "imageUploaded") : path.join(__dirname, "backend/imageUploaded");
+    const baseDir = isLocal
+      ? path.join(__dirname, "imageUploaded")
+      : path.join(__dirname, "backend/imageUploaded");
 
     // Delete the images from the filesystem
     for (const row of imagesToDelete) {
@@ -1897,7 +2056,10 @@ async function deleteExpiredInteractions() {
 
       if (pathType === "string" && row.uploaded_path.trim() !== "") {
         // Removing the 'uploaded-images' segment from the path
-        const sanitizedPath = row.uploaded_path.replace(/^.*[\\\/]uploaded-images[\\\/]/, "");
+        const sanitizedPath = row.uploaded_path.replace(
+          /^.*[\\\/]uploaded-images[\\\/]/,
+          ""
+        );
         const fullPath = path.join(baseDir, sanitizedPath);
 
         try {
@@ -2100,20 +2262,24 @@ app.get("/api/users/:id", async (req, res) => {
   }
 });
 
-
-
-async function system_reply({ userId, content, submissionId, interestedUserIds, user_id }) {
+async function system_reply({
+  userId,
+  content,
+  submissionId,
+  interestedUserIds,
+  user_id,
+}) {
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
-  
-  const userQuery = "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal, language_code FROM users WHERE id = $1";
+
+  const userQuery =
+    "SELECT sexual_orientation, hobbies, floats_my_boat, sex, about_my_bot_pal, language_code FROM users WHERE id = $1";
   const userResult = await pool.query(userQuery, [user_id]);
   const userInfo = userResult.rows[0];
 
   const botInfo = userInfo.about_my_bot_pal;
 
-
-  const language = languageMap[userInfo.language_code]
+  const language = languageMap[userInfo.language_code];
   pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters and speaks in the ${language} language`;
 
   const userPreferences = `
@@ -2132,46 +2298,45 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
     }
 
     let systemResponse;
-    if (process.env.AI_ENGINE === '1') {
+    if (process.env.AI_ENGINE === "1") {
       // Use Groq
       const chatCompletion = await groq.chat.completions.create({
         messages: [
           {
             role: "system",
-            content: pretrainText
+            content: pretrainText,
           },
           {
             role: "user",
-            content: content
-          }
+            content: content,
+          },
         ],
         model: "llama3-8b-8192",
         temperature: 1,
         max_tokens: 150,
         top_p: 1,
         stream: false,
-        stop: null
+        stop: null,
       });
-      systemResponse = chatCompletion.choices[0]?.message?.content || '';
-
-    } else if (process.env.AI_ENGINE === '2') {
+      systemResponse = chatCompletion.choices[0]?.message?.content || "";
+    } else if (process.env.AI_ENGINE === "2") {
       // Use OpenAI with the new AI/ML engine and custom baseURL
       const api = new OpenAI({
         apiKey: openaiAPIKey,
-        baseURL: "https://api.aimlapi.com/v1",  // Custom base URL
+        baseURL: "https://api.aimlapi.com/v1", // Custom base URL
       });
 
       const chatCompletion = await api.chat.completions.create({
         model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
         messages: [
           { role: "system", content: pretrainText },
-          { role: "user", content: content }
+          { role: "user", content: content },
         ],
         temperature: 0.7,
         max_tokens: 150,
       });
 
-      systemResponse = chatCompletion.choices[0]?.message?.content || '';
+      systemResponse = chatCompletion.choices[0]?.message?.content || "";
     }
 
     if (!systemResponse) {
@@ -2189,9 +2354,8 @@ async function system_reply({ userId, content, submissionId, interestedUserIds, 
 
     // Emit the post update to interested users
     io.emit("post update", newSystemPost);
-
   } catch (error) {
-    console.error('Error generating system reply:', error);
+    console.error("Error generating system reply:", error);
   }
 }
 
@@ -2232,46 +2396,46 @@ app.post("/api/users/:submissionId/text-entry", async (req, res) => {
     // Fetch interested users
     const userQuery = `SELECT participating_user_id FROM submission_members WHERE submission_id = $1`;
     const resUsers = await pool.query(userQuery, [submissionId]);
-    const interestedUserIds = resUsers.rows.map((row) => row.participating_user_id);
-      // Commit the transaction
-      await pool.query("COMMIT");
+    const interestedUserIds = resUsers.rows.map(
+      (row) => row.participating_user_id
+    );
+    // Commit the transaction
+    await pool.query("COMMIT");
 
-      // Respond with the new dialog entry
-      newPost.interestedUserIds = interestedUserIds;
-  
-      // Emit the post update to interested users
-      io.emit("post update", newPost);
-  
-      // Call the system_reply function if the SYSTEM_ADMIN_ID is in interestedUserIds
-      const systemAdminId = parseInt(process.env.SYSTEM_ADMIN_ID, 10);
-      if (interestedUserIds.includes(systemAdminId)) {
+    // Respond with the new dialog entry
+    newPost.interestedUserIds = interestedUserIds;
 
-        system_reply({
-          userId: systemAdminId,
-          content: textContent,
-          submissionId,
-          interestedUserIds,
-          user_id: userId,
-        });
-      }
-  
-      // Respond with the new dialog entry
-      res.json({
-        dialogEntry: newPost,
-        submissionUpdate: updateResult.rows[0],
-      });
-  
-    } catch (error) {
-      // Rollback the transaction on error
-      await pool.query("ROLLBACK");
-  
-      console.error(error);
-      res.status(500).json({
-        message: "An error occurred while updating the interaction.",
-        error: error,
+    // Emit the post update to interested users
+    io.emit("post update", newPost);
+
+    // Call the system_reply function if the SYSTEM_ADMIN_ID is in interestedUserIds
+    const systemAdminId = parseInt(process.env.SYSTEM_ADMIN_ID, 10);
+    if (interestedUserIds.includes(systemAdminId)) {
+      system_reply({
+        userId: systemAdminId,
+        content: textContent,
+        submissionId,
+        interestedUserIds,
+        user_id: userId,
       });
     }
-  });
+
+    // Respond with the new dialog entry
+    res.json({
+      dialogEntry: newPost,
+      submissionUpdate: updateResult.rows[0],
+    });
+  } catch (error) {
+    // Rollback the transaction on error
+    await pool.query("ROLLBACK");
+
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while updating the interaction.",
+      error: error,
+    });
+  }
+});
 app.post("/api/user_submissions", async (req, res) => {
   try {
     const { user_id, title, userIds } = req.body;
@@ -2293,10 +2457,14 @@ app.post("/api/user_submissions", async (req, res) => {
     // Insert into submission_members table
     await Promise.all(
       userIds.map((userId) => {
-        return pool.query(
-          "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
-          [submissionId, userId]
-        ).then(() => console.log(`Inserted submission member for user ${userId}`)); // Log each insertion
+        return pool
+          .query(
+            "INSERT INTO submission_members (submission_id, participating_user_id) VALUES ($1, $2)",
+            [submissionId, userId]
+          )
+          .then(() =>
+            console.log(`Inserted submission member for user ${userId}`)
+          ); // Log each insertion
       })
     );
 
@@ -2324,15 +2492,13 @@ app.post("/api/user_submissions", async (req, res) => {
   }
 });
 
-
 // In your server code
 
 const crypto = require("crypto");
 //email ex
 app.post("/api/password_reset_request", async (req, res) => {
   //const { email } = req.body;
-  const { email, languageCode } = req.body;  // Extract languageCode from the request
-
+  const { email, languageCode } = req.body; // Extract languageCode from the request
 
   try {
     // Check if the email exists in the database
@@ -2355,9 +2521,9 @@ app.post("/api/password_reset_request", async (req, res) => {
 
     // Create reset URL
     // HOST PORTFORAPP
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
     const resetUrl = `${protocol}://${process.env.HOST}:${process.env.PORTFORAPP}/password-reset?token=${resetToken}&language=${languageCode}`;
-    
+
     // Send email
     const mailOptions = {
       from: process.env.RESET_EMAIL,
@@ -2416,96 +2582,105 @@ app.post("/api/update_user_password", async (req, res) => {
   }
 });
 //French
-const emailTemplates = require('./emailTemplates.json');
+const emailTemplates = require("./emailTemplates.json");
 const getLocalizedContent = (type, language, replacements) => {
-  const template = emailTemplates[language]?.[type] || emailTemplates['en'][type];
+  const template =
+    emailTemplates[language]?.[type] || emailTemplates["en"][type];
   let message = template.message;
   let subject = template.subject;
 
   // Replace placeholders with actual data
-  Object.keys(replacements).forEach(key => {
+  Object.keys(replacements).forEach((key) => {
     const value = replacements[key];
-    message = message.replace(new RegExp(`{{${key}}}`, 'g'), value);
-    subject = subject.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    message = message.replace(new RegExp(`{{${key}}}`, "g"), value);
+    subject = subject.replace(new RegExp(`{{${key}}}`, "g"), value);
   });
 
   return { message, subject };
 };
-  // console.log("type", type)
-  // console.log("title", title)
-  // console.log("loggedInUserName", loggedInUserName)
-  // console.log("associatedUsers", associatedUsers)
-  // console.log("scheduledTime", scheduledTime)
-  app.post("/api/notify_offline_users", async (req, res) => {
-    const { type, title, loggedInUserName, associatedUsers, scheduledTime } = req.body;
-  
-    try {
-      for (const user of associatedUsers) {
-        const { rows } = await pool.query(
-          "SELECT email, username, language_code FROM users WHERE id = $1",
-          [user.id]
-        );
-        const email = rows[0].email;
-        const username = rows[0].username;
-        const language = rows[0].language_code || 'en'; // Default to English
+// console.log("type", type)
+// console.log("title", title)
+// console.log("loggedInUserName", loggedInUserName)
+// console.log("associatedUsers", associatedUsers)
+// console.log("scheduledTime", scheduledTime)
+app.post("/api/notify_offline_users", async (req, res) => {
+  const { type, title, loggedInUserName, associatedUsers, scheduledTime } =
+    req.body;
 
-        let formattedTime = "";
-        if (scheduledTime) {
-          const dateObj = new Date(scheduledTime);
-          const isToday = dateObj.toDateString() === new Date().toDateString();
-          const isTomorrow =
-            dateObj.toDateString() === new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
-          const dayText = isToday ? "today" : isTomorrow ? "tomorrow" : "the day after tomorrow";
-          formattedTime = `${dayText} at ${dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
-        }
-  
-        // Generate localized email content
-        const { message, subject } = getLocalizedContent(type, language, {
-          username,
-          loggedInUserName,
-          title,
-          type,
-          domain: process.env.ROOT_DOMAIN,
-          formattedTime
-        });
-  
-        const mailOptions = {
-          from: process.env.RESET_EMAIL,
-          to: email,
-          subject: subject,
-          text: message,
-        };
-  
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error("Error sending email to:", email, error);
-          } else {
-            console.log("Email sent:", info.response);
-          }
-        });
+  try {
+    for (const user of associatedUsers) {
+      const { rows } = await pool.query(
+        "SELECT email, username, language_code FROM users WHERE id = $1",
+        [user.id]
+      );
+      const email = rows[0].email;
+      const username = rows[0].username;
+      const language = rows[0].language_code || "en"; // Default to English
+
+      let formattedTime = "";
+      if (scheduledTime) {
+        const dateObj = new Date(scheduledTime);
+        const isToday = dateObj.toDateString() === new Date().toDateString();
+        const isTomorrow =
+          dateObj.toDateString() ===
+          new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+        const dayText = isToday
+          ? "today"
+          : isTomorrow
+          ? "tomorrow"
+          : "the day after tomorrow";
+        formattedTime = `${dayText} at ${dateObj.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
       }
-  
-      res.status(200).json({
-        success: true,
-        message: "Email notifications have been sent.",
-      });
-    } catch (error) {
-      console.error("Error notifying users:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-  
 
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
+      // Generate localized email content
+      const { message, subject } = getLocalizedContent(type, language, {
+        username,
+        loggedInUserName,
+        title,
+        type,
+        domain: process.env.ROOT_DOMAIN,
+        formattedTime,
+      });
+
+      const mailOptions = {
+        from: process.env.RESET_EMAIL,
+        to: email,
+        subject: subject,
+        text: message,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email to:", email, error);
+        } else {
+          console.log("Email sent:", info.response);
+        }
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Email notifications have been sent.",
+    });
+  } catch (error) {
+    console.error("Error notifying users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 // Start the server
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9908**Video uploader update ${PORT}`);
+  console.log(`**9909**IP INFO ${PORT}`);
 });

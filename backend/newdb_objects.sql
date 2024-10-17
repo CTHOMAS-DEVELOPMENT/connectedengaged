@@ -236,3 +236,5 @@ DROP TYPE sex_type;
 ALTER TYPE sex_type_new RENAME TO sex_type;
 
 ALTER TABLE users ADD COLUMN language_code VARCHAR(2) DEFAULT 'en';
+ALTER TABLE users ADD COLUMN country_name character varying(100),ADD COLUMN registered_ip_address character varying(45);
+

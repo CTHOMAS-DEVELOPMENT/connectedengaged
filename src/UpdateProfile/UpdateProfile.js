@@ -27,6 +27,7 @@ const languageMap = {
   de: "Deutsch",
   ar: "العربية", // Arabic
   zh: "中文", // Chinese
+  ga: "Gaelach",
 };
 const UpdateProfile = () => {
   const location = useLocation();
@@ -90,7 +91,6 @@ const UpdateProfile = () => {
       worldX: selectedCoordinates.x,
       worldY: selectedCoordinates.y,
     }));
-
   };
   const getStaticAdminImagePath = (adminFacePath) => {
     if (!adminFacePath) {
@@ -219,7 +219,9 @@ const UpdateProfile = () => {
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
-        setMessage(pageTranslations.loadUserDataError || "Failed to load user data.");
+        setMessage(
+          pageTranslations.loadUserDataError || "Failed to load user data."
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -274,12 +276,12 @@ const UpdateProfile = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-  
+
     // Reset message and type for re-rendering
     setMessage("");
     setType("info");
     setAlertKey((prevKey) => prevKey + 1);
-  
+
     // Validate the form data (you can customize this validation logic if needed)
     const validationErrors = validateUser(formData, true);
     if (Object.keys(validationErrors).length === 0) {
@@ -288,7 +290,7 @@ const UpdateProfile = () => {
         ...formData,
         language_code: selectedLanguage, // Pass the selected language
       };
-  
+
       // Send the updated form data including language_code to the backend
       fetch(`${process.env.REACT_APP_API_URL}/api/update_profile/${userId}`, {
         method: "PUT",
@@ -297,17 +299,26 @@ const UpdateProfile = () => {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error(pageTranslations.profileUpdateError || "Profile update failed");
+            throw new Error(
+              pageTranslations.profileUpdateError || "Profile update failed"
+            );
           }
           return response.json();
         })
         .then((data) => {
-          setMessage(pageTranslations.profileUpdateSuccess || "Profile updated successfully.");
+          setMessage(
+            pageTranslations.profileUpdateSuccess ||
+              "Profile updated successfully."
+          );
           setType("success");
           setAlertKey((prevKey) => prevKey + 1);
         })
         .catch((error) => {
-          setMessage(`${pageTranslations.profileUpdateError || "Profile update failed: "} ${error.message}`);
+          setMessage(
+            `${
+              pageTranslations.profileUpdateError || "Profile update failed: "
+            } ${error.message}`
+          );
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
         });
@@ -320,10 +331,14 @@ const UpdateProfile = () => {
       }, 0);
     }
   };
-  
+
   const pageTranslations = translations[selectedLanguage]?.updateProfile || {};
   if (authError) {
-    return <div>{pageTranslations.unauthorizedMessage || "Unauthorized. Please log in."}</div>;
+    return (
+      <div>
+        {pageTranslations.unauthorizedMessage || "Unauthorized. Please log in."}
+      </div>
+    );
   }
   return (
     <div>
@@ -366,6 +381,9 @@ const UpdateProfile = () => {
               </Dropdown.Item>
               <Dropdown.Item eventKey="zh" className="font-style-4" lang="zh">
                 中文
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
+                Gaelic
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -480,7 +498,7 @@ const UpdateProfile = () => {
                 onSelectHobby={handleHobbySelection}
                 selected={selectedHobby}
                 selectedLanguage={selectedLanguage}
-                hobbies={pageTranslations.hobbies} 
+                hobbies={pageTranslations.hobbies}
               />
             )}
             <div>
@@ -572,47 +590,47 @@ const UpdateProfile = () => {
                 <img src={"/admins/thumb-file-admin.JPEG"} alt="Admin Face" />
               )}
 
-{(
-    translations[selectedLanguage]?.updateProfile?.adminLabels || 
-    botPalOptions.options.map(option => option.label)
-  ).map((label, index) => (
-    <div
-      key={index}
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            whiteSpace: "nowrap",
-          }}
-        >
-          {label}
-        </div>
-        <input
-          type="radio"
-          id={`botPalOption${index}`}
-          name="aboutMyBotPal"
-          value={index}
-          checked={selectedBotPalOption === index}
-          onChange={handleRadioChange}
-          style={{
-            marginBottom: "0",
-            width: "20px"
-          }}
-        />
-      </div>
-    </div>
-  ))}
+              {(
+                translations[selectedLanguage]?.updateProfile?.adminLabels ||
+                botPalOptions.options.map((option) => option.label)
+              ).map((label, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {label}
+                    </div>
+                    <input
+                      type="radio"
+                      id={`botPalOption${index}`}
+                      name="aboutMyBotPal"
+                      value={index}
+                      checked={selectedBotPalOption === index}
+                      onChange={handleRadioChange}
+                      style={{
+                        marginBottom: "0",
+                        width: "20px",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

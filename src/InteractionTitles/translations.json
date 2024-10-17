@@ -94,5 +94,21 @@
       "save": "保存",
       "endIt": "结束"
     }
+  },
+  "ga": {
+    "interactionTitles": {
+      "fetchingError": "Earráid ag fáil rannpháirtíochtaí",
+      "endSuccess": "Tá an rannpháirtíocht bainte",
+      "endError": "Earráid: níor baineadh an rannpháirtíocht seo",
+      "networkError": "Ní raibh freagra an líonra ceart"
+    },
+    "userList": {
+      "createdText": "Cruthaithe",
+      "expectedEnd": "Deireadh tuartha",
+      "ended": "Críochnaithe",
+      "invited": "Tugtha cuireadh",
+      "save": "Sábháil",
+      "endIt": "Críochnaigh é"
+    }
   }
 }

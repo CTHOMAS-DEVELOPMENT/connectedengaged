@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Import Link from react-router-dom
 import Cookies from "js-cookie";
 import translations from "./translations.json";
 import AlertMessage from "../system/AlertMessage";
@@ -26,9 +26,20 @@ const LoginForm = () => {
   const [consentImagesState, setConsentImagesState] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [manImage, setManImage] = useState(manImages[0]);
+  const [ipCountry, setIpCountry] = useState(""); // Initialize state for country
+  const [ip, setIp] = useState(""); // Initialize state for IP
+  const hasFetchedIp = useRef(false); // Ref to control the fetch
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     return Cookies.get("preferredLanguage") || "en"; // Default to 'en' if no cookie is set
   });
+  const location = useLocation(); // Get the location object
+  const formItemStyle = {
+    width: "100%", // Full width to match other form items
+    maxWidth: "200px", // Constrain the max width
+    margin: "0 auto", // Center it within the container
+    display: "flex",
+    justifyContent: "center",
+  };
   const verticleWrapper = {
     display: "flex",
     flexDirection: "column",
@@ -51,6 +62,7 @@ const LoginForm = () => {
     de: "Deutsch",
     ar: "العربية", // Arabic
     zh: "中文", // Chinese
+    ga: "Gaelach",
   };
 
   const pageTranslations = translations[selectedLanguage]?.["login"] || {}; // Get the translation for the current page
@@ -80,12 +92,10 @@ const LoginForm = () => {
       label: pageTranslations.consent?.info || "Information",
     },
   ];
-
   const [formData, setFormData] = useState({
-    username: Cookies.get("username") || "", // Get the username from cookies if available
+    username: location.state?.username || Cookies.get("username") || "", // Use username from state if available
     password: "", // Do not store password
   });
-
   const validateForm = () => {
     const newErrors = {};
 
@@ -251,44 +261,71 @@ const LoginForm = () => {
     setConsentGiven(true); // Set consent given upon closing the modal
   };
   useEffect(() => {
-    // This function handles window resize events
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);  // Set mobile flag based on window width
-    };
-  
-    // Set up event listener for window resize
-    window.addEventListener("resize", handleResize);
-  
-    // Call handleResize immediately to set the initial isMobile state
-    handleResize();
-  
-    // Perform other logic, such as an IP address fetch example
+    const preferredLanguage = Cookies.get("preferredLanguage");
+    if (preferredLanguage) {
+      setSelectedLanguage(preferredLanguage); // Use cookie language
+      return; // Skip fetching IP address
+    }
+
     const fetchIpAddress = async () => {
+      if (hasFetchedIp.current) return;
+      hasFetchedIp.current = true; // Prevent double fetching
+
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-ip`); // Call to the backend or third-party IP API
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/get-ip`
+        );
         const data = await response.json();
-        console.log("data.ip",data.ip)
-        //setIpAddress(data.ip); // Assume you are setting the state for IP address
+        const ipLanguage = data.language || "en"; // Get language from the response
+        const ipCountry = data.country || ""; // Get country from the response
+        const ip = data.ip || ""; // Get IP from the response
+
+        console.log("IP-based data data:", data);
+
+        if (languageMap[ipLanguage]) {
+          setSelectedLanguage(ipLanguage);
+          Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
+        }
+
+        // Save ipCountry and ip for passing to the RegistrationForm
+        setIpCountry(ipCountry);
+        setIp(ip);
       } catch (error) {
         console.error("Error fetching IP address:", error);
       }
     };
-  
-    // Call the fetchIpAddress function
-    fetchIpAddress();
-  
-    // Cleanup function for removing the event listener when the component unmounts
+
+    fetchIpAddress(); // Trigger the IP lookup asynchronously
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array ensures this effect runs only once on mount
+
+  // Handle resize events to check for mobile view
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Set the initial isMobile state
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
-  
+  }, []); // Runs once on mount, to track window resizing
+
   useEffect(() => {
     resetImages(); // Call resetImages to randomize images and rotation on component mount
     setConsentImagesState(consentImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage, pageTranslations]); // Add selectedLanguage and pageTranslations to the dependency array
-
+  useEffect(() => {
+    if (location.state?.username) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        username: location.state.username, // Set the username from the passed state
+      }));
+    }
+  }, [location.state?.username]);
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -313,7 +350,7 @@ const LoginForm = () => {
             variant="primary"
             id="language-dropdown"
             className={`font-style-4`}
-            lang={selectedLanguage} // Set the lang attribute dynamically
+            lang={selectedLanguage}
           >
             {languageMap[selectedLanguage]}{" "}
           </Dropdown.Toggle>
@@ -336,6 +373,9 @@ const LoginForm = () => {
             </Dropdown.Item>
             <Dropdown.Item eventKey="zh" className="font-style-4" lang="zh">
               中文
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
+              Gaelic
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -364,7 +404,7 @@ const LoginForm = () => {
         <div className="login-form">
           <div className="form-container">
             <form onSubmit={handleSubmit}>
-              <div>
+            <div style={formItemStyle}>
                 <input
                   type="text"
                   id="username"
@@ -376,7 +416,7 @@ const LoginForm = () => {
                 />
                 {errors.username && <p className="error">{errors.username}</p>}
               </div>
-              <div>
+              <div style={formItemStyle}>
                 <input
                   type="password"
                   id="password"
@@ -393,17 +433,29 @@ const LoginForm = () => {
                   </p>
                 )}
               </div>
-              <Button variant="primary" onClick={handleSubmit}>
-                {pageTranslations.loginButton || "Login"}
-              </Button>{" "}
-              <div className="login-page-link">
+              <div style={{ ...formItemStyle, flexDirection: "column" }}>
+                <Button variant="primary" onClick={handleSubmit}>
+                  {pageTranslations.loginButton || "Login"}
+                </Button>{" "}
                 <span>
-                  {pageTranslations.noAccountText || "Don't have an account?"}{" "}
-                  <Link to="/register">
-                    {pageTranslations.registerLink || "Register here"}
-                  </Link>
+                  {pageTranslations.noAccountText || "Don't have an account?"}
                 </span>
+                <Button
+                  onClick={() =>
+                    navigate("/register", {
+                      state: {
+                        language: selectedLanguage, // Pass the detected or selected language
+                        country: ipCountry, // Pass the detected country
+                        ip: ip, // Pass the detected IP
+                      },
+                    })
+                  }
+                  
+                >
+                  {pageTranslations.registerLink || "Register here"}
+                </Button>
               </div>
+
               <div className="login-page-link">
                 <span>
                   <Link
@@ -431,6 +483,7 @@ const LoginForm = () => {
                 </Modal.Footer>
               </Modal>
             )}
+
             {!consentGiven && (
               <div className="">
                 <div

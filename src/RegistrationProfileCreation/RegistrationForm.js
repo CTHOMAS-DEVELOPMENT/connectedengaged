@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom"; // New import
-import { getPageName } from "../system/utils.js"; // New import
 import ImageUploader from "./imageUploader";
 import FloatsMyBoat from "./FloatsMyBoat";
 import Orientation from "./Orientation"; // Make sure to import the Orientation component
@@ -29,6 +28,11 @@ const RegistrationForm = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     return Cookies.get("preferredLanguage") || "en"; // Default to 'en' if no cookie is set
   });
+  const [ipData, setIpData] = useState({
+    ip: "",
+    country: "",
+    language: selectedLanguage,
+  });
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
@@ -47,7 +51,6 @@ const RegistrationForm = () => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-
   // Initialize formData state
   const [formData, setFormData] = useState({
     username: "",
@@ -66,17 +69,13 @@ const RegistrationForm = () => {
 
   const navigate = useNavigate();
   const location = useLocation(); // Get the location object
-  const currentPage = getPageName(location); // Use the utility function to get the current page name
-
-  const pageTranslations = translations[selectedLanguage]?.[currentPage] || {}; // Get the translation for the current page
+  const { language, country, ip } = location.state || {};
+  const pageTranslations = translations[selectedLanguage]?.['registration'] || {}; // Get the translation for the current page
   const translatedAdminLabels =
     pageTranslations.adminLabels ||
     botPalOptions.options.map((option) => option.label); // fallback to default labels
 
-  // console.log("currentPage", currentPage);
-  // console.log("selectedLanguage", selectedLanguage);
-  // console.log("translations", translations);
-  // console.log("pageTranslations", pageTranslations);
+
   const languageMap = {
     en: "English",
     es: "Español",
@@ -84,18 +83,62 @@ const RegistrationForm = () => {
     de: "Deutsch",
     ar: "العربية", // Arabic
     zh: "中文", // Chinese
+    ga: "Gaelach"
   };
+
   const handleOpenLocation = () => {
     setShowLocation(true);
   };
+
   const handleLanguageChange = (languageCode) => {
-    setSelectedLanguage(languageCode); // Update the selected language
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      language_code: languageCode, // Update the language_code in formData
+    setSelectedLanguage(languageCode);
+    setIpData((prevIpData) => ({
+      ...prevIpData,
+      language: languageCode,
     }));
-    Cookies.set("preferredLanguage", languageCode, { expires: 365 }); // Store the language preference in cookies
+    
+    Cookies.set("preferredLanguage", languageCode, { expires: 365 }); // Store language in cookies
   };
+  
+  useEffect(() => {
+    if (!ip || !country || !language) {
+      const fetchIpAddress = async () => {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-ip`);
+          const data = await response.json();
+          
+          const fetchedLanguage = data.language || "en"; // Default to 'en'
+          const fetchedCountry = data.country || "";
+          const fetchedIp = data.ip || "";
+          
+          // Log and set the fetched data
+          console.log("Fetched IP-based data:", {
+            language: fetchedLanguage,
+            country: fetchedCountry,
+            ip: fetchedIp,
+          });
+          
+          setIpData({
+            ip: fetchedIp,
+            country: fetchedCountry,
+            language: fetchedLanguage,
+          });
+          
+          // Set preferred language to the fetched one if necessary
+          setSelectedLanguage(fetchedLanguage);
+        } catch (error) {
+          console.error("Error fetching IP address:", error);
+        }
+      };
+      
+      // Trigger IP fetch only if necessary
+      fetchIpAddress();
+    } else {
+      // If the data is already present, log it and set it to state
+      //console.log("IP-based data from login:", { language, country, ip });
+      setIpData({ ip, country, language });
+    }
+  }, [language, country, ip]);
 
   const handleSelectCoordinates = (selectedCoordinates) => {
     setLocationSelected(true);
@@ -178,7 +221,8 @@ const RegistrationForm = () => {
     const validationErrors = validateUser({ ...formData, [name]: value });
 
     if (name === "dummyEmail" && value !== formData.email) {
-      validationErrors["dummyEmail"] = pageTranslations.emailsDoNotMatch || "Emails do not match";
+      validationErrors["dummyEmail"] =
+        pageTranslations.emailsDoNotMatch || "Emails do not match";
     }
 
     if (validationErrors[name]) {
@@ -243,12 +287,6 @@ const RegistrationForm = () => {
       return; // Stop form submission if emails don't match
     }
 
-    // Log the data that will be sent to the backend
-    // console.log("Form data being sent to the backend:", {
-    //   ...formData,
-    //   admin_face: getAdminFaceName(),
-    // });
-
     // Proceed to send data to the server if there are no validation errors
     fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
       method: "POST",
@@ -258,32 +296,46 @@ const RegistrationForm = () => {
       body: JSON.stringify({
         ...formData,
         admin_face: getAdminFaceName(),
+        country_name: ipData.country,  // New field for country name
+        registered_ip_address: ipData.ip,  // New field for registered IP address
       }),
     })
       .then((response) => {
         if (!response.ok) {
           if (response.status === 409) {
-            throw new Error(pageTranslations.emailAlreadyExists || "Email already exists");
+            throw new Error(
+              pageTranslations.emailAlreadyExists || "Email already exists"
+            );
           }
-          throw new Error(pageTranslations.registrationFailed || "Registration failed");
+          throw new Error(
+            pageTranslations.registrationFailed || "Registration failed"
+          );
         }
         return response.json();
       })
       .then((data) => {
         if (data.id) {
           setUserId(data.id);
-          setMessage(pageTranslations.registrationSuccessful || "Registration successful");
+          setMessage(
+            pageTranslations.registrationSuccessful || "Registration successful"
+          );
           setType("success");
           setAlertKey((prevKey) => prevKey + 1);
           window.scrollTo(0, 0);
         } else {
-          setMessage(pageTranslations.registrationFailed || "Registration failed");
+          setMessage(
+            pageTranslations.registrationFailed || "Registration failed"
+          );
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
         }
       })
       .catch((error) => {
-        setMessage(`${pageTranslations.registrationFailed || "Registration failed"}: ${error.message}`);
+        setMessage(
+          `${pageTranslations.registrationFailed || "Registration failed"}: ${
+            error.message
+          }`
+        );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
@@ -322,9 +374,13 @@ const RegistrationForm = () => {
             <Dropdown.Item eventKey="zh" className="font-style-4" lang="zh">
               中文
             </Dropdown.Item>
+            <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
+              Gaelic
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
+
       {userId && ( // Only render this section if userId exists
         <div className="dummy">
           <div className="button-container">
@@ -334,14 +390,23 @@ const RegistrationForm = () => {
               className="logout-button"
             >
               {uploadedImageUrl
-                ? `${pageTranslations.loginWithProfileImage || "Login"} ${formData.username}`
-                : `${pageTranslations.loginWithoutProfileImage || "Login without profile image"} ${formData.username}`}
+                ? `${pageTranslations.loginWithProfileImage || "Login"} ${
+                    formData.username
+                  }`
+                : `${
+                    pageTranslations.loginWithoutProfileImage ||
+                    "Login without profile image"
+                  } ${formData.username}`}
             </Button>
           </div>
 
           {!uploadedImageUrl && (
             <div className="profile-image-buttons">
-              <ImageUploader userId={userId} onUpload={handleImageUpload} selectedLanguage={selectedLanguage}/>
+              <ImageUploader
+                userId={userId}
+                onUpload={handleImageUpload}
+                selectedLanguage={selectedLanguage}
+              />
             </div>
           )}
 
@@ -627,7 +692,7 @@ const RegistrationForm = () => {
                         onChange={handleRadioChange}
                         style={{
                           marginBottom: "0",
-                          width: "20px"
+                          width: "20px",
                         }}
                       />
                     </div>
@@ -650,7 +715,7 @@ const RegistrationForm = () => {
           <Location
             onClose={() => setShowLocation(false)}
             onSelectCoordinates={handleSelectCoordinates} // Pass the handler to the Location component
-          />
+            selectedLanguage={selectedLanguage}/>
         )}
 
         {!userId && (

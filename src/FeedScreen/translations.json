@@ -165,6 +165,33 @@
       "notificationSent": "通知发送成功。",
       "cameraOrMicError": "访问摄像头或麦克风时出错。请检查您的设备设置。"
       }
+    },
+    "ga": {
+      "feedScreen": {
+        "unauthorizedAccess": "Rochtain neamhúdaraithe. Logáil isteach le do thoil.",
+        "screenTitle": "Scáileán Fotha",
+        "backToMessages": "Ar ais go teachtaireachtaí",
+        "uploading": "Ag uaslódáil...",
+        "updateButton": "Nuashonraigh",
+        "deleteButton": "Scrios",
+        "uploadSuccess": "Uaslódáil fuaime rathúil!",
+        "errorDeletingPost": "Earráid ag scriosadh an phoist.",
+        "postUpdated": "Post nuashonraithe le ID:",
+        "errorFetchingPosts": "Earráid ag fáil poist:",
+        "newPostSubmitted": "Post nua curtha isteach. Ag fáil poist...",
+        "imageUploadedSuccess": "Íomhá uaslódáilte go rathúil",
+        "errorAccessingMedia": "Earráid ag rochtain ceamara nó micreafón. Seiceáil socruithe do ghléas.",
+        "incomingCallFrom": "Glao isteach ó",
+        "answerButton": "Freagair",
+        "declineButton": "Diúltaigh",
+        "searchPlaceholder": "Clóscríobh do chuardach",
+        "uploadAudioSuccess": "Uaslódáil fuaime rathúil!",
+        "uploadFailed": "Theip ar an uaslódáil!",
+        "deletePostFailed": "Theip ar an bpost a scriosadh.",
+        "deletePostError": "Earráid ag scriosadh an phoist.",
+        "notificationSent": "Fógra curtha go rathúil.",
+        "cameraOrMicError": "Earráid ag rochtain ceamara nó micreafón. Seiceáil socruithe do ghléas."
+      }
     }
 
   }

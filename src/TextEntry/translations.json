@@ -40,6 +40,13 @@
         "emptyTextError": "请输入一些文字",
         "submitError": "提交文本时出错"
       }
+    },
+    "ga": {
+      "textEntry": {
+        "placeholder": "Cad atá ar d'intinn?",
+        "emptyTextError": "Cuir isteach roinnt téacs le do thoil",
+        "submitError": "Earráid ag cur isteach an téacs"
+      }
     }
   }
   

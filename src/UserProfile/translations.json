@@ -244,5 +244,46 @@
       "logIn": "登录",
       "loading": "加载中..."
     }
+  },
+  "ga": {
+    "userProfile": {
+      "backToMessages": "Ar ais chuig na teachtaireachtaí",
+      "profileTitle": "Próifíl {username}",
+      "showVideo": "Taispeáin Físeán",
+      "hideVideo": "Folaigh Físeán",
+      "preferredCompanySelection": "Roghnú na Cuideachta is Fearr le {username}",
+      "favouriteHobbySelection": "Roghnú Caitheamh Aimsire is Fearr le {username}",
+      "floatsMyBoatSelection": "Roghnú an Rud a Thaitníonn le {username}",
+      "mostLikeYouSelection": "Roghnú an Té is Cosúla Leat de {username}",
+      "locationLabel": "Suíomh {username}",
+      "aboutYouLabel": "Maidir le {username}",
+      "aboutYouPlaceholder": "Níl aon rud curtha isteach ag {username} fós.",
+      "newSubmissionButton": "Aighneacht Nua",
+      "hobbies": [
+        "Ealaíona",
+        "Bailiú",
+        "Cócaireacht",
+        "Ceardaíocht",
+        "Damhsa",
+        "Oideachas",
+        "Aclaíocht",
+        "Cluichí",
+        "Garraíodóireacht",
+        "Machnamh",
+        "Ceol",
+        "Eile",
+        "Grianghrafadóireacht",
+        "Léitheoireacht",
+        "Spóirt",
+        "Teicneolaíocht",
+        "Taisteal",
+        "An tAnaithnid",
+        "Deonach",
+        "Scríbhneoireacht"
+      ],
+      "unauthorizedAccess": "Rochtain neamhúdaraithe.",
+      "logIn": "logáil isteach",
+      "loading": "Ag lódáil..."
+    }
   }
 }

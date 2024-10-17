@@ -52,6 +52,15 @@
         "save": "حفظ",
         "submissionFailed": "فشل التقديم"
       }
+    },
+    "ga": {
+      "newSubmission": {
+        "backToMessages": "Ar ais go teachtaireachtaí",
+        "createNewSubmission": "Cruthaigh Aighneacht Nua",
+        "titlePlaceholder": "Teideal",
+        "save": "Sábháil",
+        "submissionFailed": "Theip ar an aighneacht"
+      }
     }
   }
   

@@ -76,6 +76,19 @@
         "uploadError": "上传视频失败。 请再试一次。",
         "networkError": "上传视频时出错。"
       }
+    },
+    "ga": {
+      "videoUploader": {
+        "title": "Uaslódáil Físeán Próifíle",
+        "browseLabel": "Roghnaigh Físeán",
+        "uploadButton": "Uaslódáil Físeán",
+        "durationLabel": "Fad",
+        "seconds": "soicindí",
+        "durationError": "Tá an físeán níos faide ná 30 soicind.",
+        "invalidFileError": "Roghnaigh comhad físeán bailí le do thoil.",
+        "uploadError": "Theip ar uaslódáil físeáin. Déan iarracht arís le do thoil.",
+        "networkError": "Tharla earráid agus an físeán á uaslódáil."
+      }
     }
   }
   

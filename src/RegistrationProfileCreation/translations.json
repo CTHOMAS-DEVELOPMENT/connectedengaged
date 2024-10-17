@@ -66,6 +66,9 @@
       "title": "Upload a Picture for Your Profile",
       "uploadButton": "Upload Image",
       "browseLabel": "Choose File"
+    },
+    "location": {
+      "closer": "Click the map and close"
     }
   },
   "es": {
@@ -135,6 +138,9 @@
       "title": "Subir una foto para tu perfil",
       "uploadButton": "Subir imagen",
       "browseLabel": "Elegir archivo"
+    },
+    "location": {
+      "closer": "Haz clic en el mapa y cierra"
     }
   },
   "fr": {
@@ -204,6 +210,9 @@
       "title": "Télécharger une photo pour votre profil",
       "uploadButton": "Télécharger l'image",
       "browseLabel": "Choisir un fichier"
+    },
+    "location": {
+      "closer": "Cliquez sur la carte et fermez"
     }
   },
   "de": {
@@ -273,6 +282,9 @@
       "title": "Laden Sie ein Bild für Ihr Profil hoch",
       "uploadButton": "Bild hochladen",
       "browseLabel": "Datei auswählen"
+    },
+    "location": {
+      "closer": "Klicken Sie auf die Karte und schließen Sie"
     }
   },
   "ar": {
@@ -342,6 +354,9 @@
       "title": "تحميل صورة لملفك الشخصي",
       "uploadButton": "تحميل الصورة",
       "browseLabel": "اختر ملفًا"
+    },
+    "location": {
+      "closer": "انقر على الخريطة وأغلق"
     }
   },
   "zh": {
@@ -411,6 +426,81 @@
       "title": "上传您的个人资料图片",
       "uploadButton": "上传图片",
       "browseLabel": "选择文件"
+    },
+    "location": {
+      "closer": "点击地图并关闭"
+    }
+  },
+  "ga": {
+    "registration": {
+      "title": "Clárú Úsáideora",
+      "usernameLabel": "Ainm úsáideora",
+      "emailLabel": "Ríomhphost",
+      "confirmEmailLabel": "Deimhnigh Ríomhphost",
+      "passwordLabel": "Pasfhocal",
+      "registerButton": "Cláraigh",
+      "aboutYouSurveyTitle": "Suirbhé Fút",
+      "aboutYou": "Fút Féin",
+      "aboutYouPlaceholder": "Táim ag lorg caidreamh fadtéarmach. Bí ag faire amach do mo Iarraidh Ceangail ón Ionad Cumarsáide.",
+      "hideGender": "Folaigh an 'Cosúil Leat'",
+      "showGender": "Taispeáin an Rogha 'Cosúil Leat'",
+      "hideHobbies": "Folaigh do Chaitheamh Aimsire Is Fearr",
+      "showHobbies": "Taispeáin an Rogha 'Caitheamh Aimsire Is Fearr'",
+      "hideOrientation": "Folaigh do Chuideachta Is Fearr",
+      "showOrientation": "Taispeáin an Rogha 'Cuideachta Is Fearr'",
+      "hideFloatsMyBoat": "Folaigh 'Cad is Maith Leat'",
+      "showFloatsMyBoat": "Taispeáin an Rogha 'Cad is Maith Leat'",
+      "locationSelected": "Suíomh Roghnaithe",
+      "selectLocation": "Roghnaigh Suíomh",
+      "aboutYourSystemAdmin": "Fútsa an Riarthóir Córas",
+      "loginWithProfileImage": "Logáil isteach le híomhá próifíle",
+      "loginWithoutProfileImage": "Logáil isteach gan íomhá próifíle",
+      "emailsDoNotMatch": "Níl na ríomhphoist ag teacht le chéile",
+      "emailAlreadyExists": "Tá an ríomhphost ann cheana",
+      "registrationSuccessful": "Clárú rathúil",
+      "registrationFailed": "Theip ar an gclárú",
+      "adminLabels": [
+        "Ceannasach agus maslach",
+        "Te agus cairdiúil",
+        "Fuinniúil agus amach",
+        "Spraíúil agus déanann sé scéalta grinn",
+        "Brónach agus uaigneach",
+        "Lucht leanúna Shakespeare",
+        "Dúr",
+        "Caol atá sa treocht",
+        "Éigeantach agus géilliúil",
+        "Mór agus ocrach"
+      ],
+      "hobbies": [
+        "Ealaíona",
+        "Bailiúchán",
+        "Cócaireacht",
+        "Ceardaíocht",
+        "Damhs",
+        "Oideachas",
+        "Aclaíocht",
+        "Cluichíocht",
+        "Garraíodóireacht",
+        "Machnamh",
+        "Ceol",
+        "Eile",
+        "Grianghrafadóireacht",
+        "Léamh",
+        "Spóirt",
+        "Teicneolaíocht",
+        "Taisteal",
+        "An Anaithnid",
+        "Deonú",
+        "Scríobh"
+      ]
+    },
+    "imageUploader": {
+      "title": "Uaslódáil Pictiúr le haghaidh do Phróifíl",
+      "uploadButton": "Uaslódáil Íomhá",
+      "browseLabel": "Roghnaigh Comhad"
+    },
+    "location": {
+      "closer": "Cliceáil ar an léarscáil agus dún"
     }
   }
 }

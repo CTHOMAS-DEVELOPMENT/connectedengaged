@@ -1,75 +1,86 @@
 {
-    "en": {
-      "passwordReset": {
-        "backToLogin": "Back to Login",
-        "title": "Reset Your Password",
-        "newPasswordPlaceholder": "New Password",
-        "confirmPasswordPlaceholder": "Confirm New Password",
-        "submitButton": "Reset Password",
-        "passwordMismatch": "Passwords do not match.",
-        "successMessage": "Password reset successful!",
-        "errorMessage": "Error resetting password. Please try again."
-      }
-    },
-    "es": {
-      "passwordReset": {
-        "backToLogin": "Volver al inicio de sesión",
-        "title": "Restablecer su contraseña",
-        "newPasswordPlaceholder": "Nueva contraseña",
-        "confirmPasswordPlaceholder": "Confirmar nueva contraseña",
-        "submitButton": "Restablecer contraseña",
-        "passwordMismatch": "Las contraseñas no coinciden.",
-        "successMessage": "¡Contraseña restablecida con éxito!",
-        "errorMessage": "Error al restablecer la contraseña. Por favor, inténtelo de nuevo."
-      }
-    },
-    "fr": {
-      "passwordReset": {
-        "backToLogin": "Retour à la connexion",
-        "title": "Réinitialiser votre mot de passe",
-        "newPasswordPlaceholder": "Nouveau mot de passe",
-        "confirmPasswordPlaceholder": "Confirmer le nouveau mot de passe",
-        "submitButton": "Réinitialiser le mot de passe",
-        "passwordMismatch": "Les mots de passe ne correspondent pas.",
-        "successMessage": "Mot de passe réinitialisé avec succès !",
-        "errorMessage": "Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer."
-      }
-    },
-    "de": {
-      "passwordReset": {
-        "backToLogin": "Zurück zum Login",
-        "title": "Setzen Sie Ihr Passwort zurück",
-        "newPasswordPlaceholder": "Neues Passwort",
-        "confirmPasswordPlaceholder": "Neues Passwort bestätigen",
-        "submitButton": "Passwort zurücksetzen",
-        "passwordMismatch": "Die Passwörter stimmen nicht überein.",
-        "successMessage": "Passwort erfolgreich zurückgesetzt!",
-        "errorMessage": "Fehler beim Zurücksetzen des Passworts. Bitte versuchen Sie es erneut."
-      }
-    },
-    "ar": {
-      "passwordReset": {
-        "backToLogin": "العودة إلى تسجيل الدخول",
-        "title": "إعادة تعيين كلمة المرور",
-        "newPasswordPlaceholder": "كلمة مرور جديدة",
-        "confirmPasswordPlaceholder": "تأكيد كلمة المرور الجديدة",
-        "submitButton": "إعادة تعيين كلمة المرور",
-        "passwordMismatch": "كلمتا المرور غير متطابقتين.",
-        "successMessage": "تم إعادة تعيين كلمة المرور بنجاح!",
-        "errorMessage": "حدث خطأ أثناء إعادة تعيين كلمة المرور. حاول مرة أخرى."
-      }
-    },
-    "zh": {
-      "passwordReset": {
-        "backToLogin": "返回登录",
-        "title": "重置您的密码",
-        "newPasswordPlaceholder": "新密码",
-        "confirmPasswordPlaceholder": "确认新密码",
-        "submitButton": "重置密码",
-        "passwordMismatch": "密码不匹配。",
-        "successMessage": "密码重置成功！",
-        "errorMessage": "重置密码时出错。请再试一次。"
-      }
+  "en": {
+    "passwordReset": {
+      "backToLogin": "Back to Login",
+      "title": "Reset Your Password",
+      "newPasswordPlaceholder": "New Password",
+      "confirmPasswordPlaceholder": "Confirm New Password",
+      "submitButton": "Reset Password",
+      "passwordMismatch": "Passwords do not match.",
+      "successMessage": "Password reset successful!",
+      "errorMessage": "Error resetting password. Please try again."
+    }
+  },
+  "es": {
+    "passwordReset": {
+      "backToLogin": "Volver al inicio de sesión",
+      "title": "Restablecer su contraseña",
+      "newPasswordPlaceholder": "Nueva contraseña",
+      "confirmPasswordPlaceholder": "Confirmar nueva contraseña",
+      "submitButton": "Restablecer contraseña",
+      "passwordMismatch": "Las contraseñas no coinciden.",
+      "successMessage": "¡Contraseña restablecida con éxito!",
+      "errorMessage": "Error al restablecer la contraseña. Por favor, inténtelo de nuevo."
+    }
+  },
+  "fr": {
+    "passwordReset": {
+      "backToLogin": "Retour à la connexion",
+      "title": "Réinitialiser votre mot de passe",
+      "newPasswordPlaceholder": "Nouveau mot de passe",
+      "confirmPasswordPlaceholder": "Confirmer le nouveau mot de passe",
+      "submitButton": "Réinitialiser le mot de passe",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "successMessage": "Mot de passe réinitialisé avec succès !",
+      "errorMessage": "Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer."
+    }
+  },
+  "de": {
+    "passwordReset": {
+      "backToLogin": "Zurück zum Login",
+      "title": "Setzen Sie Ihr Passwort zurück",
+      "newPasswordPlaceholder": "Neues Passwort",
+      "confirmPasswordPlaceholder": "Neues Passwort bestätigen",
+      "submitButton": "Passwort zurücksetzen",
+      "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+      "successMessage": "Passwort erfolgreich zurückgesetzt!",
+      "errorMessage": "Fehler beim Zurücksetzen des Passworts. Bitte versuchen Sie es erneut."
+    }
+  },
+  "ar": {
+    "passwordReset": {
+      "backToLogin": "العودة إلى تسجيل الدخول",
+      "title": "إعادة تعيين كلمة المرور",
+      "newPasswordPlaceholder": "كلمة مرور جديدة",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور الجديدة",
+      "submitButton": "إعادة تعيين كلمة المرور",
+      "passwordMismatch": "كلمتا المرور غير متطابقتين.",
+      "successMessage": "تم إعادة تعيين كلمة المرور بنجاح!",
+      "errorMessage": "حدث خطأ أثناء إعادة تعيين كلمة المرور. حاول مرة أخرى."
+    }
+  },
+  "zh": {
+    "passwordReset": {
+      "backToLogin": "返回登录",
+      "title": "重置您的密码",
+      "newPasswordPlaceholder": "新密码",
+      "confirmPasswordPlaceholder": "确认新密码",
+      "submitButton": "重置密码",
+      "passwordMismatch": "密码不匹配。",
+      "successMessage": "密码重置成功！",
+      "errorMessage": "重置密码时出错。请再试一次。"
+    }
+  },
+  "ga": {
+    "passwordReset": {
+      "backToLogin": "Ar ais chuig an Logáil Isteach",
+      "title": "Athshocraigh do Phasfhocal",
+      "newPasswordPlaceholder": "Pasfhocal Nua",
+      "confirmPasswordPlaceholder": "Deimhnigh an Pasfhocal Nua",
+      "submitButton": "Athshocraigh an Pasfhocal",
+      "passwordMismatch": "Níl na pasfhocail ag teacht le chéile.",
+      "successMessage": "Athshocrú pasfhocail rathúil!",
+      "errorMessage": "Earráid ag athshocrú an phasfhocail. Déan iarracht arís."
     }
   }
-  
+}

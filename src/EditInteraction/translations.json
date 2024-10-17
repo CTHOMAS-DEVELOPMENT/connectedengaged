@@ -268,5 +268,50 @@
         "写作"
       ]
     }
+  },
+  "ga": {
+    "editInteraction": {
+      "helpMessage": "Scag do lucht rannpháirtíochta ceangailte ar a roghanna roghnaithe.",
+      "errorFetchingEngagements": "Earráid ag fáil rannpháirtíochtaí: ",
+      "networkResponseNotOk": "Ní raibh freagra an líonra ceart.",
+      "engagementRemoved": "Tá an rannpháirtíocht bainte.",
+      "engagementNotRemoved": "Earráid: níor baineadh an rannpháirtíocht seo: ",
+      "errorDownloadingZip": "Earráid ag íoslódáil ZIP rannpháirtíochta.",
+      "unauthorizedMessage": "Neamhúdaraithe. Logáil isteach le do thoil.",
+      "backToMessages": "Ar ais go teachtaireachtaí",
+      "usernamePlaceholder": "Cuir isteach ainm úsáideora páirteach ar a laghad",
+      "aboutYouPlaceholder": "Cuir isteach rud a bhí le rá acu ina mBeathaisnéis",
+      "showMostLikeYou": "Taispeáin an rogha 'Is Cosúla Leat'",
+      "hideMostLikeYou": "Folaigh 'Is Cosúla Leat'",
+      "showFavouriteHobby": "Taispeáin an rogha 'Caitheamh Aimsire Is Fearr Leo'",
+      "hideFavouriteHobby": "Folaigh 'Caitheamh Aimsire Is Fearr Leo'",
+      "showPreferredCompany": "Taispeáin an rogha 'Comhlacht Is Fearr Leo'",
+      "hidePreferredCompany": "Folaigh 'Comhlacht Is Fearr Leo'",
+      "showFloatsYourBoat": "Taispeáin an rogha 'Rud Is Maith Leat'",
+      "hideFloatsYourBoat": "Folaigh 'Rud Is Maith Leat'",
+      "showSelectedUsers": "Taispeáin na húsáideoirí roghnaithe",
+      "hobbies": [
+        "Ealaíona",
+        "Bailiú",
+        "Cócaireacht",
+        "Ceardaíocht",
+        "Damhs",
+        "Oideachas",
+        "Aclaíocht",
+        "Cluichí",
+        "Garraíodóireacht",
+        "Machnamh",
+        "Ceol",
+        "Eile",
+        "Grianghrafadóireacht",
+        "Léamh",
+        "Spóirt",
+        "Teicneolaíocht",
+        "Taisteal",
+        "An Anaithnid",
+        "Deonú",
+        "Scríobh"
+      ]
+    }
   }
 }

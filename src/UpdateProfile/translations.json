@@ -466,5 +466,83 @@
       "addProfileVideo": "添加个人资料视频（最多30秒）",
       "addUpdateProfileImage": "添加/更新个人资料图片"
     }
+  },
+  "ga": {
+    "updateProfile": {
+      "title": "Nuashonraigh Próifíl",
+      "backToMessages": "Ar ais go teachtaireachtaí",
+      "submitButton": "Nuashonraigh Próifíl",
+      "usernameLabel": "Ainm úsáideora",
+      "emailLabel": "Ríomhphost",
+      "passwordLabel": "Pasfhocal (fág bán chun an ceann céanna a choinneáil)",
+      "aboutYouLabel": "Suirbhé Fút Féin",
+      "genderToggle": {
+        "show": "Taispeáin an Rogha 'Cosúla Leat'",
+        "hide": "Folaigh 'Cosúla Leat'"
+      },
+      "hobbiesToggle": {
+        "show": "Taispeáin an Rogha 'Caitheamh Aimsire Is Fearr'",
+        "hide": "Folaigh 'Caitheamh Aimsire Is Fearr'"
+      },
+      "orientationToggle": {
+        "show": "Taispeáin an Rogha 'Cuideachta Is Fearr'",
+        "hide": "Folaigh 'Cuideachta Is Fearr'"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Taispeáin an Rogha 'Cad is Maith Leat'",
+        "hide": "Folaigh 'Cad is Maith Leat'"
+      },
+      "aboutYouTextArea": "Táim ag lorg caidreamh fadtéarmach. Bí ag faire amach do mo Iarraidh Ceangail ón Ionad Cumarsáide.",
+      "locationButton": "Taispeáin Suíomh",
+      "aboutAdminLabel": "Fútsa an Riarthóir Córas",
+      "adminFaceAlt": "Aghaidh an Riarthóra",
+      "adminLabels": [
+        "Ceannasach agus maslach",
+        "Te agus cairdiúil",
+        "Fuinniúil agus amach",
+        "Spraíúil agus déanann sé scéalta grinn",
+        "Brónach agus uaigneach",
+        "Lucht leanúna Shakespeare",
+        "Dúr",
+        "Caol atá sa treocht",
+        "Éigeantach agus géilliúil",
+        "Mór agus ocrach"
+      ],
+      "profileUpdateSuccess": "Próifíl nuashonraithe go rathúil.",
+      "profileUpdateError": "Theip ar nuashonrú próifíle: ",
+      "emailValidationError": "Cuir isteach seoladh ríomhphoist bailí le do thoil.",
+      "loadUserDataError": "Theip ar shonraí úsáideora a luchtú.",
+      "unauthorizedMessage": "Neamhúdaraithe. Logáil isteach le do thoil.",
+      "hobbies": [
+        "Ealaíona",
+        "Bailiú",
+        "Cócaireacht",
+        "Ceardaíocht",
+        "Damhs",
+        "Oideachas",
+        "Aclaíocht",
+        "Cluichíocht",
+        "Garraíodóireacht",
+        "Machnamh",
+        "Ceol",
+        "Eile",
+        "Grianghrafadóireacht",
+        "Léamh",
+        "Spóirt",
+        "Teicneolaíocht",
+        "Taisteal",
+        "An Anaithnid",
+        "Deonú",
+        "Scríobh"
+      ]
+    },
+    "viewImage": {
+      "updateProfileImage": "Nuashonraigh Íomhá Próifíle",
+      "addProfileImage": "Cuir Íomhá Próifíle leis",
+      "noProfilePicture": "Gan íomhá próifíle",
+      "updateProfileVideo": "Nuashonraigh Físeán Próifíle (Max 30 soicind)",
+      "addProfileVideo": "Cuir Físeán Próifíle leis (Max 30 soicind)",
+      "addUpdateProfileImage": "Cuir/Nuashonraigh Íomhá Próifíle"
+    }
   }
 }

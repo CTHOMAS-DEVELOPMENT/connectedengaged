@@ -64,5 +64,16 @@
       "emailFailed": "无法发送密码重置链接。请稍后再试。",
       "networkError": "发送重置链接时出现网络错误。"
     }
+  },
+  "ga": {
+    "passwordReset": {
+      "backToLogin": "Ar ais chuig an Logáil Isteach",
+      "title": "Athshocrú Pasfhocail",
+      "emailPlaceholder": "Cuir isteach do r-phost",
+      "sendLink": "Seol Nasc Athshocrú",
+      "emailSent": "Seiceáil do r-phost le haghaidh an nasc athshocraithe pasfhocail.",
+      "emailFailed": "Níor éirigh leis an nasc athshocraithe pasfhocail a sheoladh. Déan iarracht arís níos déanaí.",
+      "networkError": "Earráid líonra agus an nasc athshocraithe á sheoladh."
+    }
   }
 }

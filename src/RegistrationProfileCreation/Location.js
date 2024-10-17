@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ReactComponent as WorldIcon } from './world.svg'; 
 import { Button } from "react-bootstrap";
-
-const Location = ({ onClose, onSelectCoordinates, initialCoordinates }) => {
+import translations from "./translations.json";
+const Location = ({ onClose, onSelectCoordinates, initialCoordinates, selectedLanguage = "en" }) => {
   const [dotPosition, setDotPosition] = useState({ x: 0, y: 0 });
   const svgRef = useRef(null);
-
+  const pageTranslations = translations[selectedLanguage]?.location || {};
   // Handle map click and derive coordinates
   const handleMapClick = (e) => {
     const svgElement = svgRef.current;
@@ -136,7 +136,7 @@ const Location = ({ onClose, onSelectCoordinates, initialCoordinates }) => {
         onClick={onClose} // Call onClose to close the modal
         style={buttonStyle} // Adjusted to raise the button
       >
-        Close
+        {pageTranslations.closer || "Click the map and close"}
       </Button>
     </div>
   );

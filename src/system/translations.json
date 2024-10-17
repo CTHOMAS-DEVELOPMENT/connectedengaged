@@ -106,6 +106,24 @@
           "locationXRequired": "请选择您的位置",
           "locationYRequired": "请选择您的位置"
         }
+      },
+      "ga": {
+        "validation": {
+          "usernameRequired": "Tá ainm úsáideora ag teastáil",
+          "usernameMinLength": "Caithfidh ainm úsáideora a bheith ar a laghad 8 gcarachtar ar fhad",
+          "invalidEmail": "Formáid ríomhphoist neamhbhailí",
+          "passwordMinLength": "Caithfidh an pasfhocal a bheith ar a laghad 8 gcarachtar",
+          "passwordUppercase": "Caithfidh an pasfhocal ar a laghad 1 litir mhór a bheith ann",
+          "passwordNumber": "Caithfidh an pasfhocal ar a laghad 1 uimhir a bheith ann",
+          "preferredCompanyRequired": "Cuir isteach luach do 'Chuideachta Is Fearr'",
+          "mostLikeYouRequired": "Cuir isteach luach do 'Cosúla Leat'",
+          "favouriteHobbyRequired": "Cuir isteach luach do 'Caitheamh Aimsire Is Fearr'",
+          "floatsYourBoatRequired": "Cuir isteach luach do 'Cad is Maith Leat'",
+          "aboutYouRequired": "Inis rud éigin fút féin do gach duine",
+          "adminRequired": "Inis do do riarthóir córais cé ba mhaith leat go mbeadh siad",
+          "locationXRequired": "Roghnaigh do Shuíomh le do thoil",
+          "locationYRequired": "Roghnaigh do Shuíomh le do thoil"
+        }
       }
   }
   

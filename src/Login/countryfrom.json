@@ -1,0 +1,62 @@
+[
+    {
+        "Country": "Australia",
+        "Code": "AU",
+        "language": "en",
+        "ranges": [
+            {
+                "start": "1.0.0.0",
+                "finish": "1.0.0.255"
+            },
+            {
+                "start": "1.0.4.0",
+                "finish": "1.0.7.255"
+            }
+        ]
+    },
+    {
+        "Country": "China",
+        "Code": "CN",
+        "language": "zh",
+        "ranges": [
+            {
+                "start": "1.0.1.0",
+                "finish": "1.0.3.255"
+            },
+            {
+                "start": "1.0.8.0",
+                "finish": "1.0.15.255"
+            },
+            {
+                "start": "1.0.32.0",
+                "finish": "1.0.63.255"
+            }
+        ]
+    },
+    {
+        "Country": "Japan",
+        "Code": "JP",
+        "language": "ja",
+        "ranges": [
+            {
+                "start": "1.0.16.0",
+                "finish": "1.0.31.255"
+            },
+            {
+                "start": "1.0.64.0",
+                "finish": "1.0.127.255"
+            }
+        ]
+    },
+    {
+        "Country": "Thailand",
+        "Code": "TH",
+        "language": "th",
+        "ranges": [
+            {
+                "start": "1.0.128.0",
+                "finish": "1.0.255.255"
+            }
+        ]
+    }
+]
