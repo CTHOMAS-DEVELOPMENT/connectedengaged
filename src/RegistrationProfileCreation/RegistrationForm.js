@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom"; // New import
+import { useNavigate, useLocation } from "react-router-dom"; // New import
 import ImageUploader from "./imageUploader";
 import FloatsMyBoat from "./FloatsMyBoat";
 import Orientation from "./Orientation"; // Make sure to import the Orientation component
@@ -51,6 +50,8 @@ const RegistrationForm = () => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [userId, setUserId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [privacyChecked, setPrivacyChecked] = useState(false); // For privacy policy checkbox
+
   // Initialize formData state
   const [formData, setFormData] = useState({
     username: "",
@@ -70,11 +71,11 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Get the location object
   const { language, country, ip } = location.state || {};
-  const pageTranslations = translations[selectedLanguage]?.['registration'] || {}; // Get the translation for the current page
+  const pageTranslations =
+    translations[selectedLanguage]?.["registration"] || {}; // Get the translation for the current page
   const translatedAdminLabels =
     pageTranslations.adminLabels ||
     botPalOptions.options.map((option) => option.label); // fallback to default labels
-
 
   const languageMap = {
     en: "English",
@@ -83,54 +84,61 @@ const RegistrationForm = () => {
     de: "Deutsch",
     ar: "العربية", // Arabic
     zh: "中文", // Chinese
-    ga: "Gaelach"
+    ga: "Gaelach",
   };
 
   const handleOpenLocation = () => {
     setShowLocation(true);
   };
-
+  const handlePrivacyCheck = (event) => {
+    setPrivacyChecked(event.target.checked); // Update checkbox state
+  };
+  const handleNavigateToPrivacyPolicy = () => {
+    navigate("/privacy-policy", { state: { selectedLanguage, from: "register" } }); // Navigate to the privacy policy page
+  };
   const handleLanguageChange = (languageCode) => {
     setSelectedLanguage(languageCode);
     setIpData((prevIpData) => ({
       ...prevIpData,
       language: languageCode,
     }));
-    
+
     Cookies.set("preferredLanguage", languageCode, { expires: 365 }); // Store language in cookies
   };
-  
+
   useEffect(() => {
     if (!ip || !country || !language) {
       const fetchIpAddress = async () => {
         try {
-          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-ip`);
+          const response = await fetch(
+            `${process.env.REACT_APP_API_URL}/api/get-ip`
+          );
           const data = await response.json();
-          
+
           const fetchedLanguage = data.language || "en"; // Default to 'en'
           const fetchedCountry = data.country || "";
           const fetchedIp = data.ip || "";
-          
+
           // Log and set the fetched data
           console.log("Fetched IP-based data:", {
             language: fetchedLanguage,
             country: fetchedCountry,
             ip: fetchedIp,
           });
-          
+
           setIpData({
             ip: fetchedIp,
             country: fetchedCountry,
             language: fetchedLanguage,
           });
-          
+
           // Set preferred language to the fetched one if necessary
           setSelectedLanguage(fetchedLanguage);
         } catch (error) {
           console.error("Error fetching IP address:", error);
         }
       };
-      
+
       // Trigger IP fetch only if necessary
       fetchIpAddress();
     } else {
@@ -267,7 +275,12 @@ const RegistrationForm = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    if (!privacyChecked) {
+      setMessage(pageTranslations.acceptPrivacyPolicy || "Please read and accept the Privacy Policy before registering.");
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+      return; // Stop form submission if the checkbox is not checked
+    }
     // Perform validation using the selected language
     const validationErrors = validateUser(formData, false, selectedLanguage);
 
@@ -296,8 +309,8 @@ const RegistrationForm = () => {
       body: JSON.stringify({
         ...formData,
         admin_face: getAdminFaceName(),
-        country_name: ipData.country,  // New field for country name
-        registered_ip_address: ipData.ip,  // New field for registered IP address
+        country_name: ipData.country, // New field for country name
+        registered_ip_address: ipData.ip, // New field for registered IP address
       }),
     })
       .then((response) => {
@@ -715,15 +728,50 @@ const RegistrationForm = () => {
           <Location
             onClose={() => setShowLocation(false)}
             onSelectCoordinates={handleSelectCoordinates} // Pass the handler to the Location component
-            selectedLanguage={selectedLanguage}/>
+            selectedLanguage={selectedLanguage}
+          />
         )}
+        <div className="rounded-rectangle-wrapper">
+          <Button
+                        variant="outline-info"
+            className="btn-sm"
+            onClick={handleNavigateToPrivacyPolicy}
+            style={{ margin: "10px", whiteSpace: "nowrap" }}
+          >
+            {pageTranslations.privacyPolicyLink || "Privacy Policy"}
+          </Button>
+
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            <div style={{ flexGrow: "10", color:"#62DDF5" }}>
+              {pageTranslations.acceptPrivacyPolicy ||
+                "I have read and understood the Privacy Policy"}
+            </div>
+            <input
+              type="checkbox"
+              id="privacyPolicy"
+              checked={privacyChecked}
+              onChange={handlePrivacyCheck}
+              style={{ flexGrow: "1", flexBasis: "15px", margin: "5px" }}
+            />
+          </div>
+        </div>
 
         {!userId && (
-          <Button type="submit" variant="outline-info" className="btn-sm">
+          <Button
+          style={{ margin: "10px"}}
+            type="submit"
+            variant="outline-info"
+            className="btn-sm"
+          >
             {pageTranslations.registerButton || "Register"}
           </Button>
         )}
       </form>
+
       {message && (
         <AlertMessage
           key={alertKey}

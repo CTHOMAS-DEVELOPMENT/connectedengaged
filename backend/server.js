@@ -2682,5 +2682,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9909**IP INFO ${PORT}`);
+  console.log(`**9910**PRIVACY POLICY ${PORT}`);
 });

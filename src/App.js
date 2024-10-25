@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import RegistrationForm from "./RegistrationProfileCreation/RegistrationForm";
 import LoginForm from "./Login/LoginForm";
 import FeedScreen from "./FeedScreen/FeedScreen";
@@ -12,8 +12,8 @@ import PasswordResetRequest from "./PasswordResetRequest/PasswordResetRequest";
 import PasswordReset from "./PasswordReset/PasswordReset"; // Import the component
 import UpdateProfile from "./UpdateProfile/UpdateProfile";
 import TextGenerator from "./OpenAI/TextGenerator";
-import SummaryGenerator from "./OpenAI/SummaryGenerator";
-import QAndA from "./OpenAI/TensorFlow";
+import PrivacyPolicy from "./Login/PrivacyPolicy";
+
 function App() {
   return (
     <Router>
@@ -24,6 +24,11 @@ function App() {
               path="/password-reset-request"
               element={<PasswordResetRequest />}
             />
+
+          <Route
+            path="/privacy-policy"
+            element={<PrivacyPolicyWithState />} // Use a wrapper component
+          />
             <Route path="/editInteraction" element={<EditInteraction />} />
             <Route path="/userprofile/:userId" element={<UserProfile />} />
             <Route path="/newsubmission" element={<NewSubmission />} />
@@ -34,12 +39,15 @@ function App() {
             <Route path="/profile" element={<UpdateProfile />} />
             <Route path="/" element={<LoginForm />} />
             <Route path="/textgenerator" element={<TextGenerator />} />
-            <Route path="/summarygenerator" element={<SummaryGenerator />} />
-            <Route path="/qanda" element={<QAndA />} />
+
           </Routes>
         </div>
     </Router>
   );
 }
-
+const PrivacyPolicyWithState = () => {
+  const location = useLocation();
+  const selectedLanguage = location.state?.selectedLanguage || "en"; // Default to 'en' if no state is passed
+  return <PrivacyPolicy selectedLanguage={selectedLanguage} />;
+};
 export default App;

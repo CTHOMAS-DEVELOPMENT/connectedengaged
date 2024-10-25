@@ -404,7 +404,7 @@ const LoginForm = () => {
         <div className="login-form">
           <div className="form-container">
             <form onSubmit={handleSubmit}>
-            <div style={formItemStyle}>
+              <div style={formItemStyle}>
                 <input
                   type="text"
                   id="username"
@@ -450,7 +450,6 @@ const LoginForm = () => {
                       },
                     })
                   }
-                  
                 >
                   {pageTranslations.registerLink || "Register here"}
                 </Button>
@@ -522,6 +521,15 @@ const LoginForm = () => {
                 </div>
               </div>
             )}
+            <Button
+              onClick={() =>
+                navigate("/privacy-policy", {
+                  state: { selectedLanguage, from: "login" }, // Pass the selected language via state
+                })
+              }
+            >
+              {pageTranslations.privacyPolicyLink || "Privacy Policy"}
+            </Button>
           </div>
         </div>
       </div>

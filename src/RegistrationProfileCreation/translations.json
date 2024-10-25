@@ -27,6 +27,8 @@
       "emailAlreadyExists": "Email already exists",
       "registrationSuccessful": "Registration successful",
       "registrationFailed": "Registration failed",
+      "acceptPrivacyPolicy": "Please read and accept the Privacy Policy before registering.",
+      "privacyPolicyLink": "Privacy Policy",
       "adminLabels": [
         "Dominant and objectionable",
         "Warm and friendly",
@@ -99,6 +101,8 @@
       "emailAlreadyExists": "El correo electrónico ya existe",
       "registrationSuccessful": "Registro exitoso",
       "registrationFailed": "Registro fallido",
+      "acceptPrivacyPolicy": "Por favor, lea y acepte la Política de Privacidad antes de registrarse.",
+      "privacyPolicyLink": "Política de Privacidad",
       "adminLabels": [
         "Dominante y objetable",
         "Cálido y amistoso",
@@ -171,6 +175,8 @@
       "emailAlreadyExists": "L'email existe déjà",
       "registrationSuccessful": "Inscription réussie",
       "registrationFailed": "Inscription échouée",
+      "acceptPrivacyPolicy": "Veuillez lire et accepter la politique de confidentialité avant de vous inscrire.",
+      "privacyPolicyLink": "Politique de Confidentialité",
       "adminLabels": [
         "Dominant et répréhensible",
         "Chaleureux et amical",
@@ -243,6 +249,8 @@
       "emailAlreadyExists": "E-Mail existiert bereits",
       "registrationSuccessful": "Registrierung erfolgreich",
       "registrationFailed": "Registrierung fehlgeschlagen",
+      "acceptPrivacyPolicy": "Bitte lesen und akzeptieren Sie die Datenschutzrichtlinie, bevor Sie sich registrieren.",
+      "privacyPolicyLink": "Datenschutzrichtlinie",
       "adminLabels": [
         "Dominant und anstößig",
         "Warm und freundlich",
@@ -315,6 +323,8 @@
       "emailAlreadyExists": "البريد الإلكتروني موجود بالفعل",
       "registrationSuccessful": "تم التسجيل بنجاح",
       "registrationFailed": "فشل التسجيل",
+      "acceptPrivacyPolicy": "يرجى قراءة وقبول سياسة الخصوصية قبل التسجيل.",
+      "privacyPolicyLink": "سياسة الخصوصية",
       "adminLabels": [
         "مهيمن وغير مقبول",
         "دافئ وودود",
@@ -387,6 +397,8 @@
       "emailAlreadyExists": "电子邮件已存在",
       "registrationSuccessful": "注册成功",
       "registrationFailed": "注册失败",
+      "acceptPrivacyPolicy": "请在注册前阅读并接受隐私政策。",
+      "privacyPolicyLink": "隐私政策",
       "adminLabels": [
         "主导且令人反感",
         "温暖和友好",
@@ -459,6 +471,8 @@
       "emailAlreadyExists": "Tá an ríomhphost ann cheana",
       "registrationSuccessful": "Clárú rathúil",
       "registrationFailed": "Theip ar an gclárú",
+      "acceptPrivacyPolicy": "Léigh agus glac leis an bPolasaí Príobháideachais sula gcláraíonn tú.",
+      "privacyPolicyLink": "Polasaí Príobháideachais",
       "adminLabels": [
         "Ceannasach agus maslach",
         "Te agus cairdiúil",
