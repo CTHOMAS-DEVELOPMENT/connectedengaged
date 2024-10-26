@@ -7,6 +7,8 @@
       "noAccountText": "Don't have an account?",
       "registerLink": "Register here",
       "forgottenPasswordLink": "Forgotten password?",
+      "usernamePlaceholder": "Username",
+      "passwordPlaceholder": "Password",
       "consent": {
         "customize": "Customize",
         "acceptAll": "Accept All",
@@ -53,6 +55,8 @@
       "noAccountText": "¿No tienes una cuenta?",
       "registerLink": "Regístrate aquí",
       "forgottenPasswordLink": "¿Olvidaste tu contraseña?",
+      "usernamePlaceholder": "Nombre de usuario",
+      "passwordPlaceholder": "Contraseña",
       "consent": {
         "customize": "Personalizar",
         "acceptAll": "Aceptar todo",
@@ -99,6 +103,8 @@
       "noAccountText": "Vous n'avez pas de compte?",
       "registerLink": "Inscrivez-vous ici",
       "forgottenPasswordLink": "Mot de passe oublié?",
+      "usernamePlaceholder": "Nom d'utilisateur",
+      "passwordPlaceholder": "Mot de passe",
       "consent": {
         "customize": "Personnaliser",
         "acceptAll": "Tout accepter",
@@ -145,6 +151,8 @@
       "noAccountText": "Haben Sie kein Konto?",
       "registerLink": "Hier registrieren",
       "forgottenPasswordLink": "Passwort vergessen?",
+      "usernamePlaceholder": "Benutzername",
+      "passwordPlaceholder": "Passwort",
       "consent": {
         "customize": "Anpassen",
         "acceptAll": "Alles akzeptieren",
@@ -191,6 +199,8 @@
       "noAccountText": "ليس لديك حساب؟",
       "registerLink": "سجل هنا",
       "forgottenPasswordLink": "نسيت كلمة المرور؟",
+      "usernamePlaceholder": "اسم المستخدم",
+      "passwordPlaceholder": "كلمة المرور",
       "consent": {
         "customize": "تخصيص",
         "acceptAll": "قبول الكل",
@@ -237,6 +247,8 @@
       "noAccountText": "没有账号？",
       "registerLink": "在这里注册",
       "forgottenPasswordLink": "忘记密码？",
+      "usernamePlaceholder": "用户名",
+      "passwordPlaceholder": "密码",
       "consent": {
         "customize": "自定义",
         "acceptAll": "全部接受",
@@ -283,6 +295,8 @@
       "noAccountText": "Níl cuntas agat?",
       "registerLink": "Cláraigh anseo",
       "forgottenPasswordLink": "Pasfhocal dearmadta?",
+      "usernamePlaceholder": "Ainm úsáideora",
+      "passwordPlaceholder": "Focal faire",
       "consent": {
         "customize": "Saincheap",
         "acceptAll": "Glac le Gach Rud",

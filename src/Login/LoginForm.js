@@ -410,7 +410,9 @@ const LoginForm = () => {
                   id="username"
                   name="username"
                   value={formData.username}
-                  placeholder="Username"
+                  placeholder={
+                    pageTranslations.usernamePlaceholder || "Username"
+                  }
                   onChange={handleInputChange}
                   required
                 />
@@ -422,7 +424,9 @@ const LoginForm = () => {
                   id="password"
                   name="password"
                   value={formData.password}
-                  placeholder="Password"
+                  placeholder={
+                    pageTranslations.passwordPlaceholder || "Password"
+                  }
                   onChange={handleInputChange}
                   required
                 />
