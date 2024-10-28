@@ -79,7 +79,7 @@ const NewSubmission = () => {
         {translations[languageCode]?.newSubmission?.backToMessages || "Back to messages"}
       </Button>
       <h2 className="font-style-4">
-        {translations[languageCode]?.newSubmission?.createNewSubmission || "Create New Submission"}
+        {translations[languageCode]?.newSubmission?.createNewSubmission || "Create New Engagement"}
       </h2>
       <div style={{ position: "relative", display: "inline-block" }}>
         <input

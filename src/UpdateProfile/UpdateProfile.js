@@ -582,6 +582,13 @@ const UpdateProfile = () => {
               </h3>
               {formData.admin_face && (
                 <img
+                style={{
+                  width: "100%", // Take full width of the container
+                  maxWidth: "300px", // Set a maximum width to avoid excessive stretching
+                  height: "auto", // Maintain aspect ratio
+                  borderRadius: "8px", // Optional: add rounded corners for better aesthetics
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Optional: add shadow for a raised effect
+                }}
                   src={formData.admin_face}
                   alt={pageTranslations.adminFaceAlt || "Admin Face"}
                 />

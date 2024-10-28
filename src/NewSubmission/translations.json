@@ -2,7 +2,7 @@
     "en": {
       "newSubmission": {
         "backToMessages": "Back to messages",
-        "createNewSubmission": "Create New Submission",
+        "createNewSubmission": "Create New Engagement",
         "titlePlaceholder": "Title",
         "save": "Save",
         "submissionFailed": "Submission failed"
@@ -11,7 +11,7 @@
     "es": {
       "newSubmission": {
         "backToMessages": "Volver a los mensajes",
-        "createNewSubmission": "Crear nueva presentación",
+        "createNewSubmission": "Crear nuevo compromiso",
         "titlePlaceholder": "Título",
         "save": "Guardar",
         "submissionFailed": "La presentación falló"
@@ -20,7 +20,7 @@
     "fr": {
       "newSubmission": {
         "backToMessages": "Retour aux messages",
-        "createNewSubmission": "Créer une nouvelle soumission",
+        "createNewSubmission": "Créer un nouvel engagement",
         "titlePlaceholder": "Titre",
         "save": "Enregistrer",
         "submissionFailed": "La soumission a échoué"
@@ -29,7 +29,7 @@
     "de": {
       "newSubmission": {
         "backToMessages": "Zurück zu den Nachrichten",
-        "createNewSubmission": "Neue Einreichung erstellen",
+        "createNewSubmission": "Neues Engagement erstellen",
         "titlePlaceholder": "Titel",
         "save": "Speichern",
         "submissionFailed": "Einreichung fehlgeschlagen"
@@ -38,7 +38,7 @@
     "zh": {
       "newSubmission": {
         "backToMessages": "返回消息",
-        "createNewSubmission": "创建新提交",
+        "createNewSubmission": "创建新的参与",
         "titlePlaceholder": "标题",
         "save": "保存",
         "submissionFailed": "提交失败"
@@ -47,7 +47,7 @@
     "ar": {
       "newSubmission": {
         "backToMessages": "العودة إلى الرسائل",
-        "createNewSubmission": "إنشاء تقديم جديد",
+        "createNewSubmission": "إنشاء ارتباط جديد",
         "titlePlaceholder": "العنوان",
         "save": "حفظ",
         "submissionFailed": "فشل التقديم"
@@ -56,7 +56,7 @@
     "ga": {
       "newSubmission": {
         "backToMessages": "Ar ais go teachtaireachtaí",
-        "createNewSubmission": "Cruthaigh Aighneacht Nua",
+        "createNewSubmission": "Cruthaigh Rannpháirtíocht Nua",
         "titlePlaceholder": "Teideal",
         "save": "Sábháil",
         "submissionFailed": "Theip ar an aighneacht"

@@ -94,7 +94,9 @@ const RegistrationForm = () => {
     setPrivacyChecked(event.target.checked); // Update checkbox state
   };
   const handleNavigateToPrivacyPolicy = () => {
-    navigate("/privacy-policy", { state: { selectedLanguage, from: "register" } }); // Navigate to the privacy policy page
+    navigate("/privacy-policy", {
+      state: { selectedLanguage, from: "register" },
+    }); // Navigate to the privacy policy page
   };
   const handleLanguageChange = (languageCode) => {
     setSelectedLanguage(languageCode);
@@ -276,7 +278,10 @@ const RegistrationForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!privacyChecked) {
-      setMessage(pageTranslations.acceptPrivacyPolicy || "Please read and accept the Privacy Policy before registering.");
+      setMessage(
+        pageTranslations.acceptPrivacyPolicy ||
+          "Please read and accept the Privacy Policy before registering."
+      );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
       return; // Stop form submission if the checkbox is not checked
@@ -672,7 +677,17 @@ const RegistrationForm = () => {
                   {pageTranslations.aboutYourSystemAdmin ||
                     "About Your System Admin"}
                 </h3>
-                <img src={getAdminImagePath()} alt="admin" />
+                <img
+                  style={{
+                    width: "100%", // Take full width of the container
+                    maxWidth: "300px", // Set a maximum width to avoid excessive stretching
+                    height: "auto", // Maintain aspect ratio
+                    borderRadius: "8px", // Optional: add rounded corners for better aesthetics
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Optional: add shadow for a raised effect
+                  }}
+                  src={getAdminImagePath()}
+                  alt="admin"
+                />
                 {translatedAdminLabels.map((label, index) => (
                   <div
                     key={index}
@@ -733,7 +748,7 @@ const RegistrationForm = () => {
         )}
         <div className="rounded-rectangle-wrapper">
           <Button
-                        variant="outline-info"
+            variant="outline-info"
             className="btn-sm"
             onClick={handleNavigateToPrivacyPolicy}
             style={{ margin: "10px", whiteSpace: "nowrap" }}
@@ -746,7 +761,7 @@ const RegistrationForm = () => {
               display: "flex",
             }}
           >
-            <div style={{ flexGrow: "10", color:"#62DDF5" }}>
+            <div style={{ flexGrow: "10", color: "#62DDF5" }}>
               {pageTranslations.acceptPrivacyPolicy ||
                 "I have read and understood the Privacy Policy"}
             </div>
@@ -762,7 +777,7 @@ const RegistrationForm = () => {
 
         {!userId && (
           <Button
-          style={{ margin: "10px"}}
+            style={{ margin: "10px" }}
             type="submit"
             variant="outline-info"
             className="btn-sm"

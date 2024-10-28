@@ -237,7 +237,8 @@ const UsersList = () => {
         setMessage(
           translations[languageCode]?.usersList?.newEngagementMessage ||
             "A new engagement has been created!"
-        );        setType("info");
+        );
+        setType("info");
         setAlertKey((prevKey) => prevKey + 1);
         setShouldRefreshInteractions(true); // Add this line to trigger refresh
       }
@@ -392,7 +393,8 @@ const UsersList = () => {
           setMessage(
             translations[languageCode]?.usersList?.invalidZipContents ||
               "ZIP archive contents are invalid."
-          );          setType("error");
+          );
+          setType("error");
           setAlertKey((prevKey) => prevKey + 1);
           event.target.value = null;
           return;
@@ -422,7 +424,7 @@ const UsersList = () => {
       },
     });
   };
-  
+
   const informConnectionSuccess = async (
     selectedUserIds,
     selectedUserNames
@@ -687,10 +689,14 @@ const UsersList = () => {
                             className="btn-sm btn-wrap"
                             onClick={handleNewInteraction}
                           >
-                            Create New Submission with{" "}
+                            {translations[languageCode]?.usersList
+                              ?.createNewEngagementWith ||
+                              "Create New Engagement with"}{" "}
                             {selectedUsernames.join(" ")}{" "}
                             {selectedUsernames.length === 1
-                              ? "(Add other users by checking their box)"
+                              ? translations[languageCode]?.usersList
+                                  ?.addOtherUsersHint ||
+                                "(Add other users by checking their box)"
                               : ""}
                           </Button>
                         )}
