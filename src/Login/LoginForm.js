@@ -63,6 +63,7 @@ const LoginForm = () => {
     ar: "العربية", // Arabic
     zh: "中文", // Chinese
     ga: "Gaelach",
+    pt: "Português",
   };
 
   const pageTranslations = translations[selectedLanguage]?.["login"] || {}; // Get the translation for the current page
@@ -335,9 +336,9 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-layout">
+    <main className="login-layout" aria-labelledby="login-title">
       <div className="title-and-help" style={{ textAlign: "center" }}>
-        <h1 className="font-style-4">
+        <h1 id="login-title" className="font-style-4">
           {pageTranslations.title || "Are you Connected Engaged?"}
         </h1>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -377,6 +378,9 @@ const LoginForm = () => {
             <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
               Gaelic
             </Dropdown.Item>
+            <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
+              Português
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
@@ -388,6 +392,7 @@ const LoginForm = () => {
             alt="Man"
             style={{ transform: `rotate(${manRotation}deg)` }}
             onClick={() => rotateImage("man")}
+            aria-describedby="instructions"
           />
         </div>
         <div className="image-panel">
@@ -396,15 +401,27 @@ const LoginForm = () => {
             alt="Woman"
             style={{ transform: `rotate(${womanRotation}deg)` }}
             onClick={() => rotateImage("woman")}
+            aria-describedby="instructions"
           />
         </div>
+        <div id="instructions" className="visually-hidden">
+          {pageTranslations.imageRotate ||
+            "Please rotate the images to the correct orientation before proceeding."}
+        </div>
       </div>
-      {message && <AlertMessage key={alertKey} message={message} type={type} />}
+      {message && (
+        <div role="alert" aria-live="assertive" id="form-message">
+          <AlertMessage key={alertKey} message={message} type={type} />
+        </div>
+      )}
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div className="login-form">
           <div className="form-container">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} aria-labelledby="login-title">
               <div style={formItemStyle}>
+                <label htmlFor="username" className="visually-hidden">
+                  {pageTranslations.usernamePlaceholder || "Username"}
+                </label>
                 <input
                   type="text"
                   id="username"
@@ -415,10 +432,18 @@ const LoginForm = () => {
                   }
                   onChange={handleInputChange}
                   required
+                  aria-describedby="username-error"
                 />
-                {errors.username && <p className="error">{errors.username}</p>}
+                {errors.username && (
+                  <p id="username-error" className="error">
+                    {errors.username}
+                  </p>
+                )}
               </div>
               <div style={formItemStyle}>
+                <label htmlFor="password" className="visually-hidden">
+                  {pageTranslations.passwordLabel || "Password"}
+                </label>
                 <input
                   type="password"
                   id="password"
@@ -429,9 +454,10 @@ const LoginForm = () => {
                   }
                   onChange={handleInputChange}
                   required
+                  aria-describedby="password-error"
                 />
                 {errors.password && (
-                  <p className="error">
+                  <p id="password-error" className="error">
                     {pageTranslations.passwordLengthError ||
                       "Password must be at least 8 characters"}
                   </p>
@@ -488,7 +514,7 @@ const LoginForm = () => {
             )}
 
             {!consentGiven && (
-              <div className="">
+              <section aria-label={pageTranslations.cookieConsent || "Cookie Consent Options"}>
                 <div
                   style={{
                     display: "grid",
@@ -523,7 +549,7 @@ const LoginForm = () => {
                     )
                   )}
                 </div>
-              </div>
+              </section>
             )}
             <Button
               onClick={() =>
@@ -537,7 +563,7 @@ const LoginForm = () => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

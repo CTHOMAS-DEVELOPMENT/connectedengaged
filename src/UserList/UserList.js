@@ -311,7 +311,6 @@ const UsersList = () => {
   };
 
   const handleProfileClick = (selectedUserId, selectedUsername) => {
-    console.log("handleProfileClick-languageCode", languageCode);
     navigate(`/userprofile/${selectedUserId}`, {
       state: {
         selectedUser: selectedUserId,
@@ -585,16 +584,20 @@ const UsersList = () => {
   return (
     <div>
       {showMessage && (
-        <div className="message-box">
+        <div className="message-box" role="status" aria-live="polite">
           {translations[languageCode]?.usersList?.afterLoginMessage ||
             "After login landing page"}
         </div>
       )}
-      <div className="button-container">
+
+      <div className="button-container" aria-label="User navigation">
         <Button
           variant="danger"
           onClick={handleLogoutClick}
           className="logout-button"
+          aria-label={
+            translations[languageCode]?.usersList?.logoutText || "Logout"
+          }
         >
           {translations[languageCode]?.usersList?.logoutText || "Logout"}{" "}
           {user ? user.username : ""}?
@@ -606,62 +609,101 @@ const UsersList = () => {
             marginBottom: "20px",
           }}
         >
-          <Button
-            variant={activeTab === "Interactions" ? "info" : "outline-info"}
-            onClick={handleInteractionsTabClick}
-          >
-            {translations[languageCode]?.usersList?.engagementsTab ||
-              "Engagements"}
-          </Button>
-          <Button
-            variant={
-              activeTab === "Communication Centre" ? "info" : "outline-info"
-            }
-            onClick={handleCommunicationCentreTabClick}
-          >
-            {translations[languageCode]?.usersList?.connectionsTab ||
-              "Connections"}
-          </Button>
+          <nav>
+            <Button
+              variant={activeTab === "Interactions" ? "info" : "outline-info"}
+              onClick={handleInteractionsTabClick}
+              aria-label={
+                activeTab === "Interactions"
+                  ? translations[languageCode]?.usersList
+                      ?.engagementButtonActive || "Engagement button is active"
+                  : translations[languageCode]?.usersList
+                      ?.engagementButtonInactive ||
+                    "Engagement button is inactive"
+              }
+            >
+              {translations[languageCode]?.usersList?.engagementsTab ||
+                "Engagements"}
+            </Button>
 
-          <Button
-            variant="outline-info"
-            onClick={() => handleUpdateProfileClick(user.id)}
-          >
-            {translations[languageCode]?.usersList?.profileButton || "Profile"}
-          </Button>
+            <Button
+              variant={
+                activeTab === "Communication Centre" ? "info" : "outline-info"
+              }
+              onClick={handleCommunicationCentreTabClick}
+              aria-label={
+                activeTab === "Communication Centre"
+                  ? translations[languageCode]?.usersList
+                      ?.connectionCentreActive || "Connection Centre is active"
+                  : translations[languageCode]?.usersList
+                      ?.connectionCentreInActive ||
+                    "Connection Centre is inactive"
+              }
+            >
+              {translations[languageCode]?.usersList?.connectionsTab ||
+                "Connections"}
+            </Button>
+
+            <Button
+              variant="outline-info"
+              onClick={() => handleUpdateProfileClick(user.id)}
+              aria-label={
+                activeTab === "Communication Centre"
+                  ? translations[languageCode]?.usersList
+                      ?.connectionCentreActive || "Connection Centre is active"
+                  : translations[languageCode]?.usersList
+                      ?.connectionCentreInActive ||
+                    "Connection Centre is inactive"
+              }
+            >
+              {translations[languageCode]?.usersList?.profileButton ||
+                "Profile"}
+            </Button>
+          </nav>
         </div>
         {activeTab === "Communication Centre" && (
-          <div className="section-container">
-            <div>
-              <h2 className="font-style-4">
-                {translations[languageCode]?.usersList?.connectionCentreTitle ||
-                  "Connection Centre"}
-              </h2>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <ScrollingHelpText message={helpMessage} width="400px" />
-              </div>
-              {showSearch && (
-                <Form.Group controlId="search">
-                  <Form.Control
-                    type="text"
-                    placeholder={
-                      translations[languageCode]?.usersList
-                        ?.searchPlaceholder || "Search"
-                    }
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </Form.Group>
-              )}{" "}
+          <section
+            className="section-container"
+            aria-labelledby="connection-centre-title"
+          >
+            <h2 id="connection-centre-title" className="font-style-4">
+              {translations[languageCode]?.usersList?.connectionCentreTitle ||
+                "Connection Centre"}
+            </h2>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <ScrollingHelpText message={helpMessage} width="400px" />
             </div>
+            {showSearch && (
+              <Form.Group controlId="search">
+                <Form.Control
+                  type="text"
+                  placeholder={
+                    translations[languageCode]?.usersList?.searchPlaceholder ||
+                    "Search"
+                  }
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label={
+                    translations[languageCode]?.usersList?.searchPlaceholder ||
+                    "Search"
+                  }
+                />
+              </Form.Group>
+            )}{" "}
             <div className="users-list-container">
               <ul className="no-bullet">
                 {displayedUsers.map((user) => (
                   <li key={user.id} className="user-item">
-                    <span className="user-name font-style-4">
+                    <span
+                      className="user-name font-style-4"
+                      aria-label={`${translations[languageCode]?.filterUsers?.usernamePlaceholder}: ${user.username}`}
+                    >
                       {user.username}
                     </span>
-                    <div className="user-info-container center-elements">
+                    <div
+                      className="user-info-container center-elements"
+                      role="region"
+                    >
                       <div className="center-elements">
                         <div
                           style={{
@@ -688,6 +730,11 @@ const UsersList = () => {
                             variant="outline-info"
                             className="btn-sm btn-wrap"
                             onClick={handleNewInteraction}
+                            aria-label={`${
+                              translations[languageCode]?.usersList
+                                ?.createNewEngagementWith ||
+                              "Create New Engagement with"
+                            } ${selectedUsernames.join(" ")}`}
                           >
                             {translations[languageCode]?.usersList
                               ?.createNewEngagementWith ||
@@ -708,19 +755,42 @@ const UsersList = () => {
                     {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
                       user.id &&
                       adminFace && (
-                        <div className="thumb-profile-viewer">
-                          <img src={adminFace} alt="Admin Face" />
+                        <div
+                          className="thumb-profile-viewer"
+                          role="img"
+                          aria-label={
+                            translations[languageCode]?.usersList?.adminFace ||
+                            "Admin Face"
+                          }
+                        >
+                          <img
+                            src={adminFace}
+                            alt={
+                              translations[languageCode]?.usersList
+                                ?.adminFace || "Admin Face"
+                            }
+                          />
                         </div>
                       )}
                     {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
                       user.id &&
                       !adminFace && (
-                        <img src={"/admins/file-admin.JPEG"} alt="Admin Face" />
+                        <img src={"/admins/file-admin.JPEG"} alt={
+                          translations[languageCode]?.usersList?.adminFace ||
+                          "Admin Face"
+                        } />
                       )}
                     {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
                       user.id && (
                       <>
-                        <div className="thumb-profile-viewer">
+                        <div
+                          className="thumb-profile-viewer"
+                          role="img"
+                          aria-label={`${
+                            translations[languageCode]?.usersList
+                              ?.profilePictureOf || "Profile picture of"
+                          } ${user.username}`}
+                        >
                           <ThumbProfileViewer userId={user.id} />
                         </div>
 
@@ -730,6 +800,10 @@ const UsersList = () => {
                           onClick={() =>
                             handleProfileClick(user.id, user.username)
                           }
+                          aria-label={`${
+                            translations[languageCode]?.usersList
+                              ?.viewProfile || "View Profile"
+                          }}: ${user.username}`}
                         >
                           {translations[languageCode]?.usersList?.viewProfile ||
                             "View Profile"}
@@ -747,6 +821,10 @@ const UsersList = () => {
                           onMouseLeave={() =>
                             setHoveredContactToBeDeleted(null)
                           }
+                          aria-label={`${
+                            translations[languageCode]?.usersList
+                              ?.deleteConnectionWith || "Delete Connection with"
+                          } ${user.username}`}
                         >
                           {hoveredContactToBeDeleted === user.connection_id ? (
                             <TrashFill size={25} />
@@ -759,7 +837,12 @@ const UsersList = () => {
                   </li>
                 ))}
               </ul>
-              <Pagination>
+              <Pagination
+                aria-label={
+                  translations[languageCode]?.usersList?.userPagination ||
+                  "User pagination"
+                }
+              >
                 {Array.from(
                   { length: Math.ceil(users.length / usersPerPage) },
                   (_, index) => (
@@ -767,6 +850,9 @@ const UsersList = () => {
                       key={index + 1}
                       active={index + 1 === currentPage}
                       onClick={() => paginate(index + 1)}
+                      aria-current={
+                        index + 1 === currentPage ? "page" : undefined
+                      }
                     >
                       {index + 1}
                     </Pagination.Item>
@@ -775,7 +861,13 @@ const UsersList = () => {
               </Pagination>
             </div>
             {message && (
-              <AlertMessage key={alertKey} message={message} type={type} />
+              <AlertMessage
+                key={alertKey}
+                message={message}
+                type={type}
+                role="alert"
+                aria-live="assertive"
+              />
             )}
             <div className="button_tower">
               <Button
@@ -783,6 +875,11 @@ const UsersList = () => {
                 variant="outline-info"
                 className="btn-sm"
                 onClick={toggleFilter}
+                aria-label={
+                  translations[languageCode]?.usersList
+                    ?.replaceConnectionRequestsButton ||
+                  "Replace Your Connection Requests"
+                }
               >
                 {translations[languageCode]?.usersList
                   ?.replaceConnectionRequestsButton ||
@@ -800,6 +897,7 @@ const UsersList = () => {
                 variant="outline-info"
                 className="btn-sm"
                 onClick={handleToggleConnectionRequests} // Use this handler to toggle the visibility
+                aria-expanded={showConnectionRequests}
               >
                 {showConnectionRequests
                   ? translations[languageCode]?.usersList
@@ -829,6 +927,8 @@ const UsersList = () => {
                   className="btn-sm"
                   onClick={handleToggleRequestsFromOthers}
                   style={{ backgroundColor: "white" }}
+                  aria-expanded={showRequestsFromOthers}
+                  aria-controls="requests-from-others"
                 >
                   {showRequestsFromOthers
                     ? translations[languageCode]?.usersList
@@ -847,11 +947,12 @@ const UsersList = () => {
                     onEnableSelectedConnections={enableSelectedConnections}
                     showRequestsOfOthers={showRequestsOfOthers}
                     languageCode={languageCode}
+                    id="requests-from-others"
                   />
                 )}
               </div>
             </div>
-          </div>
+          </section>
         )}
       </div>
       {activeTab === "Interactions" && (

@@ -191,8 +191,12 @@ const InteractionTitles = ({
       .catch((error) => {
         console.error("Error ending Engagement:", error);
         setMessage(
-          `${translations[languageCode]?.interactionTitles?.endError || "Error: this engagement was not removed"}: ${error}`
-        );        setType("error");
+          `${
+            translations[languageCode]?.interactionTitles?.endError ||
+            "Error: this engagement was not removed"
+          }: ${error}`
+        );
+        setType("error");
         setAlertKey((prevKey) => prevKey + 1);
       });
   };
@@ -215,10 +219,16 @@ const InteractionTitles = ({
 
   return (
     <div className="wrapper-container">
-      <ul className="no-bullet">
+      <ul className="no-bullet" aria-label="List of engagements">
+        {" "}
         {Array.isArray(interactions) &&
           interactions.map((interaction, index) => (
-            <li key={index} className="interaction-item">
+            <li
+              key={index}
+              className="interaction-item"
+              role="article"
+              aria-labelledby={`interaction-title-${index}`}
+            >
               {!endedInteractions.includes(interaction.submission_id) && (
                 <div
                   className="interaction-title-container"
@@ -237,18 +247,23 @@ const InteractionTitles = ({
                     variant="outline-info"
                     className="btn-sm btn-pulse"
                     onClick={() => handleTitleClick(interaction)}
+                    aria-labelledby={`interaction-title-${index}`}
                   >
-                    {interaction.title}
+                    <span id={`interaction-title-${index}`}>
+                      {interaction.title}
+                    </span>
                   </Button>
                 </div>
               )}
-              <div className="interaction-details-container">
+              <div className="interaction-details-container" aria-live="polite">
                 <span
                   className="interaction-date"
                   title={interaction.formatted_created_at}
                 >
-                  {translations[languageCode]?.interactionTitles?.createdText ||
-                    "Created"}
+                  <strong>
+                    {translations[languageCode]?.interactionTitles
+                      ?.createdText || "Created"}
+                  </strong>
                   :{" "}
                   {translateDate(
                     interaction.formatted_created_at,
@@ -259,8 +274,9 @@ const InteractionTitles = ({
                   className="interaction-expected-end"
                   title={interaction.expected_end}
                 >
-                  {translations[languageCode]?.userList?.expectedEnd ||
-                    "Expected end"}
+                <strong>
+                  {translations[languageCode]?.userList?.expectedEnd || "Expected end"}
+                </strong>:{" "}
                   :{" "}
                   {endedInteractions.includes(interaction.submission_id)
                     ? translations[languageCode]?.userList?.ended || "Ended"
@@ -275,6 +291,8 @@ const InteractionTitles = ({
                       variant="outline-info"
                       className="btn-sm interaction-edit"
                       onClick={(event) => handleEditClick(interaction, event)}
+                      aria-label={`${translations[languageCode]?.interactionTitles?.inviteUsersTo || "Invite users to"} Invite users to ${interaction.title}`}
+
                     >
                       {translations[languageCode]?.userList?.invited ||
                         "Invited"}
@@ -286,6 +304,7 @@ const InteractionTitles = ({
                       onClick={(event) =>
                         handleDownloadAndEndItClick(interaction, event)
                       }
+                      aria-label={`${translations[languageCode]?.interactionTitles?.saveChangesTo || "Save changes to"} ${interaction.title}`}
                     >
                       {translations[languageCode]?.userList?.save || "Save"}
                     </Button>
@@ -294,12 +313,14 @@ const InteractionTitles = ({
                       variant="danger"
                       className="btn-sm interaction-edit"
                       onClick={(event) => handleEndItClick(interaction, event)}
+                      aria-label={`${translations[languageCode]?.interactionTitles?.endEngagementTitled || "End engagement titled"} ${interaction.title}`}
+
                     >
                       {translations[languageCode]?.userList?.endIt || "End it"}
                     </Button>
                   </>
                 ) : (
-                  <span className="interaction-username">
+                  <span className="interaction-username" aria-label={`${translations[languageCode]?.interactionTitles?.engagementCreatedBy || "Engagement created by"} ${interaction.username}`}>
                     {interaction.username}
                   </span>
                 )}

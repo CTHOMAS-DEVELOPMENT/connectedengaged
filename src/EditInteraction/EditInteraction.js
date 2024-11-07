@@ -345,242 +345,316 @@ const EditInteraction = () => {
 
   return (
     <div>
-      <Button
-        style={{ backgroundColor: "white" }}
-        variant="outline-info"
-        className="btn-sm"
-        onClick={handleBackToMessagesClick}
-      >
-        {pageTranslations.backToMessages || "Back to messages"}
-      </Button>{" "}
-      <div>
-        <div className="edit-interaction-container">
-          <div className="centre_scroll">
-            <h2 className="font-style-4">{title}</h2>
-            <ScrollingHelpText message={helpMessage} width="300px" />
-          </div>
-          <div
-            className="dropdown-container"
-            style={{
-              padding: "20px",
-              borderRadius: "10px",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-              marginBottom: "20px",
-            }}
-          >
-            <div className="form-group row">
-              <div>
-                <input
-                  type="text"
-                  id="username"
-                  className="form-control"
-                  placeholder={
-                    pageTranslations.usernamePlaceholder ||
-                    "Enter a partial username at least"
-                  }
-                  value={usernameFilter}
-                  onChange={(e) => setUsernameFilter(e.target.value)}
-                />
-              </div>
+      <nav>
+        <Button
+          style={{ backgroundColor: "white" }}
+          variant="outline-info"
+          className="btn-sm"
+          onClick={handleBackToMessagesClick}
+          aria-label={pageTranslations.backToMessages || "Back to messages"}
+        >
+          {pageTranslations.backToMessages || "Back to messages"}
+        </Button>{" "}
+      </nav>
+      <main>
+        <section aria-labelledby="interaction-title">
+          <div className="edit-interaction-container">
+            <div className="centre_scroll">
+              <h2 id="interaction-title" className="font-style-4">
+                {title}
+              </h2>
+              <ScrollingHelpText message={helpMessage} width="300px" />
             </div>
-            <div className="form-group">
-              <div>
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  onClick={() => setShowGender(!showGender)}
-                >
-                  {showGender
-                    ? pageTranslations.hideMostLikeYou ||
-                      "Hide Their 'Most Like You'"
-                    : pageTranslations.showMostLikeYou ||
-                      "Show Their 'Most Like You' Selection"}
-                </Button>
-              </div>
-              {showGender && (
-                <Gender
-                  onSelectGender={handleGenderSelection}
-                  selected={selectedGender}
-                />
-              )}
-              <div>
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  onClick={() => setShowHobbies(!showHobbies)}
-                >
-                  {showHobbies
-                    ? pageTranslations.hideFavouriteHobby ||
-                      "Hide Their 'Favourite Hobby'"
-                    : pageTranslations.showFavouriteHobby ||
-                      "Show Their 'Favourite Hobby' Selection"}
-                </Button>
-              </div>
-              {showHobbies && (
-                <Hobbies
-                  onSelectHobby={handleHobbySelection}
-                  selected={selectedHobby}
-                  selectedLanguage={languageCode}
-                  hobbies={pageTranslations.hobbies} // Pass the translated hobbies
-                />
-              )}
-            </div>
-
-            <div className="form-group">
-              <div>
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  onClick={() => setShowOrientation(!showOrientation)}
-                >
-                  {showOrientation
-                    ? pageTranslations.hidePreferredCompany ||
-                      "Hide Their 'Preferred Company'"
-                    : pageTranslations.showPreferredCompany ||
-                      "Show Their 'Preferred Company' Selection"}
-                </Button>
-              </div>
-              {showOrientation && (
-                <Orientation
-                  onSelectOrientation={handleOrientationSelection}
-                  selected={selectedOrientation}
-                />
-              )}
-            </div>
-
-            <div className="form-group">
-              <div>
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
-                >
-                  {showFloatsMyBoat
-                    ? pageTranslations.hideFloatsYourBoat ||
-                      "Hide Their 'Floats Your Boat'"
-                    : pageTranslations.showFloatsYourBoat ||
-                      "Show Their 'Floats Your Boat' Selection"}
-                </Button>
-              </div>
-
-              {showFloatsMyBoat && (
-                <FloatsMyBoat
-                  onSelectCarousel={handleCarouselSelection}
-                  selectedCarousel={selectedCarousel}
-                />
-              )}
-            </div>
-            <div className="row mb-3">
-              <div>
-                <textarea
-                  id="aboutYou"
-                  name="aboutYou"
-                  className="about-you-textarea"
-                  value={aboutYouFilter}
-                  placeholder={
-                    pageTranslations.aboutYouPlaceholder ||
-                    "Enter something they must have said in their bio"
-                  }
-                  onChange={handleInputChange}
-                  style={{ width: "100%", height: "100px" }} // Adjust styling as needed
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              width: "100%",
-              padding: "10px 20px",
-              backgroundColor: "#000", // Black background
-              borderRadius: "8px", // Rounded corners
-            }}
-          >
             <div
-              className="font-style-4 form-check"
+              className="dropdown-container"
+              style={{
+                padding: "20px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                marginBottom: "20px",
+              }}
+              aria-labelledby="filters-section"
+            >
+              <h3 id="filters-section" className="font-style-4">
+                {pageTranslations.FilterUsers || "Filter Users"}
+              </h3>
+              <div className="form-group row">
+                <div>
+                  <input
+                    type="text"
+                    id="username"
+                    className="form-control"
+                    placeholder={
+                      pageTranslations.usernamePlaceholder ||
+                      "Enter a partial username at least"
+                    }
+                    aria-label={
+                      pageTranslations.usernamePlaceholder ||
+                      "Enter a partial username at least"
+                    }
+                    value={usernameFilter}
+                    onChange={(e) => setUsernameFilter(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <div>
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    onClick={() => setShowGender(!showGender)}
+                    aria-expanded={showGender}
+                    aria-controls="g-selection"
+                  >
+                    {showGender
+                      ? pageTranslations.hideMostLikeYou ||
+                        "Hide Their 'Most Like You'"
+                      : pageTranslations.showMostLikeYou ||
+                        "Show Their 'Most Like You' Selection"}
+                  </Button>
+                </div>
+                {showGender && (
+                  <div
+                    id="g-selection"
+                    role="region"
+                    aria-labelledby="g-selection"
+                  >
+                    <Gender
+                      onSelectGender={handleGenderSelection}
+                      selected={selectedGender}
+                    />
+                  </div>
+                )}
+                <div>
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    onClick={() => setShowHobbies(!showHobbies)}
+                    aria-expanded={showHobbies}
+                    aria-controls="h-selection"
+                  >
+                    {showHobbies
+                      ? pageTranslations.hideFavouriteHobby ||
+                        "Hide Their 'Favourite Hobby'"
+                      : pageTranslations.showFavouriteHobby ||
+                        "Show Their 'Favourite Hobby' Selection"}
+                  </Button>
+                </div>
+                {showHobbies && (
+                  <div
+                    id="h-selection"
+                    role="region"
+                    aria-labelledby="h-selection"
+                  >
+                    <Hobbies
+                      onSelectHobby={handleHobbySelection}
+                      selected={selectedHobby}
+                      selectedLanguage={languageCode}
+                      hobbies={pageTranslations.hobbies} // Pass the translated hobbies
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <div>
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    onClick={() => setShowOrientation(!showOrientation)}
+                    aria-expanded={showOrientation}
+                    aria-controls="o-selection"
+                  >
+                    {showOrientation
+                      ? pageTranslations.hidePreferredCompany ||
+                        "Hide Their 'Preferred Company'"
+                      : pageTranslations.showPreferredCompany ||
+                        "Show Their 'Preferred Company' Selection"}
+                  </Button>
+                </div>
+                {showOrientation && (
+                  <div
+                    id="o-selection"
+                    role="region"
+                    aria-labelledby="o-selection"
+                  >
+                    <Orientation
+                      onSelectOrientation={handleOrientationSelection}
+                      selected={selectedOrientation}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <div>
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
+                    aria-expanded={showFloatsMyBoat}
+                    aria-controls="f-selection"
+                  >
+                    {showFloatsMyBoat
+                      ? pageTranslations.hideFloatsYourBoat ||
+                        "Hide Their 'Floats Your Boat'"
+                      : pageTranslations.showFloatsYourBoat ||
+                        "Show Their 'Floats Your Boat' Selection"}
+                  </Button>
+                </div>
+
+                {showFloatsMyBoat && (
+                  <div
+                    id="f-selection"
+                    role="region"
+                    aria-labelledby="f-selection"
+                  >
+                    <FloatsMyBoat
+                      onSelectCarousel={handleCarouselSelection}
+                      selectedCarousel={selectedCarousel}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="row mb-3">
+                <div>
+                  <textarea
+                    id="aboutYou"
+                    name="aboutYou"
+                    className="about-you-textarea"
+                    value={aboutYouFilter}
+                    placeholder={
+                      pageTranslations.aboutYouPlaceholder ||
+                      "Enter something they must have said in their bio"
+                    }
+                    aria-label={
+                      pageTranslations.aboutYouPlaceholder ||
+                      "Enter something they must have said in their bio"
+                    }
+                    onChange={handleInputChange}
+                    style={{ width: "100%", height: "100px" }} // Adjust styling as needed
+                  />
+                </div>
+              </div>
+            </div>
+            <div
               style={{
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                fontSize: "20px",
+                padding: "10px 20px",
+                backgroundColor: "#000", // Black background
+                borderRadius: "8px", // Rounded corners
               }}
             >
-              <label
-                className="form-check-label"
-                htmlFor="showSelectedCheckbox"
+              <div
+                className="font-style-4 form-check"
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  color: "#fff", // White text
+                  justifyContent: "center",
+                  width: "100%",
+                  fontSize: "20px",
                 }}
               >
-                <span style={{ marginRight: "30px" }}>
-                  {pageTranslations.showSelectedUsers || "Show Selected Users"}
-                </span>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="showSelectedCheckbox"
-                  checked={showSelectedOnly}
-                  onChange={handleShowSelectedChange}
-                />
-              </label>
-            </div>
-          </div>
-          <div className="scrollable-content">
-            <ul className="no-bullet">
-              {currentUsers.map((user) => (
-                <li key={user.id} className="user-edit-item">
-                  <div className="user-edit-info">
-                    <img
-                      src={grabUserPicture(user.profile_picture, user.sex)}
-                      alt={user.username}
-                      className="post-profile-image"
-                    />
-                    <span className="username">{user.username}</span>
-                    <input
-                      type="checkbox"
-                      checked={selectedUserIds.has(user.id)}
-                      onChange={() => handleCheckboxChange(user.id)}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          {totalPages > 1 && (
-            <div className="pagination">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <Button
-                  key={i}
-                  variant={
-                    currentPage === i + 1 ? "primary" : "outline-primary"
+                <label
+                  className="form-check-label"
+                  htmlFor="showSelectedCheckbox"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#fff", // White text
+                  }}
+                  aria-label={
+                    pageTranslations.showSelectedCheckbox ||
+                    "Click the checkbox to show only the users already in the Engagement"
                   }
-                  className={`round-button ${
-                    currentPage === i + 1 ? "selected" : ""
-                  }`}
-                  onClick={() => paginate(i + 1)}
                 >
-                  {i + 1}
-                </Button>
-              ))}
+                  <span style={{ marginRight: "30px" }}>
+                    {pageTranslations.showSelectedUsers ||
+                      "Show Selected Users"}
+                  </span>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="showSelectedCheckbox"
+                    checked={showSelectedOnly}
+                    onChange={handleShowSelectedChange}
+                  />
+                </label>
+              </div>
             </div>
-          )}
-          {message && (
-            <AlertMessage key={alertKey} message={message} type={type} />
-          )}
-          {isChanged && (
-            <Button
-              variant="outline-info"
-              className="btn-sm"
-              onClick={handleUpdateGroupClick}
-            >
-              Update Group
-            </Button>
-          )}
-        </div>
-      </div>
+            <div className="scrollable-content">
+              <section aria-labelledby="user-list">
+                <ul id="user-list" className="no-bullet">
+                  {currentUsers.map((user) => (
+                    <li key={user.id} className="user-edit-item">
+                      <div
+                        className="user-edit-info"
+                        role="region"
+                        aria-label={`User ${user.username}`}
+                      >
+                        <img
+                          src={grabUserPicture(user.profile_picture, user.sex)}
+                          alt={user.username}
+                          className="post-profile-image"
+                        />
+                        <span className="username">{user.username}</span>
+                        <input
+                          type="checkbox"
+                          checked={selectedUserIds.has(user.id)}
+                          onChange={() => handleCheckboxChange(user.id)}
+                          aria-label={user.username}
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+            {totalPages > 1 && (
+              <nav aria-label={pageTranslations.pagination || "Pagination"}>
+                <div className="pagination">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <Button
+                      key={i}
+                      variant={
+                        currentPage === i + 1 ? "primary" : "outline-primary"
+                      }
+                      className={`round-button ${
+                        currentPage === i + 1 ? "selected" : ""
+                      }`}
+                      onClick={() => paginate(i + 1)}
+                      aria-label={`Page ${i + 1}`}
+                      aria-current={currentPage === i + 1 ? "page" : undefined}
+                    >
+                      {i + 1}
+                    </Button>
+                  ))}
+                </div>
+              </nav>
+            )}
+            {message && (
+              <AlertMessage
+                key={alertKey}
+                message={message}
+                type={type}
+                role="alert"
+                aria-live="assertive"
+              />
+            )}
+            {isChanged && (
+              <Button
+                variant="outline-info"
+                className="btn-sm"
+                onClick={handleUpdateGroupClick}
+                aria-label={pageTranslations.updateGroup || "Update Group"}
+              >
+                {pageTranslations.updateGroup || "Update Group"}
+              </Button>
+            )}
+          </div>
+        </section>
+      </main>
     </div>
   );
 };

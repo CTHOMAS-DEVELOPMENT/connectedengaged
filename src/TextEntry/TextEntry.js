@@ -54,13 +54,18 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
 
   return (
     <div className="text-entry">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} aria-labelledby="text-entry-label">
+      <div id="text-entry-label" className="visually-hidden">
+        {pageTranslations.textEntryForm || "Text Entry Form"}
+      </div>
         <div className="text-input-and-button">
           <textarea
             value={textContent}
             onChange={(e) => setTextContent(e.target.value)}
             placeholder={pageTranslations.placeholder || "What's on your mind?"}
             disabled={isSubmitting} // Disable textarea while submitting
+            aria-label={pageTranslations.placeholder || "What's on your mind?"}
+
           />
 
           <Button
@@ -69,7 +74,9 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
             className="btn-icon"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
-            disabled={isSubmitting} // Disable button while submitting
+            disabled={isSubmitting} 
+            aria-label={isSubmitting ? pageTranslations.submitting || "Submitting" : pageTranslations.submitYourPost || "Submit your post"}
+
           >
             {isSubmitting ? (
               <Spinner
@@ -85,8 +92,8 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
               <Rocket size={25} />
             )}
           </Button>
-          {message && <AlertMessage key={alertKey} message={message} type={type} />}
-        </div>
+          {message && <AlertMessage key={alertKey} message={message} type={type} role="alert" aria-live="assertive" />}
+          </div>
       </form>
     </div>
   );

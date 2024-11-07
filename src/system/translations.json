@@ -124,6 +124,24 @@
           "locationXRequired": "Roghnaigh do Shuíomh le do thoil",
           "locationYRequired": "Roghnaigh do Shuíomh le do thoil"
         }
+      },
+      "pt": {
+        "validation": {
+          "usernameRequired": "Nome de usuário é obrigatório",
+          "usernameMinLength": "O nome de usuário deve ter pelo menos 8 caracteres",
+          "invalidEmail": "Formato de email inválido",
+          "passwordMinLength": "A senha deve ter pelo menos 8 caracteres",
+          "passwordUppercase": "A senha deve conter pelo menos 1 letra maiúscula",
+          "passwordNumber": "A senha deve conter pelo menos 1 número",
+          "preferredCompanyRequired": "Por favor, insira um valor para 'Companhia Preferida'",
+          "mostLikeYouRequired": "Por favor, insira um valor para 'Mais Parecido com Você'",
+          "favouriteHobbyRequired": "Por favor, insira um valor para 'Hobby Favorito'",
+          "floatsYourBoatRequired": "Por favor, insira um valor para 'O que lhe interessa'",
+          "aboutYouRequired": "Por favor, conte algo sobre você",
+          "adminRequired": "Por favor, informe ao administrador do sistema quem você quer que ele seja",
+          "locationXRequired": "Por favor, selecione sua localização",
+          "locationYRequired": "Por favor, selecione sua localização"
+        }
       }
   }
   

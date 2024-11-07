@@ -3,7 +3,7 @@ import translations from "./translations.json"; // Import your translations
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "react-bootstrap"; // Import the Button from react-bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
-const PrivacyPolicy = ({ selectedLanguage }) => {
+const PrivacyPolicy = ({ selectedLanguage, showBackButton = true }) => {
   const pageTranslations = translations[selectedLanguage]?.["privacyPolicy"] || {}; // Get privacy policy translations for selected language
   const navigate = useNavigate();
   const location = useLocation();
@@ -92,11 +92,13 @@ const PrivacyPolicy = ({ selectedLanguage }) => {
             "If you have any questions or concerns regarding this Privacy Policy, please contact us at connectedengaged@gmail.com."}
         </p>
       </footer>
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <Button variant="primary" onClick={handleBackToBase}>
-          {pageTranslations.backToBase || "Back to base"}
-        </Button>
-      </div>
+      {showBackButton && (
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Button variant="primary" onClick={handleBackToBase}>
+            {pageTranslations.backToBase || "Back to Base"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

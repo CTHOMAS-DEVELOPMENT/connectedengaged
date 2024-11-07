@@ -7,9 +7,9 @@ import translations from "./translations.json"; // Adjust the path to where your
 
 const PasswordReset = () => {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");         // Extract the token from the URL
+  const token = searchParams.get("token"); // Extract the token from the URL
   const languageCode = searchParams.get("language") || "en"; // Extract the language code or default to "en"
-  
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -25,8 +25,8 @@ const PasswordReset = () => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setMessage(
-        translations[languageCode]?.passwordReset?.passwordMismatch || 
-        "Passwords do not match."
+        translations[languageCode]?.passwordReset?.passwordMismatch ||
+          "Passwords do not match."
       );
       setType("warning");
       setAlertKey((prevKey) => prevKey + 1);
@@ -38,14 +38,14 @@ const PasswordReset = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token, password, languageCode }),  // Include the token, new password, and languageCode in the request
+      body: JSON.stringify({ token, password, languageCode }), // Include the token, new password, and languageCode in the request
     })
       .then((response) => response.json())
       .then((data) => {
         setMessage(
-          data.message || 
-          translations[languageCode]?.passwordReset?.successMessage ||
-          "Password reset successful!"
+          data.message ||
+            translations[languageCode]?.passwordReset?.successMessage ||
+            "Password reset successful!"
         );
         setType("success");
         setAlertKey((prevKey) => prevKey + 1);
@@ -54,7 +54,7 @@ const PasswordReset = () => {
         console.error("Error:", error);
         setMessage(
           translations[languageCode]?.passwordReset?.errorMessage ||
-          "Error resetting password. Please try again."
+            "Error resetting password. Please try again."
         );
         setType("error");
         setAlertKey((prevKey) => prevKey + 1);
@@ -63,38 +63,79 @@ const PasswordReset = () => {
 
   return (
     <div>
-      <Button variant="danger" onClick={backToLogin} className="logout-button">
-        {translations[languageCode]?.passwordReset?.backToLogin || "Back to Login"}
-      </Button>
+      <nav>
+        <Button
+          variant="danger"
+          onClick={backToLogin}
+          className="logout-button"
+          aria-label={
+            translations[languageCode]?.passwordReset?.backToLogin ||
+            "Back to Login"
+          }
+        >
+          {translations[languageCode]?.passwordReset?.backToLogin ||
+            "Back to Login"}
+        </Button>
+      </nav>
       <h2 className="font-style-4">
-        {translations[languageCode]?.passwordReset?.title || "Reset Your Password"}
+        {translations[languageCode]?.passwordReset?.title ||
+          "Reset Your Password"}
       </h2>
       <div className="wrapper-container">
-        <form onSubmit={handlePasswordReset}>
+        <form onSubmit={handlePasswordReset} aria-label={translations[languageCode]?.passwordReset?.passwordResetForm ||
+              "Password Reset Form"}>
+          <label htmlFor="newPassword">
+            {translations[languageCode]?.passwordReset?.newPassword ||
+              "New Password"}
+          </label>
           <input
             type="password"
             value={password}
+            id="newPassword"
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={translations[languageCode]?.passwordReset?.newPasswordPlaceholder || "New Password"}
+            placeholder={
+              translations[languageCode]?.passwordReset
+                ?.newPasswordPlaceholder || "New Password"
+            }
             required
+            aria-required="true"
+            aria-describedby="newPasswordHelp"
           />
+          <small id="newPasswordHelp">
+            {translations[languageCode]?.passwordReset?.enterNewPassword ||
+              "Enter your new password"}
+          </small>
+
+          <label htmlFor="confirmPassword">
+            {translations[languageCode]?.passwordReset?.confirmNewPassword ||
+              "Confirm New Password"}
+          </label>
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder={translations[languageCode]?.passwordReset?.confirmPasswordPlaceholder || "Confirm New Password"}
+            placeholder={
+              translations[languageCode]?.passwordReset
+                ?.confirmPasswordPlaceholder || "Confirm New Password"
+            }
             required
+            id="confirmPassword"
+            aria-required="true"
+            aria-describedby="confirmPasswordHelp"
           />
           <Button
             variant="outline-info"
             className="btn-sm view-profile-btn"
             type="submit"
+            aria-label={translations[languageCode]?.passwordReset?.submitButton || "Reset Password"}
           >
-            {translations[languageCode]?.passwordReset?.submitButton || "Reset Password"}
+            {translations[languageCode]?.passwordReset?.submitButton ||
+              "Reset Password"}
           </Button>
         </form>
       </div>
-      {message && <AlertMessage key={alertKey} message={message} type={type} />}
+      {message && <AlertMessage key={alertKey} message={message} type={type} role="alert"
+        aria-live="assertive"/>}
     </div>
   );
 };

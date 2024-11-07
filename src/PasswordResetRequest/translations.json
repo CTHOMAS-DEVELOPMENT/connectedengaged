@@ -7,7 +7,8 @@
       "sendLink": "Send Reset Link",
       "emailSent": "Please check your email for the password reset link.",
       "emailFailed": "Unable to send password reset link. Please try again later.",
-      "networkError": "Network error while trying to send reset link."
+      "emailHelpText": "We'll send a reset link to this email address.",
+       "networkError": "Network error while trying to send reset link."
     }
   },
   "es": {
@@ -18,7 +19,8 @@
       "sendLink": "Enviar enlace de restablecimiento",
       "emailSent": "Por favor, revisa tu correo electrónico para el enlace de restablecimiento de contraseña.",
       "emailFailed": "No se pudo enviar el enlace de restablecimiento. Inténtalo de nuevo más tarde.",
-      "networkError": "Error de red al intentar enviar el enlace de restablecimiento."
+      "emailHelpText": "Enviaremos un enlace de restablecimiento a esta dirección de correo electrónico.",
+     "networkError": "Error de red al intentar enviar el enlace de restablecimiento."
     }
   },
   "fr": {
@@ -29,7 +31,8 @@
       "sendLink": "Envoyer le lien de réinitialisation",
       "emailSent": "Veuillez vérifier votre e-mail pour le lien de réinitialisation du mot de passe.",
       "emailFailed": "Impossible d'envoyer le lien de réinitialisation du mot de passe. Veuillez réessayer plus tard.",
-      "networkError": "Erreur réseau lors de l'envoi du lien de réinitialisation."
+      "emailHelpText": "Nous enverrons un lien de réinitialisation à cette adresse e-mail.",
+       "networkError": "Erreur réseau lors de l'envoi du lien de réinitialisation."
     }
   },
   "de": {
@@ -40,6 +43,7 @@
       "sendLink": "Link zum Zurücksetzen senden",
       "emailSent": "Bitte überprüfen Sie Ihre E-Mails auf den Link zum Zurücksetzen des Passworts.",
       "emailFailed": "Der Link zum Zurücksetzen des Passworts konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
+      "emailHelpText": "Wir senden einen Zurücksetzungslink an diese E-Mail-Adresse.",
       "networkError": "Netzwerkfehler beim Senden des Zurücksetzungslinks."
     }
   },
@@ -51,6 +55,7 @@
       "sendLink": "إرسال رابط إعادة التعيين",
       "emailSent": "يرجى التحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور.",
       "emailFailed": "تعذر إرسال رابط إعادة تعيين كلمة المرور. الرجاء المحاولة لاحقًا.",
+      "emailHelpText": "سنرسل رابط إعادة تعيين إلى هذا البريد الإلكتروني.",
       "networkError": "خطأ في الشبكة أثناء محاولة إرسال رابط إعادة التعيين."
     }
   },
@@ -62,6 +67,7 @@
       "sendLink": "发送重置链接",
       "emailSent": "请检查您的电子邮件以获取密码重置链接。",
       "emailFailed": "无法发送密码重置链接。请稍后再试。",
+      "emailHelpText": "我们会将重置链接发送到此电子邮件地址。", 
       "networkError": "发送重置链接时出现网络错误。"
     }
   },
@@ -73,7 +79,20 @@
       "sendLink": "Seol Nasc Athshocrú",
       "emailSent": "Seiceáil do r-phost le haghaidh an nasc athshocraithe pasfhocail.",
       "emailFailed": "Níor éirigh leis an nasc athshocraithe pasfhocail a sheoladh. Déan iarracht arís níos déanaí.",
-      "networkError": "Earráid líonra agus an nasc athshocraithe á sheoladh."
+            "emailHelpText": "Seolfaimid nasc athshocraithe chuig an seoladh ríomhphoist seo.",
+            "networkError": "Earráid líonra agus an nasc athshocraithe á sheoladh."
+    }
+  },
+  "pt": {
+    "passwordReset": {
+      "backToLogin": "Voltar para o Login",
+      "title": "Redefinição de Senha",
+      "emailPlaceholder": "Digite seu e-mail",
+      "sendLink": "Enviar Link de Redefinição",
+      "emailSent": "Por favor, verifique seu e-mail para o link de redefinição de senha.",
+      "emailFailed": "Não foi possível enviar o link de redefinição de senha. Tente novamente mais tarde.",
+      "emailHelpText":"Enviaremos um link de redefinição para este endereço de e-mail.",
+      "networkError": "Erro de rede ao tentar enviar o link de redefinição."
     }
   }
 }

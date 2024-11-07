@@ -4,6 +4,10 @@
       "fetchingError": "Error fetching engagements",
       "endSuccess": "The engagement has been removed",
       "endError": "Error: this engagement was not removed",
+      "inviteUsersTo": "Invite users to",
+      "engagementCreatedBy": "Engagement created by",
+      "saveChangesTo": "Save changes to",
+      "endEngagementTitled": "End engagement titled",
       "networkError": "Network response was not ok"
     },
     "userList": {
@@ -20,6 +24,10 @@
       "fetchingError": "Error al obtener los compromisos",
       "endSuccess": "El compromiso ha sido eliminado",
       "endError": "Error: este compromiso no fue eliminado",
+      "inviteUsersTo": "Invitar a los usuarios a",
+      "engagementCreatedBy": "Compromiso creado por",
+      "saveChangesTo": "Guardar cambios en",
+      "endEngagementTitled": "Terminar el compromiso titulado",
       "networkError": "La respuesta de la red no fue satisfactoria"
     },
     "userList": {
@@ -36,6 +44,10 @@
       "fetchingError": "Erreur lors de la récupération des engagements",
       "endSuccess": "L'engagement a été supprimé",
       "endError": "Erreur : cet engagement n'a pas été supprimé",
+      "inviteUsersTo": "Inviter des utilisateurs à",
+      "engagementCreatedBy": "Engagement créé par",
+      "saveChangesTo": "Enregistrer les modifications de",
+      "endEngagementTitled": "Terminer l'engagement intitulé",
       "networkError": "La réponse du réseau n'était pas correcte"
     },
     "userList": {
@@ -52,6 +64,10 @@
       "fetchingError": "Fehler beim Abrufen der Engagements",
       "endSuccess": "Das Engagement wurde entfernt",
       "endError": "Fehler: Dieses Engagement wurde nicht entfernt",
+      "inviteUsersTo": "Benutzer einladen zu",
+      "engagementCreatedBy": "Engagement erstellt von",
+      "saveChangesTo": "Änderungen speichern an",
+      "endEngagementTitled": "Engagement beenden mit dem Titel",
       "networkError": "Die Netzwerkantwort war nicht in Ordnung"
     },
     "userList": {
@@ -68,15 +84,19 @@
       "fetchingError": "خطأ في استرجاع الالتزامات",
       "endSuccess": "تم إزالة الالتزام",
       "endError": "خطأ: لم يتم إزالة هذا الالتزام",
+      "inviteUsersTo": "دعوة المستخدمين إلى",
+      "engagementCreatedBy": "تم إنشاء الارتباط بواسطة",
+      "saveChangesTo": "حفظ التغييرات على",
+      "endEngagementTitled": "إنهاء الارتباط بعنوان",
       "networkError": "الاستجابة من الشبكة لم تكن جيدة"
     },
     "userList": {
       "createdText": "تم الإنشاء",
       "expectedEnd": "النهاية المتوقعة",
       "ended": "انتهى",
-	  "invited": "مدعو",
+      "invited": "مدعو",
       "save": "حفظ",
-      "endIt": "إنهاء"      
+      "endIt": "إنهاء"
     }
   },
   "zh": {
@@ -84,6 +104,10 @@
       "fetchingError": "获取参与时出错",
       "endSuccess": "参与已被删除",
       "endError": "错误：此参与未被删除",
+      "inviteUsersTo": "邀请用户参加",
+      "engagementCreatedBy": "由...创建的活动",
+      "saveChangesTo": "保存更改到",
+      "endEngagementTitled": "结束标题为的活动",
       "networkError": "网络响应不正确"
     },
     "userList": {
@@ -100,6 +124,10 @@
       "fetchingError": "Earráid ag fáil rannpháirtíochtaí",
       "endSuccess": "Tá an rannpháirtíocht bainte",
       "endError": "Earráid: níor baineadh an rannpháirtíocht seo",
+      "inviteUsersTo": "Tabhair cuireadh d’úsáideoirí chuig",
+      "engagementCreatedBy": "Cruthaíodh an teagmháil le",
+      "saveChangesTo": "Sábháil athruithe ar",
+      "endEngagementTitled": "Críochnaigh an teagmháil dar teideal",
       "networkError": "Ní raibh freagra an líonra ceart"
     },
     "userList": {
@@ -109,6 +137,26 @@
       "invited": "Tugtha cuireadh",
       "save": "Sábháil",
       "endIt": "Críochnaigh é"
+    }
+  },
+  "pt": {
+    "interactionTitles": {
+      "fetchingError": "Erro ao buscar engajamentos",
+      "endSuccess": "O engajamento foi removido",
+      "endError": "Erro: este engajamento não foi removido",
+      "inviteUsersTo": "Convidar usuários para",
+      "engagementCreatedBy": "Engajamento criado por",
+      "saveChangesTo": "Salvar alterações em",
+      "endEngagementTitled": "Encerrar engajamento intitulado",
+      "networkError": "A resposta da rede não foi bem-sucedida"
+    },
+    "userList": {
+      "createdText": "Criado",
+      "expectedEnd": "Término previsto",
+      "ended": "Encerrado",
+      "invited": "Convidado",
+      "save": "Salvar",
+      "endIt": "Encerrar"
     }
   }
 }

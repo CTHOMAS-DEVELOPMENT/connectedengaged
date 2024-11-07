@@ -12,7 +12,7 @@
       "locationLabel": "{username}'s Location",
       "aboutYouLabel": "{username}'s about you",
       "aboutYouPlaceholder": "{username} has not entered anything yet..",
-      "newSubmissionButton": "New Submission",
+      "newSubmissionButton": "New Engagement",
       "hobbies": [
         "Arts",
         "Collecting",
@@ -53,7 +53,7 @@
       "locationLabel": "Ubicación de {username}",
       "aboutYouLabel": "Acerca de {username}",
       "aboutYouPlaceholder": "{username} aún no ha ingresado nada..",
-      "newSubmissionButton": "Nueva Presentación",
+      "newSubmissionButton": "Nuevo Compromiso",
       "hobbies": [
         "Artes",
         "Coleccionar",
@@ -94,7 +94,7 @@
       "locationLabel": "Emplacement de {username}",
       "aboutYouLabel": "À propos de {username}",
       "aboutYouPlaceholder": "{username} n'a encore rien saisi..",
-      "newSubmissionButton": "Nouvelle Soumission",
+      "newSubmissionButton": "Nouvel Engagement",
       "hobbies": [
         "Arts",
         "Collectionner",
@@ -135,7 +135,7 @@
       "locationLabel": "{username}s Standort",
       "aboutYouLabel": "Über {username}",
       "aboutYouPlaceholder": "{username} hat noch nichts eingegeben..",
-      "newSubmissionButton": "Neue Einreichung",
+      "newSubmissionButton": "Neues Engagement",
       "hobbies": [
         "Kunst",
         "Sammeln",
@@ -176,7 +176,7 @@
       "locationLabel": "موقع {username}",
       "aboutYouLabel": "حول {username}",
       "aboutYouPlaceholder": "لم يدخل {username} أي شيء بعد..",
-      "newSubmissionButton": "تقديم جديد",
+      "newSubmissionButton": "ارتباط جديد",
       "hobbies": [
         "الفنون",
         "جمع",
@@ -217,7 +217,7 @@
       "locationLabel": "{username}的位置",
       "aboutYouLabel": "关于 {username}",
       "aboutYouPlaceholder": "{username} 还没有输入任何内容..",
-      "newSubmissionButton": "新提交",
+      "newSubmissionButton": "新互动",
       "hobbies": [
         "艺术",
         "收集",
@@ -258,7 +258,7 @@
       "locationLabel": "Suíomh {username}",
       "aboutYouLabel": "Maidir le {username}",
       "aboutYouPlaceholder": "Níl aon rud curtha isteach ag {username} fós.",
-      "newSubmissionButton": "Aighneacht Nua",
+      "newSubmissionButton": "Rannpháirtíocht Nua",
       "hobbies": [
         "Ealaíona",
         "Bailiú",
@@ -284,6 +284,47 @@
       "unauthorizedAccess": "Rochtain neamhúdaraithe.",
       "logIn": "logáil isteach",
       "loading": "Ag lódáil..."
+    }
+  },
+  "pt": {
+    "userProfile": {
+      "backToMessages": "Voltar para as mensagens",
+      "profileTitle": "Perfil de {username}",
+      "showVideo": "Mostrar Vídeo",
+      "hideVideo": "Ocultar Vídeo",
+      "preferredCompanySelection": "Seleção de Companhia Preferida de {username}",
+      "favouriteHobbySelection": "Seleção de Hobbies Favoritos de {username}",
+      "floatsMyBoatSelection": "Seleção do que Interessa para {username}",
+      "mostLikeYouSelection": "Seleção de Mais Parecidos com {username}",
+      "locationLabel": "Localização de {username}",
+      "aboutYouLabel": "Sobre {username}",
+      "aboutYouPlaceholder": "{username} ainda não inseriu nenhuma informação.",
+      "newSubmissionButton": "Novo Engajamento",
+      "hobbies": [
+        "Artes",
+        "Colecionismo",
+        "Culinária",
+        "Artesanato",
+        "Dança",
+        "Educação",
+        "Fitness",
+        "Jogos",
+        "Jardinagem",
+        "Meditação",
+        "Música",
+        "Outros",
+        "Fotografia",
+        "Leitura",
+        "Esportes",
+        "Tecnologia",
+        "Viagem",
+        "O Desconhecido",
+        "Voluntariado",
+        "Escrita"
+      ],
+      "unauthorizedAccess": "Acesso não autorizado.",
+      "logIn": "faça login",
+      "loading": "Carregando..."
     }
   }
 }

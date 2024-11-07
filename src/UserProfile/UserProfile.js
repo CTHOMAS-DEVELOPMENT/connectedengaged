@@ -115,15 +115,24 @@ const UserProfile = () => {
         alignItems: "center",
         justifyContent: "center",
       }}
+      role="main"
+      aria-label={
+        pageTranslations.profileTitle
+          ? pageTranslations.profileTitle.replace("{username}", user.username)
+          : `${user.username}'s Profile`
+      }
     >
-      <Button
-        style={{ backgroundColor: "white" }}
-        variant="outline-info"
-        className="btn-sm back-button"
-        onClick={handleBackToMessagesClick}
-      >
-        {pageTranslations.backToMessages || "Back to messages"}
-      </Button>
+      <nav>
+        <Button
+          style={{ backgroundColor: "white" }}
+          variant="outline-info"
+          className="btn-sm back-button"
+          onClick={handleBackToMessagesClick}
+          aria-label={pageTranslations.backToMessages || "Back to messages"}
+        >
+          {pageTranslations.backToMessages || "Back to messages"}
+        </Button>
+      </nav>
       <div className="profile-container" style={{ textAlign: "center" }}>
         <h2 className="font-style-4">
           {pageTranslations.profileTitle
@@ -135,6 +144,13 @@ const UserProfile = () => {
             variant="outline-info"
             className="btn-sm"
             onClick={handleVideoDisplay}
+            aria-expanded={showVideo}
+            aria-controls="profile-video"
+            aria-label={
+              showVideo
+                ? pageTranslations.hideVideo || "Hide Video"
+                : pageTranslations.showVideo || "Show Video"
+            }
           >
             {showVideo
               ? pageTranslations.hideVideo || "Hide Video"
@@ -149,80 +165,96 @@ const UserProfile = () => {
           />
         )}
         {!showVideo && <ProfileViewer userId={userId} />}
+        <section aria-labelledby="preferred-company-title">
+          <p
+            id="preferred-company-title"
+            style={{ marginTop: "20px" }}
+            className="font-style-4"
+          >
+            {pageTranslations.preferredCompanySelection
+              ? pageTranslations.preferredCompanySelection.replace(
+                  "{username}",
+                  user.username
+                )
+              : `${user.username}'s Preferred Company Selection`}
+          </p>
 
-        <p style={{ marginTop: "20px" }} className="font-style-4">
-          {pageTranslations.preferredCompanySelection
-            ? pageTranslations.preferredCompanySelection.replace(
-                "{username}",
-                user.username
-              )
-            : `${user.username}'s Preferred Company Selection`}
-        </p>
-
-        <Orientation
-          onSelectOrientation={() => {}}
-          selected={selectedOrientation}
-        />
-        <p className="font-style-4">
-          {pageTranslations.favouriteHobbySelection.replace(
-            "{username}",
-            user.username
-          ) || `${user.username}'s Favourite Hobby Selection`}
-        </p>
-        <Hobbies
-          onSelectHobby={() => {}}
-          selected={selectedHobby}
-          selectedLanguage={languageCode}
-          hobbies={pageTranslations.hobbies}
-        />
-        <p className="font-style-4">
-          {pageTranslations.floatsMyBoatSelection.replace(
-            "{username}",
-            user.username
-          ) || `${user.username}'s Floats Your Boat Selection`}
-        </p>
-        <FloatsMyBoat
-          onSelectCarousel={() => {}}
-          selectedCarousel={selectedCarousel}
-        />
-        <p className="font-style-4">
-          {pageTranslations.mostLikeYouSelection.replace(
-            "{username}",
-            user.username
-          ) || `${user.username}'s Most Like You Selection`}
-        </p>
-        <Gender onSelectGender={() => {}} selected={selectedGender} />
-        <div style={centerWrapperStyle}>
-          <p className="font-style-4">
-            {pageTranslations.locationLabel.replace(
+          <Orientation
+            onSelectOrientation={() => {}}
+            selected={selectedOrientation}
+          />
+        </section>
+        <section aria-labelledby="hobby-selection-title">
+          <p id="hobby-selection-title" className="font-style-4">
+            {pageTranslations.favouriteHobbySelection.replace(
               "{username}",
               user.username
-            ) || `${user.username}'s Location`}
+            ) || `${user.username}'s Favourite Hobby Selection`}
           </p>
-          <LocationDisplay worldX={user.worldx} worldY={user.worldy} />
-        </div>
-        <p className="font-style-4">
-          {pageTranslations.aboutYouLabel.replace(
-            "{username}",
-            user.username
-          ) || `${user.username}'s about you`}
-        </p>
-        <textarea readOnly className="about-you-textarea">
-          {user.about_you
-            ? user.about_you
-            : pageTranslations.aboutYouPlaceholder
-            ? pageTranslations.aboutYouPlaceholder.replace(
+          <Hobbies
+            onSelectHobby={() => {}}
+            selected={selectedHobby}
+            selectedLanguage={languageCode}
+            hobbies={pageTranslations.hobbies}
+          />
+        </section>
+        <section aria-labelledby="floats-my-boat-title">
+          <p id="floats-my-boat-title" className="font-style-4">
+            {pageTranslations.floatsMyBoatSelection.replace(
+              "{username}",
+              user.username
+            ) || `${user.username}'s Floats Your Boat Selection`}
+          </p>
+          <FloatsMyBoat
+            onSelectCarousel={() => {}}
+            selectedCarousel={selectedCarousel}
+          />
+        </section>
+        <section aria-labelledby="most-like-you-title">
+          <p id="most-like-you-title" className="font-style-4">
+            {pageTranslations.mostLikeYouSelection.replace(
+              "{username}",
+              user.username
+            ) || `${user.username}'s Most Like You Selection`}
+          </p>
+          <Gender onSelectGender={() => {}} selected={selectedGender} />
+        </section>
+        <div style={centerWrapperStyle}>
+          <section aria-labelledby="location-title">
+            <p id="location-title" className="font-style-4">
+              {pageTranslations.locationLabel.replace(
                 "{username}",
                 user.username
-              )
-            : `${user.username} has not entered anything yet.`}
-        </textarea>
+              ) || `${user.username}'s Location`}
+            </p>
+            <LocationDisplay worldX={user.worldx} worldY={user.worldy} />
+          </section>
+        </div>
+        <section aria-labelledby="about-you-title">
+          <p id="about-you-title" className="font-style-4">
+            {pageTranslations.aboutYouLabel.replace(
+              "{username}",
+              user.username
+            ) || `${user.username}'s about you`}
+          </p>
+          <textarea readOnly className="about-you-textarea">
+            {user.about_you
+              ? user.about_you
+              : pageTranslations.aboutYouPlaceholder
+              ? pageTranslations.aboutYouPlaceholder.replace(
+                  "{username}",
+                  user.username
+                )
+              : `${user.username} has not entered anything yet.`}
+          </textarea>
+        </section>
         <Button
           variant="outline-info"
           className="btn-sm"
           onClick={handleNewInteraction}
+          aria-label={pageTranslations.newSubmissionButton || "New Engagement"}
         >
-          {pageTranslations.newSubmissionButton || "New Submission"}
+          {pageTranslations.newSubmissionButton || "New Engagement"}
         </Button>
       </div>
     </div>

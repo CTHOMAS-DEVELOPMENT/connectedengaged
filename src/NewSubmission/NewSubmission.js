@@ -70,28 +70,39 @@ const NewSubmission = () => {
 
   return (
     <div>
+      <nav>
       <Button
         style={{ backgroundColor: "white" }}
         variant="outline-info"
         className="btn-sm"
         onClick={handleBackToMessagesClick}
+        aria-label={
+          translations[languageCode]?.newSubmission?.backToMessages || "Back to messages"
+        }
+  
       >
         {translations[languageCode]?.newSubmission?.backToMessages || "Back to messages"}
       </Button>
-      <h2 className="font-style-4">
-        {translations[languageCode]?.newSubmission?.createNewSubmission || "Create New Engagement"}
+      </nav>
+      <h2 className="font-style-4" aria-level="2">
+      {translations[languageCode]?.newSubmission?.createNewSubmission || "Create New Engagement"}
       </h2>
-      <div style={{ position: "relative", display: "inline-block" }}>
-        <input
+      <div style={{ position: "relative", display: "inline-block" }} role="group">
+
+      <input
           type="text"
           value={title}
           onChange={handleTitleChange}
           placeholder={translations[languageCode]?.newSubmission?.titlePlaceholder || "Title"}
           maxLength={maxLength}
           style={{ paddingRight: "40px" }}
+          aria-describedby="title-length"
         />
-        <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}>
-          {maxLength - title.length}
+<span
+        id="title-length"
+        style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)" }}
+        aria-live="polite"
+      >          {maxLength - title.length}
         </span>
       </div>
       <Button
@@ -100,6 +111,7 @@ const NewSubmission = () => {
         style={{ backgroundColor: "white", marginLeft: "10px" }}
         onClick={handleSave}
         disabled={title.length < 3}
+        aria-label={translations[languageCode]?.newSubmission?.save || "Save"}
       >
         {translations[languageCode]?.newSubmission?.save || "Save"}
       </Button>

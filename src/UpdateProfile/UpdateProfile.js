@@ -28,6 +28,7 @@ const languageMap = {
   ar: "العربية", // Arabic
   zh: "中文", // Chinese
   ga: "Gaelach",
+  pt: "Português",
 };
 const UpdateProfile = () => {
   const location = useLocation();
@@ -342,20 +343,28 @@ const UpdateProfile = () => {
   }
   return (
     <div>
-      <Button
-        style={{ backgroundColor: "white" }}
-        variant="outline-info"
-        className="btn-sm"
-        onClick={() => navigate("/userlist", { state: { userId } })}
-      >
-        {pageTranslations.backToMessages || "Back to messages"}
-      </Button>
+      <nav>
+        <Button
+          style={{ backgroundColor: "white" }}
+          variant="outline-info"
+          className="btn-sm"
+          onClick={() => navigate("/userlist", { state: { userId } })}
+          aria-label="Back to messages"
+        >
+          {pageTranslations.backToMessages || "Back to messages"}
+        </Button>
+      </nav>
       <div style={centerWrapperStyle}>
-        <h2 className="font-style-4">
-          {pageTranslations.title || "Update Profile"}
-        </h2>
+        <header>
+          <h2 className="font-style-4">
+            {pageTranslations.title || "Update Profile"}
+          </h2>
+        </header>
         <div style={{ textAlign: "center", margin: "20px" }}>
-          <Dropdown onSelect={handleLanguageChange}>
+          <Dropdown
+            onSelect={handleLanguageChange}
+            aria-label="Language selection"
+          >
             <Dropdown.Toggle
               variant="primary"
               id="language-dropdown"
@@ -385,20 +394,27 @@ const UpdateProfile = () => {
               <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
                 Gaelic
               </Dropdown.Item>
+              <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
+                Português
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <div className="button-group">
+        <section className="button-group">
           <ViewImage
             userId={userId}
             profileVideo={profileVideo}
             profileImage={profileImage}
             selectedLanguage={selectedLanguage}
           />
-        </div>
+        </section>
       </div>
-      <form noValidate onSubmit={handleSubmit}>
-        <div className="system-form">
+      <form
+        noValidate
+        onSubmit={handleSubmit}
+        aria-labelledby="update-profile-title"
+      >
+        <section className="system-form">
           <div style={fixedBottomStyle}>
             <Button
               style={{ backgroundColor: "white" }}
@@ -409,7 +425,13 @@ const UpdateProfile = () => {
               {pageTranslations.submitButton || "Update Profile"}
             </Button>
             {message && (
-              <AlertMessage key={alertKey} message={message} type={type} />
+              <AlertMessage
+                key={alertKey}
+                message={message}
+                type={type}
+                aria-live="assertive"
+                role="alert"
+              />
             )}
           </div>
           <div>
@@ -424,6 +446,7 @@ const UpdateProfile = () => {
               onChange={handleInputChange}
               onBlur={handleBlur}
               required
+              aria-required="true"
             />
           </div>
           <div>
@@ -438,10 +461,11 @@ const UpdateProfile = () => {
               onChange={handleInputChange}
               onBlur={handleBlur}
               required
+              aria-required="true"
             />
           </div>
           <div>
-            <label htmlFor="password">
+            <label htmlFor="password" id="passwordLabel">
               {pageTranslations.passwordLabel ||
                 "Password (leave blank to keep the same)"}
             </label>
@@ -451,11 +475,15 @@ const UpdateProfile = () => {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
+              aria-describedby="passwordLabel"
             />
           </div>
 
-          <div className="rounded-rectangle-wrapper">
-            <h3 className="font-style-4">
+          <section
+            className="rounded-rectangle-wrapper"
+            aria-labelledby="survey-title"
+          >
+            <h3 id="survey-title" className="font-style-4">
               {pageTranslations.aboutYouLabel || "About You Survey"}
             </h3>
             <div>
@@ -464,6 +492,8 @@ const UpdateProfile = () => {
                   variant="outline-info"
                   className="btn-sm"
                   onClick={() => setShowGender(!showGender)}
+                  aria-expanded={showGender}
+                  aria-controls="g-selection"
                 >
                   {showGender
                     ? pageTranslations.genderToggle?.hide ||
@@ -474,10 +504,16 @@ const UpdateProfile = () => {
               </div>
 
               {showGender && (
-                <Gender
-                  onSelectGender={handleGenderSelection}
-                  selected={selectedGender}
-                />
+                <div
+                  id="g-selection"
+                  role="region"
+                  aria-labelledby="g-selection"
+                >
+                  <Gender
+                    onSelectGender={handleGenderSelection}
+                    selected={selectedGender}
+                  />
+                </div>
               )}
             </div>
             <div>
@@ -485,6 +521,8 @@ const UpdateProfile = () => {
                 variant="outline-info"
                 className="btn-sm"
                 onClick={() => setShowHobbies(!showHobbies)}
+                aria-expanded={showHobbies}
+                aria-controls="h-selection"
               >
                 {showHobbies
                   ? pageTranslations.hobbiesToggle?.hide ||
@@ -494,12 +532,14 @@ const UpdateProfile = () => {
               </Button>
             </div>
             {showHobbies && (
-              <Hobbies
-                onSelectHobby={handleHobbySelection}
-                selected={selectedHobby}
-                selectedLanguage={selectedLanguage}
-                hobbies={pageTranslations.hobbies}
-              />
+             <div id="h-selection" role="region" aria-labelledby="h-selection">
+                <Hobbies
+                  onSelectHobby={handleHobbySelection}
+                  selected={selectedHobby}
+                  selectedLanguage={selectedLanguage}
+                  hobbies={pageTranslations.hobbies}
+                />
+              </div>
             )}
             <div>
               <div>
@@ -507,6 +547,8 @@ const UpdateProfile = () => {
                   variant="outline-info"
                   className="btn-sm"
                   onClick={() => setShowOrientation(!showOrientation)}
+                aria-expanded={showOrientation}
+                aria-controls="o-selection"
                 >
                   {showOrientation
                     ? pageTranslations.orientationToggle?.hide ||
@@ -516,10 +558,12 @@ const UpdateProfile = () => {
                 </Button>
               </div>
               {showOrientation && (
-                <Orientation
-                  onSelectOrientation={handleOrientationSelection}
-                  selected={selectedOrientation}
-                />
+                <div id="o-selection" role="region" aria-labelledby="o-selection">
+                  <Orientation
+                    onSelectOrientation={handleOrientationSelection}
+                    selected={selectedOrientation}
+                  />
+                </div>
               )}
             </div>
             <div>
@@ -527,6 +571,8 @@ const UpdateProfile = () => {
                 variant="outline-info"
                 className="btn-sm"
                 onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
+                aria-expanded={showFloatsMyBoat}
+                aria-controls="f-selection"
               >
                 {showFloatsMyBoat
                   ? pageTranslations.floatsMyBoatToggle?.hide ||
@@ -537,10 +583,12 @@ const UpdateProfile = () => {
             </div>
 
             {showFloatsMyBoat && (
-              <FloatsMyBoat
-                onSelectCarousel={handleCarouselSelection}
-                selectedCarousel={selectedCarousel}
-              />
+              <div id="f-selection" role="region" aria-labelledby="f-selection">
+                <FloatsMyBoat
+                  onSelectCarousel={handleCarouselSelection}
+                  selectedCarousel={selectedCarousel}
+                />
+              </div>
             )}
             <div>
               <Button
@@ -576,19 +624,19 @@ const UpdateProfile = () => {
               />
             )}
 
-            <div>
-              <h3 className="font-style-4">
+            <section aria-labelledby="admin-info-title">
+              <h3 id="admin-info-title" className="font-style-4">
                 {pageTranslations.aboutAdminLabel || "About Your System Admin"}
               </h3>
               {formData.admin_face && (
                 <img
-                style={{
-                  width: "100%", // Take full width of the container
-                  maxWidth: "300px", // Set a maximum width to avoid excessive stretching
-                  height: "auto", // Maintain aspect ratio
-                  borderRadius: "8px", // Optional: add rounded corners for better aesthetics
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Optional: add shadow for a raised effect
-                }}
+                  style={{
+                    width: "100%", // Take full width of the container
+                    maxWidth: "300px", // Set a maximum width to avoid excessive stretching
+                    height: "auto", // Maintain aspect ratio
+                    borderRadius: "8px", // Optional: add rounded corners for better aesthetics
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Optional: add shadow for a raised effect
+                  }}
                   src={formData.admin_face}
                   alt={pageTranslations.adminFaceAlt || "Admin Face"}
                 />
@@ -616,13 +664,14 @@ const UpdateProfile = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <div
+                    <label
                       style={{
                         whiteSpace: "nowrap",
                       }}
+                      id={`botPalOptionLabel${index}`}
                     >
                       {label}
-                    </div>
+                    </label>
                     <input
                       type="radio"
                       id={`botPalOption${index}`}
@@ -634,13 +683,14 @@ const UpdateProfile = () => {
                         marginBottom: "0",
                         width: "20px",
                       }}
+                      aria-labelledby={`botPalOptionLabel${index}`}
                     />
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
+            </section>
+          </section>
+        </section>
       </form>
     </div>
   );

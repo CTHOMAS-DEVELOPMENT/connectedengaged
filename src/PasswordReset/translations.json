@@ -8,6 +8,10 @@
       "submitButton": "Reset Password",
       "passwordMismatch": "Passwords do not match.",
       "successMessage": "Password reset successful!",
+      "passwordResetForm": "Password Reset Form",
+      "newPassword": "New Password",
+      "enterNewPassword": "Enter your new password",
+      "confirmNewPassword": "Confirm New Password",
       "errorMessage": "Error resetting password. Please try again."
     }
   },
@@ -20,6 +24,10 @@
       "submitButton": "Restablecer contraseña",
       "passwordMismatch": "Las contraseñas no coinciden.",
       "successMessage": "¡Contraseña restablecida con éxito!",
+      "passwordResetForm": "Formulario de restablecimiento de contraseña",
+      "newPassword": "Nueva contraseña",
+      "enterNewPassword": "Introduce tu nueva contraseña",
+      "confirmNewPassword": "Confirmar nueva contraseña",
       "errorMessage": "Error al restablecer la contraseña. Por favor, inténtelo de nuevo."
     }
   },
@@ -32,6 +40,10 @@
       "submitButton": "Réinitialiser le mot de passe",
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "successMessage": "Mot de passe réinitialisé avec succès !",
+      "passwordResetForm": "Formulaire de réinitialisation de mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "enterNewPassword": "Entrez votre nouveau mot de passe",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe",
       "errorMessage": "Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer."
     }
   },
@@ -44,6 +56,10 @@
       "submitButton": "Passwort zurücksetzen",
       "passwordMismatch": "Die Passwörter stimmen nicht überein.",
       "successMessage": "Passwort erfolgreich zurückgesetzt!",
+      "passwordResetForm": "Passwort zurücksetzen Formular",
+      "newPassword": "Neues Passwort",
+      "enterNewPassword": "Geben Sie Ihr neues Passwort ein",
+      "confirmNewPassword": "Neues Passwort bestätigen",
       "errorMessage": "Fehler beim Zurücksetzen des Passworts. Bitte versuchen Sie es erneut."
     }
   },
@@ -56,6 +72,10 @@
       "submitButton": "إعادة تعيين كلمة المرور",
       "passwordMismatch": "كلمتا المرور غير متطابقتين.",
       "successMessage": "تم إعادة تعيين كلمة المرور بنجاح!",
+      "passwordResetForm": "نموذج إعادة تعيين كلمة المرور",
+      "newPassword": "كلمة المرور الجديدة",
+      "enterNewPassword": "أدخل كلمة المرور الجديدة",
+      "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
       "errorMessage": "حدث خطأ أثناء إعادة تعيين كلمة المرور. حاول مرة أخرى."
     }
   },
@@ -68,6 +88,10 @@
       "submitButton": "重置密码",
       "passwordMismatch": "密码不匹配。",
       "successMessage": "密码重置成功！",
+      "passwordResetForm": "重置密码表单",
+      "newPassword": "新密码",
+      "enterNewPassword": "输入您的新密码",
+      "confirmNewPassword": "确认新密码",
       "errorMessage": "重置密码时出错。请再试一次。"
     }
   },
@@ -80,7 +104,27 @@
       "submitButton": "Athshocraigh an Pasfhocal",
       "passwordMismatch": "Níl na pasfhocail ag teacht le chéile.",
       "successMessage": "Athshocrú pasfhocail rathúil!",
+      "passwordResetForm": "Foirm Athshocrú Pasfhocail",
+      "newPassword": "Pasfhocal Nua",
+      "enterNewPassword": "Cuir isteach do phasfhocal nua",
+      "confirmNewPassword": "Deimhnigh an Pasfhocal Nua",
       "errorMessage": "Earráid ag athshocrú an phasfhocail. Déan iarracht arís."
+    }
+  },
+  "pt": {
+    "passwordReset": {
+      "backToLogin": "Voltar para o Login",
+      "title": "Redefinir Sua Senha",
+      "newPasswordPlaceholder": "Nova Senha",
+      "confirmPasswordPlaceholder": "Confirmar Nova Senha",
+      "submitButton": "Redefinir Senha",
+      "passwordMismatch": "As senhas não coincidem.",
+      "successMessage": "Senha redefinida com sucesso!",
+      "passwordResetForm": "Formulário de Redefinição de Senha",
+      "newPassword": "Nova Senha",
+      "enterNewPassword": "Digite sua nova senha",
+      "confirmNewPassword": "Confirme a Nova Senha",
+      "errorMessage": "Erro ao redefinir a senha. Tente novamente."
     }
   }
 }

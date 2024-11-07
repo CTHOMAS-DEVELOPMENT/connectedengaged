@@ -108,6 +108,8 @@ const FilterUsers = ({ applyFilter, closeWindow, languageCode }) => {
           variant="outline-info"
           className="btn-sm"
           onClick={() => setShowOrientation(!showOrientation)}
+          aria-expanded={showOrientation}
+          aria-controls="o-selection"
         >
           {showOrientation
             ? translations[languageCode]?.filterUsers
@@ -117,10 +119,12 @@ const FilterUsers = ({ applyFilter, closeWindow, languageCode }) => {
         </Button>
       </div>
       {showOrientation && (
-        <Orientation
-          onSelectOrientation={handleOrientationSelection}
-          selected={selectedOrientation}
-        />
+        <div id="o-selection" role="region" aria-labelledby="o-selection">
+          <Orientation
+            onSelectOrientation={handleOrientationSelection}
+            selected={selectedOrientation}
+          />
+        </div>
       )}
       <div>
         <Button
@@ -136,16 +140,20 @@ const FilterUsers = ({ applyFilter, closeWindow, languageCode }) => {
         </Button>
       </div>
       {showHobbies && (
-        <Hobbies
-          onSelectHobby={handleHobbySelection}
-          selected={selectedHobby}
-        />
+        <div id="h-selection" role="region" aria-labelledby="h-selection">
+          <Hobbies
+            onSelectHobby={handleHobbySelection}
+            selected={selectedHobby}
+          />
+        </div>
       )}
       <div>
         <Button
           variant="outline-info"
           className="btn-sm"
           onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
+          aria-expanded={showFloatsMyBoat}
+          aria-controls="f-selection"
         >
           {showFloatsMyBoat
             ? translations[languageCode]?.filterUsers
@@ -156,16 +164,20 @@ const FilterUsers = ({ applyFilter, closeWindow, languageCode }) => {
       </div>
 
       {showFloatsMyBoat && (
-        <FloatsMyBoat
-          onSelectCarousel={handleCarouselSelection}
-          selectedCarousel={selectedCarousel}
-        />
+        <div id="f-selection" role="region" aria-labelledby="f-selection">
+          <FloatsMyBoat
+            onSelectCarousel={handleCarouselSelection}
+            selectedCarousel={selectedCarousel}
+          />
+        </div>
       )}
       <div>
         <Button
           variant="outline-info"
           className="btn-sm"
           onClick={() => setShowGender(!showGender)}
+          aria-expanded={showGender}
+          aria-controls="g-selection"
         >
           {showGender
             ? translations[languageCode]?.filterUsers?.hideFilterByGender ||
@@ -176,10 +188,12 @@ const FilterUsers = ({ applyFilter, closeWindow, languageCode }) => {
       </div>
 
       {showGender && (
-        <Gender
-          onSelectGender={handleGenderSelection}
-          selected={selectedGender}
-        />
+        <div id="g-selection" role="region" aria-labelledby="g-selection">
+          <Gender
+            onSelectGender={handleGenderSelection}
+            selected={selectedGender}
+          />
+        </div>
       )}
 
       <textarea

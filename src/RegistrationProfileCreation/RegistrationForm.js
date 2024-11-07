@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // New import
+import Cookies from "js-cookie";
 import ImageUploader from "./imageUploader";
 import FloatsMyBoat from "./FloatsMyBoat";
 import Orientation from "./Orientation"; // Make sure to import the Orientation component
@@ -20,7 +21,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Eye, EyeSlash, CheckCircle, XCircle } from "react-bootstrap-icons";
 import botPalOptions from "./botPalOptions.json"; // Import the JSON file
 import translations from "./translations.json";
-import Cookies from "js-cookie";
+import PrivacyPolicy from "../Login/PrivacyPolicy.js";
 
 const RegistrationForm = () => {
   // Initialize selectedLanguage first
@@ -51,23 +52,31 @@ const RegistrationForm = () => {
   const [userId, setUserId] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [privacyChecked, setPrivacyChecked] = useState(false); // For privacy policy checkbox
-
+  const [isEighteenOrOlder, setIsEighteenOrOlder] = useState(false); // For 18+ checkbox
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const usernameInputRef = useRef(null);
+  const privacyPolicyRef = useRef(null);
   // Initialize formData state
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    hobby: "",
-    sexualOrientation: "",
-    floatsMyBoat: "",
-    sex: "",
-    aboutYou: "",
-    aboutMyBotPal: botPalOptions.options[1].value,
-    worldX: 0,
-    worldY: 0,
-    language_code: selectedLanguage, // Use selectedLanguage in formData
+  const [formData, setFormData] = useState(() => {
+    // Load form data from local storage if available
+    const savedData = JSON.parse(localStorage.getItem("registrationFormData"));
+    return (
+      savedData || {
+        username: "",
+        email: "",
+        password: "",
+        hobby: "",
+        sexualOrientation: "",
+        floatsMyBoat: "",
+        sex: "",
+        aboutYou: "",
+        aboutMyBotPal: botPalOptions.options[1].value,
+        worldX: 0,
+        worldY: 0,
+        language_code: selectedLanguage,
+      }
+    );
   });
-
   const navigate = useNavigate();
   const location = useLocation(); // Get the location object
   const { language, country, ip } = location.state || {};
@@ -85,19 +94,21 @@ const RegistrationForm = () => {
     ar: "العربية", // Arabic
     zh: "中文", // Chinese
     ga: "Gaelach",
+    pt: "Português",
   };
-
+  const handleTogglePrivacyPolicy = () => {
+    setShowPrivacyPolicy((prev) => !prev);
+  };
+  const handleAgeCheck = (event) => {
+    setIsEighteenOrOlder(event.target.checked);
+  };
   const handleOpenLocation = () => {
     setShowLocation(true);
   };
   const handlePrivacyCheck = (event) => {
     setPrivacyChecked(event.target.checked); // Update checkbox state
   };
-  const handleNavigateToPrivacyPolicy = () => {
-    navigate("/privacy-policy", {
-      state: { selectedLanguage, from: "register" },
-    }); // Navigate to the privacy policy page
-  };
+
   const handleLanguageChange = (languageCode) => {
     setSelectedLanguage(languageCode);
     setIpData((prevIpData) => ({
@@ -107,6 +118,11 @@ const RegistrationForm = () => {
 
     Cookies.set("preferredLanguage", languageCode, { expires: 365 }); // Store language in cookies
   };
+  useEffect(() => {
+    if (usernameInputRef.current) {
+      usernameInputRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     if (!ip || !country || !language) {
@@ -277,6 +293,15 @@ const RegistrationForm = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!isEighteenOrOlder) {
+      setMessage(
+        pageTranslations.confirmAgeError ||
+          "Please confirm that you are 18 years or older to register."
+      );
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+      return; // Stop form submission if the checkbox is not checked
+    }
     if (!privacyChecked) {
       setMessage(
         pageTranslations.acceptPrivacyPolicy ||
@@ -284,7 +309,8 @@ const RegistrationForm = () => {
       );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
-      return; // Stop form submission if the checkbox is not checked
+      privacyPolicyRef.current?.scrollIntoView({ behavior: "smooth" }); // Scroll to Privacy Policy
+      return;
     }
     // Perform validation using the selected language
     const validationErrors = validateUser(formData, false, selectedLanguage);
@@ -361,7 +387,7 @@ const RegistrationForm = () => {
 
   return (
     <div>
-      <h2 className="font-style-4">
+      <h2 id="registration-form-title" className="font-style-4">
         {pageTranslations.title || "User Registration"}
       </h2>
       <div style={{ textAlign: "center", margin: "20px" }}>
@@ -394,6 +420,12 @@ const RegistrationForm = () => {
             </Dropdown.Item>
             <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
               Gaelic
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
+              Gaelic
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
+              Português
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -440,360 +472,527 @@ const RegistrationForm = () => {
           )}
         </div>
       )}
-      <form noValidate className="system-form" onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">
-            {pageTranslations.usernameLabel || "Username"}
-          </label>{" "}
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">
-            {pageTranslations.emailLabel || "Email"}
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="dummyEmail">
-            {pageTranslations.confirmEmailLabel || "Confirm Email"}
-          </label>{" "}
-          <input
-            type="email"
-            id="dummyEmail"
-            name="dummyEmail"
-            value={dummyEmail}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">
-            {pageTranslations.passwordLabel || "Password"}
-          </label>
-          <div style={{ position: "relative" }}>
+      {!showPrivacyPolicy ? (
+        <form
+          noValidate
+          className="system-form"
+          onSubmit={handleSubmit}
+          aria-labelledby="registration-form-title"
+        >
+          <div>
+            <label htmlFor="username" className="font-style-4">
+              {pageTranslations.usernameLabel || "Username"}
+            </label>
             <input
-              type={showPassword ? "text" : "password"} // Toggle between text and password type
-              id="password"
-              name="password"
-              value={formData.password}
+              type="text"
+              id="username"
+              name="username"
+              ref={usernameInputRef}
+              value={formData.username}
               onChange={handleInputChange}
               onBlur={handleBlur}
-              required
-              style={{ paddingRight: "30px" }} // Ensure there's space for the icon
-            />
-            <Button
-              variant="link"
-              style={{
-                position: "absolute",
-                right: "5px",
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <Eye /> : <EyeSlash />}
-            </Button>
-          </div>
-        </div>
-        <div className="rounded-rectangle-wrapper">
-          <h3 className="font-style-4">
-            {pageTranslations.aboutYouSurveyTitle || "About You Survey"}
-          </h3>{" "}
-          <div>
-            <Button
-              variant="outline-info"
-              className="btn-sm mb-2"
-              onClick={() => setShowGender(!showGender)}
-            >
-              {selectedGender === null ? (
-                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              )}
-              {showGender
-                ? pageTranslations.hideGender || "Hide Most Like You"
-                : pageTranslations.showGender || "Show Most Like You Selection"}
-              {selectedGender === null ? (
-                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              )}
-            </Button>
-          </div>
-          {showGender && (
-            <Gender
-              onSelectGender={handleGenderSelection}
-              selected={selectedGender}
-            />
-          )}
-          <div>
-            <Button
-              variant="outline-info"
-              className="btn-sm mb-2"
-              onClick={() => setShowHobbies(!showHobbies)}
-            >
-              {selectedHobby === null ? (
-                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              )}
-              {showHobbies
-                ? pageTranslations.hideHobbies || "Hide Your Favourite Hobby"
-                : pageTranslations.showHobbies ||
-                  "Show Your Favourite Hobby Selection"}
-              {selectedHobby === null ? (
-                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              )}
-            </Button>
-          </div>
-          {showHobbies && (
-            <Hobbies
-              onSelectHobby={handleHobbySelection}
-              selected={selectedHobby}
-              selectedLanguage={selectedLanguage}
-              hobbies={pageTranslations.hobbies} // Pass the translated hobbies
-            />
-          )}
-          <div>
-            <Button
-              variant="outline-info"
-              className="btn-sm mb-2"
-              onClick={() => setShowOrientation(!showOrientation)}
-            >
-              {selectedOrientation === null ? (
-                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              )}
-              {showOrientation
-                ? pageTranslations.hideOrientation ||
-                  "Hide Your Preferred Company"
-                : pageTranslations.showOrientation ||
-                  "Show Your Preferred Company Selection"}
-              {selectedOrientation === null ? (
-                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              )}
-            </Button>
-          </div>
-          {showOrientation && (
-            <Orientation
-              onSelectOrientation={handleOrientationSelection}
-              selected={selectedOrientation}
-            />
-          )}
-          <div>
-            <Button
-              variant="outline-info"
-              className="btn-sm mb-2"
-              onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
-            >
-              {selectedCarousel === null ? (
-                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              )}
-              {showFloatsMyBoat
-                ? pageTranslations.hideFloatsMyBoat || "Hide Floats Your Boat"
-                : pageTranslations.showFloatsMyBoat ||
-                  "Show Floats Your Boat Selection"}
-              {selectedCarousel === null ? (
-                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              )}
-            </Button>
-          </div>
-          {showFloatsMyBoat && (
-            <FloatsMyBoat
-              onSelectCarousel={handleCarouselSelection}
-              selectedCarousel={selectedCarousel}
-            />
-          )}
-          <div>
-            <Button
-              variant="outline-info"
-              className="btn-sm mb-2"
-              onClick={handleOpenLocation}
-            >
-              {locationSelected ? (
-                <CheckCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
-              )}
-              {locationSelected
-                ? pageTranslations.locationSelected || "Location Selected"
-                : pageTranslations.selectLocation || "Select Location"}{" "}
-              {locationSelected ? (
-                <CheckCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              ) : (
-                <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
-              )}
-            </Button>
-          </div>
-          <div>
-            <h3 className="font-style-4">
-              {pageTranslations.aboutYou || "About You"}
-            </h3>
-            <textarea
-              id="aboutYou"
-              className="about-you-textarea"
-              placeholder={
-                pageTranslations.aboutYouPlaceholder ||
-                "I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
+              aria-label={
+                pageTranslations.ariaUsernameRequest || "Enter your username"
               }
-              name="aboutYou"
-              value={formData.aboutYou}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              required
-              style={{ width: "100%", height: "100px" }} // Adjust styling as needed
+              aria-required="true"
             />
           </div>
-          <div>
-            {selectedOrientation !== null && selectedGender !== null && (
-              <>
-                <h3 className="font-style-4">
-                  {pageTranslations.aboutYourSystemAdmin ||
-                    "About Your System Admin"}
-                </h3>
-                <img
-                  style={{
-                    width: "100%", // Take full width of the container
-                    maxWidth: "300px", // Set a maximum width to avoid excessive stretching
-                    height: "auto", // Maintain aspect ratio
-                    borderRadius: "8px", // Optional: add rounded corners for better aesthetics
-                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Optional: add shadow for a raised effect
-                  }}
-                  src={getAdminImagePath()}
-                  alt="admin"
+          <fieldset>
+            <legend className="font-style-4">
+              {pageTranslations.emailSectionLegend || "Email Confirmation"}
+            </legend>
+
+            <div>
+              <label htmlFor="email" className="font-style-4">
+                {pageTranslations.emailLabel || "Email"}
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-required="true"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="dummyEmail" className="font-style-4">
+                {pageTranslations.confirmEmailLabel || "Confirm Email"}
+              </label>
+              <input
+                type="email"
+                id="dummyEmail"
+                name="dummyEmail"
+                value={dummyEmail}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-required="true"
+              />
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend className="font-style-4">
+              {pageTranslations.passwordLabel || "Password"}
+            </legend>
+
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-required="true"
+                style={{ paddingRight: "40px", flexGrow: 1 }} // Space for the button
+              />
+              <Button
+                variant="link"
+                style={{
+                  position: "absolute",
+                  right: "10px", // Adjust spacing to align button slightly left or inside
+                  transform: "translateY(-50%)",
+                  top: "50%",
+                }}
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <Eye /> : <EyeSlash />}
+              </Button>
+            </div>
+          </fieldset>
+
+          <fieldset className="rounded-rectangle-wrapper">
+            <legend className="font-style-4">
+              {pageTranslations.aboutYouSurveyTitle || "About You Survey"}
+            </legend>
+            <div>
+              <Button
+                variant="outline-info"
+                className="btn-sm mb-2"
+                onClick={() => setShowGender(!showGender)}
+                aria-pressed={showGender} // indicates toggle state
+                aria-expanded={showGender}
+                aria-controls="g-selection"
+                aria-label={
+                  showGender
+                    ? pageTranslations.hideGenderSelection
+                    : pageTranslations.showGenderSelection
+                }
+              >
+                {selectedGender === null ? (
+                  <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="me-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+                {showGender
+                  ? pageTranslations.hideGender || "Hide Most Like You"
+                  : pageTranslations.showGender ||
+                    "Show Most Like You Selection"}
+                {selectedGender === null ? (
+                  <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="ms-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+              </Button>
+            </div>
+            {showGender && (
+              <div id="g-selection" role="region" aria-labelledby="g-selection">
+                <Gender
+                  onSelectGender={handleGenderSelection}
+                  selected={selectedGender}
                 />
-                {translatedAdminLabels.map((label, index) => (
-                  <div
-                    key={index}
+              </div>
+            )}
+            <div>
+              <Button
+                variant="outline-info"
+                className="btn-sm mb-2"
+                onClick={() => setShowHobbies(!showHobbies)}
+                aria-pressed={showHobbies} // Indicate the toggle state
+                aria-label={
+                  showHobbies
+                    ? pageTranslations.hideHobbies ||
+                      "Hide Your Favourite Hobby"
+                    : pageTranslations.showHobbies ||
+                      "Show Your Favourite Hobby Selection"
+                }
+                aria-expanded={showHobbies}
+                aria-controls="h-selection"
+              >
+                {selectedHobby === null ? (
+                  <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="me-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+                {showHobbies
+                  ? pageTranslations.hideHobbies || "Hide Your Favourite Hobby"
+                  : pageTranslations.showHobbies ||
+                    "Show Your Favourite Hobby Selection"}
+                {selectedHobby === null ? (
+                  <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="ms-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+              </Button>
+            </div>
+
+            {showHobbies && (
+              <div id="h-selection" role="region" aria-labelledby="h-selection">
+                <Hobbies
+                  onSelectHobby={handleHobbySelection}
+                  selected={selectedHobby}
+                  selectedLanguage={selectedLanguage}
+                  hobbies={pageTranslations.hobbies} // Pass the translated hobbies
+                />
+              </div>
+            )}
+            <div>
+              <Button
+                variant="outline-info"
+                className="btn-sm mb-2"
+                onClick={() => setShowOrientation(!showOrientation)}
+                aria-pressed={showOrientation} // Indicates toggle state to screen readers
+                aria-label={
+                  showOrientation
+                    ? pageTranslations.hideOrientation ||
+                      "Hide Preferred Company"
+                    : pageTranslations.showOrientation ||
+                      "Show Preferred Company Selection"
+                }
+                aria-expanded={showOrientation}
+                aria-controls="o-selection"
+              >
+                {selectedOrientation === null ? (
+                  <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="me-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+                {showOrientation
+                  ? pageTranslations.hideOrientation || "Hide Preferred Company"
+                  : pageTranslations.showOrientation ||
+                    "Show Preferred Company Selection"}
+                {selectedOrientation === null ? (
+                  <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="ms-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+              </Button>
+            </div>
+
+            {showOrientation && (
+              <div id="o-selection" role="region" aria-labelledby="o-selection">
+                <Orientation
+                  onSelectOrientation={handleOrientationSelection}
+                  selected={selectedOrientation}
+                />
+              </div>
+            )}
+            <div>
+              <Button
+                variant="outline-info"
+                className="btn-sm mb-2"
+                onClick={() => setShowFloatsMyBoat(!showFloatsMyBoat)}
+                aria-pressed={showFloatsMyBoat} // Indicates toggle state for screen readers
+                aria-label={
+                  showFloatsMyBoat
+                    ? pageTranslations.hideFloatsMyBoat ||
+                      "Hide Floats Your Boat"
+                    : pageTranslations.showFloatsMyBoat ||
+                      "Show Floats Your Boat Selection"
+                }
+                aria-expanded={showFloatsMyBoat}
+                aria-controls="f-selection"
+              >
+                {selectedCarousel === null ? (
+                  <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="me-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+                {showFloatsMyBoat
+                  ? pageTranslations.hideFloatsMyBoat || "Hide Floats Your Boat"
+                  : pageTranslations.showFloatsMyBoat ||
+                    "Show Floats Your Boat Selection"}
+                {selectedCarousel === null ? (
+                  <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+                ) : (
+                  <CheckCircle
+                    className="ms-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                )}
+              </Button>
+            </div>
+            {showFloatsMyBoat && (
+              <div id="f-selection" role="region" aria-labelledby="f-selection">
+                <FloatsMyBoat
+                  onSelectCarousel={handleCarouselSelection}
+                  selectedCarousel={selectedCarousel}
+                />
+              </div>
+            )}
+            <div>
+              <Button
+                variant="outline-info"
+                className="btn-sm mb-2"
+                onClick={handleOpenLocation}
+                aria-pressed={locationSelected} // Indicates toggle state for screen readers
+                aria-label={
+                  locationSelected
+                    ? pageTranslations.locationSelected || "Location Selected"
+                    : pageTranslations.selectLocation || "Select Location"
+                } // Descriptive label for screen readers
+              >
+                {locationSelected ? (
+                  <CheckCircle
+                    className="me-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                ) : (
+                  <XCircle className="me-1" style={{ fontSize: "1.5rem" }} />
+                )}
+                {locationSelected
+                  ? pageTranslations.locationSelected || "Location Selected"
+                  : pageTranslations.selectLocation || "Select Location"}
+                {locationSelected ? (
+                  <CheckCircle
+                    className="ms-1"
+                    style={{ fontSize: "1.5rem" }}
+                  />
+                ) : (
+                  <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
+                )}
+              </Button>
+            </div>
+            <div>
+              <h3 className="font-style-4" id="aboutYouHeading">
+                {pageTranslations.aboutYou || "About You"}
+              </h3>
+              <label htmlFor="aboutYou" className="visually-hidden">
+                {pageTranslations.describeYourself ||
+                  "Describe yourself and what you’re looking for"}
+              </label>
+              <textarea
+                id="aboutYou"
+                className="about-you-textarea"
+                placeholder={
+                  pageTranslations.aboutYouPlaceholder ||
+                  "I am looking for a long term relationship. Look out for my Connection Request from the Communication Centre."
+                }
+                name="aboutYou"
+                value={formData.aboutYou}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                aria-required="true"
+                aria-labelledby="aboutYouHeading" // Associates the heading as context for the textarea
+                style={{ width: "100%", height: "100px" }}
+              />
+            </div>
+
+            <div>
+              {selectedOrientation !== null && selectedGender !== null && (
+                <section aria-labelledby="about-system-admin">
+                  <h3 id="about-system-admin" className="font-style-4">
+                    {pageTranslations.aboutYourSystemAdmin ||
+                      "About Your System Admin"}
+                  </h3>
+                  <img
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      width: "100%",
+                      maxWidth: "300px",
+                      height: "auto",
+                      borderRadius: "8px",
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
                     }}
-                  >
-                    <div
-                      style={{
-                        display: "flex", // Ensure flexbox layout
-                        alignItems: "center", // Center the items vertically
-                        justifyContent: "center", // Center the items horizontally
-                      }}
-                    >
+                    src={getAdminImagePath()}
+                    alt={
+                      pageTranslations.avatarPreference ||
+                      "System Admin avatar based on your preferences"
+                    }
+                  />
+
+                  <div role="radiogroup" aria-labelledby="about-system-admin">
+                    {translatedAdminLabels.map((label, index) => (
                       <div
+                        key={index}
                         style={{
-                          whiteSpace: "nowrap", // Prevent the text from wrapping
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        {label} {/* Use the translated label */}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <label
+                            htmlFor={`botPalOption${index}`}
+                            style={{ whiteSpace: "nowrap" }}
+                          >
+                            {label}
+                          </label>
+                          <input
+                            type="radio"
+                            id={`botPalOption${index}`}
+                            name="aboutMyBotPal"
+                            value={index}
+                            checked={selectedBotPalOption === index}
+                            onChange={handleRadioChange}
+                            style={{
+                              marginBottom: "0",
+                              width: "20px",
+                            }}
+                            aria-labelledby={`about-system-admin botPalOption${index}-label`}
+                          />
+                        </div>
                       </div>
-                      <input
-                        type="radio"
-                        id={`botPalOption${index}`}
-                        name="aboutMyBotPal"
-                        value={index}
-                        checked={selectedBotPalOption === index}
-                        onChange={handleRadioChange}
-                        style={{
-                          marginBottom: "0",
-                          width: "20px",
-                        }}
-                      />
-                    </div>
+                    ))}
                   </div>
-                ))}
-                <textarea
-                  id="aboutMyBotPal"
-                  className="about-you-textarea"
-                  name="aboutMyBotPal"
-                  value={formData.aboutMyBotPal}
-                  readOnly
-                  style={hiddenTextareaStyle}
-                />
-              </>
-            )}
-          </div>
-        </div>
 
-        {showLocation && (
-          <Location
-            onClose={() => setShowLocation(false)}
-            onSelectCoordinates={handleSelectCoordinates} // Pass the handler to the Location component
-            selectedLanguage={selectedLanguage}
-          />
-        )}
-        <div className="rounded-rectangle-wrapper">
-          <Button
-            variant="outline-info"
-            className="btn-sm"
-            onClick={handleNavigateToPrivacyPolicy}
-            style={{ margin: "10px", whiteSpace: "nowrap" }}
-          >
-            {pageTranslations.privacyPolicyLink || "Privacy Policy"}
-          </Button>
+                  <textarea
+                    id="aboutMyBotPal"
+                    className="about-you-textarea"
+                    name="aboutMyBotPal"
+                    value={formData.aboutMyBotPal}
+                    readOnly
+                    style={hiddenTextareaStyle}
+                    aria-hidden="true"
+                  />
+                </section>
+              )}
+            </div>
+          </fieldset>
+
+          {showLocation && (
+            <Location
+              onClose={() => setShowLocation(false)}
+              onSelectCoordinates={handleSelectCoordinates} // Pass the handler to the Location component
+              selectedLanguage={selectedLanguage}
+            />
+          )}
 
           <div
             style={{
               display: "flex",
             }}
           >
-            <div style={{ flexGrow: "10", color: "#62DDF5" }}>
-              {pageTranslations.acceptPrivacyPolicy ||
-                "I have read and understood the Privacy Policy"}
+            <div style={{ color: "#62DDF5", textAlign: "left" }}>
+              {pageTranslations.confirmAge ||
+                "I confirm that I am 18 years or older"}
             </div>
             <input
               type="checkbox"
-              id="privacyPolicy"
-              checked={privacyChecked}
-              onChange={handlePrivacyCheck}
-              style={{ flexGrow: "1", flexBasis: "15px", margin: "5px" }}
+              id="ageCheck"
+              checked={isEighteenOrOlder}
+              onChange={handleAgeCheck}
+              style={{ flexBasis: "15px", textAlign: "left", margin: "5px" }}
             />
           </div>
-        </div>
+          {!userId && (
+            <Button
+              style={{ margin: "10px" }}
+              type="submit"
+              variant="outline-info"
+              className="btn-sm"
+            >
+              {pageTranslations.registerButton || "Register"}
+            </Button>
+          )}
+        </form>
+      ) : (
+        <PrivacyPolicy
+          selectedLanguage={selectedLanguage}
+          showBackButton={false}
+        />
+      )}
+      <div
+        ref={privacyPolicyRef}
+        style={{ backgroundColor: "#fff" }}
+        className="rounded-rectangle-wrapper"
+      >
+        <Button
+          variant="outline-info"
+          className="btn-sm"
+          onClick={handleTogglePrivacyPolicy}
+          style={{ margin: "10px", whiteSpace: "nowrap" }}
+        >
+          {showPrivacyPolicy
+            ? pageTranslations.backToBase || "Back to Base"
+            : pageTranslations.privacyPolicyLink || "Privacy Policy"}
+        </Button>
 
-        {!userId && (
-          <Button
-            style={{ margin: "10px" }}
-            type="submit"
-            variant="outline-info"
-            className="btn-sm"
-          >
-            {pageTranslations.registerButton || "Register"}
-          </Button>
-        )}
-      </form>
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          <div style={{ flexGrow: "10", color: "#62DDF5" }}>
+            <label htmlFor="privacyPolicy">
+              {pageTranslations.acceptPrivacyPolicy ||
+                "I have read and understood the Privacy Policy"}
+            </label>
+          </div>
+          <input
+            type="checkbox"
+            id="privacyPolicy"
+            checked={privacyChecked}
+            onChange={handlePrivacyCheck}
+            aria-required="true"
+            aria-describedby="privacyPolicy-help"
+            style={{ flexGrow: "1", flexBasis: "15px", margin: "5px" }}
+          />
+          <div id="privacyPolicy-help" style={{ display: "none" }}>
+            {pageTranslations.acceptingPrivacy ||
+              "Accepting the privacy policy is required to register."}
+          </div>
+        </div>
+      </div>
 
       {message && (
-        <AlertMessage
-          key={alertKey}
-          message={message}
-          type={type}
-          centred={type === "error"}
-        />
+        <div role="alert" aria-live="assertive" id="form-message">
+          <AlertMessage
+            key={alertKey}
+            message={message}
+            type={type}
+            centred={type === "error"}
+          />
+        </div>
       )}
     </div>
   );

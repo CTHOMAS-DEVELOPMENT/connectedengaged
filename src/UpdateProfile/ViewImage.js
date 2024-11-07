@@ -118,7 +118,7 @@ const ViewImage = ({
       </Modal>
       <Modal show={showVideoUploader} onHide={handleCloseVideoUploader}>
         <Modal.Header closeButton>
-          <Modal.Title>
+          <Modal.Title className="font-style-4">
             {videoPath
               ? translationsForLang.updateProfileVideo || "Update Profile Video"
               : translationsForLang.addProfileVideo || "Add Profile Video"}

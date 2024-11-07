@@ -61,6 +61,15 @@
         "save": "Sábháil",
         "submissionFailed": "Theip ar an aighneacht"
       }
+    },
+    "pt": {
+      "newSubmission": {
+        "backToMessages": "Voltar para as mensagens",
+        "createNewSubmission": "Criar Novo Engajamento",
+        "titlePlaceholder": "Título",
+        "save": "Salvar",
+        "submissionFailed": "Falha na submissão"
+      }
     }
   }
   

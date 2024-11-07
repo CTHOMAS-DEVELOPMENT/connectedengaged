@@ -544,5 +544,83 @@
       "addProfileVideo": "Cuir Físeán Próifíle leis (Max 30 soicind)",
       "addUpdateProfileImage": "Cuir/Nuashonraigh Íomhá Próifíle"
     }
+  },
+  "pt": {
+    "updateProfile": {
+      "title": "Atualizar Perfil",
+      "backToMessages": "Voltar para as mensagens",
+      "submitButton": "Atualizar Perfil",
+      "usernameLabel": "Nome de usuário",
+      "emailLabel": "Email",
+      "passwordLabel": "Senha (deixe em branco para manter a mesma)",
+      "aboutYouLabel": "Pesquisa Sobre Você",
+      "genderToggle": {
+        "show": "Mostrar Seleção Mais Parecido Com Você",
+        "hide": "Ocultar Mais Parecido Com Você"
+      },
+      "hobbiesToggle": {
+        "show": "Mostrar Seleção de Hobby Favorito",
+        "hide": "Ocultar Hobby Favorito"
+      },
+      "orientationToggle": {
+        "show": "Mostrar Seleção de Companhia Preferida",
+        "hide": "Ocultar Companhia Preferida"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Mostrar Seleção Flutua Meu Barco",
+        "hide": "Ocultar Flutua Meu Barco"
+      },
+      "aboutYouTextArea": "Estou em busca de um relacionamento de longo prazo. Fique de olho no meu Pedido de Conexão do Centro de Comunicação.",
+      "locationButton": "Mostrar Localização",
+      "aboutAdminLabel": "Sobre Seu Administrador de Sistema",
+      "adminFaceAlt": "Rosto do Administrador",
+      "adminLabels": [
+        "Dominante e desagradável",
+        "Caloroso e amigável",
+        "Energético e extrovertido",
+        "Divertido e faz piadas",
+        "Triste e solitário",
+        "Fã de Shakespeare",
+        "Estúpido",
+        "Magreza é o ideal",
+        "Submisso e servil",
+        "Plus Size e faminto"
+      ],
+      "hobbies": [
+        "Artes",
+        "Colecionar",
+        "Culinária",
+        "Artesanato",
+        "Dança",
+        "Educação",
+        "Fitness",
+        "Jogos",
+        "Jardinagem",
+        "Meditação",
+        "Música",
+        "Outros",
+        "Fotografia",
+        "Leitura",
+        "Esportes",
+        "Tecnologia",
+        "Viagem",
+        "O Desconhecido",
+        "Voluntariado",
+        "Escrita"
+      ],
+      "profileUpdateSuccess": "Perfil atualizado com sucesso.",
+      "profileUpdateError": "Falha na atualização do perfil: ",
+      "emailValidationError": "Por favor, insira um endereço de email válido.",
+      "loadUserDataError": "Falha ao carregar os dados do usuário.",
+      "unauthorizedMessage": "Não autorizado. Por favor, faça login."
+    },
+    "viewImage": {
+      "updateProfileImage": "Atualizar Imagem do Perfil",
+      "addProfileImage": "Adicionar Imagem do Perfil",
+      "noProfilePicture": "Sem imagem de perfil",
+      "updateProfileVideo": "Atualizar Vídeo do Perfil (Máx 30 segundos)",
+      "addProfileVideo": "Adicionar Vídeo do Perfil (Máx 30 segundos)",
+      "addUpdateProfileImage": "Adicionar/Atualizar Imagem do Perfil"
+    }
   }
 }

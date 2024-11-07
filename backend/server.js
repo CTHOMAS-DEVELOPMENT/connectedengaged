@@ -25,6 +25,7 @@ const languageMap = {
   ar: "Arabic",
   zh: "Chinese",
   ga: "Irish",
+  pt: "Portuguese"
 };
 function loadEnvVariables() {
   // Adjust if your .env file is located elsewhere. Using __dirname ensures it looks in the same directory as your server.js file.
@@ -2682,5 +2683,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9910**PRIVACY POLICY ${PORT}`);
+  console.log(`**9911**ARIA addition ${PORT}`);
 });

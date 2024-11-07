@@ -748,25 +748,38 @@ const FeedScreen = () => {
           {translations[languageCode]?.feedScreen?.screenTitle || "FeedScreen"}
         </div>
       )}
-      <div className="header">
+      <header className="header">
         <div className="header-top">
-          <Button
-            variant="outline-info"
-            className="btn-icon"
-            onClick={handleBackToMessagesClick}
-          >
-            <ArrowLeftCircleFill size={25} />
-          </Button>
-
+          <nav>
+            <Button
+              variant="outline-info"
+              className="btn-icon"
+              onClick={handleBackToMessagesClick}
+              aria-label={
+                translations[languageCode]?.feedScreen?.backToMessages ||
+                "Back to Messages"
+              }
+            >
+              <ArrowLeftCircleFill size={25} />
+            </Button>
+          </nav>
           <div>
             <div className="interaction-icons">
               {associatedUsers.map((user) => (
-                <div key={user.id} className="user-container">
+                <div
+                  key={user.id}
+                  className="user-container"
+                  role="region"
+                  aria-labelledby={`user-${user.id}-label`}
+                >
                   {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
                     user.id && (
                     <img
                       src={loggedInUserAdmin}
-                      alt="Admin Face"
+                      alt={
+                        translations[languageCode]?.feedScreen?.adminFace ||
+                        "Admin Face"
+                      }
                       className={"post-profile-image"}
                     />
                   )}
@@ -783,7 +796,7 @@ const FeedScreen = () => {
                       )}`}
                     />
                   )}
-                  <div className="user-info">
+                  <div id={`user-${user.id}-label`} className="user-info">
                     <label className="font-style-4">{user.username}</label>
                     {checkUserIsInActiveList(user.id, activeUsersList) ===
                       "active" && (
@@ -791,6 +804,10 @@ const FeedScreen = () => {
                         variant="outline-info"
                         className="btn-icon"
                         onClick={() => startVideoCall(user.id)}
+                        aria-label={`${
+                          translations[languageCode]?.feedScreen
+                            ?.startVideoCallWith || "Start video call with"
+                        } ${user.username}`}
                       >
                         <Telephone size={25} />
                       </Button>
@@ -800,430 +817,527 @@ const FeedScreen = () => {
               ))}
             </div>
           </div>
-          <Button
-            variant="outline-info"
-            className="btn-icon"
-            onClick={handleScrollToBottom}
-          >
-            <ArrowDownCircleFill size={25} />
-          </Button>
+          <nav>
+            <Button
+              variant="outline-info"
+              className="btn-icon"
+              onClick={handleScrollToBottom}
+              aria-label={
+                translations[languageCode]?.feedScreen?.scrollToBottom ||
+                "Scroll to Bottom"
+              }
+            >
+              <ArrowDownCircleFill size={25} />
+            </Button>
+          </nav>
         </div>
-        <h2 className="header-title font-style-4">{title}</h2>
-      </div>
-
-      {submissionId && (
-        <>
-          {showTextUpdate && (
-            <div
-              className="feed-content modal-backdrop"
-              onClick={() => setShowTextUpdate(false)}
-            >
+        <h2 className="header-title font-style-4" id="feed-title">
+          {title}
+        </h2>
+      </header>
+      <main>
+        {submissionId && (
+          <>
+            {showTextUpdate && (
               <div
-                className="text-update-modal"
-                onClick={(e) => e.stopPropagation()}
+                className="feed-content modal-backdrop"
+                onClick={() => setShowTextUpdate(false)}
+                aria-labelledby="feed-title"
+                role="dialog"
+                aria-modal="true"
               >
-                <TextUpdate
-                  dialogId={dialogId}
-                  initialText={currentText}
-                  onSaveSuccess={handleTextSaveSuccess}
-                  socketRef={socketRef} // Pass socketRef to TextUpdate
-                />
+                <div
+                  className="text-update-modal"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <TextUpdate
+                    dialogId={dialogId}
+                    initialText={currentText}
+                    onSaveSuccess={handleTextSaveSuccess}
+                    socketRef={socketRef} // Pass socketRef to TextUpdate
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {showLiveCallCentre && (
-            <div
-              className="modal-backdrop"
-              onClick={() => setShowLiveCallCentre(false)}
-            >
+            {showLiveCallCentre && (
               <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
+                className="modal-backdrop"
+                onClick={() => setShowLiveCallCentre(false)}
+                role="dialog"
+                aria-modal="true"
               >
-                <LiveCallCentre
-                  users={liveCallCentreUsers}
-                  callAction={callAction}
-                />
+                <div
+                  className="modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <LiveCallCentre
+                    users={liveCallCentreUsers}
+                    callAction={callAction}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {showScheduler && (
-            <div
-              className="modal-backdrop"
-              onClick={() => setShowScheduler(false)}
-            >
+            {showScheduler && (
               <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
+                className="modal-backdrop"
+                onClick={() => setShowScheduler(false)}
               >
-                <Scheduler
-                  onTimeSelected={handleSchedulerConfirm}
-                  onCancel={handleSchedulerCancel}
-                />
+                <div
+                  className="modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Scheduler
+                    onTimeSelected={handleSchedulerConfirm}
+                    onCancel={handleSchedulerCancel}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {showUploader && (
-            <div className="backdrop" onClick={handleCloseUploader}>
-              <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <PhotoUploadAndEdit
+            {showUploader && (
+              <div className="backdrop" onClick={handleCloseUploader}>
+                <div
+                  className="modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <PhotoUploadAndEdit
+                    userId={userId}
+                    submissionId={submissionId}
+                    onPhotoSubmit={fetchPosts}
+                    onSaveSuccess={() => {
+                      setMessage(
+                        translations[languageCode]?.feedScreen
+                          ?.imageUploadedSuccess ||
+                          "Image uploaded successfully"
+                      );
+                      setType("info");
+                      setAlertKey((prevKey) => prevKey + 1);
+                      handleCloseUploader();
+                      postTypeForEmail("picture", associatedUsers);
+                      socketRef.current.emit("postUpdated", {
+                        submissionId,
+                        dialogId,
+                      });
+                    }}
+                    dialogId={dialogId}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div
+              style={isMobile ? horizontalWrapper : verticleWrapper}
+              className="element-group-box"
+            >
+              {userProfilePic && (
+                <img
+                  src={`${process.env.REACT_APP_BACKEND_URL}${userProfilePic}`}
+                  alt={
+                    translations[languageCode]?.feedScreen
+                      ?.CurrentUserProfile || "Current User Profile"
+                  }
+                  className="current-user-profile-pic"
+                />
+              )}
+
+              <div style={{ width: "100%" }} className="text-entry-container">
+                <TextEntry
                   userId={userId}
                   submissionId={submissionId}
-                  onPhotoSubmit={fetchPosts}
-                  onSaveSuccess={() => {
-                    setMessage(
-                      translations[languageCode]?.feedScreen
-                        ?.imageUploadedSuccess || "Image uploaded successfully"
-                    );
-                    setType("info");
-                    setAlertKey((prevKey) => prevKey + 1);
-                    handleCloseUploader();
-                    postTypeForEmail("picture", associatedUsers);
-                    socketRef.current.emit("postUpdated", {
-                      submissionId,
-                      dialogId,
-                    });
+                  onPostSubmit={() => {
+                    postTypeForEmail("Text", associatedUsers);
+                    handlePostSubmit();
                   }}
-                  dialogId={dialogId}
+                  languageCode={languageCode}
                 />
               </div>
-            </div>
-          )}
+              <div className="viewport-control">
+                <div className="posting-block">
+                  {isUploading && (
+                    <div className="upload-status">
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      <p>
+                        {translations[languageCode]?.feedScreen?.uploading ||
+                          "Uploading..."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={isMobile ? verticleWrapper : horizontalWrapper}
+                  className="button-towers"
+                >
+                  <div style={verticleWrapper} className="top-row-buttons">
+                    <div className="small-button-wrapper">
+                      <Button
+                        variant="outline-info"
+                        className="btn-icon btn-delete"
+                        onMouseEnter={() => setIsImageHovered(true)}
+                        onMouseLeave={() => setIsImageHovered(false)}
+                        onClick={handleGetNewPicture}
+                        aria-label={
+                          translations[languageCode]?.feedScreen
+                            ?.uploadNewPicture || "Upload a new picture"
+                        }
+                      >
+                        {isImageHovered ? (
+                          <ImageFill size={25} />
+                        ) : (
+                          <Image size={25} />
+                        )}
+                      </Button>
+                    </div>
+                    <div className="small-button-wrapper">
+                      <Button
+                        variant="outline-info"
+                        className="btn-icon"
+                        onClick={
+                          isRecording
+                            ? handleStopRecording
+                            : handleStartRecording
+                        }
+                        aria-label={
+                          isRecording
+                            ? translations[languageCode]?.feedScreen
+                                ?.stopRecording || "Stop recording"
+                            : translations[languageCode]?.feedScreen
+                                ?.startRecording || "Start recording"
+                        }
+                      >
+                        {isRecording ? (
+                          <MicMuteFill size={25} />
+                        ) : (
+                          <MicFill size={25} />
+                        )}
+                        {isRecording && (
+                          <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </Button>
+                    </div>
 
-          <div
-            style={isMobile ? horizontalWrapper : verticleWrapper}
-            className="element-group-box"
-          >
-            {userProfilePic && (
-              <img
-                src={`${process.env.REACT_APP_BACKEND_URL}${userProfilePic}`}
-                alt="Current User Profile"
-                className="current-user-profile-pic"
-              />
-            )}
-
-            <div style={{width:"100%"}} className="text-entry-container">
-              <TextEntry
-                userId={userId}
-                submissionId={submissionId}
-                onPostSubmit={() => {
-                  postTypeForEmail("Text", associatedUsers);
-                  handlePostSubmit();
-                }}
-                languageCode={languageCode}
-              />
-            </div>
-            <div className="viewport-control">
-              <div className="posting-block">
-                {isUploading && (
-                  <div className="upload-status">
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                    <p>
-                      {translations[languageCode]?.feedScreen?.uploading ||
-                        "Uploading..."}
-                    </p>
+                    <div className="small-button-wrapper">
+                      <Button
+                        variant="outline-info"
+                        className="btn-icon"
+                        onClick={launchLiveCallCentre}
+                        aria-label={
+                          translations[languageCode]?.feedScreen
+                            ?.LaunchLiveCallCentre || "Launch Live Call Centre"
+                        }
+                      >
+                        <Telephone size={25} />
+                      </Button>
+                    </div>
                   </div>
-                )}
-              </div>
-              <div style={isMobile ? verticleWrapper : horizontalWrapper} className="button-towers">
-                <div style={verticleWrapper} className="top-row-buttons">
-                
-                  <div className="small-button-wrapper">
-                    <Button
-                      variant="outline-info"
-                      className="btn-icon btn-delete"
-                      onMouseEnter={() => setIsImageHovered(true)}
-                      onMouseLeave={() => setIsImageHovered(false)}
-                      onClick={handleGetNewPicture}
-                    >
-                      {isImageHovered ? (
-                        <ImageFill size={25} />
-                      ) : (
-                        <Image size={25} />
-                      )}
-                    </Button>
-                  </div>
-                  <div className="small-button-wrapper">
-                    <Button
-                      variant="outline-info"
-                      className="btn-icon"
-                      onClick={
-                        isRecording ? handleStopRecording : handleStartRecording
-                      }
-                    >
-                      {isRecording ? (
-                        <MicMuteFill size={25} />
-                      ) : (
-                        <MicFill size={25} />
-                      )}
-                      {isRecording && (
-                        <Spinner
-                          as="span"
-                          animation="border"
-                          size="sm"
-                          role="status"
-                          aria-hidden="true"
+                  <div
+                    style={isMobile ? verticleWrapper : verticleWrapper}
+                    className="bottom-row-buttons"
+                  >
+                    <div className="small-button-wrapper">
+                      <Button
+                        variant="outline-info"
+                        onMouseEnter={() => setHovering(true)}
+                        onMouseLeave={() => setHovering(false)}
+                        onClick={toggleNotifications}
+                        className="btn-icon"
+                        aria-label={
+                          translations[languageCode]?.feedScreen?.toggleEmail ||
+                          "Switch emailing off or on"
+                        }
+                      >
+                        {notificationson ? (
+                          hovering ? (
+                            <EnvelopeSlashFill size={25} />
+                          ) : (
+                            <EnvelopeSlash size={25} />
+                          )
+                        ) : hovering ? (
+                          <EnvelopePlusFill size={25} />
+                        ) : (
+                          <EnvelopePlus size={25} />
+                        )}
+                      </Button>
+                    </div>
+                    <div className="search-container">
+                      <Button
+                        variant="outline-info"
+                        className="btn-icon"
+                        onClick={toggleSearch}
+                        aria-label={
+                          translations[languageCode]?.feedScreen
+                            ?.filterTextPosts || "Filter all the text posts"
+                        }
+                      >
+                        <Search size={25} />
+                      </Button>
+                      {searchActive && (
+                        <input
+                          ref={searchInputRef}
+                          type="text"
+                          className="search-input"
+                          placeholder={
+                            translations[languageCode]?.feedScreen
+                              ?.searchPlaceholder || "Type your search"
+                          }
+                          onChange={handleSearchChange}
                         />
                       )}
-                    </Button>
-                  </div>
+                    </div>
 
-                  <div className="small-button-wrapper">
-                    <Button
-                      variant="outline-info"
-                      className="btn-icon"
-                      onClick={launchLiveCallCentre}
-                    >
-                      <Telephone size={25} />
-                    </Button>
-                  </div>
-                </div>
-                <div style={isMobile ? verticleWrapper : verticleWrapper} className="bottom-row-buttons">
-                  <div className="small-button-wrapper">
-                    <Button
-                      variant="outline-info"
-                      onMouseEnter={() => setHovering(true)}
-                      onMouseLeave={() => setHovering(false)}
-                      onClick={toggleNotifications}
-                      className="btn-icon"
-                    >
-                      {notificationson ? (
-                        hovering ? (
-                          <EnvelopeSlashFill size={25} />
-                        ) : (
-                          <EnvelopeSlash size={25} />
-                        )
-                      ) : hovering ? (
-                        <EnvelopePlusFill size={25} />
-                      ) : (
-                        <EnvelopePlus size={25} />
-                      )}
-                    </Button>
-                  </div>
-                  <div className="search-container">
-                    <Button
-                      variant="outline-info"
-                      className="btn-icon"
-                      onClick={toggleSearch}
-                    >
-                      <Search size={25} />
-                    </Button>
-                    {searchActive && (
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        className="search-input"
-                        placeholder={
+                    <div className="small-button-wrapper">
+                      <Button
+                        variant="outline-info"
+                        className="btn-icon"
+                        aria-label={
                           translations[languageCode]?.feedScreen
-                            ?.searchPlaceholder || "Type your search"
+                            ?.NotImplemented || "Not implemented"
                         }
-                        onChange={handleSearchChange}
-                      />
-                    )}
-                  </div>
-
-                  <div className="small-button-wrapper">
-                    <Button variant="outline-info" className="btn-icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="25"
-                        height="25"
-                        fill="currentColor"
                       >
-                        <path d="M3.892-.004a3.999 3.999 0 1 0 2.5 7.2l2.405 2.412a3.999 3.999 0 1 0 3.199-1.605 3.999 3.999 0 0 0-2.387.793l-2.412-2.41a3.919 3.919 0 0 0 .8-2.382A3.999 3.999 0 0 0 3.892-.004zm.19 1.152a2.857 2.857 0 0 1-.084 5.712 2.856 2.856 0 0 1-2.856-2.856 2.856 2.856 0 0 1 2.94-2.856"></path>
-                      </svg>
-                    </Button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 16 16"
+                          width="25"
+                          height="25"
+                          fill="currentColor"
+                        >
+                          <path d="M3.892-.004a3.999 3.999 0 1 0 2.5 7.2l2.405 2.412a3.999 3.999 0 1 0 3.199-1.605 3.999 3.999 0 0 0-2.387.793l-2.412-2.41a3.919 3.919 0 0 0 .8-2.382A3.999 3.999 0 0 0 3.892-.004zm.19 1.152a2.857 2.857 0 0 1-.084 5.712 2.856 2.856 0 0 1-2.856-2.856 2.856 2.856 0 0 1 2.94-2.856"></path>
+                        </svg>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          {message && (
-            <AlertMessage key={alertKey} message={message} type={type} />
-          )}
-          {inCall && (
-            <div className="video-call-container">
-              <video
-                ref={localVideoRef}
-                autoPlay
-                muted
-                className="local-video"
-              />
-              <Button
-                variant="outline-danger"
-                className="btn-icon"
-                onClick={endCall}
-              >
-                <TelephoneFill size={25} />
-              </Button>
-              <video ref={remoteVideoRef} autoPlay className="remote-video" />
-            </div>
-          )}
-        </>
-      )}
-
-      {filteredPosts.map((post) => (
-        <div key={post.id} className="element-group-box">
-          {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
-            post.posting_user_id && (
-            <img
-              src={`${process.env.REACT_APP_IMAGE_HOST}/${
-                process.env.REACT_APP_IMAGE_FOLDER
-              }/thumb-${extractFilename(post.profile_picture)}`}
-              alt="User Post"
-              className="post-profile-image"
-            />
-          )}
-
-          {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
-            post.posting_user_id &&
-            loggedInUserAdmin && (
-              <img
-                src={loggedInUserAdmin}
-                alt="Admin Face"
-                className="post-profile-image"
+            {message && (
+              <AlertMessage
+                key={alertKey}
+                message={message}
+                type={type}
+                aria-live="assertive"
+                role="alert"
               />
             )}
-
-          {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
-            post.posting_user_id &&
-            !loggedInUserAdmin && (
-              <img
-                src={"/admins/thumb-file-admin.JPEG"}
-                alt="Admin Face"
-                className="post-profile-image"
-              />
+            {inCall && (
+              <div className="video-call-container">
+                <video
+                  ref={localVideoRef}
+                  autoPlay
+                  muted
+                  className="local-video"
+                />
+                <Button
+                  variant="outline-danger"
+                  className="btn-icon"
+                  onClick={endCall}
+                  aria-label={
+                    translations[languageCode]?.feedScreen?.endCall ||
+                    "End the call"
+                  }
+                >
+                  <TelephoneFill size={25} />
+                </Button>
+                <video ref={remoteVideoRef} autoPlay className="remote-video" />
+              </div>
             )}
+          </>
+        )}
 
-          {post.type === "text" ? (
-            <div className="speech-bubble">
-              <div>{post.content}</div>
-            </div>
-          ) : validateUploadedSoundFile(post.uploaded_path) ? (
-            <audio controls ref={audioRef}>
-              <source
-                src={`${
-                  process.env.REACT_APP_IMAGE_HOST
-                }${post.uploaded_path.replace(/\\/g, "/")}`}
-                type="audio/mp3"
-              />
-              Your browser does not support the audio element.
-            </audio>
-          ) : (
-            <div className="post-image-container">
+        {filteredPosts.map((post) => (
+          <article key={post.id} className="element-group-box" role="region">
+            {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
+              post.posting_user_id && (
               <img
-                className={
-                  userId === post.posting_user_id ? "resizable-image" : ""
+                src={`${process.env.REACT_APP_IMAGE_HOST}/${
+                  process.env.REACT_APP_IMAGE_FOLDER
+                }/thumb-${extractFilename(post.profile_picture)}`}
+                alt={
+                  translations[languageCode]?.feedScreen?.userPost ||
+                  "User Post"
                 }
-                src={`${
-                  process.env.REACT_APP_IMAGE_HOST
-                }${post.uploaded_path.replace(/\\/g, "/")}`}
-                alt="User Post"
+                className="post-profile-image"
               />
-            </div>
-          )}
+            )}
 
-          {userId === post.posting_user_id && (
-            <div className="button_tower">
-              {post.type === "text" ? (
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  onClick={() => setPostIdForText(post.id, post.content)}
-                >
-                  {translations[languageCode]?.feedScreen?.updateButton ||
-                    "Update"}
-                </Button>
-              ) : validateUploadedSoundFile(post.uploaded_path) ? (
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  style={{ opacity: 0.5 }}
-                  disabled
-                >
-                  {translations[languageCode]?.feedScreen?.updateButton ||
-                    "Update"}
-                </Button>
-              ) : (
-                <Button
-                  variant="outline-info"
-                  className="btn-sm"
-                  onClick={() => setPostId(post.id)}
-                >
-                  {translations[languageCode]?.feedScreen?.updateButton ||
-                    "Update"}
-                </Button>
+            {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+              post.posting_user_id &&
+              loggedInUserAdmin && (
+                <img
+                  src={loggedInUserAdmin}
+                  alt={
+                    translations[languageCode]?.feedScreen?.adminFace ||
+                    "Admin Face"
+                  }
+                  className="post-profile-image"
+                />
               )}
-              <Button
-                variant="danger"
-                className="btn-sm"
-                onClick={() => deletePost(post.id)}
-                onMouseEnter={() => setHoveredDeletePostId(post.id)}
-                onMouseLeave={() => setHoveredDeletePostId(null)}
-              >
-                {hoveredDeletePostId === post.id ? (
-                  <TrashFill size={25} />
-                ) : (
-                  <Trash size={25} />
-                )}
-              </Button>
-            </div>
-          )}
-          {userId !== post.posting_user_id && (
-            <div className="button_tower" style={{ opacity: 0.5 }}>
-              <Button variant="outline-info" className="btn-sm" disabled>
-                {translations[languageCode]?.feedScreen?.updateButton ||
-                  "Update"}
-              </Button>
 
-              <Button variant="danger" className="btn-sm" disabled>
-                <Trash size={25} />
-              </Button>
-            </div>
-          )}
-        </div>
-      ))}
-      <Button
-        variant="outline-info"
-        className="btn-icon btn-fixed-bottom"
-        onClick={handleScrollToTop}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "0",
-          zIndex: 1000,
-        }}
-      >
-        <ArrowUpCircleFill size={25} />
-      </Button>
-      {caller && !inCall && (
-        <div className="wrapper-container-peer-answer incoming-call">
-          <p>
-            {translations[languageCode]?.feedScreen?.incomingCallFrom ||
-              "Incoming call from"}{" "}
-            {getUserNameFromAssociatedUsers(associatedUsers, caller.from)}
-          </p>
-          <Button variant="outline-info" onClick={answerCall}>
-            {translations[languageCode]?.feedScreen?.answerButton || "Answer"}
+            {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+              post.posting_user_id &&
+              !loggedInUserAdmin && (
+                <img
+                  src={"/admins/thumb-file-admin.JPEG"}
+                  alt={
+                    translations[languageCode]?.feedScreen?.adminFace ||
+                    "Admin Face"
+                  }
+                  className="post-profile-image"
+                />
+              )}
+            {post.type === "text" ? (
+              <div className="speech-bubble">
+                <div>{post.content}</div>
+              </div>
+            ) : validateUploadedSoundFile(post.uploaded_path) ? (
+              <audio controls ref={audioRef}>
+                <source
+                  src={`${
+                    process.env.REACT_APP_IMAGE_HOST
+                  }${post.uploaded_path.replace(/\\/g, "/")}`}
+                  type="audio/mp3"
+                />
+                {translations[languageCode]?.feedScreen?.userPost ||
+                  "Your browser does not support the audio element."}
+              </audio>
+            ) : (
+              <div className="post-image-container">
+                <img
+                  className={
+                    userId === post.posting_user_id ? "resizable-image" : ""
+                  }
+                  src={`${
+                    process.env.REACT_APP_IMAGE_HOST
+                  }${post.uploaded_path.replace(/\\/g, "/")}`}
+                  alt={
+                    translations[languageCode]?.feedScreen?.userPost ||
+                    "User Post"
+                  }
+                />
+              </div>
+            )}
+
+            {userId === post.posting_user_id && (
+              <div className="button_tower">
+                {post.type === "text" ? (
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    onClick={() => setPostIdForText(post.id, post.content)}
+                    aria-label={
+                      translations[languageCode]?.feedScreen?.updateTextPost ||
+                      "Update this text post you made"
+                    }
+                  >
+                    {translations[languageCode]?.feedScreen?.updateButton ||
+                      "Update"}
+                  </Button>
+                ) : validateUploadedSoundFile(post.uploaded_path) ? (
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    style={{ opacity: 0.5 }}
+                    disabled
+                    aria-label="Update this audio post you made"
+                  >
+                    {translations[languageCode]?.feedScreen?.updateButton ||
+                      "Update"}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline-info"
+                    className="btn-sm"
+                    onClick={() => setPostId(post.id)}
+                    aria-label={
+                      translations[languageCode]?.feedScreen?.UpdateImagePost ||
+                      "Update this image post you made"
+                    }
+                  >
+                    {translations[languageCode]?.feedScreen?.updateButton ||
+                      "Update"}
+                  </Button>
+                )}
+                <Button
+                  variant="danger"
+                  className="btn-sm"
+                  onClick={() => deletePost(post.id)}
+                  onMouseEnter={() => setHoveredDeletePostId(post.id)}
+                  onMouseLeave={() => setHoveredDeletePostId(null)}
+                  aria-label={
+                    translations[languageCode]?.feedScreen?.DeleteYourPostost ||
+                    "Delete this post you made"
+                  }
+                >
+                  {hoveredDeletePostId === post.id ? (
+                    <TrashFill size={25} />
+                  ) : (
+                    <Trash size={25} />
+                  )}
+                </Button>
+              </div>
+            )}
+            {userId !== post.posting_user_id && (
+              <div className="button_tower" style={{ opacity: 0.5 }}>
+                <Button variant="outline-info" className="btn-sm" disabled>
+                  {translations[languageCode]?.feedScreen?.updateButton ||
+                    "Update"}
+                </Button>
+
+                <Button variant="danger" className="btn-sm" disabled>
+                  <Trash size={25} />
+                </Button>
+              </div>
+            )}
+          </article>
+        ))}
+        <nav>
+          <Button
+            variant="outline-info"
+            className="btn-icon btn-fixed-bottom"
+            onClick={handleScrollToTop}
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "0",
+              zIndex: 1000,
+            }}
+            aria-label={
+              translations[languageCode]?.feedScreen?.scrollToTop ||
+              "Scroll to Top"
+            }
+          >
+            <ArrowUpCircleFill size={25} />
           </Button>
-          <Button variant="outline-danger" onClick={endCall}>
-            {translations[languageCode]?.feedScreen?.declineButton || "Decline"}
-          </Button>
-        </div>
-      )}
+        </nav>
+        {caller && !inCall && (
+          <div className="wrapper-container-peer-answer incoming-call">
+            <p>
+              {translations[languageCode]?.feedScreen?.incomingCallFrom ||
+                "Incoming call from"}{" "}
+              {getUserNameFromAssociatedUsers(associatedUsers, caller.from)}
+            </p>
+            <Button variant="outline-info" onClick={answerCall}>
+              {translations[languageCode]?.feedScreen?.answerButton || "Answer"}
+            </Button>
+            <Button variant="outline-danger" onClick={endCall}>
+              {translations[languageCode]?.feedScreen?.declineButton ||
+                "Decline"}
+            </Button>
+          </div>
+        )}
+      </main>
     </div>
   );
 };

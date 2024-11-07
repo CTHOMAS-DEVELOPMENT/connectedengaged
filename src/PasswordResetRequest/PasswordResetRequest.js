@@ -29,7 +29,7 @@ const PasswordResetRequest = () => {
       },
       body: JSON.stringify({
         email: email,
-        languageCode: languageCode,  // Send selectedLanguage to the backend
+        languageCode: languageCode, // Send selectedLanguage to the backend
       }),
     })
       .then((response) => response.json())
@@ -62,16 +62,27 @@ const PasswordResetRequest = () => {
 
   return (
     <div className="password-reset-request">
-      <Button variant="danger" onClick={backToLogin} className="logout-button">
-        {translations[languageCode]?.passwordReset?.backToLogin ||
-          "Back to Login"}
-      </Button>
-      <h2 className="font-style-4">
-        {translations[languageCode]?.passwordReset?.title || "Password Reset"}
-      </h2>
+      <header>
+        <Button
+          variant="danger"
+          onClick={backToLogin}
+          className="logout-button"
+          aria-label={
+            translations[languageCode]?.passwordReset?.backToLogin ||
+            "Back to Login"
+          }
+        >
+          {translations[languageCode]?.passwordReset?.backToLogin ||
+            "Back to Login"}
+        </Button>
+        <h2 className="font-style-4" id="password-reset-title">
+          {translations[languageCode]?.passwordReset?.title || "Password Reset"}
+        </h2>
+      </header>
       <div className="wrapper-container">
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} aria-labelledby="password-reset-title">
           <input
+          id="emailInput"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -80,18 +91,28 @@ const PasswordResetRequest = () => {
               "Enter your email"
             }
             required
+            aria-describedby="emailHelp"
           />
+
           <Button
             variant="outline-info"
             className="btn-sm view-profile-btn"
             type="submit"
+            aria-label={
+              translations[languageCode]?.passwordReset?.sendLink ||
+              "Send Reset Link"
+            }
           >
             {translations[languageCode]?.passwordReset?.sendLink ||
               "Send Reset Link"}
           </Button>
         </form>
       </div>
-      {message && <AlertMessage key={alertKey} message={message} type={type} />}
+      <small id="emailHelp" className="form-text text-muted">
+            {translations[languageCode]?.passwordReset?.emailHelpText ||
+              "We'll send a reset link to this email address."}
+          </small>
+      {message && <AlertMessage key={alertKey} message={message} type={type} role="alert" aria-live="polite"/>}
     </div>
   );
 };
