@@ -47,6 +47,7 @@ const UpdateProfile = () => {
   const [showHobbies, setShowHobbies] = useState(false);
   const [showLocation, setShowLocation] = useState(false); // Manage visibility
   const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -85,6 +86,42 @@ const UpdateProfile = () => {
     alignItems: "center",
     justifyContent: "center",
   };
+  const handleDeleteAccount = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const confirmDeleteAccount = async (userId) => {
+    setShowDeleteConfirmation(false);
+  
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
+  
+      if (response.ok) {
+        console.log(`Account deleted for ${userId}`);
+        navigate("/goodbye"); // Redirect or show a message after deletion
+      } else {
+        console.error("Failed to delete account.");
+        setMessage(
+          pageTranslations.deletionError || "Failed to delete account. Please try again."
+        );
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      setMessage(
+        pageTranslations.networkError || "An error occurred while deleting the account."
+      );
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+    }
+  };
+  
   const handleSelectCoordinates = (selectedCoordinates) => {
     // Update formData with the new coordinates
     setFormData((prevFormData) => ({
@@ -360,6 +397,16 @@ const UpdateProfile = () => {
             {pageTranslations.title || "Update Profile"}
           </h2>
         </header>
+        <Button
+          style={{ backgroundColor: "white", color: "red" }}
+          variant="outline-danger"
+          className="btn-sm mt-2"
+          onClick={handleDeleteAccount}
+          onMouseOver={(e) => (e.target.style.color = "black")}
+          onMouseOut={(e) => (e.target.style.color = "red")}
+        >
+          {pageTranslations.deleteAccountButton || "Delete Account"}
+        </Button>
         <div style={{ textAlign: "center", margin: "20px" }}>
           <Dropdown
             onSelect={handleLanguageChange}
@@ -409,6 +456,32 @@ const UpdateProfile = () => {
           />
         </section>
       </div>
+      {showDeleteConfirmation && (
+        <div className="overlay">
+          <div className="confirmation-dialog">
+            <h3 className="font-style-4">
+              {pageTranslations.confirmDeletionTitle ||
+                "Confirm Account Deletion"}
+            </h3>
+            <p>
+              {pageTranslations.confirmDeletionMessage ||
+                "Are you sure you want to delete your account? This action cannot be undone."}
+            </p>
+            <Button
+              variant="danger"
+              onClick={() => confirmDeleteAccount(userId)}
+            >
+              {pageTranslations.confirmButton || "Confirm"}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setShowDeleteConfirmation(false)}
+            >
+              {pageTranslations.cancelButton || "Cancel"}
+            </Button>
+          </div>
+        </div>
+      )}
       <form
         noValidate
         onSubmit={handleSubmit}
@@ -532,7 +605,7 @@ const UpdateProfile = () => {
               </Button>
             </div>
             {showHobbies && (
-             <div id="h-selection" role="region" aria-labelledby="h-selection">
+              <div id="h-selection" role="region" aria-labelledby="h-selection">
                 <Hobbies
                   onSelectHobby={handleHobbySelection}
                   selected={selectedHobby}
@@ -547,8 +620,8 @@ const UpdateProfile = () => {
                   variant="outline-info"
                   className="btn-sm"
                   onClick={() => setShowOrientation(!showOrientation)}
-                aria-expanded={showOrientation}
-                aria-controls="o-selection"
+                  aria-expanded={showOrientation}
+                  aria-controls="o-selection"
                 >
                   {showOrientation
                     ? pageTranslations.orientationToggle?.hide ||
@@ -558,7 +631,11 @@ const UpdateProfile = () => {
                 </Button>
               </div>
               {showOrientation && (
-                <div id="o-selection" role="region" aria-labelledby="o-selection">
+                <div
+                  id="o-selection"
+                  role="region"
+                  aria-labelledby="o-selection"
+                >
                   <Orientation
                     onSelectOrientation={handleOrientationSelection}
                     selected={selectedOrientation}

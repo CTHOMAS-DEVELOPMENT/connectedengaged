@@ -21,10 +21,10 @@ const LoadAVideo = ({ userId, onUpload, selectedLanguage = "en" }) => {
           window.URL.revokeObjectURL(video.src);
           setVideoDuration(video.duration);
 
-          if (video.duration > 30) {
+          if (video.duration > 60) {
             setVideoError(
               pageTranslations.durationError ||
-                "Video is longer than 30 seconds."
+                "Video is longer than 60 seconds."
             );
             setSelectedVideo(null);
           } else {

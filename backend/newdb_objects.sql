@@ -238,3 +238,38 @@ ALTER TYPE sex_type_new RENAME TO sex_type;
 ALTER TABLE users ADD COLUMN language_code VARCHAR(2) DEFAULT 'en';
 ALTER TABLE users ADD COLUMN country_name character varying(100),ADD COLUMN registered_ip_address character varying(45);
 
+-- Create backup of the users table
+CREATE TABLE users_bk (LIKE users INCLUDING ALL);
+
+-- Create backup of the user_submissions table
+CREATE TABLE user_submissions_bk (LIKE user_submissions INCLUDING ALL);
+
+-- Create backup of the submission_dialog table
+CREATE TABLE submission_dialog_bk (LIKE submission_dialog INCLUDING ALL);
+
+-- Create backup of the submission_members table
+CREATE TABLE submission_members_bk (LIKE submission_members INCLUDING ALL);
+
+-- Create backup of the connection_requests table
+CREATE TABLE connection_requests_bk (LIKE connection_requests INCLUDING ALL);
+
+-- Create backup of the connections table
+CREATE TABLE connections_bk (LIKE connections INCLUDING ALL);
+
+-- Create backup of the scheduled_deletions table
+CREATE TABLE scheduled_deletions_bk (LIKE scheduled_deletions INCLUDING ALL);
+//Use postgres on remote database
+/*
+GRANT ALL PRIVILEGES ON TABLE submission_dialog_bk TO postgres;
+GRANT ALL PRIVILEGES ON TABLE submission_members_bk TO postgres;
+GRANT ALL PRIVILEGES ON TABLE connection_requests_bk TO postgres;
+GRANT ALL PRIVILEGES ON TABLE connections_bk TO postgres;
+GRANT ALL PRIVILEGES ON TABLE user_submissions_bk TO postgres;
+GRANT ALL PRIVILEGES ON TABLE users_bk TO postgres;
+*/
+GRANT ALL PRIVILEGES ON TABLE submission_dialog_bk TO interactone;
+GRANT ALL PRIVILEGES ON TABLE submission_members_bk TO interactone;
+GRANT ALL PRIVILEGES ON TABLE connection_requests_bk TO interactone;
+GRANT ALL PRIVILEGES ON TABLE connections_bk TO interactone;
+GRANT ALL PRIVILEGES ON TABLE user_submissions_bk TO interactone;
+GRANT ALL PRIVILEGES ON TABLE users_bk TO interactone;

@@ -94,11 +94,8 @@ app.use((req, res, next) => {
   next();
 });
 
-/**
- ,
-  transports: process.env.NODE_ENV === 'development' ? ["polling"] : ["websocket", "polling"], // Only use polling locally, enable websocket in production
 
- */
+
 // Socket.io configuration
 const io = socketIo(server, {
   cors: {
@@ -122,7 +119,12 @@ const transporter = nodemailer.createTransport({
 app.use(express.json());
 // Serve static files from the 'backend/imageUploaded' directory
 const isLocal = process.env.NODE_ENV === "development";
-
+const baseDir = isLocal
+  ? path.join(__dirname, "imageUploaded")
+  : path.join(__dirname, "backend/imageUploaded");
+const backupDir = isLocal
+  ? path.join(__dirname, "mediaBackup")
+  : path.join(__dirname, "backend/mediaBackup");
 if (isLocal) {
   // Local environment configuration
   app.use(
@@ -1610,30 +1612,34 @@ const videoUpload = multer({
     }
     cb(null, true);
   },
-  limits: { fileSize: 30 * 1024 * 1024 }, // 30MB size limit
+  limits: { fileSize: 50 * 1024 * 1024 }, // 30MB size limit
 }).single("profileVideo");
 
 app.post("/api/users/:userId/upload-profile-video", (req, res) => {
   videoUpload(req, res, async (err) => {
+    console.log("Video upload request received");
+
     if (req.fileValidationError) {
+      console.error("File validation error:", req.fileValidationError);
       return res.status(400).send(req.fileValidationError);
     }
     if (err instanceof multer.MulterError) {
+      console.error("Multer error:", err.message);
       return res.status(500).send(err.message);
     } else if (err) {
+      console.error("Unknown error:", err.message);
       return res.status(500).send(err.message);
     }
 
-    // No error thrown by multer, file has been uploaded successfully
     const userId = req.params.userId;
-    const profileVideoPath = req.file.path; // The file path where the video is stored
+    const profileVideoPath = req.file.path;
+    console.log("Video uploaded to:", profileVideoPath);
 
     try {
       const result = await pool.query(
         "UPDATE users SET profile_video = $1 WHERE id = $2 RETURNING *",
         [profileVideoPath, userId]
       );
-
       if (result.rows.length > 0) {
         res.status(200).json({
           message: "Profile video updated successfully.",
@@ -1648,6 +1654,7 @@ app.post("/api/users/:userId/upload-profile-video", (req, res) => {
     }
   });
 });
+
 
 app.delete("/api/submission-dialog/:dialogId", async (req, res) => {
   const { dialogId } = req.params;
@@ -1969,9 +1976,9 @@ app.get("/api/closed-interaction-zip/:submissionId", async (req, res) => {
     );
 
     // Determine base directory for images
-    const baseDir = isLocal
-      ? path.join(__dirname, "imageUploaded")
-      : path.join(__dirname, "backend/imageUploaded");
+    // const baseDir = isLocal
+    //   ? path.join(__dirname, "imageUploaded")
+    //   : path.join(__dirname, "backend/imageUploaded");
 
     // Loop through posts to add any media files to the ZIP
     for (const post of posts.filter((post) => post.uploaded_path)) {
@@ -2033,12 +2040,37 @@ app.post(
   }
 );
 
-async function deleteExpiredInteractions() {
+async function backupAndMoveFilesForExpiredInteractions() {
   await pool.query("BEGIN");
 
   try {
-    // Get the paths of all images to be deleted
-    const { rows: imagesToDelete } = await pool.query(`
+    // Step 1: Backup records from `submission_dialog`, `submission_members`, and `user_submissions`
+    await pool.query(`
+      INSERT INTO submission_dialog_bk
+      SELECT * FROM submission_dialog
+      WHERE submission_id IN (
+        SELECT id FROM user_submissions
+        WHERE (2 * 24 * 60 * 60 - EXTRACT(epoch FROM NOW() - lastuser_addition)) < 0
+      )
+    `);
+
+    await pool.query(`
+      INSERT INTO submission_members_bk
+      SELECT * FROM submission_members
+      WHERE submission_id IN (
+        SELECT id FROM user_submissions
+        WHERE (2 * 24 * 60 * 60 - EXTRACT(epoch FROM NOW() - lastuser_addition)) < 0
+      )
+    `);
+
+    await pool.query(`
+      INSERT INTO user_submissions_bk
+      SELECT * FROM user_submissions
+      WHERE (2 * 24 * 60 * 60 - EXTRACT(epoch FROM NOW() - lastuser_addition)) < 0
+    `);
+
+    // Step 2: Fetch paths of media files associated with expired interactions
+    const { rows: imagesToBackup } = await pool.query(`
       SELECT uploaded_path FROM submission_dialog
       WHERE submission_id IN (
         SELECT id FROM user_submissions
@@ -2046,40 +2078,65 @@ async function deleteExpiredInteractions() {
       )
     `);
 
-    // Determine base directory for images
-    const baseDir = isLocal
-      ? path.join(__dirname, "imageUploaded")
-      : path.join(__dirname, "backend/imageUploaded");
-
-    // Delete the images from the filesystem
-    for (const row of imagesToDelete) {
+    // Step 3: Move media files to the backup directory
+    for (const row of imagesToBackup) {
       const pathType = typeof row.uploaded_path;
 
       if (pathType === "string" && row.uploaded_path.trim() !== "") {
-        // Removing the 'uploaded-images' segment from the path
+        // Sanitize and construct full paths for original and backup locations
         const sanitizedPath = row.uploaded_path.replace(
           /^.*[\\\/]uploaded-images[\\\/]/,
           ""
         );
         const fullPath = path.join(baseDir, sanitizedPath);
+        const backupPath = path.join(backupDir, sanitizedPath);
 
         try {
           if (fs.existsSync(fullPath)) {
-            await fs.promises.unlink(fullPath);
-            console.log(`Successfully deleted: ${fullPath}`);
+            // Ensure backup directory exists
+            const backupDirPath = path.dirname(backupPath);
+            fs.mkdirSync(backupDirPath, { recursive: true });
+
+            // Move the file
+            await fs.promises.rename(fullPath, backupPath);
+            console.log(`Successfully moved ${fullPath} to ${backupPath}`);
           } else {
-            console.log(`File not found: ${fullPath}, skipping deletion.`);
+            console.log(`File not found: ${fullPath}, skipping backup.`);
           }
         } catch (error) {
-          console.error(`Failed to delete file ${fullPath}: `, error);
+          console.error(`Failed to move file ${fullPath} to backup: `, error);
         }
       } else {
-        console.log("Invalid path encountered, skipping deletion.");
+        console.log("Invalid path encountered, skipping move.");
       }
     }
 
-    // Continue with database deletions as before...
-    // First, delete from the submission_dialog table
+    // Commit the transaction for backups and media movement
+    await pool.query("COMMIT");
+    return true; // Indicate success
+  } catch (error) {
+    console.error("Error during backup and move, rolling back:", error);
+    await pool.query("ROLLBACK");
+    return false; // Indicate failure
+  }
+}
+
+async function deleteExpiredInteractions() {
+  console.log("Starting deletion of expired interactions...");
+
+  // Step 1: Backup records and media files
+  const backupSuccess = await backupAndMoveFilesForExpiredInteractions();
+
+  if (!backupSuccess) {
+    console.error("Backup failed; aborting deletion of expired interactions.");
+    return;
+  }
+
+  // Step 2: Proceed with database deletions after successful backup
+  await pool.query("BEGIN");
+
+  try {
+    // First, delete from the `submission_dialog` table
     await pool.query(`
       DELETE FROM submission_dialog
       WHERE submission_id IN (
@@ -2088,7 +2145,7 @@ async function deleteExpiredInteractions() {
       )
     `);
 
-    // Next, delete from the submission_members table
+    // Next, delete from the `submission_members` table
     await pool.query(`
       DELETE FROM submission_members
       WHERE submission_id IN (
@@ -2097,7 +2154,7 @@ async function deleteExpiredInteractions() {
       )
     `);
 
-    // Finally, delete from the user_submissions table
+    // Finally, delete from the `user_submissions` table
     await pool.query(`
       DELETE FROM user_submissions
       WHERE (2 * 24 * 60 * 60 - EXTRACT(epoch FROM NOW() - lastuser_addition)) < 0
@@ -2105,12 +2162,137 @@ async function deleteExpiredInteractions() {
 
     // Commit the transaction
     await pool.query("COMMIT");
+
+    console.log("Expired interactions deleted successfully.");
+  } catch (error) {
+    console.error("Error during deletion of expired interactions, rolling back:", error);
+    await pool.query("ROLLBACK");
+  }
+}
+
+async function delete_records_after_backup(userId) {
+  await pool.query("BEGIN");
+
+  try {
+    // Step 1: Backup and fetch paths of media files associated with this user's posts before deletion
+    await pool.query(`INSERT INTO submission_dialog_bk SELECT * FROM submission_dialog WHERE posting_user_id = $1`, [userId]);
+
+    // Fetch paths of media files associated with this user's posts before deletion
+    const { rows: imagesToBackup } = await pool.query(
+      `SELECT uploaded_path FROM submission_dialog WHERE posting_user_id = $1`,
+      [userId]
+    );
+
+    // Fetch paths for profile_picture and profile_video from users table
+    const { rows: userMedia } = await pool.query(
+      `SELECT profile_picture, profile_video FROM users WHERE id = $1`,
+      [userId]
+    );
+
+    // const baseDir = isLocal
+    //   ? path.join(__dirname, "imageUploaded")
+    //   : path.join(__dirname, "backend/imageUploaded");
+    // const backupDir = isLocal
+    //   ? path.join(__dirname, "mediaBackup")
+    //   : path.join(__dirname, "backend/mediaBackup");
+
+    // Prepare media files to move, including submission dialog media files
+    const filesToBackup = imagesToBackup
+      .map(row => row.uploaded_path ? row.uploaded_path.replace(/^.*[\\\/]uploaded-images[\\\/]/, "") : null)
+      .filter(Boolean);
+
+    if (userMedia.length > 0) {
+      const { profile_picture, profile_video } = userMedia[0];
+
+      // Add profile_picture and its thumbnail to files to backup, removing any leading 'backend\\imageUploaded\\' if present
+      if (profile_picture) {
+        const profilePicturePath = profile_picture.replace(/^backend[\\\/]imageUploaded[\\\/]/, "");
+        filesToBackup.push(profilePicturePath);
+
+        // Add the thumbnail version of profile_picture
+        const thumbPicture = path.join(path.dirname(profilePicturePath), `thumb-${path.basename(profilePicturePath)}`);
+        filesToBackup.push(thumbPicture);
+      }
+
+      // Add profile_video to files to backup, removing any leading 'backend\\imageUploaded\\' if present
+      if (profile_video) {
+        const profileVideoPath = profile_video.replace(/^backend[\\\/]imageUploaded[\\\/]/, "");
+        filesToBackup.push(profileVideoPath);
+      }
+    }
+
+    // Proceed to delete records from each table for the user
+    await pool.query(`DELETE FROM submission_dialog WHERE posting_user_id = $1`, [userId]);
+    await pool.query(`INSERT INTO submission_members_bk SELECT * FROM submission_members WHERE participating_user_id = $1`, [userId]);
+    await pool.query(`DELETE FROM submission_members WHERE participating_user_id = $1`, [userId]);
+    await pool.query(`INSERT INTO connection_requests_bk SELECT * FROM connection_requests WHERE requester_id = $1 OR requested_id = $1`, [userId]);
+    await pool.query(`DELETE FROM connection_requests WHERE requester_id = $1 OR requested_id = $1`, [userId]);
+    await pool.query(`INSERT INTO connections_bk SELECT * FROM connections WHERE user_one_id = $1 OR user_two_id = $1`, [userId]);
+    await pool.query(`DELETE FROM connections WHERE user_one_id = $1 OR user_two_id = $1`, [userId]);
+    await pool.query(`INSERT INTO user_submissions_bk SELECT * FROM user_submissions WHERE user_id = $1`, [userId]);
+    await pool.query(`DELETE FROM user_submissions WHERE user_id = $1`, [userId]);
+    await pool.query(`INSERT INTO users_bk SELECT * FROM users WHERE id = $1`, [userId]);
+    await pool.query(`DELETE FROM users WHERE id = $1`, [userId]);
+
+    // Step 2: Move associated media files to the backup directory
+    for (const relativePath of filesToBackup) {
+      if (relativePath) {
+        const fullPath = path.join(baseDir, relativePath);
+        const backupPath = path.join(backupDir, relativePath);
+
+        try {
+          if (fs.existsSync(fullPath)) {
+            // Ensure backup directory exists
+            const backupDirPath = path.dirname(backupPath);
+            fs.mkdirSync(backupDirPath, { recursive: true });
+
+            // Move the file
+            await fs.promises.rename(fullPath, backupPath);
+            console.log(`Successfully moved ${fullPath} to ${backupPath}`);
+          } else {
+            console.log(`File not found: ${fullPath}, skipping backup.`);
+          }
+        } catch (error) {
+          console.error(`Failed to move file ${fullPath} to backup: `, error);
+        }
+      } else {
+        console.log("Invalid path encountered, skipping move.");
+      }
+    }
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    console.log("User data backed up, media moved to backup, and records deleted successfully.");
   } catch (error) {
     console.error("Error during transaction, rolling back:", error);
     await pool.query("ROLLBACK");
-    // Decide if you want to rethrow the error or handle it differently
+    throw error;
   }
 }
+
+
+
+
+
+app.delete('/api/users/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: "Invalid user ID" });
+  }
+
+  try {
+    // Call the function to back up and delete user records
+    await delete_records_after_backup(userId);
+
+    // Respond with success
+    res.status(200).json({ message: "User data backed up and deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting user records:", error);
+    res.status(500).json({ message: "An error occurred while deleting user data." });
+  }
+});
 
 app.post("/api/end_interaction", async (req, res) => {
   const { submissionId } = req.body; // Extract the submissionId from the request body
@@ -2683,5 +2865,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9911**ARIA addition ${PORT}`);
+  console.log(`**9912**Backup records (Delete user and expiring engagements) ${PORT}`);
 });

@@ -81,9 +81,9 @@ const ViewImage = ({
           >
             {videoPath
               ? translationsForLang.updateProfileVideo ||
-                "Update Profile Video (Max 30 seconds)"
+                "Update Profile Video (Max 60 seconds)"
               : translationsForLang.addProfileVideo ||
-                "Add Profile Video (Max 30 seconds)"}
+                "Add Profile Video (Max 60 seconds)"}
           </Button>
         </div>
       ) : (

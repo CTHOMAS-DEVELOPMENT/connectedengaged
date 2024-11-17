@@ -6,10 +6,10 @@
       "uploadButton": "Upload Video",
       "durationLabel": "Duration",
       "seconds": "seconds",
-      "durationError": "Video is longer than 30 seconds.",
+      "durationError": "Video is longer than 60 seconds.",
       "invalidFileError": "Please select a valid video file.",
       "uploadError": "Failed to upload video. Please try again.",
-      "instructions": "Choose a video file (Max 30 seconds) to upload as your profile video.",
+      "instructions": "Choose a video file (Max 60 seconds) to upload as your profile video.",
       "networkError": "An error occurred while uploading the video."
     }
   },
@@ -20,10 +20,10 @@
       "uploadButton": "Subir Video",
       "durationLabel": "Duración",
       "seconds": "segundos",
-      "durationError": "El video dura más de 30 segundos.",
+      "durationError": "El video dura más de 60 segundos.",
       "invalidFileError": "Por favor, selecciona un archivo de video válido.",
       "uploadError": "Error al subir el video. Inténtalo de nuevo.",
-      "instructions": "Elige un archivo de video (máximo 30 segundos) para subir como tu video de perfil.",
+      "instructions": "Elige un archivo de video (máximo 60 segundos) para subir como tu video de perfil.",
       "networkError": "Ocurrió un error al subir el video."
     }
   },
@@ -34,10 +34,10 @@
       "uploadButton": "Télécharger la Vidéo",
       "durationLabel": "Durée",
       "seconds": "secondes",
-      "durationError": "La vidéo dure plus de 30 secondes.",
+      "durationError": "La vidéo dure plus de 60 secondes.",
       "invalidFileError": "Veuillez sélectionner un fichier vidéo valide.",
       "uploadError": "Échec du téléchargement de la vidéo. Veuillez réessayer.",
-      "instructions": "Choisissez un fichier vidéo (maximum 30 secondes) à télécharger comme vidéo de profil.",
+      "instructions": "Choisissez un fichier vidéo (maximum 60 secondes) à télécharger comme vidéo de profil.",
       "networkError": "Une erreur s'est produite lors du téléchargement de la vidéo."
     }
   },
@@ -48,10 +48,10 @@
       "uploadButton": "Video Hochladen",
       "durationLabel": "Dauer",
       "seconds": "Sekunden",
-      "durationError": "Das Video ist länger als 30 Sekunden.",
+      "durationError": "Das Video ist länger als 60 Sekunden.",
       "invalidFileError": "Bitte wählen Sie eine gültige Videodatei aus.",
       "uploadError": "Fehler beim Hochladen des Videos. Bitte versuche es erneut.",
-      "instructions": "Wählen Sie eine Videodatei (maximal 30 Sekunden), um sie als Ihr Profilvideo hochzuladen.",
+      "instructions": "Wählen Sie eine Videodatei (maximal 60 Sekunden), um sie als Ihr Profilvideo hochzuladen.",
       "networkError": "Beim Hochladen des Videos ist ein Fehler aufgetreten."
     }
   },
@@ -62,10 +62,10 @@
       "uploadButton": "تحميل الفيديو",
       "durationLabel": "المدة الزمنية",
       "seconds": "ثواني",
-      "durationError": "الفيديو أطول من 30 ثانية.",
+      "durationError": "الفيديو أطول من 60 ثانية.",
       "invalidFileError": "يرجى تحديد ملف فيديو صالح.",
       "uploadError": "فشل في تحميل الفيديو. حاول مرة أخرى.",
-      "instructions": "اختر ملف فيديو (بحد أقصى 30 ثانية) لتحميله كفيديو لملفك الشخصي.",
+      "instructions": "اختر ملف فيديو (بحد أقصى 60 ثانية) لتحميله كفيديو لملفك الشخصي.",
       "networkError": "حدث خطأ أثناء تحميل الفيديو."
     }
   },
@@ -79,7 +79,7 @@
       "durationError": "视频超过30秒。",
       "invalidFileError": "请选择有效的视频文件。",
       "uploadError": "上传视频失败。 请再试一次。",
-      "instructions": "选择一个视频文件（最多 30 秒）作为您的个人资料视频上传。",
+      "instructions": "选择一个视频文件（最多 60 秒）作为您的个人资料视频上传。",
       "networkError": "上传视频时出错。"
     }
   },
@@ -90,10 +90,10 @@
       "uploadButton": "Uaslódáil Físeán",
       "durationLabel": "Fad",
       "seconds": "soicindí",
-      "durationError": "Tá an físeán níos faide ná 30 soicind.",
+      "durationError": "Tá an físeán níos faide ná 60 soicind.",
       "invalidFileError": "Roghnaigh comhad físeán bailí le do thoil.",
       "uploadError": "Theip ar uaslódáil físeáin. Déan iarracht arís le do thoil.",
-      "instructions": "Roghnaigh comhad físe (Uasmhéid 30 soicind) le híoslódáil mar fhíseán próifíle.",
+      "instructions": "Roghnaigh comhad físe (Uasmhéid 60 soicind) le híoslódáil mar fhíseán próifíle.",
       "networkError": "Tharla earráid agus an físeán á uaslódáil."
     }
   },
@@ -104,10 +104,10 @@
       "uploadButton": "Enviar Vídeo",
       "durationLabel": "Duração",
       "seconds": "segundos",
-      "durationError": "O vídeo tem mais de 30 segundos.",
+      "durationError": "O vídeo tem mais de 60 segundos.",
       "invalidFileError": "Por favor, selecione um arquivo de vídeo válido.",
       "uploadError": "Falha ao enviar o vídeo. Por favor, tente novamente.",
-      "instructions": "Escolha um arquivo de vídeo (Máximo 30 segundos) para enviar como seu vídeo de perfil.",
+      "instructions": "Escolha um arquivo de vídeo (Máximo 60 segundos) para enviar como seu vídeo de perfil.",
       "networkError": "Ocorreu um erro ao enviar o vídeo."
     }
   }

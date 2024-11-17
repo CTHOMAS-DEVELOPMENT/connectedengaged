@@ -1,6 +1,11 @@
 {
   "en": {
     "updateProfile": {
+      "confirmDeletionTitle": "Confirm Account Deletion",
+      "confirmDeletionMessage": "Are you sure you want to delete your account? This action cannot be undone.",
+      "confirmButton": "Confirm",
+      "deleteAccountButton": "Delete Account",
+      "cancelButton": "Cancel",
       "title": "Update Profile",
       "backToMessages": "Back to messages",
       "submitButton": "Update Profile",
@@ -72,13 +77,18 @@
       "updateProfileImage": "Update Profile Image",
       "addProfileImage": "Add a Profile Image",
       "noProfilePicture": "No profile picture",
-      "updateProfileVideo": "Update Profile Video (Max 30 seconds)",
-      "addProfileVideo": "Add Profile Video (Max 30 seconds)",
+      "updateProfileVideo": "Update Profile Video (Max 60 seconds)",
+      "addProfileVideo": "Add Profile Video (Max 60 seconds)",
       "addUpdateProfileImage": "Add/Update Profile Picture"
     }
   },
   "es": {
     "updateProfile": {
+      "confirmDeletionTitle": "Confirmar Eliminación de Cuenta",
+      "confirmDeletionMessage": "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.",
+      "confirmButton": "Confirmar",
+      "deleteAccountButton": "Eliminar Cuenta",
+      "cancelButton": "Cancelar",
       "title": "Actualizar perfil",
       "backToMessages": "Volver a los mensajes",
       "submitButton": "Actualizar perfil",
@@ -150,13 +160,18 @@
       "updateProfileImage": "Actualizar imagen de perfil",
       "addProfileImage": "Agregar una imagen de perfil",
       "noProfilePicture": "Sin imagen de perfil",
-      "updateProfileVideo": "Actualizar video de perfil (máximo 30 segundos)",
-      "addProfileVideo": "Agregar video de perfil (máximo 30 segundos)",
+      "updateProfileVideo": "Actualizar video de perfil (máximo 60 segundos)",
+      "addProfileVideo": "Agregar video de perfil (máximo 60 segundos)",
       "addUpdateProfileImage": "Agregar/Actualizar imagen de perfil"
     }
   },
   "fr": {
     "updateProfile": {
+      "confirmDeletionTitle": "Confirmer la Suppression du Compte",
+      "confirmDeletionMessage": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+      "confirmButton": "Confirmer",
+      "deleteAccountButton": "Supprimer le Compte",
+      "cancelButton": "Annuler",
       "title": "Mettre à jour le profil",
       "backToMessages": "Retour aux messages",
       "submitButton": "Mettre à jour le profil",
@@ -228,13 +243,18 @@
       "updateProfileImage": "Mettre à jour l'image de profil",
       "addProfileImage": "Ajouter une image de profil",
       "noProfilePicture": "Pas d'image de profil",
-      "updateProfileVideo": "Mettre à jour la vidéo de profil (maximum 30 secondes)",
-      "addProfileVideo": "Ajouter une vidéo de profil (maximum 30 secondes)",
+      "updateProfileVideo": "Mettre à jour la vidéo de profil (maximum 60 secondes)",
+      "addProfileVideo": "Ajouter une vidéo de profil (maximum 60 secondes)",
       "addUpdateProfileImage": "Ajouter/Mettre à jour l'image de profil"
     }
   },
   "de": {
     "updateProfile": {
+      "confirmDeletionTitle": "Kontolöschung Bestätigen",
+      "confirmDeletionMessage": "Möchten Sie Ihr Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmButton": "Bestätigen",
+      "deleteAccountButton": "Konto Löschen",
+      "cancelButton": "Abbrechen",
       "title": "Profil aktualisieren",
       "backToMessages": "Zurück zu den Nachrichten",
       "submitButton": "Profil aktualisieren",
@@ -306,13 +326,18 @@
       "updateProfileImage": "Profilbild aktualisieren",
       "addProfileImage": "Ein Profilbild hinzufügen",
       "noProfilePicture": "Kein Profilbild",
-      "updateProfileVideo": "Profilvideo aktualisieren (max. 30 Sekunden)",
-      "addProfileVideo": "Profilvideo hinzufügen (max. 30 Sekunden)",
+      "updateProfileVideo": "Profilvideo aktualisieren (max. 60 Sekunden)",
+      "addProfileVideo": "Profilvideo hinzufügen (max. 60 Sekunden)",
       "addUpdateProfileImage": "Profilbild hinzufügen/aktualisieren"
     }
   },
   "ar": {
     "updateProfile": {
+      "confirmDeletionTitle": "تأكيد حذف الحساب",
+      "confirmDeletionMessage": "هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirmButton": "تأكيد",
+      "deleteAccountButton": "حذف الحساب",
+      "cancelButton": "إلغاء",
       "title": "تحديث الملف الشخصي",
       "backToMessages": "العودة إلى الرسائل",
       "submitButton": "تحديث الملف الشخصي",
@@ -384,13 +409,18 @@
       "updateProfileImage": "تحديث صورة الملف الشخصي",
       "addProfileImage": "إضافة صورة الملف الشخصي",
       "noProfilePicture": "لا توجد صورة للملف الشخصي",
-      "updateProfileVideo": "تحديث فيديو الملف الشخصي (بحد أقصى 30 ثانية)",
-      "addProfileVideo": "إضافة فيديو الملف الشخصي (بحد أقصى 30 ثانية)",
+      "updateProfileVideo": "تحديث فيديو الملف الشخصي (بحد أقصى 60 ثانية)",
+      "addProfileVideo": "إضافة فيديو الملف الشخصي (بحد أقصى 60 ثانية)",
       "addUpdateProfileImage": "إضافة/تحديث صورة الملف الشخصي"
     }
   },
   "zh": {
     "updateProfile": {
+      "confirmDeletionTitle": "确认删除账户",
+      "confirmDeletionMessage": "您确定要删除您的账户吗？此操作无法撤销。",
+      "confirmButton": "确认",
+      "deleteAccountButton": "删除账户",
+      "cancelButton": "取消",
       "title": "更新个人资料",
       "backToMessages": "返回消息",
       "submitButton": "更新个人资料",
@@ -469,6 +499,11 @@
   },
   "ga": {
     "updateProfile": {
+      "confirmDeletionTitle": "Dearbhaich Cur às do Chunntas",
+      "confirmDeletionMessage": "A bheil thu cinnteach gu bheil thu airson do chunntas a sguabadh às? Chan urrainnear an gnìomh seo a chuir dheth.",
+      "confirmButton": "Dearbhaich",
+      "deleteAccountButton": "Sguab às a' Chunntas",
+      "cancelButton": "Sguir dheth",
       "title": "Nuashonraigh Próifíl",
       "backToMessages": "Ar ais go teachtaireachtaí",
       "submitButton": "Nuashonraigh Próifíl",
@@ -540,13 +575,18 @@
       "updateProfileImage": "Nuashonraigh Íomhá Próifíle",
       "addProfileImage": "Cuir Íomhá Próifíle leis",
       "noProfilePicture": "Gan íomhá próifíle",
-      "updateProfileVideo": "Nuashonraigh Físeán Próifíle (Max 30 soicind)",
-      "addProfileVideo": "Cuir Físeán Próifíle leis (Max 30 soicind)",
+      "updateProfileVideo": "Nuashonraigh Físeán Próifíle (Max 60 soicind)",
+      "addProfileVideo": "Cuir Físeán Próifíle leis (Max 60 soicind)",
       "addUpdateProfileImage": "Cuir/Nuashonraigh Íomhá Próifíle"
     }
   },
   "pt": {
     "updateProfile": {
+      "confirmDeletionTitle": "Confirmar Exclusão da Conta",
+      "confirmDeletionMessage": "Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita.",
+      "confirmButton": "Confirmar",
+      "deleteAccountButton": "Excluir Conta",
+      "cancelButton": "Cancelar",
       "title": "Atualizar Perfil",
       "backToMessages": "Voltar para as mensagens",
       "submitButton": "Atualizar Perfil",
@@ -618,8 +658,8 @@
       "updateProfileImage": "Atualizar Imagem do Perfil",
       "addProfileImage": "Adicionar Imagem do Perfil",
       "noProfilePicture": "Sem imagem de perfil",
-      "updateProfileVideo": "Atualizar Vídeo do Perfil (Máx 30 segundos)",
-      "addProfileVideo": "Adicionar Vídeo do Perfil (Máx 30 segundos)",
+      "updateProfileVideo": "Atualizar Vídeo do Perfil (Máx 60 segundos)",
+      "addProfileVideo": "Adicionar Vídeo do Perfil (Máx 60 segundos)",
       "addUpdateProfileImage": "Adicionar/Atualizar Imagem do Perfil"
     }
   }
