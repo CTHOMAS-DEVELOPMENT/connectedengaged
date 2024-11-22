@@ -13,12 +13,14 @@ import PasswordReset from "./PasswordReset/PasswordReset"; // Import the compone
 import UpdateProfile from "./UpdateProfile/UpdateProfile";
 import TextGenerator from "./OpenAI/TextGenerator";
 import PrivacyPolicy from "./Login/PrivacyPolicy";
+import GoodBye from "./system/GoodBye";
 
 function App() {
   return (
     <Router>
         <div className="App">
           <Routes>
+          <Route path="/goodbye" element={<GoodBye/>} />
             <Route path="/password-reset" element={<PasswordReset />} />
             <Route
               path="/password-reset-request"

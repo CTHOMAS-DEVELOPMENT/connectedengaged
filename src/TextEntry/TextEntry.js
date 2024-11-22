@@ -4,34 +4,61 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AlertMessage from "../system/AlertMessage";
 import { Rocket, RocketFill } from "react-bootstrap-icons";
 import translations from "./translations.json"; // Adjust the path as necessary
-
-const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) => {
+import { passTextInput } from "../system/utils";
+const TextEntry = ({
+  userId,
+  submissionId,
+  onPostSubmit,
+  languageCode = "en",
+}) => {
   const [textContent, setTextContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
   const [alertKey, setAlertKey] = useState(0);
-
+  const wrapperStyle = {
+    marginTop: "10px", // Add spacing between the text entry and the alert
+  };
   const pageTranslations = translations[languageCode]?.textEntry || {};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!textContent.trim()) {
+    const { filteredText, offendingWord } = passTextInput(
+      textContent,
+      languageCode
+    );
+
+    if (!filteredText.trim()) {
       setMessage(pageTranslations.emptyTextError || "Please enter some text");
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
       return;
     }
+    if (offendingWord) {
+      // Show a warning if an offending word was replaced
+      setMessage(
+        `${
+          pageTranslations.offensiveWordWarningPt1 || "Warning: The word"
+        } "${offendingWord}" ${
+          pageTranslations.offensiveWordWarningPt2 || "has been replaced"
+        }`
+      );
+      setType("warning");
+      setAlertKey((prevKey) => prevKey + 1);
+    }
     setIsSubmitting(true); // Set submitting state to true
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${submissionId}/text-entry`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, textContent }), // Including userId in the request body
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/${submissionId}/text-entry`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, textContent: filteredText }), // Send filtered text
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -40,7 +67,11 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
           onPostSubmit(); // Trigger the callback to re-fetch posts
         }
       } else {
-        throw new Error(data.message || pageTranslations.submitError || "Error submitting text");
+        throw new Error(
+          data.message ||
+            pageTranslations.submitError ||
+            "Error submitting text"
+        );
       }
     } catch (error) {
       console.error("Error submitting text:", error);
@@ -55,9 +86,9 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
   return (
     <div className="text-entry">
       <form onSubmit={handleSubmit} aria-labelledby="text-entry-label">
-      <div id="text-entry-label" className="visually-hidden">
-        {pageTranslations.textEntryForm || "Text Entry Form"}
-      </div>
+        <div id="text-entry-label" className="visually-hidden">
+          {pageTranslations.textEntryForm || "Text Entry Form"}
+        </div>
         <div className="text-input-and-button">
           <textarea
             value={textContent}
@@ -65,7 +96,6 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
             placeholder={pageTranslations.placeholder || "What's on your mind?"}
             disabled={isSubmitting} // Disable textarea while submitting
             aria-label={pageTranslations.placeholder || "What's on your mind?"}
-
           />
 
           <Button
@@ -74,9 +104,12 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
             className="btn-icon"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
-            disabled={isSubmitting} 
-            aria-label={isSubmitting ? pageTranslations.submitting || "Submitting" : pageTranslations.submitYourPost || "Submit your post"}
-
+            disabled={isSubmitting}
+            aria-label={
+              isSubmitting
+                ? pageTranslations.submitting || "Submitting"
+                : pageTranslations.submitYourPost || "Submit your post"
+            }
           >
             {isSubmitting ? (
               <Spinner
@@ -92,8 +125,18 @@ const TextEntry = ({ userId, submissionId, onPostSubmit, languageCode = "en" }) 
               <Rocket size={25} />
             )}
           </Button>
-          {message && <AlertMessage key={alertKey} message={message} type={type} role="alert" aria-live="assertive" />}
+        </div>
+        {message && (
+          <div style={wrapperStyle}>
+            <AlertMessage
+              key={alertKey}
+              message={message}
+              type={type}
+              role="alert"
+              aria-live="assertive"
+            />
           </div>
+        )}
       </form>
     </div>
   );

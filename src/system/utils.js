@@ -1,3 +1,24 @@
+import illegalWords from "../system/illegalWords.json";
+export function passTextInput(text, language) {
+  const forbiddenPairs = illegalWords[language] || {};
+
+  let filteredText = text;
+  let offendingWord = null;
+
+  Object.keys(forbiddenPairs).forEach((forbiddenWord) => {
+    const substitute = forbiddenPairs[forbiddenWord];
+    const regex = new RegExp(`\\b${forbiddenWord}\\b`, "gi");
+
+    if (regex.test(filteredText) && !offendingWord) {
+      offendingWord = forbiddenWord; // Capture the first offending word
+    }
+
+    filteredText = filteredText.replace(regex, substitute);
+  });
+
+  return { filteredText, offendingWord };
+}
+
 export const parseExpectedEnd = (expectedEndStr) => {
   const [days, hours, minutes, seconds] = expectedEndStr.split(" ").filter((_, index) => index % 2 === 0);
   return {

@@ -6,7 +6,9 @@
       "submitError": "Error submitting text",
       "textEntryForm": "Text Entry Form",
       "submitting": "Submitting",
-      "submitYourPost": "Submit your post"
+      "submitYourPost": "Submit your post",
+      "offensiveWordWarningPt1": "Warning: The word",
+      "offensiveWordWarningPt2": "has been replaced"
     }
   },
   "es": {
@@ -16,7 +18,9 @@
       "textEntryForm": "Formulario de entrada de texto",
       "submitting": "Enviando",
       "submitYourPost": "Envía tu publicación",
-      "submitError": "Error al enviar el texto"
+      "submitError": "Error al enviar el texto",
+      "offensiveWordWarningPt1": "Advertencia: La palabra",
+      "offensiveWordWarningPt2": "ha sido reemplazada"
     }
   },
   "fr": {
@@ -26,7 +30,9 @@
       "textEntryForm": "Formulaire de saisie de texte",
       "submitting": "En cours d'envoi",
       "submitYourPost": "Soumettez votre publication",
-      "submitError": "Erreur lors de la soumission du texte"
+      "submitError": "Erreur lors de la soumission du texte",
+      "offensiveWordWarningPt1": "Attention : Le mot",
+      "offensiveWordWarningPt2": "a été remplacé"
     }
   },
   "de": {
@@ -36,7 +42,9 @@
       "textEntryForm": "Texteingabeformular",
       "submitting": "Einreichen",
       "submitYourPost": "Veröffentlichen Sie Ihren Beitrag",
-      "submitError": "Fehler beim Senden des Textes"
+      "submitError": "Fehler beim Senden des Textes",
+      "offensiveWordWarningPt1": "Warnung: Das Wort",
+      "offensiveWordWarningPt2": "wurde ersetzt"
     }
   },
   "ar": {
@@ -46,7 +54,9 @@
       "textEntryForm": "نموذج إدخال النص",
       "submitting": "جارٍ الإرسال",
       "submitYourPost": "أرسل منشورك",
-      "submitError": "خطأ في إرسال النص"
+      "submitError": "خطأ في إرسال النص",
+      "offensiveWordWarningPt1": "تحذير: الكلمة",
+      "offensiveWordWarningPt2": "تم استبدالها"
     }
   },
   "zh": {
@@ -56,7 +66,9 @@
       "textEntryForm": "文字输入表单",
       "submitting": "提交中",
       "submitYourPost": "提交您的帖子",
-      "submitError": "提交文本时出错"
+      "submitError": "提交文本时出错",
+      "offensiveWordWarningPt1": "警告：词语",
+      "offensiveWordWarningPt2": "已被替换"
     }
   },
   "ga": {
@@ -66,7 +78,9 @@
       "textEntryForm": "Foirm Iontrála Téacs",
       "submitting": "Á chur isteach",
       "submitYourPost": "Cuir isteach do phostáil",
-      "submitError": "Earráid ag cur isteach an téacs"
+      "submitError": "Earráid ag cur isteach an téacs",
+      "offensiveWordWarningPt1": "Rabhadh: An focal",
+      "offensiveWordWarningPt2": "a athsholáthraíodh"
     }
   },
   "pt": {
@@ -76,7 +90,9 @@
       "submitError": "Erro ao enviar o texto",
       "textEntryForm": "Formulário de Entrada de Texto",
       "submitting": "Enviando",
-      "submitYourPost": "Envie sua postagem"
+      "submitYourPost": "Envie sua postagem",
+      "offensiveWordWarningPt1": "Aviso: A palavra",
+      "offensiveWordWarningPt2": "foi substituída"
     }
   }
 }
