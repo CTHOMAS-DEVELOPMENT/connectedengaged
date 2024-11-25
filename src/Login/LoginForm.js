@@ -262,6 +262,11 @@ const LoginForm = () => {
     setConsentGiven(true); // Set consent given upon closing the modal
   };
   useEffect(() => {
+
+    if (localStorage.getItem("token")) {
+      console.log("Existing token found. Clearing it.");
+      localStorage.removeItem("token");
+    }
     const preferredLanguage = Cookies.get("preferredLanguage");
     if (preferredLanguage) {
       setSelectedLanguage(preferredLanguage); // Use cookie language

@@ -16,6 +16,8 @@ const { OpenAI } = require("openai");
 const app = express();
 const server = http.createServer(app);
 const bcrypt = require("bcrypt");
+const authenticateToken = require("./authenticateToken");
+const { loadEnvVariables } = require("./utils");
 const nodemailer = require("nodemailer");
 const languageMap = {
   en: "English",
@@ -27,28 +29,28 @@ const languageMap = {
   ga: "Irish",
   pt: "Portuguese"
 };
-function loadEnvVariables() {
-  // Adjust if your .env file is located elsewhere. Using __dirname ensures it looks in the same directory as your server.js file.
-  const envPath = path.join(__dirname, ".env");
+// function loadEnvVariables() {
+//   // Adjust if your .env file is located elsewhere. Using __dirname ensures it looks in the same directory as your server.js file.
+//   const envPath = path.join(__dirname, ".env");
 
-  try {
-    const data = fs.readFileSync(envPath, "utf-8");
+//   try {
+//     const data = fs.readFileSync(envPath, "utf-8");
 
-    // Split the data on new line, compatible with both UNIX and Windows environments
-    const envVariables = data.split(/\r?\n/);
+//     // Split the data on new line, compatible with both UNIX and Windows environments
+//     const envVariables = data.split(/\r?\n/);
 
-    envVariables.forEach((variable) => {
-      if (!variable.trim() || variable.startsWith("#")) return; // Skip empty lines and comments
+//     envVariables.forEach((variable) => {
+//       if (!variable.trim() || variable.startsWith("#")) return; // Skip empty lines and comments
 
-      const [key, value] = variable.split("=");
-      if (key && value) {
-        process.env[key.trim()] = value.trim();
-      }
-    });
-  } catch (error) {
-    console.error("Error loading .env variables:", error);
-  }
-}
+//       const [key, value] = variable.split("=");
+//       if (key && value) {
+//         process.env[key.trim()] = value.trim();
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error loading .env variables:", error);
+//   }
+// }
 
 // Call the function at the start of your application
 loadEnvVariables();
@@ -68,7 +70,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    //console.log('Origin:', origin); // Log the origin for debugging
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -505,9 +506,11 @@ app.post("/api/login", async (req, res) => {
 
       const match = await bcrypt.compare(password, user.password);
       if (match) {
+        console.log("JWT_SECRET used for token generation:", JWT_SECRET);
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
           expiresIn: "1h",
         }); // Adjust expiresIn as needed
+        console.log("Generated token:", token);
         await pool.query("UPDATE users SET token = $1 WHERE id = $2", [
           token,
           user.id,
@@ -2172,7 +2175,8 @@ async function deleteExpiredInteractions() {
 
 async function delete_records_after_backup(userId) {
   await pool.query("BEGIN");
-
+  console.log(`Starting backup*`);
+  console.log(`Starting backup and deletion process for user ID: ${userId}`);
   try {
     // Step 1: Backup and fetch paths of media files associated with this user's posts before deletion
     await pool.query(`INSERT INTO submission_dialog_bk SELECT * FROM submission_dialog WHERE posting_user_id = $1`, [userId]);
@@ -2275,24 +2279,44 @@ async function delete_records_after_backup(userId) {
 
 
 
-app.delete('/api/users/:userId', async (req, res) => {
-  const userId = parseInt(req.params.userId, 10);
+// app.delete('/api/users/:userId', async (req, res) => {
+//   const userId = parseInt(req.params.userId, 10);
+//   console.log(`DELETE request received for user ID: ${userId}`);
+//   if (isNaN(userId)) {
+//     return res.status(400).json({ message: "Invalid user ID" });
+//   }
 
-  if (isNaN(userId)) {
-    return res.status(400).json({ message: "Invalid user ID" });
+//   try {
+//     // Call the function to back up and delete user records
+//     await delete_records_after_backup(userId);
+
+//     // Respond with success
+//     res.status(200).json({ message: "User data backed up and deleted successfully." });
+//   } catch (error) {
+//     console.error("Error deleting user records:", error);
+//     res.status(500).json({ message: "An error occurred while deleting user data." });
+//   }
+// });
+app.delete("/api/users/me", authenticateToken, async (req, res) => {
+  const userId = req.user.userId; // Extract the userId from the token
+
+  console.log("DELETE request received. Decoded user ID from token:", userId);
+
+  if (!userId) {
+    console.log("User ID is missing in the request.");
+    return res.status(400).json({ message: "User ID is missing" });
   }
 
   try {
-    // Call the function to back up and delete user records
     await delete_records_after_backup(userId);
-
-    // Respond with success
+    console.log("User data backed up and deleted successfully for user ID:", userId);
     res.status(200).json({ message: "User data backed up and deleted successfully." });
   } catch (error) {
-    console.error("Error deleting user records:", error);
+    console.error("Error deleting user records for user ID:", userId, error);
     res.status(500).json({ message: "An error occurred while deleting user data." });
   }
 });
+
 
 app.post("/api/end_interaction", async (req, res) => {
   const { submissionId } = req.body; // Extract the submissionId from the request body
@@ -2865,5 +2889,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9912**Backup records (Delete user and expiring engagements) ${PORT}`);
+  console.log(`**9913**delete account URL ${PORT}`);
 });

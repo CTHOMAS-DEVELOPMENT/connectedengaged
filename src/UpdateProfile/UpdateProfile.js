@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import AlertMessage from "../system/AlertMessage";
 import validateUser from "../system/userValidation.js";
 import ViewImage from "./ViewImage.js";
@@ -33,7 +33,9 @@ const languageMap = {
 const UpdateProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const userId = location.state?.userId;
+  const [searchParams] = useSearchParams();
+  const userId =
+    location.state?.userId || searchParams.get("userId");
   const [authError, setAuthError] = useState(false);
   const [profileVideo, setProfileVideo] = useState();
   const [profileImage, setProfileImage] = useState();
@@ -90,37 +92,43 @@ const UpdateProfile = () => {
     setShowDeleteConfirmation(true);
   };
 
-  const confirmDeleteAccount = async (userId) => {
+  const confirmDeleteAccount = async () => {
     setShowDeleteConfirmation(false);
+    const token = localStorage.getItem("token");
   
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/users/${userId}`,
-        {
-          method: "DELETE",
-        }
-      );
-  
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/me`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // Ensure the token is being passed
+        },
+      });
+    
       if (response.ok) {
-        console.log(`Account deleted for ${userId}`);
-        navigate("/goodbye"); // Redirect or show a message after deletion
-      } else {
-        console.error("Failed to delete account.");
+        await response.json();
+  
         setMessage(
-          pageTranslations.deletionError || "Failed to delete account. Please try again."
+          pageTranslations.deletionSuccess || "Your account has been deleted."
         );
-        setType("error");
+        setType("success");
         setAlertKey((prevKey) => prevKey + 1);
+        navigate("/goodbye"); // Redirect user to goodbye page
+      } else {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+        throw new Error(errorData.message || "Failed to delete account.");
       }
     } catch (error) {
-      console.error("Error deleting account:", error);
+      console.error("Error during account deletion:", error);
       setMessage(
-        pageTranslations.networkError || "An error occurred while deleting the account."
+        pageTranslations.networkError ||
+          "An error occurred while deleting your account."
       );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
     }
   };
+  
   
   const handleSelectCoordinates = (selectedCoordinates) => {
     // Update formData with the new coordinates
@@ -186,6 +194,14 @@ const UpdateProfile = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, navigate]);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const action = searchParams.get("action");
+
+    if (action === "delete") {
+      handleDeleteAccount();
+    }
+  }, [location.search]);
   useEffect(() => {
     if (formData.sex) {
       const index = version1Gender.indexOf(formData.sex);
