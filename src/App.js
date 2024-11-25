@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import RegistrationForm from "./RegistrationProfileCreation/RegistrationForm";
 import LoginForm from "./Login/LoginForm";
 import FeedScreen from "./FeedScreen/FeedScreen";
@@ -24,7 +29,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<LoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
-
+          <Route path="/privacy-policy" element={<PrivacyPolicyWithState />} />
           {/* Protected Routes */}
           <Route
             path="/feed"
@@ -114,20 +119,11 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/privacy-policy"
-            element={
-              <ProtectedRoute>
-                <PrivacyPolicyWithState />
-              </ProtectedRoute>
-            }
-          />
         </Routes>
       </div>
     </Router>
   );
 }
-
 
 const PrivacyPolicyWithState = () => {
   const location = useLocation();
