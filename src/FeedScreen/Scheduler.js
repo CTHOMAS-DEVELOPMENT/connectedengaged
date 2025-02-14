@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-
-const Scheduler = ({ onTimeSelected, onCancel }) => {
+import translations from "./translations.json";
+const Scheduler = ({ onTimeSelected, onCancel, languageCode = "en" }) => {
   const [selectedTime, setSelectedTime] = useState(null);
 
   const today = new Date();
@@ -45,8 +45,8 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
   };
 
   const formatButtonText = () => {
-    if (!selectedTime) return "Schedule";
-
+    if (!selectedTime) return translations[languageCode]?.Scheduler?.title ||
+      "Schedule";
     const selectedDate = new Date(selectedTime);
     selectedDate.setHours(0, 0, 0, 0); // Clear time part to compare only dates
 
@@ -56,12 +56,15 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
       new Date(today.getTime() + 24 * 60 * 60 * 1000).getTime();
 
     const dayText = isToday
-      ? "today"
+      ? translations[languageCode]?.Scheduler?.today ||
+      "today"
       : isTomorrow
-      ? "tomorrow"
-      : "the day after tomorrow";
+      ? translations[languageCode]?.Scheduler?.tomorrow ||
+      "tomorrow"
+      : translations[languageCode]?.Scheduler?.dayAfter|| "the day after tomorrow";
 
-    return `Schedule for ${dayText} at ${selectedTime.toLocaleTimeString([], {
+    return `${translations[languageCode]?.Scheduler?.scheduleFor ||
+      "Schedule for"} ${dayText} @ ${selectedTime.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     })}`;
@@ -72,7 +75,8 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
       className="scheduler-container"
       style={{ position: "relative", height: "100vh" }}
     >
-      <h3>Schedule a Call</h3>
+      <h3>{translations[languageCode]?.Scheduler?.title ||
+          "Schedule a Call"}</h3>
 
       <div
         className="time-grid"
@@ -130,7 +134,8 @@ const Scheduler = ({ onTimeSelected, onCancel }) => {
           {formatButtonText()}
         </Button>
         <Button variant="outline-danger" onClick={onCancel}>
-          Cancel
+          {translations[languageCode]?.Scheduler?.cancel ||
+      "Cancel"}
         </Button>
       </div>
     </div>

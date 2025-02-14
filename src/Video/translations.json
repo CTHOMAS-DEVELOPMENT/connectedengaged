@@ -110,5 +110,33 @@
       "instructions": "Escolha um arquivo de vídeo (Máximo 60 segundos) para enviar como seu vídeo de perfil.",
       "networkError": "Ocorreu um erro ao enviar o vídeo."
     }
+  },
+  "hi": {
+    "videoUploader": {
+      "title": "प्रोफ़ाइल वीडियो अपलोड करें",
+      "browseLabel": "वीडियो चुनें",
+      "uploadButton": "वीडियो अपलोड करें",
+      "durationLabel": "अवधि",
+      "seconds": "सेकंड",
+      "durationError": "वीडियो 60 सेकंड से अधिक लंबा है।",
+      "invalidFileError": "कृपया एक वैध वीडियो फ़ाइल चुनें।",
+      "uploadError": "वीडियो अपलोड करने में विफल। कृपया पुनः प्रयास करें।",
+      "instructions": "अपना प्रोफ़ाइल वीडियो अपलोड करने के लिए एक वीडियो फ़ाइल चुनें (अधिकतम 60 सेकंड)।",
+      "networkError": "वीडियो अपलोड करते समय एक त्रुटि हुई।"
+    }
+  },
+  "hy": {
+    "videoUploader": {
+      "title": "Վերբեռնեք պրոֆիլի տեսանյութը",
+      "browseLabel": "Ընտրել տեսանյութ",
+      "uploadButton": "Վերբեռնել տեսանյութը",
+      "durationLabel": "Տևողություն",
+      "seconds": "վայրկյան",
+      "durationError": "Տեսանյութը 60 վայրկյանից երկար է։",
+      "invalidFileError": "Խնդրում ենք ընտրել վավեր տեսանյութի ֆայլ։",
+      "uploadError": "Չհաջողվեց վերբեռնել տեսանյութը։ Խնդրում ենք կրկին փորձել։",
+      "instructions": "Ընտրեք տեսանյութի ֆայլ (առավելագույնը 60 վայրկյան)՝ որպես ձեր պրոֆիլի տեսանյութ վերբեռնելու համար։",
+      "networkError": "Տեսանյութի վերբեռնումի ընթացքում տեղի ունեցավ սխալ։"
+    }
   }
 }

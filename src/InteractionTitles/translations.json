@@ -158,5 +158,45 @@
       "save": "Salvar",
       "endIt": "Encerrar"
     }
+  },
+  "hi": {
+    "interactionTitles": {
+      "fetchingError": "एंगेजमेंट प्राप्त करने में त्रुटि",
+      "endSuccess": "एंगेजमेंट हटा दिया गया है",
+      "endError": "त्रुटि: इस एंगेजमेंट को हटाया नहीं गया",
+      "inviteUsersTo": "उपयोगकर्ताओं को आमंत्रित करें",
+      "engagementCreatedBy": "एंगेजमेंट द्वारा बनाया गया",
+      "saveChangesTo": "परिवर्तन सहेजें",
+      "endEngagementTitled": "शीर्षकित एंगेजमेंट समाप्त करें",
+      "networkError": "नेटवर्क प्रतिक्रिया ठीक नहीं थी"
+    },
+    "userList": {
+      "createdText": "बनाया गया",
+      "expectedEnd": "अपेक्षित समाप्ति",
+      "ended": "समाप्त",
+      "invited": "आमंत्रित",
+      "save": "सहेजें",
+      "endIt": "इसे समाप्त करें"
+    }
+  },
+  "hy": {
+    "interactionTitles": {
+      "fetchingError": "Սխալ՝ ներգրավվածությունները ստանալիս",
+      "endSuccess": "Ներգրավվածությունը հեռացվել է",
+      "endError": "Սխալ՝ այս ներգրավվածությունը չի հեռացվել",
+      "inviteUsersTo": "Հրավիրել օգտատերերին դեպի",
+      "engagementCreatedBy": "Ներգրավվածությունը ստեղծվել է",
+      "saveChangesTo": "Պահպանել փոփոխությունները դեպի",
+      "endEngagementTitled": "Ավարտել ներգրավվածությունը՝ վերնագրված",
+      "networkError": "Ցանցային արձագանքը նորմալ չէր"
+    },
+    "userList": {
+      "createdText": "Ստեղծվել է",
+      "expectedEnd": "Սպասվող ավարտ",
+      "ended": "Ավարտվել է",
+      "invited": "Հրավիրված",
+      "save": "Պահպանել",
+      "endIt": "Ավարտել"
+    }
   }
 }

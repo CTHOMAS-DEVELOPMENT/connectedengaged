@@ -467,9 +467,9 @@ const EditInteraction = () => {
                   >
                     {showOrientation
                       ? pageTranslations.hidePreferredCompany ||
-                        "Hide Their 'Preferred Company'"
+                        "Hide Their 'Preferred Partner'"
                       : pageTranslations.showPreferredCompany ||
-                        "Show Their 'Preferred Company' Selection"}
+                        "Show Their 'Preferred Partner' Selection"}
                   </Button>
                 </div>
                 {showOrientation && (

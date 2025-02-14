@@ -1,87 +1,142 @@
 {
-    "en": {
-      "Text": {
-        "message": "Hey {{username}}, {{loggedInUserName}} has added a {{type}} post to the '{{title}}' interaction you are part of in the ConnectedEngaged application. Please login to catch up at: {{domain}}",
-        "subject": "{{loggedInUserName}} has posted to {{title}}"
-      },
-      "connection_accepted": {
-        "message": "Hey {{username}}, {{loggedInUserName}} has accepted your connection request you made in the ConnectedEngaged application. Please login to catch up at: {{domain}}",
-        "subject": "{{loggedInUserName}} has accepted your connection request"
-      },
-      "call_request": {
-        "message": "Hey {{username}}, {{loggedInUserName}} has requested a video call with you {{formattedTime}}. Please login to the ConnectedEngaged application to join the call: {{domain}}",
-        "subject": "{{loggedInUserName}} has requested a video call"
-      }
+  "en": {
+    "Text": {
+      "message": "Hey {{username}}, {{loggedInUserName}} has added a {{type}} post to the '{{title}}' interaction you are part of in the ConnectedEngaged application. Please login to catch up at: {{domain}}",
+      "subject": "{{loggedInUserName}} has posted to {{title}}"
     },
-    "es": {
-      "Text": {
-        "message": "Hola {{username}}, {{loggedInUserName}} ha agregado una publicación de {{type}} a la interacción '{{title}}' en la que participas en la aplicación ConnectedEngaged. Por favor, inicia sesión para ponerte al día en: {{domain}}",
-        "subject": "{{loggedInUserName}} ha publicado en {{title}}"
-      },
-      "connection_accepted": {
-        "message": "Hola {{username}}, {{loggedInUserName}} ha aceptado tu solicitud de conexión en la aplicación ConnectedEngaged. Por favor, inicia sesión para ponerte al día en: {{domain}}",
-        "subject": "{{loggedInUserName}} ha aceptado tu solicitud de conexión"
-      },
-      "call_request": {
-        "message": "Hola {{username}}, {{loggedInUserName}} ha solicitado una videollamada contigo {{formattedTime}}. Por favor, inicia sesión en la aplicación ConnectedEngaged para unirte a la llamada: {{domain}}",
-        "subject": "{{loggedInUserName}} ha solicitado una videollamada"
-      }
+    "connection_accepted": {
+      "message": "Hey {{username}}, {{loggedInUserName}} has accepted your connection request you made in the ConnectedEngaged application. Please login to catch up at: {{domain}}",
+      "subject": "{{loggedInUserName}} has accepted your connection request"
     },
-    "fr": {
-      "Text": {
-        "message": "Salut {{username}}, {{loggedInUserName}} a ajouté un post de type {{type}} à l'interaction '{{title}}' dont vous faites partie dans l'application ConnectedEngaged. Veuillez vous connecter pour vous mettre à jour sur: {{domain}}",
-        "subject": "{{loggedInUserName}} a posté sur {{title}}"
-      },
-      "connection_accepted": {
-        "message": "Salut {{username}}, {{loggedInUserName}} a accepté votre demande de connexion que vous avez faite dans l'application ConnectedEngaged. Veuillez vous connecter pour vous mettre à jour sur: {{domain}}",
-        "subject": "{{loggedInUserName}} a accepté votre demande de connexion"
-      },
-      "call_request": {
-        "message": "Salut {{username}}, {{loggedInUserName}} a demandé un appel vidéo avec vous {{formattedTime}}. Veuillez vous connecter à l'application ConnectedEngaged pour rejoindre l'appel: {{domain}}",
-        "subject": "{{loggedInUserName}} a demandé un appel vidéo"
-      }
+    "call_request": {
+      "message": "Hey {{username}}, {{loggedInUserName}} has requested a video call with you {{formattedTime}}. Please login to the ConnectedEngaged application to join the call: {{domain}}",
+      "subject": "{{loggedInUserName}} has requested a video call"
+    }
+  },
+  "es": {
+    "Text": {
+      "message": "Hola {{username}}, {{loggedInUserName}} ha agregado una publicación de {{type}} a la interacción '{{title}}' en la que participas en la aplicación ConnectedEngaged. Por favor, inicia sesión para ponerte al día en: {{domain}}",
+      "subject": "{{loggedInUserName}} ha publicado en {{title}}"
     },
-    "de": {
-      "Text": {
-        "message": "Hallo {{username}}, {{loggedInUserName}} hat einen {{type}}-Beitrag zur Interaktion '{{title}}' hinzugefügt, an der du in der ConnectedEngaged-Anwendung teilnimmst. Bitte logge dich ein, um auf dem neuesten Stand zu bleiben: {{domain}}",
-        "subject": "{{loggedInUserName}} hat in {{title}} gepostet"
-      },
-      "connection_accepted": {
-        "message": "Hallo {{username}}, {{loggedInUserName}} hat deine Verbindungsanfrage in der ConnectedEngaged-Anwendung akzeptiert. Bitte logge dich ein, um auf dem neuesten Stand zu bleiben: {{domain}}",
-        "subject": "{{loggedInUserName}} hat deine Verbindungsanfrage akzeptiert"
-      },
-      "call_request": {
-        "message": "Hallo {{username}}, {{loggedInUserName}} hat eine Videoanfrage für dich gestellt {{formattedTime}}. Bitte logge dich in die ConnectedEngaged-Anwendung ein, um dem Anruf beizutreten: {{domain}}",
-        "subject": "{{loggedInUserName}} hat eine Videoanfrage gestellt"
-      }
+    "connection_accepted": {
+      "message": "Hola {{username}}, {{loggedInUserName}} ha aceptado tu solicitud de conexión en la aplicación ConnectedEngaged. Por favor, inicia sesión para ponerte al día en: {{domain}}",
+      "subject": "{{loggedInUserName}} ha aceptado tu solicitud de conexión"
     },
-    "ar": {
-      "Text": {
-        "message": "مرحبًا {{username}}، قام {{loggedInUserName}} بإضافة منشور {{type}} إلى التفاعل '{{title}}' الذي أنت جزء منه في تطبيق ConnectedEngaged. يرجى تسجيل الدخول للاطلاع على آخر المستجدات عبر: {{domain}}",
-        "subject": "{{loggedInUserName}} قام بالنشر في {{title}}"
-      },
-      "connection_accepted": {
-        "message": "مرحبًا {{username}}، قام {{loggedInUserName}} بقبول طلب الاتصال الخاص بك في تطبيق ConnectedEngaged. يرجى تسجيل الدخول للاطلاع على آخر المستجدات عبر: {{domain}}",
-        "subject": "{{loggedInUserName}} قبل طلب الاتصال الخاص بك"
-      },
-      "call_request": {
-        "message": "مرحبًا {{username}}، قام {{loggedInUserName}} بطلب مكالمة فيديو معك {{formattedTime}}. يرجى تسجيل الدخول إلى تطبيق ConnectedEngaged للانضمام إلى المكالمة: {{domain}}",
-        "subject": "{{loggedInUserName}} طلب مكالمة فيديو"
-      }
+    "call_request": {
+      "message": "Hola {{username}}, {{loggedInUserName}} ha solicitado una videollamada contigo {{formattedTime}}. Por favor, inicia sesión en la aplicación ConnectedEngaged para unirte a la llamada: {{domain}}",
+      "subject": "{{loggedInUserName}} ha solicitado una videollamada"
+    }
+  },
+  "fr": {
+    "Text": {
+      "message": "Salut {{username}}, {{loggedInUserName}} a ajouté un post de type {{type}} à l'interaction '{{title}}' dont vous faites partie dans l'application ConnectedEngaged. Veuillez vous connecter pour vous mettre à jour sur: {{domain}}",
+      "subject": "{{loggedInUserName}} a posté sur {{title}}"
     },
-    "zh": {
-      "Text": {
-        "message": "你好 {{username}}，{{loggedInUserName}} 在你参与的 ConnectedEngaged 应用的 '{{title}}' 互动中添加了一个 {{type}} 帖子。请登录查看最新信息：{{domain}}",
-        "subject": "{{loggedInUserName}} 已在 {{title}} 发帖"
-      },
-      "connection_accepted": {
-        "message": "你好 {{username}}，{{loggedInUserName}} 已接受你在 ConnectedEngaged 应用中的连接请求。请登录查看最新信息：{{domain}}",
-        "subject": "{{loggedInUserName}} 已接受你的连接请求"
-      },
-      "call_request": {
-        "message": "你好 {{username}}，{{loggedInUserName}} 请求与你进行视频通话 {{formattedTime}}。请登录 ConnectedEngaged 应用加入通话：{{domain}}",
-        "subject": "{{loggedInUserName}} 请求进行视频通话"
-      }
+    "connection_accepted": {
+      "message": "Salut {{username}}, {{loggedInUserName}} a accepté votre demande de connexion que vous avez faite dans l'application ConnectedEngaged. Veuillez vous connecter pour vous mettre à jour sur: {{domain}}",
+      "subject": "{{loggedInUserName}} a accepté votre demande de connexion"
+    },
+    "call_request": {
+      "message": "Salut {{username}}, {{loggedInUserName}} a demandé un appel vidéo avec vous {{formattedTime}}. Veuillez vous connecter à l'application ConnectedEngaged pour rejoindre l'appel: {{domain}}",
+      "subject": "{{loggedInUserName}} a demandé un appel vidéo"
+    }
+  },
+  "de": {
+    "Text": {
+      "message": "Hallo {{username}}, {{loggedInUserName}} hat einen {{type}}-Beitrag zur Interaktion '{{title}}' hinzugefügt, an der du in der ConnectedEngaged-Anwendung teilnimmst. Bitte logge dich ein, um auf dem neuesten Stand zu bleiben: {{domain}}",
+      "subject": "{{loggedInUserName}} hat in {{title}} gepostet"
+    },
+    "connection_accepted": {
+      "message": "Hallo {{username}}, {{loggedInUserName}} hat deine Verbindungsanfrage in der ConnectedEngaged-Anwendung akzeptiert. Bitte logge dich ein, um auf dem neuesten Stand zu bleiben: {{domain}}",
+      "subject": "{{loggedInUserName}} hat deine Verbindungsanfrage akzeptiert"
+    },
+    "call_request": {
+      "message": "Hallo {{username}}, {{loggedInUserName}} hat eine Videoanfrage für dich gestellt {{formattedTime}}. Bitte logge dich in die ConnectedEngaged-Anwendung ein, um dem Anruf beizutreten: {{domain}}",
+      "subject": "{{loggedInUserName}} hat eine Videoanfrage gestellt"
+    }
+  },
+  "ar": {
+    "Text": {
+      "message": "مرحبًا {{username}}، قام {{loggedInUserName}} بإضافة منشور {{type}} إلى التفاعل '{{title}}' الذي أنت جزء منه في تطبيق ConnectedEngaged. يرجى تسجيل الدخول للاطلاع على آخر المستجدات عبر: {{domain}}",
+      "subject": "{{loggedInUserName}} قام بالنشر في {{title}}"
+    },
+    "connection_accepted": {
+      "message": "مرحبًا {{username}}، قام {{loggedInUserName}} بقبول طلب الاتصال الخاص بك في تطبيق ConnectedEngaged. يرجى تسجيل الدخول للاطلاع على آخر المستجدات عبر: {{domain}}",
+      "subject": "{{loggedInUserName}} قبل طلب الاتصال الخاص بك"
+    },
+    "call_request": {
+      "message": "مرحبًا {{username}}، قام {{loggedInUserName}} بطلب مكالمة فيديو معك {{formattedTime}}. يرجى تسجيل الدخول إلى تطبيق ConnectedEngaged للانضمام إلى المكالمة: {{domain}}",
+      "subject": "{{loggedInUserName}} طلب مكالمة فيديو"
+    }
+  },
+  "zh": {
+    "Text": {
+      "message": "你好 {{username}}，{{loggedInUserName}} 在你参与的 ConnectedEngaged 应用的 '{{title}}' 互动中添加了一个 {{type}} 帖子。请登录查看最新信息：{{domain}}",
+      "subject": "{{loggedInUserName}} 已在 {{title}} 发帖"
+    },
+    "connection_accepted": {
+      "message": "你好 {{username}}，{{loggedInUserName}} 已接受你在 ConnectedEngaged 应用中的连接请求。请登录查看最新信息：{{domain}}",
+      "subject": "{{loggedInUserName}} 已接受你的连接请求"
+    },
+    "call_request": {
+      "message": "你好 {{username}}，{{loggedInUserName}} 请求与你进行视频通话 {{formattedTime}}。请登录 ConnectedEngaged 应用加入通话：{{domain}}",
+      "subject": "{{loggedInUserName}} 请求进行视频通话"
+    }
+  },
+  "ga": {
+    "Text": {
+      "message": "A {{username}}, tá {{loggedInUserName}} tar éis postáil {{type}} a chur leis an idirghníomhú '{{title}}' a bhfuil tú páirteach ann i bhfeidhmchlár ConnectedEngaged. Logáil isteach le coinneáil suas leis: {{domain}}",
+      "subject": "Tá {{loggedInUserName}} tar éis postáil chuig {{title}}"
+    },
+    "connection_accepted": {
+      "message": "A {{username}}, tá {{loggedInUserName}} tar éis glacadh leis an iarratas ceangail a rinne tú i bhfeidhmchlár ConnectedEngaged. Logáil isteach le coinneáil suas leis: {{domain}}",
+      "subject": "Tá {{loggedInUserName}} tar éis glacadh le d'iarratas ceangail"
+    },
+    "call_request": {
+      "message": "A {{username}}, tá {{loggedInUserName}} tar éis glao físe a iarraidh ort ag {{formattedTime}}. Logáil isteach sa bhfeidhmchlár ConnectedEngaged chun dul isteach sa ghlao: {{domain}}",
+      "subject": "Tá {{loggedInUserName}} tar éis glao físe a iarraidh"
+    }
+  },
+  "pt": {
+    "Text": {
+      "message": "Olá {{username}}, {{loggedInUserName}} adicionou uma publicação {{type}} à interação '{{title}}' da qual você faz parte no aplicativo ConnectedEngaged. Por favor, faça login para acompanhar: {{domain}}",
+      "subject": "{{loggedInUserName}} publicou em {{title}}"
+    },
+    "connection_accepted": {
+      "message": "Olá {{username}}, {{loggedInUserName}} aceitou sua solicitação de conexão feita no aplicativo ConnectedEngaged. Por favor, faça login para acompanhar: {{domain}}",
+      "subject": "{{loggedInUserName}} aceitou sua solicitação de conexão"
+    },
+    "call_request": {
+      "message": "Olá {{username}}, {{loggedInUserName}} solicitou uma chamada de vídeo com você para {{formattedTime}}. Por favor, faça login no aplicativo ConnectedEngaged para participar da chamada: {{domain}}",
+      "subject": "{{loggedInUserName}} solicitou uma chamada de vídeo"
+    }
+  },
+  "hi": {
+    "Text": {
+      "message": "नमस्ते {{username}}, {{loggedInUserName}} ने ConnectedEngaged एप्लिकेशन में '{{title}}' इंटरैक्शन में {{type}} पोस्ट जोड़ा है, जिसका आप हिस्सा हैं। कृपया पकड़ने के लिए लॉग इन करें: {{domain}}",
+      "subject": "{{loggedInUserName}} ने {{title}} पर पोस्ट किया है"
+    },
+    "connection_accepted": {
+      "message": "नमस्ते {{username}}, {{loggedInUserName}} ने ConnectedEngaged एप्लिकेशन में आपके द्वारा की गई कनेक्शन अनुरोध को स्वीकार कर लिया है। कृपया लॉग इन करें: {{domain}}",
+      "subject": "{{loggedInUserName}} ने आपका कनेक्शन अनुरोध स्वीकार कर लिया है"
+    },
+    "call_request": {
+      "message": "नमस्ते {{username}}, {{loggedInUserName}} ने आपके साथ {{formattedTime}} पर वीडियो कॉल का अनुरोध किया है। कृपया कॉल में शामिल होने के लिए ConnectedEngaged एप्लिकेशन में लॉग इन करें: {{domain}}",
+      "subject": "{{loggedInUserName}} ने वीडियो कॉल का अनुरोध किया है"
+    }
+  },
+  "hy": {
+    "Text": {
+      "message": "Բարև {{username}}, {{loggedInUserName}}-ը ավելացրել է {{type}} հրապարակում '{{title}}' փոխազդեցությանը, որի մասն եք ConnectedEngaged հավելվածում։ Խնդրում ենք մուտք գործել՝ ծանոթանալու համար՝ {{domain}}",
+      "subject": "{{loggedInUserName}}-ը հրապարակել է {{title}}-ում"
+    },
+    "connection_accepted": {
+      "message": "Բարև {{username}}, {{loggedInUserName}}-ը ConnectedEngaged հավելվածում ընդունել է ձեր ուղարկած կապի խնդրանքը։ Խնդրում ենք մուտք գործել՝ ծանոթանալու համար՝ {{domain}}",
+      "subject": "{{loggedInUserName}}-ը ընդունել է ձեր կապի խնդրանքը"
+    },
+    "call_request": {
+      "message": "Բարև {{username}}, {{loggedInUserName}}-ը {{formattedTime}} խնդրել է տեսազանգ։ Խնդրում ենք մուտք գործել ConnectedEngaged հավելված՝ զանգին միանալու համար՝ {{domain}}",
+      "subject": "{{loggedInUserName}}-ը խնդրել է տեսազանգ"
     }
   }
-  
+}

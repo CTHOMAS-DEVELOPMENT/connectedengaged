@@ -22,8 +22,8 @@
         "hide": "Hide Your Favourite Hobby"
       },
       "orientationToggle": {
-        "show": "Show Your Preferred Company Selection",
-        "hide": "Hide Your Preferred Company"
+        "show": "Show Your Preferred Partner Selection",
+        "hide": "Hide Your Preferred Partner"
       },
       "floatsMyBoatToggle": {
         "show": "Show Floats Your Boat Selection",
@@ -105,8 +105,8 @@
         "hide": "Ocultar tus hobbies favoritos"
       },
       "orientationToggle": {
-        "show": "Mostrar tu compañía preferida",
-        "hide": "Ocultar tu compañía preferida"
+        "show": "Mostrar tu selección de 'Compañero Preferido'",
+        "hide": "Ocultar tu selección de 'Compañero Preferido'"
       },
       "floatsMyBoatToggle": {
         "show": "Mostrar lo que te gusta",
@@ -188,8 +188,8 @@
         "hide": "Masquer la sélection de votre passe-temps favori"
       },
       "orientationToggle": {
-        "show": "Afficher votre compagnie préférée",
-        "hide": "Masquer votre compagnie préférée"
+        "show": "Afficher votre sélection de « Partenaire préféré »",
+        "hide": "Masquer votre sélection de « Partenaire préféré »"
       },
       "floatsMyBoatToggle": {
         "show": "Afficher ce qui vous plaît",
@@ -271,8 +271,8 @@
         "hide": "Verberge deine Lieblingshobby-Auswahl"
       },
       "orientationToggle": {
-        "show": "Zeige deine bevorzugte Gesellschaft",
-        "hide": "Verberge deine bevorzugte Gesellschaft"
+        "show": "Zeigen Sie Ihre Auswahl des „Bevorzugten Partners“",
+        "hide": "Verbergen Sie Ihre Auswahl des „Bevorzugten Partners“"
       },
       "floatsMyBoatToggle": {
         "show": "Zeige, was dir gefällt",
@@ -354,8 +354,8 @@
         "hide": "إخفاء اختيار هوايتك المفضلة"
       },
       "orientationToggle": {
-        "show": "إظهار الشركة المفضلة لديك",
-        "hide": "إخفاء الشركة المفضلة لديك"
+        "show": "إظهار اختيارك لـ 'الشريك المفضل'",
+        "hide": "إخفاء اختيارك لـ 'الشريك المفضل'"
       },
       "floatsMyBoatToggle": {
         "show": "إظهار ما يعجبك",
@@ -437,8 +437,8 @@
         "hide": "隐藏您最喜欢的爱好选择"
       },
       "orientationToggle": {
-        "show": "显示您喜欢的公司",
-        "hide": "隐藏您喜欢的公司"
+        "show": "显示您的“首选合作伙伴”选择",
+        "hide": "隐藏您的“首选合作伙伴”选择"
       },
       "floatsMyBoatToggle": {
         "show": "显示您喜欢的内容",
@@ -520,8 +520,8 @@
         "hide": "Folaigh 'Caitheamh Aimsire Is Fearr'"
       },
       "orientationToggle": {
-        "show": "Taispeáin an Rogha 'Cuideachta Is Fearr'",
-        "hide": "Folaigh 'Cuideachta Is Fearr'"
+        "show": "Taispeáin do rogha 'Comhpháirtí Roghnaithe'",
+        "hide": "Folaigh do rogha 'Comhpháirtí Roghnaithe'"
       },
       "floatsMyBoatToggle": {
         "show": "Taispeáin an Rogha 'Cad is Maith Leat'",
@@ -603,8 +603,8 @@
         "hide": "Ocultar Hobby Favorito"
       },
       "orientationToggle": {
-        "show": "Mostrar Seleção de Companhia Preferida",
-        "hide": "Ocultar Companhia Preferida"
+        "show": "Mostrar sua seleção de 'Parceiro Preferido'",
+        "hide": "Ocultar sua seleção de 'Parceiro Preferido'"
       },
       "floatsMyBoatToggle": {
         "show": "Mostrar Seleção Flutua Meu Barco",
@@ -661,6 +661,172 @@
       "updateProfileVideo": "Atualizar Vídeo do Perfil (Máx 60 segundos)",
       "addProfileVideo": "Adicionar Vídeo do Perfil (Máx 60 segundos)",
       "addUpdateProfileImage": "Adicionar/Atualizar Imagem do Perfil"
+    }
+  },
+  "hi": {
+    "updateProfile": {
+      "confirmDeletionTitle": "खाता हटाने की पुष्टि करें",
+      "confirmDeletionMessage": "क्या आप वाकई अपना खाता हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+      "confirmButton": "पुष्टि करें",
+      "deleteAccountButton": "खाता हटाएं",
+      "cancelButton": "रद्द करें",
+      "title": "प्रोफ़ाइल अपडेट करें",
+      "backToMessages": "संदेशों पर वापस जाएं",
+      "submitButton": "प्रोफ़ाइल अपडेट करें",
+      "usernameLabel": "उपयोगकर्ता नाम",
+      "emailLabel": "ईमेल",
+      "passwordLabel": "पासवर्ड (समान रखने के लिए खाली छोड़ें)",
+      "aboutYouLabel": "आपके बारे में सर्वेक्षण",
+      "genderToggle": {
+        "show": "‘सबसे अधिक आपकी तरह’ चयन दिखाएं",
+        "hide": "‘सबसे अधिक आपकी तरह’ छुपाएं"
+      },
+      "hobbiesToggle": {
+        "show": "‘पसंदीदा शौक’ चयन दिखाएं",
+        "hide": "‘पसंदीदा शौक’ छुपाएं"
+      },
+      "orientationToggle": {
+        "show": "'पसंदीदा साथी' चयन दिखाएं",
+        "hide": "'पसंदीदा साथी' चयन छिपाएं"
+      },
+      "floatsMyBoatToggle": {
+        "show": "‘फ्लोट्स योर बोट’ चयन दिखाएं",
+        "hide": "‘फ्लोट्स योर बोट’ छुपाएं"
+      },
+      "aboutYouTextArea": "मैं एक लंबे समय के संबंध की तलाश में हूं। कम्युनिकेशन सेंटर से मेरा कनेक्शन अनुरोध देखें।",
+      "locationButton": "स्थान दिखाएं",
+      "aboutAdminLabel": "आपके सिस्टम एडमिन के बारे में",
+      "adminFaceAlt": "एडमिन चेहरा",
+      "adminLabels": [
+        "प्रभुत्वपूर्ण और आपत्तिजनक",
+        "गर्म और दोस्ताना",
+        "ऊर्जावान और मिलनसार",
+        "मजेदार और मजाक करता है",
+        "उदास और अकेला",
+        "शेक्सपियर प्रशंसक",
+        "मूर्ख",
+        "पतला है फैशन में",
+        "विनम्र और अधीनस्थ",
+        "प्लस साइज और भूखा"
+      ],
+      "hobbies": [
+        "कला",
+        "संग्रहण",
+        "खाना बनाना",
+        "शिल्पकारी",
+        "नृत्य",
+        "शिक्षा",
+        "फिटनेस",
+        "गेमिंग",
+        "बागवानी",
+        "ध्यान",
+        "संगीत",
+        "अन्य",
+        "फोटोग्राफी",
+        "पढ़ाई",
+        "खेल",
+        "प्रौद्योगिकी",
+        "यात्रा",
+        "अज्ञात",
+        "स्वयंसेवा",
+        "लेखन"
+      ],
+      "profileUpdateSuccess": "प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई।",
+      "profileUpdateError": "प्रोफ़ाइल अपडेट विफल: ",
+      "emailValidationError": "कृपया एक वैध ईमेल पता दर्ज करें।",
+      "loadUserDataError": "उपयोगकर्ता डेटा लोड करने में विफल।",
+      "unauthorizedMessage": "अनधिकृत। कृपया लॉग इन करें।"
+    },
+    "viewImage": {
+      "updateProfileImage": "प्रोफ़ाइल छवि अपडेट करें",
+      "addProfileImage": "एक प्रोफ़ाइल छवि जोड़ें",
+      "noProfilePicture": "कोई प्रोफ़ाइल चित्र नहीं",
+      "updateProfileVideo": "प्रोफ़ाइल वीडियो अपडेट करें (अधिकतम 60 सेकंड)",
+      "addProfileVideo": "प्रोफ़ाइल वीडियो जोड़ें (अधिकतम 60 सेकंड)",
+      "addUpdateProfileImage": "प्रोफ़ाइल चित्र जोड़ें/अपडेट करें"
+    }
+  },
+  "hy": {
+    "updateProfile": {
+      "confirmDeletionTitle": "Հաստատեք հաշվի ջնջումը",
+      "confirmDeletionMessage": "Վստա՞հ եք, որ ցանկանում եք ջնջել ձեր հաշիվը: Այս գործողությունը հնարավոր չէ վերադարձնել։",
+      "confirmButton": "Հաստատել",
+      "deleteAccountButton": "Ջնջել հաշիվը",
+      "cancelButton": "Չեղարկել",
+      "title": "Թարմացնել պրոֆիլը",
+      "backToMessages": "Վերադառնալ հաղորդագրություններին",
+      "submitButton": "Թարմացնել պրոֆիլը",
+      "usernameLabel": "Օգտագործողի անուն",
+      "emailLabel": "Էլեկտրոնային փոստ",
+      "passwordLabel": "Գաղտնաբառ (մնացեք նույնը՝ չլրացնելով)",
+      "aboutYouLabel": "Ձեզ մասին հարցում",
+      "genderToggle": {
+        "show": "Ցույց տալ ‘Ամենաշատ Ձեզ նման’ ընտրությունը",
+        "hide": "Թաքցնել ‘Ամենաշատ Ձեզ նման’"
+      },
+      "hobbiesToggle": {
+        "show": "Ցույց տալ ‘Սիրելի հոբբի’ ընտրությունը",
+        "hide": "Թաքցնել ‘Սիրելի հոբբի’"
+      },
+      "orientationToggle": {
+        "show": "Ցուցադրել ձեր «նախընտրած գործընկեր» ընտրությունը",
+        "hide": "Թաքցնել ձեր «նախընտրած գործընկեր» ընտրությունը"
+      },
+      "floatsMyBoatToggle": {
+        "show": "Ցույց տալ ‘Ձեր նավը նավարկողը’ ընտրությունը",
+        "hide": "Թաքցնել ‘Ձեր նավը նավարկողը’"
+      },
+      "aboutYouTextArea": "Ես փնտրում եմ երկարաժամկետ հարաբերություններ։ Նայեք իմ Կապի Հրավերը Հաղորդակցության Կենտրոնում։",
+      "locationButton": "Ցույց տալ վայրը",
+      "aboutAdminLabel": "Ձեր համակարգի ադմինի մասին",
+      "adminFaceAlt": "Ադմինի դեմք",
+      "adminLabels": [
+        "Բռնակալ և վիրավորական",
+        "Ջերմ և ընկերական",
+        "Էներգետիկ և շփվող",
+        "Հետաքրքիր և կատակում է",
+        "Տխուր և միայնակ",
+        "Շեքսպիրի երկրպագու",
+        "Անխելք",
+        "Նիհարությունը նորաձև է",
+        "Հնազանդ և ենթարկվող",
+        "Պլյուս չափս և քաղցած"
+      ],
+      "hobbies": [
+        "Արվեստ",
+        "Հավաքածու",
+        "Խոհարարություն",
+        "Արհեստներ",
+        "Պար",
+        "Կրթություն",
+        "Ֆիթնես",
+        "Խաղեր",
+        "Այգեգործություն",
+        "Մեդիտացիա",
+        "Երաժշտություն",
+        "Այլ",
+        "Լուսանկարչություն",
+        "Ընթերցանություն",
+        "Սպորտ",
+        "Տեխնոլոգիա",
+        "Ճամփորդություն",
+        "Անհայտ",
+        "Կամավորություն",
+        "Գրագրություն"
+      ],
+      "profileUpdateSuccess": "Պրոֆիլը հաջողությամբ թարմացվեց։",
+      "profileUpdateError": "Պրոֆիլի թարմացումը ձախողվեց՝ ",
+      "emailValidationError": "Խնդրում ենք մուտքագրել վավեր էլեկտրոնային փոստի հասցե։",
+      "loadUserDataError": "Օգտատիրոջ տվյալները բեռնելու ձախողում։",
+      "unauthorizedMessage": "Անթույլատրելի։ Խնդրում ենք մուտք գործեք։"
+    },
+    "viewImage": {
+      "updateProfileImage": "Թարմացնել պրոֆիլի պատկերը",
+      "addProfileImage": "Ավելացնել պրոֆիլի պատկերը",
+      "noProfilePicture": "Պրոֆիլի պատկեր չկա",
+      "updateProfileVideo": "Թարմացնել պրոֆիլի տեսանյութը (առավելագույնը 60 վայրկյան)",
+      "addProfileVideo": "Ավելացնել պրոֆիլի տեսանյութ (առավելագույնը 60 վայրկյան)",
+      "addUpdateProfileImage": "Ավելացնել/Թարմացնել պրոֆիլի պատկերը"
     }
   }
 }

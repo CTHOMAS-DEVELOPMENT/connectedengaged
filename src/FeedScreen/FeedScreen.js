@@ -702,7 +702,9 @@ const FeedScreen = () => {
     ];
 
     postMessage(
-      `${loggedInUserName} requested ${selectedUsername} for a video call at ${scheduledTime.toLocaleString()}`
+      `${loggedInUserName} ${translations[languageCode]?.feedScreen?.videoRequested ||
+            "requested"} ${selectedUsername} ${translations[languageCode]?.feedScreen?.videoWhen ||
+            "for a video call at"} ${scheduledTime.toLocaleString()}`
     );
 
     // Send the email notification with call_request type
@@ -875,6 +877,7 @@ const FeedScreen = () => {
                   <LiveCallCentre
                     users={liveCallCentreUsers}
                     callAction={callAction}
+                    languageCode={languageCode}
                   />
                 </div>
               </div>
@@ -892,6 +895,7 @@ const FeedScreen = () => {
                   <Scheduler
                     onTimeSelected={handleSchedulerConfirm}
                     onCancel={handleSchedulerCancel}
+                    languageCode={languageCode}
                   />
                 </div>
               </div>

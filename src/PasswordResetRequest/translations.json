@@ -8,7 +8,7 @@
       "emailSent": "Please check your email for the password reset link.",
       "emailFailed": "Unable to send password reset link. Please try again later.",
       "emailHelpText": "We'll send a reset link to this email address.",
-       "networkError": "Network error while trying to send reset link."
+      "networkError": "Network error while trying to send reset link."
     }
   },
   "es": {
@@ -20,7 +20,7 @@
       "emailSent": "Por favor, revisa tu correo electrónico para el enlace de restablecimiento de contraseña.",
       "emailFailed": "No se pudo enviar el enlace de restablecimiento. Inténtalo de nuevo más tarde.",
       "emailHelpText": "Enviaremos un enlace de restablecimiento a esta dirección de correo electrónico.",
-     "networkError": "Error de red al intentar enviar el enlace de restablecimiento."
+      "networkError": "Error de red al intentar enviar el enlace de restablecimiento."
     }
   },
   "fr": {
@@ -32,7 +32,7 @@
       "emailSent": "Veuillez vérifier votre e-mail pour le lien de réinitialisation du mot de passe.",
       "emailFailed": "Impossible d'envoyer le lien de réinitialisation du mot de passe. Veuillez réessayer plus tard.",
       "emailHelpText": "Nous enverrons un lien de réinitialisation à cette adresse e-mail.",
-       "networkError": "Erreur réseau lors de l'envoi du lien de réinitialisation."
+      "networkError": "Erreur réseau lors de l'envoi du lien de réinitialisation."
     }
   },
   "de": {
@@ -67,7 +67,7 @@
       "sendLink": "发送重置链接",
       "emailSent": "请检查您的电子邮件以获取密码重置链接。",
       "emailFailed": "无法发送密码重置链接。请稍后再试。",
-      "emailHelpText": "我们会将重置链接发送到此电子邮件地址。", 
+      "emailHelpText": "我们会将重置链接发送到此电子邮件地址。",
       "networkError": "发送重置链接时出现网络错误。"
     }
   },
@@ -79,8 +79,8 @@
       "sendLink": "Seol Nasc Athshocrú",
       "emailSent": "Seiceáil do r-phost le haghaidh an nasc athshocraithe pasfhocail.",
       "emailFailed": "Níor éirigh leis an nasc athshocraithe pasfhocail a sheoladh. Déan iarracht arís níos déanaí.",
-            "emailHelpText": "Seolfaimid nasc athshocraithe chuig an seoladh ríomhphoist seo.",
-            "networkError": "Earráid líonra agus an nasc athshocraithe á sheoladh."
+      "emailHelpText": "Seolfaimid nasc athshocraithe chuig an seoladh ríomhphoist seo.",
+      "networkError": "Earráid líonra agus an nasc athshocraithe á sheoladh."
     }
   },
   "pt": {
@@ -91,8 +91,32 @@
       "sendLink": "Enviar Link de Redefinição",
       "emailSent": "Por favor, verifique seu e-mail para o link de redefinição de senha.",
       "emailFailed": "Não foi possível enviar o link de redefinição de senha. Tente novamente mais tarde.",
-      "emailHelpText":"Enviaremos um link de redefinição para este endereço de e-mail.",
+      "emailHelpText": "Enviaremos um link de redefinição para este endereço de e-mail.",
       "networkError": "Erro de rede ao tentar enviar o link de redefinição."
+    }
+  },
+  "hi": {
+    "passwordReset": {
+      "backToLogin": "लॉगिन पर वापस जाएं",
+      "title": "पासवर्ड रीसेट",
+      "emailPlaceholder": "अपना ईमेल दर्ज करें",
+      "sendLink": "रीसेट लिंक भेजें",
+      "emailSent": "कृपया पासवर्ड रीसेट लिंक के लिए अपना ईमेल जांचें।",
+      "emailFailed": "पासवर्ड रीसेट लिंक भेजने में असमर्थ। कृपया बाद में पुनः प्रयास करें।",
+      "emailHelpText": "हम इस ईमेल पते पर एक रीसेट लिंक भेजेंगे।",
+      "networkError": "रीसेट लिंक भेजने का प्रयास करते समय नेटवर्क त्रुटि।"
+    }
+  },
+  "hy": {
+    "passwordReset": {
+      "backToLogin": "Վերադառնալ մուտք",
+      "title": "Գաղտնաբառի վերականգնում",
+      "emailPlaceholder": "Մուտքագրեք ձեր էլ․ հասցեն",
+      "sendLink": "Ուղարկել վերականգնման հղում",
+      "emailSent": "Խնդրում ենք ստուգել ձեր էլ․ հասցեն գաղտնաբառի վերականգնման հղման համար։",
+      "emailFailed": "Չհաջողվեց ուղարկել վերականգնման հղումը։ Խնդրում ենք փորձել ավելի ուշ։",
+      "emailHelpText": "Մենք վերականգնման հղում կուղարկենք այս էլ․ հասցեին։",
+      "networkError": "Ցանցի սխալ վերականգնման հղում ուղարկելու ժամանակ։"
     }
   }
 }

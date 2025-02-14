@@ -27,7 +27,9 @@ const languageMap = {
   ar: "Arabic",
   zh: "Chinese",
   ga: "Irish",
-  pt: "Portuguese"
+  pt: "Portuguese",
+  hi: "Hindi",
+  hy: "Armenian",
 };
 // function loadEnvVariables() {
 //   // Adjust if your .env file is located elsewhere. Using __dirname ensures it looks in the same directory as your server.js file.
@@ -94,8 +96,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-
 
 // Socket.io configuration
 const io = socketIo(server, {
@@ -724,6 +724,9 @@ app.post("/api/register", async (req, res) => {
       ar: "AR", // Arabic
       zh: "ZH", // Chinese
       ga: "GA", // Gaelic
+      hi: "HI",
+      pt: "PT",
+      hy: "HY"
     };
 
     // Assuming you have `selectedLanguage` representing the user's chosen language
@@ -1658,7 +1661,6 @@ app.post("/api/users/:userId/upload-profile-video", (req, res) => {
   });
 });
 
-
 app.delete("/api/submission-dialog/:dialogId", async (req, res) => {
   const { dialogId } = req.params;
 
@@ -2168,7 +2170,10 @@ async function deleteExpiredInteractions() {
 
     console.log("Expired interactions deleted successfully.");
   } catch (error) {
-    console.error("Error during deletion of expired interactions, rolling back:", error);
+    console.error(
+      "Error during deletion of expired interactions, rolling back:",
+      error
+    );
     await pool.query("ROLLBACK");
   }
 }
@@ -2179,7 +2184,10 @@ async function delete_records_after_backup(userId) {
   console.log(`Starting backup and deletion process for user ID: ${userId}`);
   try {
     // Step 1: Backup and fetch paths of media files associated with this user's posts before deletion
-    await pool.query(`INSERT INTO submission_dialog_bk SELECT * FROM submission_dialog WHERE posting_user_id = $1`, [userId]);
+    await pool.query(
+      `INSERT INTO submission_dialog_bk SELECT * FROM submission_dialog WHERE posting_user_id = $1`,
+      [userId]
+    );
 
     // Fetch paths of media files associated with this user's posts before deletion
     const { rows: imagesToBackup } = await pool.query(
@@ -2202,7 +2210,11 @@ async function delete_records_after_backup(userId) {
 
     // Prepare media files to move, including submission dialog media files
     const filesToBackup = imagesToBackup
-      .map(row => row.uploaded_path ? row.uploaded_path.replace(/^.*[\\\/]uploaded-images[\\\/]/, "") : null)
+      .map((row) =>
+        row.uploaded_path
+          ? row.uploaded_path.replace(/^.*[\\\/]uploaded-images[\\\/]/, "")
+          : null
+      )
       .filter(Boolean);
 
     if (userMedia.length > 0) {
@@ -2210,32 +2222,69 @@ async function delete_records_after_backup(userId) {
 
       // Add profile_picture and its thumbnail to files to backup, removing any leading 'backend\\imageUploaded\\' if present
       if (profile_picture) {
-        const profilePicturePath = profile_picture.replace(/^backend[\\\/]imageUploaded[\\\/]/, "");
+        const profilePicturePath = profile_picture.replace(
+          /^backend[\\\/]imageUploaded[\\\/]/,
+          ""
+        );
         filesToBackup.push(profilePicturePath);
 
         // Add the thumbnail version of profile_picture
-        const thumbPicture = path.join(path.dirname(profilePicturePath), `thumb-${path.basename(profilePicturePath)}`);
+        const thumbPicture = path.join(
+          path.dirname(profilePicturePath),
+          `thumb-${path.basename(profilePicturePath)}`
+        );
         filesToBackup.push(thumbPicture);
       }
 
       // Add profile_video to files to backup, removing any leading 'backend\\imageUploaded\\' if present
       if (profile_video) {
-        const profileVideoPath = profile_video.replace(/^backend[\\\/]imageUploaded[\\\/]/, "");
+        const profileVideoPath = profile_video.replace(
+          /^backend[\\\/]imageUploaded[\\\/]/,
+          ""
+        );
         filesToBackup.push(profileVideoPath);
       }
     }
 
     // Proceed to delete records from each table for the user
-    await pool.query(`DELETE FROM submission_dialog WHERE posting_user_id = $1`, [userId]);
-    await pool.query(`INSERT INTO submission_members_bk SELECT * FROM submission_members WHERE participating_user_id = $1`, [userId]);
-    await pool.query(`DELETE FROM submission_members WHERE participating_user_id = $1`, [userId]);
-    await pool.query(`INSERT INTO connection_requests_bk SELECT * FROM connection_requests WHERE requester_id = $1 OR requested_id = $1`, [userId]);
-    await pool.query(`DELETE FROM connection_requests WHERE requester_id = $1 OR requested_id = $1`, [userId]);
-    await pool.query(`INSERT INTO connections_bk SELECT * FROM connections WHERE user_one_id = $1 OR user_two_id = $1`, [userId]);
-    await pool.query(`DELETE FROM connections WHERE user_one_id = $1 OR user_two_id = $1`, [userId]);
-    await pool.query(`INSERT INTO user_submissions_bk SELECT * FROM user_submissions WHERE user_id = $1`, [userId]);
-    await pool.query(`DELETE FROM user_submissions WHERE user_id = $1`, [userId]);
-    await pool.query(`INSERT INTO users_bk SELECT * FROM users WHERE id = $1`, [userId]);
+    await pool.query(
+      `DELETE FROM submission_dialog WHERE posting_user_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `INSERT INTO submission_members_bk SELECT * FROM submission_members WHERE participating_user_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `DELETE FROM submission_members WHERE participating_user_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `INSERT INTO connection_requests_bk SELECT * FROM connection_requests WHERE requester_id = $1 OR requested_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `DELETE FROM connection_requests WHERE requester_id = $1 OR requested_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `INSERT INTO connections_bk SELECT * FROM connections WHERE user_one_id = $1 OR user_two_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `DELETE FROM connections WHERE user_one_id = $1 OR user_two_id = $1`,
+      [userId]
+    );
+    await pool.query(
+      `INSERT INTO user_submissions_bk SELECT * FROM user_submissions WHERE user_id = $1`,
+      [userId]
+    );
+    await pool.query(`DELETE FROM user_submissions WHERE user_id = $1`, [
+      userId,
+    ]);
+    await pool.query(`INSERT INTO users_bk SELECT * FROM users WHERE id = $1`, [
+      userId,
+    ]);
     await pool.query(`DELETE FROM users WHERE id = $1`, [userId]);
 
     // Step 2: Move associated media files to the backup directory
@@ -2267,17 +2316,15 @@ async function delete_records_after_backup(userId) {
     // Commit transaction
     await pool.query("COMMIT");
 
-    console.log("User data backed up, media moved to backup, and records deleted successfully.");
+    console.log(
+      "User data backed up, media moved to backup, and records deleted successfully."
+    );
   } catch (error) {
     console.error("Error during transaction, rolling back:", error);
     await pool.query("ROLLBACK");
     throw error;
   }
 }
-
-
-
-
 
 // app.delete('/api/users/:userId', async (req, res) => {
 //   const userId = parseInt(req.params.userId, 10);
@@ -2309,14 +2356,20 @@ app.delete("/api/users/me", authenticateToken, async (req, res) => {
 
   try {
     await delete_records_after_backup(userId);
-    console.log("User data backed up and deleted successfully for user ID:", userId);
-    res.status(200).json({ message: "User data backed up and deleted successfully." });
+    console.log(
+      "User data backed up and deleted successfully for user ID:",
+      userId
+    );
+    res
+      .status(200)
+      .json({ message: "User data backed up and deleted successfully." });
   } catch (error) {
     console.error("Error deleting user records for user ID:", userId, error);
-    res.status(500).json({ message: "An error occurred while deleting user data." });
+    res
+      .status(500)
+      .json({ message: "An error occurred while deleting user data." });
   }
 });
-
 
 app.post("/api/end_interaction", async (req, res) => {
   const { submissionId } = req.body; // Extract the submissionId from the request body
@@ -2528,21 +2581,26 @@ async function system_reply({
       systemResponse = chatCompletion.choices[0]?.message?.content || "";
     } else if (process.env.AI_ENGINE === "2") {
       // Use OpenAI with the new AI/ML engine and custom baseURL
-      const api = new OpenAI({
+      const openai  = new OpenAI({
         apiKey: openaiAPIKey,
-        baseURL: "https://api.aimlapi.com/v1", // Custom base URL
+        baseURL: "https://api.deepseek.com", // Custom base URL
       });
 
-      const chatCompletion = await api.chat.completions.create({
-        model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-        messages: [
-          { role: "system", content: pretrainText },
-          { role: "user", content: content },
-        ],
-        temperature: 0.7,
-        max_tokens: 150,
-      });
+      // const chatCompletion = await api.chat.completions.create({
+      //   model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
+      //   messages: [
+      //     { role: "system", content: pretrainText },
+      //     { role: "user", content: content },
+      //   ],
+      //   temperature: 0.7,
+      //   max_tokens: 150,
+      // });
 
+      // systemResponse = chatCompletion.choices[0]?.message?.content || "";
+      const chatCompletion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: pretrainText  },{ role: "user", content: content }],
+        model: "deepseek-chat",
+      });
       systemResponse = chatCompletion.choices[0]?.message?.content || "";
     }
 
@@ -2889,5 +2947,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9913**delete account URL ${PORT}`);
+  console.log(`**9914**Armenia ${PORT}`);
 });

@@ -1,75 +1,92 @@
 {
-    "en": {
-      "newSubmission": {
-        "backToMessages": "Back to messages",
-        "createNewSubmission": "Create New Engagement",
-        "titlePlaceholder": "Title",
-        "save": "Save",
-        "submissionFailed": "Submission failed"
-      }
-    },
-    "es": {
-      "newSubmission": {
-        "backToMessages": "Volver a los mensajes",
-        "createNewSubmission": "Crear nuevo compromiso",
-        "titlePlaceholder": "Título",
-        "save": "Guardar",
-        "submissionFailed": "La presentación falló"
-      }
-    },
-    "fr": {
-      "newSubmission": {
-        "backToMessages": "Retour aux messages",
-        "createNewSubmission": "Créer un nouvel engagement",
-        "titlePlaceholder": "Titre",
-        "save": "Enregistrer",
-        "submissionFailed": "La soumission a échoué"
-      }
-    },
-    "de": {
-      "newSubmission": {
-        "backToMessages": "Zurück zu den Nachrichten",
-        "createNewSubmission": "Neues Engagement erstellen",
-        "titlePlaceholder": "Titel",
-        "save": "Speichern",
-        "submissionFailed": "Einreichung fehlgeschlagen"
-      }
-    },
-    "zh": {
-      "newSubmission": {
-        "backToMessages": "返回消息",
-        "createNewSubmission": "创建新的参与",
-        "titlePlaceholder": "标题",
-        "save": "保存",
-        "submissionFailed": "提交失败"
-      }
-    },
-    "ar": {
-      "newSubmission": {
-        "backToMessages": "العودة إلى الرسائل",
-        "createNewSubmission": "إنشاء ارتباط جديد",
-        "titlePlaceholder": "العنوان",
-        "save": "حفظ",
-        "submissionFailed": "فشل التقديم"
-      }
-    },
-    "ga": {
-      "newSubmission": {
-        "backToMessages": "Ar ais go teachtaireachtaí",
-        "createNewSubmission": "Cruthaigh Rannpháirtíocht Nua",
-        "titlePlaceholder": "Teideal",
-        "save": "Sábháil",
-        "submissionFailed": "Theip ar an aighneacht"
-      }
-    },
-    "pt": {
-      "newSubmission": {
-        "backToMessages": "Voltar para as mensagens",
-        "createNewSubmission": "Criar Novo Engajamento",
-        "titlePlaceholder": "Título",
-        "save": "Salvar",
-        "submissionFailed": "Falha na submissão"
-      }
+  "en": {
+    "newSubmission": {
+      "backToMessages": "Back to messages",
+      "createNewSubmission": "Create New Engagement",
+      "titlePlaceholder": "Title",
+      "save": "Save",
+      "submissionFailed": "Submission failed"
+    }
+  },
+  "es": {
+    "newSubmission": {
+      "backToMessages": "Volver a los mensajes",
+      "createNewSubmission": "Crear nuevo compromiso",
+      "titlePlaceholder": "Título",
+      "save": "Guardar",
+      "submissionFailed": "La presentación falló"
+    }
+  },
+  "fr": {
+    "newSubmission": {
+      "backToMessages": "Retour aux messages",
+      "createNewSubmission": "Créer un nouvel engagement",
+      "titlePlaceholder": "Titre",
+      "save": "Enregistrer",
+      "submissionFailed": "La soumission a échoué"
+    }
+  },
+  "de": {
+    "newSubmission": {
+      "backToMessages": "Zurück zu den Nachrichten",
+      "createNewSubmission": "Neues Engagement erstellen",
+      "titlePlaceholder": "Titel",
+      "save": "Speichern",
+      "submissionFailed": "Einreichung fehlgeschlagen"
+    }
+  },
+  "zh": {
+    "newSubmission": {
+      "backToMessages": "返回消息",
+      "createNewSubmission": "创建新的参与",
+      "titlePlaceholder": "标题",
+      "save": "保存",
+      "submissionFailed": "提交失败"
+    }
+  },
+  "ar": {
+    "newSubmission": {
+      "backToMessages": "العودة إلى الرسائل",
+      "createNewSubmission": "إنشاء ارتباط جديد",
+      "titlePlaceholder": "العنوان",
+      "save": "حفظ",
+      "submissionFailed": "فشل التقديم"
+    }
+  },
+  "ga": {
+    "newSubmission": {
+      "backToMessages": "Ar ais go teachtaireachtaí",
+      "createNewSubmission": "Cruthaigh Rannpháirtíocht Nua",
+      "titlePlaceholder": "Teideal",
+      "save": "Sábháil",
+      "submissionFailed": "Theip ar an aighneacht"
+    }
+  },
+  "pt": {
+    "newSubmission": {
+      "backToMessages": "Voltar para as mensagens",
+      "createNewSubmission": "Criar Novo Engajamento",
+      "titlePlaceholder": "Título",
+      "save": "Salvar",
+      "submissionFailed": "Falha na submissão"
+    }
+  },
+  "hi": {
+    "newSubmission": {
+      "backToMessages": "संदेशों पर वापस जाएं",
+      "createNewSubmission": "नया जुड़ाव बनाएं",
+      "titlePlaceholder": "शीर्षक",
+      "save": "सहेजें",
+      "submissionFailed": "सबमिशन विफल रहा"
+    }
+  },
+  "hy": {
+    "newSubmission": {
+      "backToMessages": "Վերադառնալ հաղորդագրություններին",
+      "createNewSubmission": "Ստեղծել նոր ներգրավվածություն",
+      "titlePlaceholder": "Վերնագիր",
+      "save": "Պահպանել",
+      "submissionFailed": "Ներկայացումը ձախողվեց"
     }
   }
-  
+}

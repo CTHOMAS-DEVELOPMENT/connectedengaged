@@ -1,6 +1,8 @@
 {
   "en": {
     "feedScreen": {
+      "videoWhen": "for a video call at",
+      "videoRequested": "requested",
       "unauthorizedAccess": "Unauthorized access. Please log in.",
       "screenTitle": "FeedScreen",
       "backToMessages": "Back to messages",
@@ -43,10 +45,27 @@
       "LaunchLiveCallCentre": "Launch Live Call Centre",
       "CurrentUserProfile": "Current User Profile",
       "cameraOrMicError": "Error accessing camera or microphone. Please check your device settings."
-    }
+    },
+    "LiveCallCentre": {
+      "title": "Live Call Centre",
+      "schedule": "Schedule",
+      "cancel": "Cancel"
+    },
+    "Scheduler": {
+      "title": "Schedule a call",
+      "schedule": "Schedule",
+      "cancel": "Cancel",
+      "today": "today",
+      "tomorrow": "tomorrow",
+      "dayAfter": "the day after tomorrow",
+      "scheduleFor": "Schedule for"
+    },
+    "Sceduler": {}
   },
   "es": {
     "feedScreen": {
+      "videoWhen": "para una videollamada a las",
+      "videoRequested": "solicitado",
       "unauthorizedAccess": "Acceso no autorizado. Por favor, inicie sesión.",
       "screenTitle": "Pantalla de Noticias",
       "backToMessages": "Volver a los mensajes",
@@ -74,7 +93,7 @@
       "scrollToTop": "Desplazar al principio",
       "updateTextPost": "Actualiza esta publicación de texto que hiciste",
       "updateAudioPost": "Actualiza esta publicación de audio que hiciste",
-      "UpdateImagePost": "Actualiza esta publicación de imagen que hiciste",    
+      "UpdateImagePost": "Actualiza esta publicación de imagen que hiciste",
       "adminFace": "Cara del administrador",
       "userPost": "Publicación del usuario",
       "uploadedPost": "publicación subida",
@@ -90,10 +109,26 @@
       "unsupportedAudio": "Tu navegador no soporta el elemento de audio.",
       "DeleteYourPostost": "Elimina esta publicación que hiciste",
       "cameraOrMicError": "Error al acceder a la cámara o al micrófono. Verifique la configuración de su dispositivo."
+    },
+    "LiveCallCentre": {
+      "title": "Centro de llamadas en vivo",
+      "schedule": "Programar",
+      "cancel": "Cancelar"
+    },
+    "Scheduler": {
+      "title": "Programar una llamada",
+      "schedule": "Programar",
+      "cancel": "Cancelar",
+      "today": "hoy",
+      "tomorrow": "mañana",
+      "dayAfter": "pasado mañana",
+      "scheduleFor": "Programar para"
     }
   },
   "fr": {
     "feedScreen": {
+      "videoWhen": "pour un appel vidéo à",
+      "videoRequested": "demandé",
       "unauthorizedAccess": "Accès non autorisé. Veuillez vous connecter.",
       "screenTitle": "Fil d'Actualités",
       "backToMessages": "Retour aux messages",
@@ -137,10 +172,26 @@
       "unsupportedAudio": "Votre navigateur ne supporte pas l'élément audio.",
       "DeleteYourPostost": "Supprimez ce post que vous avez créé",
       "cameraOrMicError": "Erreur lors de l'accès à la caméra ou au microphone. Veuillez vérifier les paramètres de votre appareil."
+    },
+    "LiveCallCentre": {
+      "title": "Centre d'appels en direct",
+      "schedule": "Planifier",
+      "cancel": "Annuler"
+    },
+    "Scheduler": {
+      "title": "Planifier un appel",
+      "schedule": "Planifier",
+      "cancel": "Annuler",
+      "today": "aujourd'hui",
+      "tomorrow": "demain",
+      "dayAfter": "après-demain",
+      "scheduleFor": "Planifier pour"
     }
   },
   "de": {
     "feedScreen": {
+      "videoWhen": "für einen Videoanruf um",
+      "videoRequested": "angefordert",
       "unauthorizedAccess": "Unbefugter Zugriff. Bitte melden Sie sich an.",
       "screenTitle": "FeedBildschirm",
       "backToMessages": "Zurück zu den Nachrichten",
@@ -184,10 +235,26 @@
       "unsupportedAudio": "Ihr Browser unterstützt das Audioelement nicht.",
       "DeleteYourPostost": "Lösche diesen Beitrag, den du erstellt hast",
       "cameraOrMicError": "Fehler beim Zugriff auf Kamera oder Mikrofon. Überprüfen Sie Ihre Geräteeinstellungen."
+    },
+    "LiveCallCentre": {
+      "title": "Live-Call-Center",
+      "schedule": "Planen",
+      "cancel": "Abbrechen"
+    },
+    "Scheduler": {
+      "title": "Einen Anruf planen",
+      "schedule": "Planen",
+      "cancel": "Abbrechen",
+      "today": "heute",
+      "tomorrow": "morgen",
+      "dayAfter": "übermorgen",
+      "scheduleFor": "Planen für"
     }
   },
   "ar": {
     "feedScreen": {
+      "videoWhen": "لمكالمة فيديو في",
+      "videoRequested": "طُلب",
       "unauthorizedAccess": "الوصول غير مصرح به. الرجاء تسجيل الدخول.",
       "screenTitle": "شاشة التغذية",
       "backToMessages": "العودة إلى الرسائل",
@@ -231,10 +298,26 @@
       "unsupportedAudio": "متصفحك لا يدعم عنصر الصوت.",
       "DeleteYourPostost": "احذف هذا المنشور الذي قمت بإنشائه",
       "cameraOrMicError": "حدث خطأ في الوصول إلى الكاميرا أو الميكروفون. يرجى التحقق من إعدادات جهازك."
+    },
+    "LiveCallCentre": {
+      "title": "مركز الاتصال المباشر",
+      "schedule": "جدولة",
+      "cancel": "إلغاء"
+    },
+    "Scheduler": {
+      "title": "جدولة مكالمة",
+      "schedule": "جدولة",
+      "cancel": "إلغاء",
+      "today": "اليوم",
+      "tomorrow": "غدًا",
+      "dayAfter": "بعد غد",
+      "scheduleFor": "جدولة لـ"
     }
   },
   "zh": {
     "feedScreen": {
+      "videoWhen": "视频通话时间为",
+      "videoRequested": "已请求",
       "unauthorizedAccess": "未经授权的访问。请登录。",
       "screenTitle": "动态页面",
       "backToMessages": "返回消息",
@@ -278,10 +361,26 @@
       "unsupportedAudio": "您的浏览器不支持音频元素。",
       "DeleteYourPostost": "删除你发布的帖子",
       "cameraOrMicError": "访问摄像头或麦克风时出错。请检查您的设备设置。"
+    },
+    "LiveCallCentre": {
+      "title": "实时呼叫中心",
+      "schedule": "安排",
+      "cancel": "取消"
+    },
+    "Scheduler": {
+      "title": "安排通话",
+      "schedule": "安排",
+      "cancel": "取消",
+      "today": "今天",
+      "tomorrow": "明天",
+      "dayAfter": "后天",
+      "scheduleFor": "安排于"
     }
   },
   "ga": {
     "feedScreen": {
+      "videoWhen": "le haghaidh glao físe ag",
+      "videoRequested": "iarraithe",
       "unauthorizedAccess": "Rochtain neamhúdaraithe. Logáil isteach le do thoil.",
       "screenTitle": "Scáileán Fotha",
       "backToMessages": "Ar ais go teachtaireachtaí",
@@ -325,10 +424,26 @@
       "unsupportedAudio": "Ní thacaíonn do bhrabhsálaí leis an eilimint fuaime.",
       "DeleteYourPostost": "Scrios an post seo a rinne tú",
       "cameraOrMicError": "Earráid ag rochtain ceamara nó micreafón. Seiceáil socruithe do ghléas."
+    },
+    "LiveCallCentre": {
+      "title": "Ionad Glaonna Beo",
+      "schedule": "Sceideal",
+      "cancel": "Cealaigh"
+    },
+    "Scheduler": {
+      "title": "Glao a sceidealú",
+      "schedule": "Sceideal",
+      "cancel": "Cealaigh",
+      "today": "inniu",
+      "tomorrow": "amárach",
+      "dayAfter": "arú amárach",
+      "scheduleFor": "Sceideal do"
     }
   },
   "pt": {
     "feedScreen": {
+      "videoWhen": "para uma videochamada às",
+      "videoRequested": "solicitado",
       "unauthorizedAccess": "Acesso não autorizado. Por favor, faça login.",
       "screenTitle": "Tela de Feed",
       "backToMessages": "Voltar para mensagens",
@@ -371,6 +486,144 @@
       "LaunchLiveCallCentre": "Lançar Centro de Chamadas Ao Vivo",
       "CurrentUserProfile": "Perfil do Usuário Atual",
       "cameraOrMicError": "Erro ao acessar a câmera ou o microfone. Verifique as configurações do seu dispositivo."
+    },
+    "LiveCallCentre": {
+      "title": "Central de Chamadas ao Vivo",
+      "schedule": "Agendar",
+      "cancel": "Cancelar"
+    },
+    "Scheduler": {
+      "title": "Agendar uma chamada",
+      "schedule": "Agendar",
+      "cancel": "Cancelar",
+      "today": "hoje",
+      "tomorrow": "amanhã",
+      "dayAfter": "depois de amanhã",
+      "scheduleFor": "Agendar para"
+    }
+  },
+  "hi": {
+    "feedScreen": {
+      "videoWhen": "वीडियो कॉल के लिए",
+      "videoRequested": "अनुरोध किया गया",
+      "unauthorizedAccess": "अनधिकृत पहुंच। कृपया लॉग इन करें।",
+      "screenTitle": "फीड स्क्रीन",
+      "backToMessages": "संदेशों पर वापस जाएं",
+      "uploading": "अपलोड हो रहा है...",
+      "updateButton": "अपडेट करें",
+      "deleteButton": "हटाएं",
+      "uploadSuccess": "ऑडियो सफलतापूर्वक अपलोड हुआ!",
+      "errorDeletingPost": "पोस्ट हटाने में त्रुटि।",
+      "postUpdated": "पोस्ट अपडेट किया गया: ID:",
+      "errorFetchingPosts": "पोस्ट प्राप्त करने में त्रुटि:",
+      "newPostSubmitted": "नई पोस्ट सबमिट की गई। पोस्ट प्राप्त की जा रही है...",
+      "imageUploadedSuccess": "छवि सफलतापूर्वक अपलोड की गई",
+      "errorAccessingMedia": "कैमरा या माइक्रोफोन तक पहुँचने में त्रुटि। कृपया अपने डिवाइस की सेटिंग्स जांचें।",
+      "incomingCallFrom": "आने वाली कॉल:",
+      "answerButton": "उत्तर दें",
+      "declineButton": "मना करें",
+      "searchPlaceholder": "अपनी खोज टाइप करें",
+      "uploadAudioSuccess": "ऑडियो सफलतापूर्वक अपलोड हुआ!",
+      "uploadFailed": "अपलोड विफल हुआ!",
+      "deletePostFailed": "पोस्ट हटाने में विफल।",
+      "deletePostError": "पोस्ट हटाने में त्रुटि।",
+      "notificationSent": "सूचना सफलतापूर्वक भेजी गई।",
+      "startVideoCallWith": "वीडियो कॉल शुरू करें:",
+      "scrollToBottom": "नीचे स्क्रॉल करें",
+      "scrollToTop": "ऊपर स्क्रॉल करें",
+      "updateTextPost": "इस टेक्स्ट पोस्ट को अपडेट करें",
+      "updateAudioPost": "इस ऑडियो पोस्ट को अपडेट करें",
+      "UpdateImagePost": "इस छवि पोस्ट को अपडेट करें",
+      "adminFace": "एडमिन चेहरा",
+      "userPost": "उपयोगकर्ता पोस्ट",
+      "endCall": "कॉल समाप्त करें",
+      "stopRecording": "रिकॉर्डिंग रोकें",
+      "startRecording": "रिकॉर्डिंग शुरू करें",
+      "filterTextPosts": "सभी टेक्स्ट पोस्ट को फ़िल्टर करें",
+      "uploadNewPicture": "नई तस्वीर अपलोड करें",
+      "unsupportedAudio": "आपका ब्राउज़र ऑडियो तत्व का समर्थन नहीं करता।",
+      "DeleteYourPostost": "इस पोस्ट को हटा दें",
+      "toggleEmail": "ईमेल चालू या बंद करें",
+      "NotImplemented": "अभी तक लागू नहीं किया गया",
+      "LaunchLiveCallCentre": "लाइव कॉल सेंटर लॉन्च करें",
+      "CurrentUserProfile": "वर्तमान उपयोगकर्ता प्रोफ़ाइल",
+      "cameraOrMicError": "कैमरा या माइक्रोफोन तक पहुँचने में त्रुटि। कृपया अपने डिवाइस की सेटिंग्स जांचें।"
+    },
+    "LiveCallCentre": {
+      "title": "लाइव कॉल सेंटर",
+      "schedule": "अनुसूची",
+      "cancel": "रद्द करें"
+    },
+    "Scheduler": {
+      "title": "कॉल शेड्यूल करें",
+      "schedule": "अनुसूची",
+      "cancel": "रद्द करें",
+      "today": "आज",
+      "tomorrow": "कल",
+      "dayAfter": "परसों",
+      "scheduleFor": "के लिए अनुसूची"
+    }
+  },
+  "hy": {
+    "feedScreen": {
+      "videoWhen": "տեսազանգի համար ժամը",
+      "videoRequested": "հարցված է",
+      "unauthorizedAccess": "Չարտոնված մուտք։ Խնդրում ենք մուտք գործել։",
+      "screenTitle": "Ֆիդ էկրան",
+      "backToMessages": "Վերադառնալ հաղորդագրություններին",
+      "uploading": "Վերբեռնում...",
+      "updateButton": "Թարմացնել",
+      "deleteButton": "Ջնջել",
+      "uploadSuccess": "Աուդիոն հաջողությամբ վերբեռնվեց!",
+      "errorDeletingPost": "Սխալ՝ գրառումը ջնջելիս։",
+      "postUpdated": "Գրառումն արդիականացվեց՝ ID:",
+      "errorFetchingPosts": "Սխալ՝ գրառումները ստանալիս։",
+      "newPostSubmitted": "Նոր գրառումը ներկայացվեց։ Ստացվում են գրառումները...",
+      "imageUploadedSuccess": "Պատկերը հաջողությամբ վերբեռնվեց",
+      "errorAccessingMedia": "Սխալ՝ տեսախցիկին կամ խոսափողին հասանելիության ժամանակ։ Խնդրում ենք ստուգել ձեր սարքի կարգավորումները։",
+      "incomingCallFrom": "Մուտքային զանգ՝",
+      "answerButton": "Պատասխանել",
+      "declineButton": "Մերժել",
+      "searchPlaceholder": "Մուտքագրեք ձեր որոնումը",
+      "uploadAudioSuccess": "Աուդիոն հաջողությամբ վերբեռնվեց!",
+      "uploadFailed": "Վերբեռնումը ձախողվեց!",
+      "deletePostFailed": "Գրառումը ջնջելը ձախողվեց։",
+      "deletePostError": "Սխալ՝ գրառումը ջնջելիս։",
+      "notificationSent": "Ծանուցումը հաջողությամբ ուղարկվեց։",
+      "startVideoCallWith": "Տեսազանգ սկսել՝",
+      "scrollToBottom": "Ընթացել ներքև",
+      "scrollToTop": "Ընթացել վերև",
+      "updateTextPost": "Թարմացնել այս տեքստային գրառումը",
+      "updateAudioPost": "Թարմացնել այս ձայնագրության գրառումը",
+      "UpdateImagePost": "Թարմացնել այս պատկերի գրառումը",
+      "adminFace": "Ադմին դեմք",
+      "userPost": "Օգտատիրոջ գրառում",
+      "endCall": "Ավարտել զանգը",
+      "stopRecording": "Դադարեցնել ձայնագրումը",
+      "startRecording": "Սկսել ձայնագրումը",
+      "filterTextPosts": "Զտել բոլոր տեքստային գրառումները",
+      "uploadNewPicture": "Վերբեռնել նոր պատկեր",
+      "unsupportedAudio": "Ձեր դիտարկիչը չի աջակցում ձայնի տարրին։",
+      "DeleteYourPostost": "Ջնջել այս գրառումը",
+      "toggleEmail": "Միացնել կամ անջատել էլ.փոստը",
+      "NotImplemented": "Չի իրականացվել",
+      "LaunchLiveCallCentre": "Գործարկել կենդանի զանգերի կենտրոնը",
+      "CurrentUserProfile": "Ընթացիկ օգտագործողի պրոֆիլ",
+      "cameraOrMicError": "Սխալ՝ տեսախցիկին կամ խոսափողին հասանելիության ժամանակ։ Խնդրում ենք ստուգել ձեր սարքի կարգավորումները։"
+    },
+    "LiveCallCentre": {
+      "title": "Ուղիղ զանգերի կենտրոն",
+      "schedule": "Ժամանակացույց",
+      "cancel": "Չեղարկել"
+    },
+    "Scheduler": {
+      "title": "Ժամանակացույց զանգի համար",
+      "schedule": "Ժամանակացույց",
+      "cancel": "Չեղարկել",
+      "today": "այսօր",
+      "tomorrow": "վաղը",
+      "dayAfter": "վաղը չէ մյուս օրը",
+      "scheduleFor": "Ժամանակացույց՝"
     }
   }
 }

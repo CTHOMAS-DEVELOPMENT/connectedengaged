@@ -94,5 +94,29 @@
       "offensiveWordWarningPt1": "Aviso: A palavra",
       "offensiveWordWarningPt2": "foi substituída"
     }
+  },
+  "hi": {
+    "textEntry": {
+      "placeholder": "आपके मन में क्या है?",
+      "emptyTextError": "कृपया कुछ टेक्स्ट दर्ज करें",
+      "submitError": "टेक्स्ट सबमिट करने में त्रुटि",
+      "textEntryForm": "टेक्स्ट एंट्री फॉर्म",
+      "submitting": "सबमिट हो रहा है",
+      "submitYourPost": "अपना पोस्ट सबमिट करें",
+      "offensiveWordWarningPt1": "चेतावनी: शब्द",
+      "offensiveWordWarningPt2": "को बदल दिया गया है"
+    }
+  },
+  "hy": {
+    "textEntry": {
+      "placeholder": "Ինչ է ձեր մտքին?",
+      "emptyTextError": "Խնդրում ենք մուտքագրել տեքստ",
+      "submitError": "Սխալ տեքստի ուղարկման ժամանակ",
+      "textEntryForm": "Տեքստի մուտքագրման ձև",
+      "submitting": "Ուղարկվում է",
+      "submitYourPost": "Ուղարկեք ձեր գրառումը",
+      "offensiveWordWarningPt1": "Զգուշացում: Բառը",
+      "offensiveWordWarningPt2": "փոխարինվել է"
+    }
   }
 }

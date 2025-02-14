@@ -95,6 +95,8 @@ const RegistrationForm = () => {
     zh: "中文", // Chinese
     ga: "Gaelach",
     pt: "Português",
+    hi: "हिन्दी",
+    hy: "Հայերեն",
   };
   const handleTogglePrivacyPolicy = () => {
     setShowPrivacyPolicy((prev) => !prev);
@@ -244,7 +246,9 @@ const RegistrationForm = () => {
 
   const handleBlur = (event) => {
     const { name, value } = event.target;
-    const validationErrors = validateUser({ ...formData, [name]: value });
+    console.log(name, value)
+    
+    const validationErrors = validateUser({ ...formData, [name]: value }, false, selectedLanguage);
 
     if (name === "dummyEmail" && value !== formData.email) {
       validationErrors["dummyEmail"] =
@@ -421,11 +425,14 @@ const RegistrationForm = () => {
             <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
               Gaelic
             </Dropdown.Item>
-            <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
-              Gaelic
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
+            <Dropdown.Item eventKey="pt" className="font-style-4" lang="pt">
               Português
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="hi" className="font-style-4" lang="hi">
+              हिन्दी
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="hy" className="font-style-4" lang="hy">
+              Հայերեն
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -680,9 +687,9 @@ const RegistrationForm = () => {
                 aria-label={
                   showOrientation
                     ? pageTranslations.hideOrientation ||
-                      "Hide Preferred Company"
+                      "Hide Preferred Partner"
                     : pageTranslations.showOrientation ||
-                      "Show Preferred Company Selection"
+                      "Show Preferred Partner Selection"
                 }
                 aria-expanded={showOrientation}
                 aria-controls="o-selection"
@@ -696,9 +703,9 @@ const RegistrationForm = () => {
                   />
                 )}
                 {showOrientation
-                  ? pageTranslations.hideOrientation || "Hide Preferred Company"
+                  ? pageTranslations.hideOrientation || "Hide Preferred Partner"
                   : pageTranslations.showOrientation ||
-                    "Show Preferred Company Selection"}
+                    "Show  Selection"}
                 {selectedOrientation === null ? (
                   <XCircle className="ms-1" style={{ fontSize: "1.5rem" }} />
                 ) : (

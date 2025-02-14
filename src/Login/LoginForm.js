@@ -64,6 +64,8 @@ const LoginForm = () => {
     zh: "中文", // Chinese
     ga: "Gaelach",
     pt: "Português",
+    hi: "हिन्दी",
+    hy: "Հայերեն",
   };
 
   const pageTranslations = translations[selectedLanguage]?.["login"] || {}; // Get the translation for the current page
@@ -262,7 +264,6 @@ const LoginForm = () => {
     setConsentGiven(true); // Set consent given upon closing the modal
   };
   useEffect(() => {
-
     if (localStorage.getItem("token")) {
       console.log("Existing token found. Clearing it.");
       localStorage.removeItem("token");
@@ -383,8 +384,14 @@ const LoginForm = () => {
             <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
               Gaelic
             </Dropdown.Item>
-            <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
+            <Dropdown.Item eventKey="pt" className="font-style-4" lang="pt">
               Português
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="hy" className="font-style-4" lang="hy">
+              Հայերեն
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="hi" className="font-style-4" lang="hi">
+              हिन्दी
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -519,7 +526,11 @@ const LoginForm = () => {
             )}
 
             {!consentGiven && (
-              <section aria-label={pageTranslations.cookieConsent || "Cookie Consent Options"}>
+              <section
+                aria-label={
+                  pageTranslations.cookieConsent || "Cookie Consent Options"
+                }
+              >
                 <div
                   style={{
                     display: "grid",

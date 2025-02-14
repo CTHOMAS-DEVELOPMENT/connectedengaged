@@ -176,7 +176,7 @@ const UserProfile = () => {
                   "{username}",
                   user.username
                 )
-              : `${user.username}'s Preferred Company Selection`}
+              : `${user.username}'s Preferred Partner Selection`}
           </p>
 
           <Orientation

@@ -131,7 +131,7 @@
     "妈的": "",
     "猪头": "傻瓜"
   },
-  "ga":{
+  "ga": {
     "feck": "flip",
     "póg mo thóin": "póg mo thóin",
     "amadán": "",
@@ -149,8 +149,7 @@
     "stócach": "",
     "glugair": "",
     "leathcheann": ""
-  }
-  ,
+  },
   "pt": {
     "porra": "droga",
     "merda": "estrago",
@@ -177,6 +176,29 @@
     "estúpido": "bobo",
     "maluco": "louco",
     "besta": "bruto"
+  },
+  "hi": {
+    "chutiya": "बेवकूफ",
+    "madarchod": "",
+    "bhenchod": "",
+    "gandu": "मूर्ख",
+    "harami": "दुष्ट",
+    "saala": "जीजा",
+    "loda": "औजार",
+    "lund": "औजार",
+    "randi": "महिला",
+    "kutta": "कुत्ता"
+  },
+  "hy": {
+    "qar": "հիմար",
+    "kunt": "",
+    "mez": "հիմար",
+    "ognutyun": "օգնություն",
+    "dzax": "ձախ",
+    "amena": "",
+    "tavar": "իր",
+    "spitak": "սպիտակ",
+    "dzuk": "ձուկ",
+    "axper": "եղբայր"
   }
-  
 }

@@ -29,13 +29,14 @@ const languageMap = {
   zh: "中文", // Chinese
   ga: "Gaelach",
   pt: "Português",
+  hi: "हिन्दी",
+  hy: "Հայերեն",
 };
 const UpdateProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const userId =
-    location.state?.userId || searchParams.get("userId");
+  const userId = location.state?.userId || searchParams.get("userId");
   const [authError, setAuthError] = useState(false);
   const [profileVideo, setProfileVideo] = useState();
   const [profileImage, setProfileImage] = useState();
@@ -95,18 +96,21 @@ const UpdateProfile = () => {
   const confirmDeleteAccount = async () => {
     setShowDeleteConfirmation(false);
     const token = localStorage.getItem("token");
-  
+
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/me`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`, // Ensure the token is being passed
-        },
-      });
-    
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/users/me`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`, // Ensure the token is being passed
+          },
+        }
+      );
+
       if (response.ok) {
         await response.json();
-  
+
         setMessage(
           pageTranslations.deletionSuccess || "Your account has been deleted."
         );
@@ -128,8 +132,7 @@ const UpdateProfile = () => {
       setAlertKey((prevKey) => prevKey + 1);
     }
   };
-  
-  
+
   const handleSelectCoordinates = (selectedCoordinates) => {
     // Update formData with the new coordinates
     setFormData((prevFormData) => ({
@@ -459,6 +462,12 @@ const UpdateProfile = () => {
               </Dropdown.Item>
               <Dropdown.Item eventKey="pt" className="font-style-4" lang="ga">
                 Português
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="hy" className="font-style-4" lang="hy">
+                Հայերեն
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="hi" className="font-style-4" lang="hi">
+                हिन्दी
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
