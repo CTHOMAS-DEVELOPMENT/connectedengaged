@@ -433,9 +433,6 @@ const FeedScreen = () => {
     );
   }
   const openReportDialog = (postId, postType) => {
-    console.log(
-      `Opening report dialog for Post ID: ${postId}, Type: ${postType}`
-    );
     setReportPostId(postId);
     setReportPostType(postType);
     setShowReportDialog(true);
@@ -448,14 +445,6 @@ const FeedScreen = () => {
     if (!reportPostId || !selectedOffense || reportMessage.length < 5) {
       return;
     }
-
-    console.log(`Submitting report: `, {
-      postId: reportPostId,
-      reporterId: userId,
-      postType: reportPostType, // Include the determined postType
-      offenseType: selectedOffense,
-      message: reportMessage,
-    });
 
     try {
       const response = await fetch(
@@ -1423,83 +1412,101 @@ const FeedScreen = () => {
           );
         })}
         {showReportDialog && (
-  <div
-    style={reportDialogBackdropStyle}
-    onClick={() => setShowReportDialog(false)} // Close when clicking outside
-  >
-    <div
-      style={reportDialogContentStyle}
-      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-    >
-      <h3 className="header-title font-style-4">
-        {translations[languageCode]?.feedScreen?.reportPost || "Report Post"}
-      </h3>
+          <div
+            style={reportDialogBackdropStyle}
+            onClick={() => setShowReportDialog(false)} // Close when clicking outside
+          >
+            <div
+              style={reportDialogContentStyle}
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            >
+              <h3 className="header-title font-style-4">
+                {translations[languageCode]?.feedScreen?.reportPost ||
+                  "Report Post"}
+              </h3>
 
-      <label htmlFor="offenseType" style={reportLabelStyle}>
-        {translations[languageCode]?.feedScreen?.offenseType || "Offense Type"}
-      </label>
-      <select
-        id="offenseType"
-        value={selectedOffense}
-        onChange={(e) => {
-          setSelectedOffense(e.target.value);
-          setIsSendEnabled(e.target.value && reportMessage.length >= 5);
-        }}
-        style={reportSelectStyle}
-      >
-        <option value="">
-          {translations[languageCode]?.feedScreen?.selectReason || "-- Select Reason --"}
-        </option>
-        <option value="Suspected Catfish">
-          {translations[languageCode]?.feedScreen?.offenseTypes?.catfish || "Suspected Catfish"}
-        </option>
-        <option value="Sexually Offensive">
-          {translations[languageCode]?.feedScreen?.offenseTypes?.offensive || "Sexually Offensive"}
-        </option>
-        <option value="Hate Speech">
-          {translations[languageCode]?.feedScreen?.offenseTypes?.hate || "Hate Speech"}
-        </option>
-        <option value="Harassment">
-          {translations[languageCode]?.feedScreen?.offenseTypes?.harassment || "Harassment"}
-        </option>
-        <option value="Other">
-          {translations[languageCode]?.feedScreen?.offenseTypes?.other || "Other"}
-        </option>
-      </select>
+              <label htmlFor="offenseType" style={reportLabelStyle}>
+                {translations[languageCode]?.feedScreen?.offenseType ||
+                  "Offense Type"}
+              </label>
+              <select
+                id="offenseType"
+                value={selectedOffense}
+                onChange={(e) => {
+                  setSelectedOffense(e.target.value);
+                  setIsSendEnabled(e.target.value && reportMessage.length >= 5);
+                }}
+                style={reportSelectStyle}
+              >
+                <option value="">
+                  {translations[languageCode]?.feedScreen?.selectReason ||
+                    "-- Select Reason --"}
+                </option>
+                <option value="Suspected Catfish">
+                  {translations[languageCode]?.feedScreen?.offenseTypes
+                    ?.catfish || "Suspected Catfish"}
+                </option>
+                <option value="Sexually Offensive">
+                  {translations[languageCode]?.feedScreen?.offenseTypes
+                    ?.offensive || "Sexually Offensive"}
+                </option>
+                <option value="Hate Speech">
+                  {translations[languageCode]?.feedScreen?.offenseTypes?.hate ||
+                    "Hate Speech"}
+                </option>
+                <option value="Harassment">
+                  {translations[languageCode]?.feedScreen?.offenseTypes
+                    ?.harassment || "Harassment"}
+                </option>
+                <option value="Other">
+                  {translations[languageCode]?.feedScreen?.offenseTypes
+                    ?.other || "Other"}
+                </option>
+              </select>
 
-      <label htmlFor="reportMessage" style={reportLabelStyle}>
-        {translations[languageCode]?.feedScreen?.additionalDetails || "Additional Details"}
-      </label>
-      <textarea
-        id="reportMessage"
-        value={reportMessage}
-        onChange={(e) => {
-          setReportMessage(e.target.value);
-          setIsSendEnabled(selectedOffense && e.target.value.length >= 5);
-        }}
-        style={reportTextAreaStyle}
-        placeholder={translations[languageCode]?.feedScreen?.describeIssue || "Describe the issue (at least 5 characters)..."}
-      />
+              <label htmlFor="reportMessage" style={reportLabelStyle}>
+                {translations[languageCode]?.feedScreen?.additionalDetails ||
+                  "Additional Details"}
+              </label>
+              <textarea
+                id="reportMessage"
+                value={reportMessage}
+                onChange={(e) => {
+                  setReportMessage(e.target.value);
+                  setIsSendEnabled(
+                    selectedOffense && e.target.value.length >= 5
+                  );
+                }}
+                style={reportTextAreaStyle}
+                placeholder={
+                  translations[languageCode]?.feedScreen?.describeIssue ||
+                  "Describe the issue (at least 5 characters)..."
+                }
+              />
 
-      <div style={reportButtonContainerStyle}>
-        <button
-          onClick={() => setShowReportDialog(false)}
-          style={reportButtonStyle}
-        >
-          {translations[languageCode]?.feedScreen?.cancelButton || "Cancel"}
-        </button>
-        <button
-          disabled={!isSendEnabled}
-          style={isSendEnabled ? sendButtonEnabledStyle : sendButtonDisabledStyle}
-          onClick={() => submitReport()}
-        >
-          {translations[languageCode]?.feedScreen?.sendButton || "Send"}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+              <div style={reportButtonContainerStyle}>
+                <button
+                  onClick={() => setShowReportDialog(false)}
+                  style={reportButtonStyle}
+                >
+                  {translations[languageCode]?.feedScreen?.cancelButton ||
+                    "Cancel"}
+                </button>
+                <button
+                  disabled={!isSendEnabled}
+                  style={
+                    isSendEnabled
+                      ? sendButtonEnabledStyle
+                      : sendButtonDisabledStyle
+                  }
+                  onClick={() => submitReport()}
+                >
+                  {translations[languageCode]?.feedScreen?.sendButton || "Send"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <nav>
           <Button
