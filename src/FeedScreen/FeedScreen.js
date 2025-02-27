@@ -11,7 +11,20 @@ import {
   getThumbnailPath,
   findThumbImage,
 } from "../system/utils";
-
+import {
+  reportDialogBackdropStyle,
+  reportDialogContentStyle,
+  reportLabelStyle,
+  reportSelectStyle,
+  reportTextAreaStyle,
+  reportButtonContainerStyle,
+  reportButtonStyle,
+  verticleWrapper,
+  horizontalWrapper,
+  sendButtonDisabledStyle,
+  postContainerStyle,
+  mainReportButtonStyle,
+} from "../system/styles";
 import Scheduler from "./Scheduler";
 import { Button, Spinner } from "react-bootstrap";
 import {
@@ -68,6 +81,12 @@ const FeedScreen = () => {
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [selectedOffense, setSelectedOffense] = useState(""); // Stores offense type
+  const [reportMessage, setReportMessage] = useState(""); // Stores user input message
+  const [reportPostId, setReportPostId] = useState(null); // Stores post ID being reported
+  const [isSendEnabled, setIsSendEnabled] = useState(false); // Controls Send button
+  const [reportPostType, setReportPostType] = useState("");
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -81,14 +100,13 @@ const FeedScreen = () => {
     title,
     languageCode = "en",
   } = location.state || {};
-  const verticleWrapper = {
-    display: "flex",
-    flexDirection: "row",
+
+  const sendButtonEnabledStyle = {
+    ...reportButtonStyle,
+    backgroundColor: "#dc3545", // Bootstrap red
+    color: "white",
   };
-  const horizontalWrapper = {
-    display: "flex",
-    flexDirection: "column",
-  };
+
   const isLocal = process.env.REACT_APP_ENV === "local";
   const handleBackToMessagesClick = () => {
     navigate("/userlist", { state: { userId: userId } }); // Update for v6
@@ -414,6 +432,67 @@ const FeedScreen = () => {
       </div>
     );
   }
+  const openReportDialog = (postId, postType) => {
+    console.log(
+      `Opening report dialog for Post ID: ${postId}, Type: ${postType}`
+    );
+    setReportPostId(postId);
+    setReportPostType(postType);
+    setShowReportDialog(true);
+    setSelectedOffense("");
+    setReportMessage("");
+    setIsSendEnabled(false);
+  };
+
+  const submitReport = async () => {
+    if (!reportPostId || !selectedOffense || reportMessage.length < 5) {
+      return;
+    }
+
+    console.log(`Submitting report: `, {
+      postId: reportPostId,
+      reporterId: userId,
+      postType: reportPostType, // Include the determined postType
+      offenseType: selectedOffense,
+      message: reportMessage,
+    });
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/report_post`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            postId: reportPostId,
+            reporterId: userId,
+            postType: reportPostType, // Now included
+            offenseType: selectedOffense,
+            message: reportMessage,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setMessage(data.message || "Report sent successfully.");
+      setType("info");
+      setAlertKey((prevKey) => prevKey + 1);
+    } catch (error) {
+      console.error("Error reporting post:", error);
+      setMessage("Error sending report.");
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+    }
+
+    setShowReportDialog(false);
+  };
+
   const postTypeForEmail = async (
     type,
     associatedUsers,
@@ -702,9 +781,12 @@ const FeedScreen = () => {
     ];
 
     postMessage(
-      `${loggedInUserName} ${translations[languageCode]?.feedScreen?.videoRequested ||
-            "requested"} ${selectedUsername} ${translations[languageCode]?.feedScreen?.videoWhen ||
-            "for a video call at"} ${scheduledTime.toLocaleString()}`
+      `${loggedInUserName} ${
+        translations[languageCode]?.feedScreen?.videoRequested || "requested"
+      } ${selectedUsername} ${
+        translations[languageCode]?.feedScreen?.videoWhen ||
+        "for a video call at"
+      } ${scheduledTime.toLocaleString()}`
     );
 
     // Send the email notification with call_request type
@@ -1161,152 +1243,264 @@ const FeedScreen = () => {
           </>
         )}
 
-        {filteredPosts.map((post) => (
-          <article key={post.id} className="element-group-box" role="region">
-            {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
-              post.posting_user_id && (
-              <img
-                src={`${process.env.REACT_APP_IMAGE_HOST}/${
-                  process.env.REACT_APP_IMAGE_FOLDER
-                }/thumb-${extractFilename(post.profile_picture)}`}
-                alt={
-                  translations[languageCode]?.feedScreen?.userPost ||
-                  "User Post"
-                }
-                className="post-profile-image"
-              />
-            )}
+        {filteredPosts.map((post) => {
+          // Define styles
 
-            {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
-              post.posting_user_id &&
-              loggedInUserAdmin && (
+          return (
+            <article
+              key={post.id}
+              className="element-group-box"
+              role="region"
+              style={postContainerStyle}
+            >
+              {/* User Profile Image */}
+              {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) !==
+                post.posting_user_id && (
                 <img
-                  src={loggedInUserAdmin}
-                  alt={
-                    translations[languageCode]?.feedScreen?.adminFace ||
-                    "Admin Face"
-                  }
-                  className="post-profile-image"
-                />
-              )}
-
-            {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
-              post.posting_user_id &&
-              !loggedInUserAdmin && (
-                <img
-                  src={"/admins/thumb-file-admin.JPEG"}
-                  alt={
-                    translations[languageCode]?.feedScreen?.adminFace ||
-                    "Admin Face"
-                  }
-                  className="post-profile-image"
-                />
-              )}
-            {post.type === "text" ? (
-              <div className="speech-bubble">
-                <div>{post.content}</div>
-              </div>
-            ) : validateUploadedSoundFile(post.uploaded_path) ? (
-              <audio controls ref={audioRef}>
-                <source
-                  src={`${
-                    process.env.REACT_APP_IMAGE_HOST
-                  }${post.uploaded_path.replace(/\\/g, "/")}`}
-                  type="audio/mp3"
-                />
-                {translations[languageCode]?.feedScreen?.userPost ||
-                  "Your browser does not support the audio element."}
-              </audio>
-            ) : (
-              <div className="post-image-container">
-                <img
-                  className={
-                    userId === post.posting_user_id ? "resizable-image" : ""
-                  }
-                  src={`${
-                    process.env.REACT_APP_IMAGE_HOST
-                  }${post.uploaded_path.replace(/\\/g, "/")}`}
+                  src={`${process.env.REACT_APP_IMAGE_HOST}/${
+                    process.env.REACT_APP_IMAGE_FOLDER
+                  }/thumb-${extractFilename(post.profile_picture)}`}
                   alt={
                     translations[languageCode]?.feedScreen?.userPost ||
                     "User Post"
                   }
+                  className="post-profile-image"
                 />
-              </div>
-            )}
+              )}
 
-            {userId === post.posting_user_id && (
-              <div className="button_tower">
-                {post.type === "text" ? (
-                  <Button
-                    variant="outline-info"
-                    className="btn-sm"
-                    onClick={() => setPostIdForText(post.id, post.content)}
-                    aria-label={
-                      translations[languageCode]?.feedScreen?.updateTextPost ||
-                      "Update this text post you made"
+              {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+                post.posting_user_id &&
+                loggedInUserAdmin && (
+                  <img
+                    src={loggedInUserAdmin}
+                    alt={
+                      translations[languageCode]?.feedScreen?.adminFace ||
+                      "Admin Face"
                     }
-                  >
-                    {translations[languageCode]?.feedScreen?.updateButton ||
-                      "Update"}
-                  </Button>
-                ) : validateUploadedSoundFile(post.uploaded_path) ? (
-                  <Button
-                    variant="outline-info"
-                    className="btn-sm"
-                    style={{ opacity: 0.5 }}
-                    disabled
-                    aria-label="Update this audio post you made"
-                  >
-                    {translations[languageCode]?.feedScreen?.updateButton ||
-                      "Update"}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline-info"
-                    className="btn-sm"
-                    onClick={() => setPostId(post.id)}
-                    aria-label={
-                      translations[languageCode]?.feedScreen?.UpdateImagePost ||
-                      "Update this image post you made"
-                    }
-                  >
-                    {translations[languageCode]?.feedScreen?.updateButton ||
-                      "Update"}
-                  </Button>
+                    className="post-profile-image"
+                  />
                 )}
-                <Button
-                  variant="danger"
-                  className="btn-sm"
-                  onClick={() => deletePost(post.id)}
-                  onMouseEnter={() => setHoveredDeletePostId(post.id)}
-                  onMouseLeave={() => setHoveredDeletePostId(null)}
+
+              {parseInt(process.env.REACT_APP_SYSTEM_ADMIN_ID) ===
+                post.posting_user_id &&
+                !loggedInUserAdmin && (
+                  <img
+                    src={"/admins/thumb-file-admin.JPEG"}
+                    alt={
+                      translations[languageCode]?.feedScreen?.adminFace ||
+                      "Admin Face"
+                    }
+                    className="post-profile-image"
+                  />
+                )}
+
+              {/* Post Content */}
+              <div
+                style={{
+                  flex: 1,
+                }}
+              >
+                {post.type === "text" ? (
+                  <div className="speech-bubble">
+                    <div>{post.content}</div>
+                  </div>
+                ) : validateUploadedSoundFile(post.uploaded_path) ? (
+                  <audio controls ref={audioRef}>
+                    <source
+                      src={`${
+                        process.env.REACT_APP_IMAGE_HOST
+                      }${post.uploaded_path.replace(/\\/g, "/")}`}
+                      type="audio/mp3"
+                    />
+                    {translations[languageCode]?.feedScreen?.userPost ||
+                      "Your browser does not support the audio element."}
+                  </audio>
+                ) : (
+                  <div className="post-image-container">
+                    <img
+                      className={
+                        userId === post.posting_user_id ? "resizable-image" : ""
+                      }
+                      src={`${
+                        process.env.REACT_APP_IMAGE_HOST
+                      }${post.uploaded_path.replace(/\\/g, "/")}`}
+                      alt={
+                        translations[languageCode]?.feedScreen?.userPost ||
+                        "User Post"
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              {userId === post.posting_user_id ? (
+                <div className="button_tower">
+                  {post.type === "text" ? (
+                    <Button
+                      variant="outline-info"
+                      className="btn-sm"
+                      onClick={() => setPostIdForText(post.id, post.content)}
+                      aria-label={
+                        translations[languageCode]?.feedScreen
+                          ?.updateTextPost || "Update this text post you made"
+                      }
+                    >
+                      {translations[languageCode]?.feedScreen?.updateButton ||
+                        "Update"}
+                    </Button>
+                  ) : validateUploadedSoundFile(post.uploaded_path) ? (
+                    <Button
+                      variant="outline-info"
+                      className="btn-sm"
+                      style={{ opacity: 0.5 }}
+                      disabled
+                    >
+                      {translations[languageCode]?.feedScreen?.updateButton ||
+                        "Update"}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline-info"
+                      className="btn-sm"
+                      onClick={() => setPostId(post.id)}
+                      aria-label={
+                        translations[languageCode]?.feedScreen
+                          ?.UpdateImagePost || "Update this image post you made"
+                      }
+                    >
+                      {translations[languageCode]?.feedScreen?.updateButton ||
+                        "Update"}
+                    </Button>
+                  )}
+                  <Button
+                    variant="danger"
+                    className="btn-sm"
+                    onClick={() => deletePost(post.id)}
+                    onMouseEnter={() => setHoveredDeletePostId(post.id)}
+                    onMouseLeave={() => setHoveredDeletePostId(null)}
+                    aria-label={
+                      translations[languageCode]?.feedScreen
+                        ?.DeleteYourPostost || "Delete this post you made"
+                    }
+                  >
+                    {hoveredDeletePostId === post.id ? (
+                      <TrashFill size={25} />
+                    ) : (
+                      <Trash size={25} />
+                    )}
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  style={mainReportButtonStyle}
+                  onClick={() => {
+                    let postType = "Text";
+                    if (post.uploaded_path) {
+                      const ext = post.uploaded_path
+                        .split(".")
+                        .pop()
+                        .toLowerCase();
+                      if (["mp3", "wav", "ogg"].includes(ext)) {
+                        postType = "Audio";
+                      } else if (
+                        ["jpg", "jpeg", "png", "gif", "webp"].includes(ext)
+                      ) {
+                        postType = "Image";
+                      }
+                    }
+                    openReportDialog(post.id, postType);
+                  }}
                   aria-label={
-                    translations[languageCode]?.feedScreen?.DeleteYourPostost ||
-                    "Delete this post you made"
+                    translations[languageCode]?.feedScreen?.reportPost ||
+                    "Report"
                   }
                 >
-                  {hoveredDeletePostId === post.id ? (
-                    <TrashFill size={25} />
-                  ) : (
-                    <Trash size={25} />
-                  )}
-                </Button>
-              </div>
-            )}
-            {userId !== post.posting_user_id && (
-              <div className="button_tower" style={{ opacity: 0.5 }}>
-                <Button variant="outline-info" className="btn-sm" disabled>
-                  {translations[languageCode]?.feedScreen?.updateButton ||
-                    "Update"}
-                </Button>
+                  ⚠️
+                </button>
+              )}
+            </article>
+          );
+        })}
+        {showReportDialog && (
+  <div
+    style={reportDialogBackdropStyle}
+    onClick={() => setShowReportDialog(false)} // Close when clicking outside
+  >
+    <div
+      style={reportDialogContentStyle}
+      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+    >
+      <h3 className="header-title font-style-4">
+        {translations[languageCode]?.feedScreen?.reportPost || "Report Post"}
+      </h3>
 
-                <Button variant="danger" className="btn-sm" disabled>
-                  <Trash size={25} />
-                </Button>
-              </div>
-            )}
-          </article>
-        ))}
+      <label htmlFor="offenseType" style={reportLabelStyle}>
+        {translations[languageCode]?.feedScreen?.offenseType || "Offense Type"}
+      </label>
+      <select
+        id="offenseType"
+        value={selectedOffense}
+        onChange={(e) => {
+          setSelectedOffense(e.target.value);
+          setIsSendEnabled(e.target.value && reportMessage.length >= 5);
+        }}
+        style={reportSelectStyle}
+      >
+        <option value="">
+          {translations[languageCode]?.feedScreen?.selectReason || "-- Select Reason --"}
+        </option>
+        <option value="Suspected Catfish">
+          {translations[languageCode]?.feedScreen?.offenseTypes?.catfish || "Suspected Catfish"}
+        </option>
+        <option value="Sexually Offensive">
+          {translations[languageCode]?.feedScreen?.offenseTypes?.offensive || "Sexually Offensive"}
+        </option>
+        <option value="Hate Speech">
+          {translations[languageCode]?.feedScreen?.offenseTypes?.hate || "Hate Speech"}
+        </option>
+        <option value="Harassment">
+          {translations[languageCode]?.feedScreen?.offenseTypes?.harassment || "Harassment"}
+        </option>
+        <option value="Other">
+          {translations[languageCode]?.feedScreen?.offenseTypes?.other || "Other"}
+        </option>
+      </select>
+
+      <label htmlFor="reportMessage" style={reportLabelStyle}>
+        {translations[languageCode]?.feedScreen?.additionalDetails || "Additional Details"}
+      </label>
+      <textarea
+        id="reportMessage"
+        value={reportMessage}
+        onChange={(e) => {
+          setReportMessage(e.target.value);
+          setIsSendEnabled(selectedOffense && e.target.value.length >= 5);
+        }}
+        style={reportTextAreaStyle}
+        placeholder={translations[languageCode]?.feedScreen?.describeIssue || "Describe the issue (at least 5 characters)..."}
+      />
+
+      <div style={reportButtonContainerStyle}>
+        <button
+          onClick={() => setShowReportDialog(false)}
+          style={reportButtonStyle}
+        >
+          {translations[languageCode]?.feedScreen?.cancelButton || "Cancel"}
+        </button>
+        <button
+          disabled={!isSendEnabled}
+          style={isSendEnabled ? sendButtonEnabledStyle : sendButtonDisabledStyle}
+          onClick={() => submitReport()}
+        >
+          {translations[languageCode]?.feedScreen?.sendButton || "Send"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
         <nav>
           <Button
             variant="outline-info"

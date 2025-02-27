@@ -18,6 +18,7 @@ import PasswordReset from "./PasswordReset/PasswordReset";
 import UpdateProfile from "./UpdateProfile/UpdateProfile";
 import TextGenerator from "./OpenAI/TextGenerator";
 import PrivacyPolicy from "./Login/PrivacyPolicy";
+import ChildSafety from "./Login/ChildSafety";
 import GoodBye from "./system/GoodBye";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -30,6 +31,7 @@ function App() {
           <Route path="/" element={<LoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyWithState />} />
+          <Route path="/child-safety" element={<ChildSafetyWithState />} /> {/* New Route for Child Safety */}
           {/* Protected Routes */}
           <Route
             path="/feed"
@@ -129,6 +131,11 @@ const PrivacyPolicyWithState = () => {
   const location = useLocation();
   const selectedLanguage = location.state?.selectedLanguage || "en"; // Default to 'en' if no state is passed
   return <PrivacyPolicy selectedLanguage={selectedLanguage} />;
+};
+const ChildSafetyWithState = () => {
+  const location = useLocation();
+  const selectedLanguage = location.state?.selectedLanguage || "en"; // Default to 'en' if no state is passed
+  return <ChildSafety selectedLanguage={selectedLanguage} />;
 };
 
 export default App;

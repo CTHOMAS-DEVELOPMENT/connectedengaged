@@ -28,7 +28,8 @@
       "loginSuccess": "Login successful",
       "loginFailed": "Login failed",
       "loginFailedNetwork": "Login failed due to network error",
-      "privacyPolicyLink": "Privacy Policy"
+      "privacyPolicyLink": "Privacy Policy",
+      "childSafetyLink": "Child Safety"
     },
     "privacyPolicy": {
       "title": "Privacy Policy",
@@ -46,6 +47,21 @@
       "consentTitle": "Consent",
       "consentText": "By using this app, you consent to our privacy policy and agree to the collection, storage, and use of your personal information as described. You acknowledge that your data may be archived after engagement expiration for compliance or future reference, and you accept the terms of this process. If at any point you wish to withdraw your consent or alter the use of your data, you can exercise your rights as outlined above. Explicit consent will be required before collecting sensitive data such as location or user preferences.",
       "contactInfo": "For any questions, contact us at connectedengaged@gmail.com.",
+      "backToBase": "Back to Base"
+    },
+    "childSafety": {
+      "title": "Child Safety Standards",
+      "introductionTitle": "Introduction",
+      "introductionText": "We are committed to ensuring a safe and respectful environment for all users. Our child safety standards align with global protection guidelines to prevent exploitation and misuse.",
+      "reportingTitle": "Reporting Unsafe Content",
+      "reportingText": "Users can report inappropriate content directly within the app. Our moderation team will review all reports and take necessary actions.",
+      "userModerationTitle": "User Moderation",
+      "userModerationText": "All user-generated content is subject to moderation. We employ automated and manual reviews to prevent harmful interactions.",
+      "safetyMeasuresTitle": "Safety Measures",
+      "safetyMeasuresText": "We implement strict verification processes, content moderation, and user behavior monitoring to safeguard all participants.",
+      "legalComplianceTitle": "Legal Compliance",
+      "legalComplianceText": "Our platform complies with child safety regulations and global policies to protect minors and prevent exploitation.",
+      "contactInfo": "For concerns related to child safety, contact us at connectedengaged@gmail.com.",
       "backToBase": "Back to Base"
     }
   },
@@ -78,7 +94,8 @@
       "loginSuccess": "Inicio de sesión exitoso",
       "loginFailed": "Inicio de sesión fallido",
       "loginFailedNetwork": "Error de inicio de sesión debido a un error de red",
-      "privacyPolicyLink": "Política de Privacidad"
+      "privacyPolicyLink": "Política de Privacidad",
+      "childSafetyLink": "Seguridad Infantil"
     },
     "privacyPolicy": {
       "title": "Política de Privacidad",
@@ -97,6 +114,21 @@
       "consentText": "Al usar esta aplicación, usted acepta nuestra política de privacidad y está de acuerdo con la recopilación, almacenamiento y uso de su información personal según lo descrito. Usted reconoce que sus datos pueden archivarse después de la expiración de la interacción para fines de cumplimiento o referencia futura, y acepta los términos de este proceso. Si en algún momento desea retirar su consentimiento o modificar el uso de sus datos, puede ejercer sus derechos como se describe anteriormente. Se requerirá un consentimiento explícito antes de recopilar datos sensibles, como ubicación o preferencias del usuario.",
       "contactInfo": "Si tiene alguna pregunta, contáctenos en connectedengaged@gmail.com.",
       "backToBase": "Volver al Inicio"
+    },
+    "childSafety": {
+      "title": "Normas de Seguridad Infantil",
+      "introductionTitle": "Introducción",
+      "introductionText": "Estamos comprometidos a garantizar un entorno seguro y respetuoso para todos los usuarios. Nuestras normas de seguridad infantil están alineadas con las directrices globales para prevenir la explotación y el mal uso.",
+      "reportingTitle": "Reporte de Contenido Inseguro",
+      "reportingText": "Los usuarios pueden reportar contenido inapropiado directamente en la aplicación. Nuestro equipo de moderación revisará los informes y tomará las acciones necesarias.",
+      "userModerationTitle": "Moderación de Usuarios",
+      "userModerationText": "Todo el contenido generado por los usuarios está sujeto a moderación. Aplicamos revisiones automáticas y manuales para prevenir interacciones dañinas.",
+      "safetyMeasuresTitle": "Medidas de Seguridad",
+      "safetyMeasuresText": "Implementamos procesos estrictos de verificación, moderación de contenido y monitoreo del comportamiento del usuario para proteger a todos los participantes.",
+      "legalComplianceTitle": "Cumplimiento Legal",
+      "legalComplianceText": "Nuestra plataforma cumple con las regulaciones de seguridad infantil y políticas globales para proteger a los menores y prevenir la explotación.",
+      "contactInfo": "Para inquietudes relacionadas con la seguridad infantil, contáctenos en connectedengaged@gmail.com.",
+      "backToBase": "Volver a Inicio"
     }
   },
   "fr": {
@@ -128,7 +160,8 @@
       "loginSuccess": "Connexion réussie",
       "loginFailed": "Échec de la connexion",
       "loginFailedNetwork": "Échec de la connexion en raison d'une erreur réseau",
-      "privacyPolicyLink": "Politique de Confidentialité"
+      "privacyPolicyLink": "Politique de Confidentialité",
+      "childSafetyLink": "Sécurité des Enfants"
     },
     "privacyPolicy": {
       "title": "Politique de Confidentialité",
@@ -146,6 +179,21 @@
       "consentTitle": "Consentement",
       "consentText": "En utilisant cette application, vous acceptez notre politique de confidentialité et consentez à la collecte, au stockage et à l'utilisation de vos informations personnelles telles que décrites. Vous reconnaissez que vos données peuvent être archivées après l'expiration de l'engagement à des fins de conformité ou de référence future, et vous acceptez les termes de ce processus. Si, à tout moment, vous souhaitez retirer votre consentement ou modifier l'utilisation de vos données, vous pouvez exercer vos droits comme indiqué ci-dessus. Un consentement explicite sera requis avant de collecter des données sensibles, telles que la localisation ou les préférences utilisateur.",
       "contactInfo": "Pour toute question, contactez-nous à connectedengaged@gmail.com.",
+      "backToBase": "Retour à l'Accueil"
+    },
+    "childSafety": {
+      "title": "Normes de Sécurité Enfantine",
+      "introductionTitle": "Introduction",
+      "introductionText": "Nous nous engageons à garantir un environnement sûr et respectueux pour tous les utilisateurs. Nos normes de sécurité pour les enfants sont alignées sur les directives mondiales pour prévenir l'exploitation et les abus.",
+      "reportingTitle": "Signaler un Contenu Dangereux",
+      "reportingText": "Les utilisateurs peuvent signaler du contenu inapproprié directement dans l'application. Notre équipe de modération examinera tous les signalements et prendra les mesures nécessaires.",
+      "userModerationTitle": "Modération des Utilisateurs",
+      "userModerationText": "Tout le contenu généré par les utilisateurs est soumis à une modération. Nous employons des examens automatiques et manuels pour prévenir les interactions nuisibles.",
+      "safetyMeasuresTitle": "Mesures de Sécurité",
+      "safetyMeasuresText": "Nous mettons en œuvre des processus de vérification stricts, une modération du contenu et un suivi du comportement des utilisateurs pour assurer la sécurité de tous.",
+      "legalComplianceTitle": "Conformité Légale",
+      "legalComplianceText": "Notre plateforme respecte les réglementations en matière de sécurité des enfants et les politiques mondiales pour protéger les mineurs et prévenir l'exploitation.",
+      "contactInfo": "Pour toute préoccupation liée à la sécurité des enfants, contactez-nous à connectedengaged@gmail.com.",
       "backToBase": "Retour à l'Accueil"
     }
   },
@@ -178,7 +226,8 @@
       "loginSuccess": "Anmeldung erfolgreich",
       "loginFailed": "Anmeldung fehlgeschlagen",
       "loginFailedNetwork": "Anmeldung aufgrund eines Netzwerkfehlers fehlgeschlagen",
-      "privacyPolicyLink": "Datenschutzerklärung"
+      "privacyPolicyLink": "Datenschutzerklärung",
+      "childSafetyLink": "Kindersicherheit"
     },
     "privacyPolicy": {
       "title": "Datenschutzrichtlinie",
@@ -196,6 +245,21 @@
       "consentTitle": "Einwilligung",
       "consentText": "Durch die Nutzung dieser App stimmen Sie unserer Datenschutzrichtlinie zu und erklären sich mit der Erfassung, Speicherung und Nutzung Ihrer persönlichen Informationen einverstanden, wie hierin beschrieben. Sie erkennen an, dass Ihre Daten nach Ablauf der Nutzung zu Compliance-Zwecken oder als Referenz archiviert werden können, und akzeptieren die Bedingungen dieses Prozesses. Wenn Sie Ihre Einwilligung zu irgendeinem Zeitpunkt widerrufen oder die Nutzung Ihrer Daten ändern möchten, können Sie Ihre oben beschriebenen Rechte ausüben. Vor der Erfassung sensibler Daten wie Standort oder Nutzervorlieben wird Ihre ausdrückliche Zustimmung eingeholt.",
       "contactInfo": "Für Fragen kontaktieren Sie uns bitte unter connectedengaged@gmail.com.",
+      "backToBase": "Zurück zur Startseite"
+    },
+    "childSafety": {
+      "title": "Kindersicherheitsstandards",
+      "introductionTitle": "Einführung",
+      "introductionText": "Wir sind bestrebt, eine sichere und respektvolle Umgebung für alle Nutzer zu gewährleisten. Unsere Kindersicherheitsstandards entsprechen globalen Schutzrichtlinien zur Verhinderung von Missbrauch und Ausbeutung.",
+      "reportingTitle": "Melden von Unsicherem Inhalt",
+      "reportingText": "Nutzer können unangemessene Inhalte direkt in der App melden. Unser Moderationsteam überprüft alle Meldungen und ergreift die erforderlichen Maßnahmen.",
+      "userModerationTitle": "Benutzermoderation",
+      "userModerationText": "Alle nutzergenerierten Inhalte unterliegen einer Moderation. Wir setzen automatisierte und manuelle Prüfungen ein, um schädliche Interaktionen zu verhindern.",
+      "safetyMeasuresTitle": "Sicherheitsmaßnahmen",
+      "safetyMeasuresText": "Wir implementieren strenge Verifizierungsprozesse, Inhaltsmoderation und Nutzerverhaltensüberwachung zum Schutz aller Teilnehmer.",
+      "legalComplianceTitle": "Gesetzliche Einhaltung",
+      "legalComplianceText": "Unsere Plattform entspricht den Kindersicherheitsvorschriften und globalen Richtlinien zum Schutz von Minderjährigen und zur Verhinderung von Ausbeutung.",
+      "contactInfo": "Für Anliegen im Zusammenhang mit Kindersicherheit kontaktieren Sie uns unter connectedengaged@gmail.com.",
       "backToBase": "Zurück zur Startseite"
     }
   },
@@ -228,7 +292,8 @@
       "loginSuccess": "تم تسجيل الدخول بنجاح",
       "loginFailed": "فشل تسجيل الدخول",
       "loginFailedNetwork": "فشل تسجيل الدخول بسبب خطأ في الشبكة",
-      "privacyPolicyLink": "سياسة الخصوصية"
+      "privacyPolicyLink": "سياسة الخصوصية",
+      "childSafetyLink": "سلامة الأطفال"
     },
     "privacyPolicy": {
       "title": "سياسة الخصوصية",
@@ -246,6 +311,21 @@
       "consentTitle": "الموافقة",
       "consentText": "باستخدام هذا التطبيق، فإنك توافق على سياسة الخصوصية الخاصة بنا وتوافق على جمع معلوماتك الشخصية وتخزينها واستخدامها كما هو موضح هنا. تقر بأنه قد يتم أرشفة بياناتك بعد انتهاء الاستخدام لأغراض الامتثال أو كمرجع مستقبلي، وتقبل شروط هذه العملية. إذا كنت ترغب في سحب موافقتك أو تعديل استخدام بياناتك في أي وقت، يمكنك ممارسة حقوقك الموضحة أعلاه. ستُطلب موافقتك الصريحة قبل جمع البيانات الحساسة مثل الموقع أو تفضيلات المستخدم.",
       "contactInfo": "لأي استفسارات، يرجى التواصل معنا عبر connectedengaged@gmail.com.",
+      "backToBase": "العودة إلى الصفحة الرئيسية"
+    },
+    "childSafety": {
+      "title": "معايير سلامة الأطفال",
+      "introductionTitle": "مقدمة",
+      "introductionText": "نحن ملتزمون بضمان بيئة آمنة ومحترمة لجميع المستخدمين. تتماشى معايير سلامة الأطفال لدينا مع الإرشادات العالمية لمنع الاستغلال وسوء الاستخدام.",
+      "reportingTitle": "الإبلاغ عن محتوى غير آمن",
+      "reportingText": "يمكن للمستخدمين الإبلاغ عن المحتوى غير المناسب مباشرةً داخل التطبيق. سيقوم فريق الإشراف لدينا بمراجعة جميع التقارير واتخاذ الإجراءات اللازمة.",
+      "userModerationTitle": "إشراف المستخدم",
+      "userModerationText": "يخضع كل المحتوى الذي ينشئه المستخدمون للإشراف. نحن نوظف مراجعات تلقائية ويدوية لمنع التفاعلات الضارة.",
+      "safetyMeasuresTitle": "تدابير السلامة",
+      "safetyMeasuresText": "نقوم بتنفيذ عمليات تحقق صارمة، ومراقبة المحتوى، ورصد سلوك المستخدم لحماية جميع المشاركين.",
+      "legalComplianceTitle": "الامتثال القانوني",
+      "legalComplianceText": "يتوافق نظامنا الأساسي مع لوائح سلامة الأطفال والسياسات العالمية لحماية القاصرين ومنع الاستغلال.",
+      "contactInfo": "لأي استفسارات تتعلق بسلامة الأطفال، اتصل بنا عبر connectedengaged@gmail.com.",
       "backToBase": "العودة إلى الصفحة الرئيسية"
     }
   },
@@ -278,7 +358,8 @@
       "loginSuccess": "登录成功",
       "loginFailed": "登录失败",
       "loginFailedNetwork": "由于网络错误，登录失败",
-      "privacyPolicyLink": "隐私政策"
+      "privacyPolicyLink": "隐私政策",
+      "childSafetyLink": "儿童安全"
     },
     "privacyPolicy": {
       "title": "隐私政策",
@@ -296,6 +377,21 @@
       "consentTitle": "同意",
       "consentText": "通过使用本应用，您同意我们的隐私政策，并同意按所述方式收集、存储和使用您的个人信息。您承认在使用结束后，您的数据可能会被归档以用于合规或未来参考，并接受此过程的条款。如果您希望撤回同意或更改数据使用方式，您可以行使上述权利。在收集敏感数据（例如位置或用户偏好）之前，我们会征得您的明确同意。",
       "contactInfo": "如有任何疑问，请通过connectedengaged@gmail.com与我们联系。",
+      "backToBase": "返回主页"
+    },
+    "childSafety": {
+      "title": "儿童安全标准",
+      "introductionTitle": "简介",
+      "introductionText": "我们致力于为所有用户提供安全和尊重的环境。我们的儿童安全标准符合全球保护指南，以防止剥削和滥用。",
+      "reportingTitle": "举报不安全内容",
+      "reportingText": "用户可以直接在应用程序内举报不适当的内容。我们的审核团队将审查所有举报并采取必要措施。",
+      "userModerationTitle": "用户内容审核",
+      "userModerationText": "所有用户生成的内容都需经过审核。我们使用自动和手动审核来防止有害互动。",
+      "safetyMeasuresTitle": "安全措施",
+      "safetyMeasuresText": "我们实施严格的身份验证流程、内容审核以及用户行为监控，以保护所有参与者。",
+      "legalComplianceTitle": "法律合规性",
+      "legalComplianceText": "我们的平台遵守儿童安全法规和全球政策，以保护未成年人并防止剥削。",
+      "contactInfo": "如有任何儿童安全相关问题，请通过 connectedengaged@gmail.com 联系我们。",
       "backToBase": "返回主页"
     }
   },
@@ -328,7 +424,8 @@
       "loginSuccess": "Logáil isteach rathúil",
       "loginFailed": "Theip ar logáil isteach",
       "loginFailedNetwork": "Theip ar logáil isteach de bharr earráid líonra",
-      "privacyPolicyLink": "Polasaí Príobháideachais"
+      "privacyPolicyLink": "Polasaí Príobháideachais",
+      "childSafetyLink": "Sábháilteacht Leanaí"
     },
     "privacyPolicy": {
       "title": "Polasaí Príobháideachais",
@@ -346,6 +443,21 @@
       "consentTitle": "Toiliú",
       "consentText": "Trí úsáid a bhaint as an aip seo, toilíonn tú lenár bpolasaí príobháideachais agus aontaíonn tú le bailiú, stóráil, agus úsáid do chuid faisnéise pearsanta mar atá leagtha amach. Aithníonn tú go bhféadfaí do chuid sonraí a chartlannú tar éis don rannpháirtíocht dul in éag chun comhlíonadh nó tagairt amach anseo, agus glacann tú leis na téarmaí a bhaineann leis an bpróiseas seo. Más mian leat do thoiliú a aistarraingt nó úsáid do shonraí a athrú ag am ar bith, féadfaidh tú do chearta a fheidhmiú mar atá leagtha amach thuas.",
       "contactInfo": "Má tá aon cheist agat, déan teagmháil linn ag connectedengaged@gmail.com.",
+      "backToBase": "Ar Ais go dtí an Bonn"
+    },
+    "childSafety": {
+      "title": "Caighdeáin Sábháilteachta Leanaí",
+      "introductionTitle": "Réamhrá",
+      "introductionText": "Táimid tiomanta do thimpeallacht shábháilte agus mheasúil a chinntiú do gach úsáideoir. Tá ár gcaighdeáin sábháilteachta leanaí ailínithe le treoirlínte domhanda chun mí-úsáid agus saothrú a chosc.",
+      "reportingTitle": "Tuairisciú Ábhar Míshábháilte",
+      "reportingText": "Is féidir le húsáideoirí ábhar míchuí a thuairisciú go díreach laistigh den aip. Déanfaidh ár bhfoireann measúnaithe athbhreithniú ar gach tuairisc agus tógfaidh siad gníomh cuí.",
+      "userModerationTitle": "Measúnú Úsáideoirí",
+      "userModerationText": "Tá gach ábhar a ghineann úsáideoirí faoi réir measúnaithe. Bainimid úsáid as próisis uathoibrithe agus lámhleabhar chun idirghníomhaíochtaí dochracha a chosc.",
+      "safetyMeasuresTitle": "Bearta Sábháilteachta",
+      "safetyMeasuresText": "Cuirimid próisis fhíoraithe dian i bhfeidhm, measúnú ar ábhar, agus monatóireacht ar iompar úsáideoirí chun gach rannpháirtí a chosaint.",
+      "legalComplianceTitle": "Comhlíonadh Dlíthiúil",
+      "legalComplianceText": "Comhlíonann ár n-ardán rialacháin sábháilteachta leanaí agus beartais dhomhanda chun mionaoisigh a chosaint agus saothrú a chosc.",
+      "contactInfo": "Le haghaidh ceisteanna a bhaineann le sábháilteacht leanaí, déan teagmháil linn ag connectedengaged@gmail.com.",
       "backToBase": "Ar Ais go dtí an Bonn"
     }
   },
@@ -378,7 +490,8 @@
       "loginSuccess": "Login realizado com sucesso",
       "loginFailed": "Falha no login",
       "loginFailedNetwork": "Falha no login devido a erro de rede",
-      "privacyPolicyLink": "Política de Privacidade"
+      "privacyPolicyLink": "Política de Privacidade",
+      "childSafetyLink": "Segurança Infantil"
     },
     "privacyPolicy": {
       "title": "Política de Privacidade",
@@ -396,6 +509,21 @@
       "consentTitle": "Consentimento",
       "consentText": "Ao utilizar este aplicativo, você concorda com nossa política de privacidade e autoriza a coleta, armazenamento e uso de suas informações pessoais, conforme descrito. Você reconhece que seus dados podem ser arquivados após o término do engajamento para fins de conformidade ou referência futura, e aceita os termos desse processo. Caso deseje retirar seu consentimento ou alterar o uso de seus dados, você pode exercer seus direitos conforme descrito acima. Um consentimento explícito será exigido antes da coleta de dados sensíveis, como localização ou preferências do usuário.",
       "contactInfo": "Se você tiver alguma dúvida, entre em contato conosco pelo e-mail connectedengaged@gmail.com.",
+      "backToBase": "Voltar à Base"
+    },
+    "childSafety": {
+      "title": "Padrões de Segurança Infantil",
+      "introductionTitle": "Introdução",
+      "introductionText": "Estamos comprometidos em garantir um ambiente seguro e respeitoso para todos os usuários. Nossos padrões de segurança infantil seguem diretrizes globais para evitar exploração e uso indevido.",
+      "reportingTitle": "Relatar Conteúdo Inseguro",
+      "reportingText": "Os usuários podem denunciar conteúdo inadequado diretamente no aplicativo. Nossa equipe de moderação analisará os relatórios e tomará as medidas necessárias.",
+      "userModerationTitle": "Moderação de Usuários",
+      "userModerationText": "Todo o conteúdo gerado pelos usuários está sujeito à moderação. Utilizamos análises automáticas e manuais para prevenir interações prejudiciais.",
+      "safetyMeasuresTitle": "Medidas de Segurança",
+      "safetyMeasuresText": "Implementamos processos rigorosos de verificação, moderação de conteúdo e monitoramento do comportamento do usuário para proteger todos os participantes.",
+      "legalComplianceTitle": "Conformidade Legal",
+      "legalComplianceText": "Nossa plataforma cumpre as regulamentações de segurança infantil e políticas globais para proteger menores e evitar exploração.",
+      "contactInfo": "Para preocupações sobre segurança infantil, entre em contato pelo e-mail connectedengaged@gmail.com.",
       "backToBase": "Voltar à Base"
     }
   },
@@ -428,7 +556,8 @@
       "loginSuccess": "लॉगिन सफल।",
       "loginFailed": "लॉगिन विफल।",
       "loginFailedNetwork": "नेटवर्क त्रुटि के कारण लॉगिन विफल।",
-      "privacyPolicyLink": "गोपनीयता नीति"
+      "privacyPolicyLink": "गोपनीयता नीति",
+      "childSafetyLink": "बाल सुरक्षा"
     },
     "privacyPolicy": {
       "title": "गोपनीयता नीति",
@@ -447,6 +576,21 @@
       "consentText": "इस ऐप का उपयोग करके, आप हमारी गोपनीयता नीति से सहमत हैं।",
       "contactInfo": "किसी भी प्रश्न के लिए connectedengaged@gmail.com पर संपर्क करें।",
       "backToBase": "मुख पृष्ठ पर वापस जाएँ।"
+    },
+    "childSafety": {
+      "title": "बाल सुरक्षा मानक",
+      "introductionTitle": "परिचय",
+      "introductionText": "हम सभी उपयोगकर्ताओं के लिए एक सुरक्षित और सम्मानजनक वातावरण सुनिश्चित करने के लिए प्रतिबद्ध हैं। हमारे बाल सुरक्षा मानक वैश्विक सुरक्षा दिशानिर्देशों के अनुरूप हैं।",
+      "reportingTitle": "असुरक्षित सामग्री की रिपोर्टिंग",
+      "reportingText": "उपयोगकर्ता सीधे ऐप के भीतर अनुचित सामग्री की रिपोर्ट कर सकते हैं। हमारी मॉडरेशन टीम सभी रिपोर्टों की समीक्षा करेगी और आवश्यक कार्रवाई करेगी।",
+      "userModerationTitle": "उपयोगकर्ता मॉडरेशन",
+      "userModerationText": "सभी उपयोगकर्ता-निर्मित सामग्री की मॉडरेशन की जाती है। हम हानिकारक इंटरैक्शन को रोकने के लिए स्वचालित और मैन्युअल समीक्षा लागू करते हैं।",
+      "safetyMeasuresTitle": "सुरक्षा उपाय",
+      "safetyMeasuresText": "हम सख्त सत्यापन प्रक्रियाएं, सामग्री मॉडरेशन और उपयोगकर्ता व्यवहार निगरानी को लागू करते हैं ताकि सभी उपयोगकर्ताओं की सुरक्षा सुनिश्चित की जा सके।",
+      "legalComplianceTitle": "कानूनी अनुपालन",
+      "legalComplianceText": "हमारा प्लेटफ़ॉर्म बाल सुरक्षा नियमों और वैश्विक नीतियों का पालन करता है ताकि नाबालिगों की सुरक्षा सुनिश्चित की जा सके।",
+      "contactInfo": "बाल सुरक्षा से संबंधित किसी भी चिंता के लिए, कृपया हमसे connectedengaged@gmail.com पर संपर्क करें।",
+      "backToBase": "मुख पृष्ठ पर वापस जाएँ"
     }
   },
   "hy": {
@@ -478,7 +622,8 @@
       "loginSuccess": "Մուտքը հաջողվեց։",
       "loginFailed": "Մուտքը ձախողվեց։",
       "loginFailedNetwork": "Մուտքը ձախողվեց ցանցի սխալի պատճառով։",
-      "privacyPolicyLink": "Գաղտնիության քաղաքականություն"
+      "privacyPolicyLink": "Գաղտնիության քաղաքականություն",
+      "childSafetyLink": "Մանկական անվտանգություն"
     },
     "privacyPolicy": {
       "title": "Գաղտնիության քաղաքականություն",
@@ -497,6 +642,21 @@
       "consentText": "Այս հավելվածի օգտագործմամբ՝ դուք համաձայնվում եք մեր գաղտնիության քաղաքականությանը։",
       "contactInfo": "Հարցերի դեպքում՝ դիմեք connectedengaged@gmail.com հասցեին։",
       "backToBase": "Վերադառնալ հիմնական էջ։"
+    },
+    "childSafety": {
+      "title": "Մանկական անվտանգության չափանիշներ",
+      "introductionTitle": "Ներածություն",
+      "introductionText": "Մենք պարտավորվում ենք ապահովել անվտանգ և հարգալից միջավայր բոլոր օգտվողների համար: Մեր մանկական անվտանգության չափանիշները համահունչ են համաշխարհային ուղեցույցներին՝ շահագործումից և չարաշահումից խուսափելու համար։",
+      "reportingTitle": "Անվտանգության խախտումների զեկուցում",
+      "reportingText": "Օգտատերերը կարող են ուղղակիորեն հավելվածում զեկուցել անպատշաճ բովանդակություն։ Մեր մոդերացիայի թիմը կվերանայի բոլոր զեկույցները և կձեռնարկի անհրաժեշտ գործողություններ։",
+      "userModerationTitle": "Օգտատերերի մոդերացիա",
+      "userModerationText": "Բոլոր օգտատերերի ստեղծած բովանդակությունը ենթակա է մոդերացիայի։ Մենք կիրառում ենք ավտոմատ և ձեռքով ստուգումներ՝ վնասակար փոխազդեցությունները կանխելու համար։",
+      "safetyMeasuresTitle": "Անվտանգության միջոցառումներ",
+      "safetyMeasuresText": "Մենք իրականացնում ենք խիստ վավերացման գործընթացներ, բովանդակության մոդերացիա և օգտատերերի վարքի վերահսկում՝ բոլոր մասնակիցներին պաշտպանելու համար։",
+      "legalComplianceTitle": "Իրավական համապատասխանություն",
+      "legalComplianceText": "Մեր հարթակը համապատասխանում է մանկական անվտանգության կանոնակարգերին և համաշխարհային քաղաքականություններին՝ անչափահասներին պաշտպանելու և շահագործումը կանխելու համար։",
+      "contactInfo": "Մանկական անվտանգության հետ կապված հարցերի համար կապվեք մեզ հետ՝ connectedengaged@gmail.com հասցեով։",
+      "backToBase": "Վերադառնալ հիմնական էջ"
     }
   }
 }

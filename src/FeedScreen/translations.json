@@ -1,6 +1,18 @@
 {
   "en": {
     "feedScreen": {
+      "offenseType": "Offense Type",
+      "selectReason": "-- Select Reason --",
+      "additionalDetails": "Additional Details",
+      "describeIssue": "Describe the issue (at least 5 characters)...",
+      "cancelButton": "Cancel",
+      "sendButton": "Send",
+      "offenseTypes": {
+        "catfish": "Suspected Catfish",
+        "offensive": "Sexually Offensive",
+        "hate": "Hate Speech",
+        "harassment": "Harassment",
+        "other": "Other"},
       "videoWhen": "for a video call at",
       "videoRequested": "requested",
       "unauthorizedAccess": "Unauthorized access. Please log in.",
@@ -44,7 +56,8 @@
       "NotImplemented": "Not Implemented",
       "LaunchLiveCallCentre": "Launch Live Call Centre",
       "CurrentUserProfile": "Current User Profile",
-      "cameraOrMicError": "Error accessing camera or microphone. Please check your device settings."
+      "cameraOrMicError": "Error accessing camera or microphone. Please check your device settings.",
+      "reportPost": "Report"
     },
     "LiveCallCentre": {
       "title": "Live Call Centre",
@@ -108,7 +121,21 @@
       "CurrentUserProfile": "Perfil de Usuario Actual",
       "unsupportedAudio": "Tu navegador no soporta el elemento de audio.",
       "DeleteYourPostost": "Elimina esta publicación que hiciste",
-      "cameraOrMicError": "Error al acceder a la cámara o al micrófono. Verifique la configuración de su dispositivo."
+      "cameraOrMicError": "Error al acceder a la cámara o al micrófono. Verifique la configuración de su dispositivo.",
+      "reportPost": "Reportar",
+      "offenseType": "Tipo de Ofensa",
+      "selectReason": "-- Seleccionar Motivo --",
+      "additionalDetails": "Detalles Adicionales",
+      "describeIssue": "Describe el problema (mínimo 5 caracteres)...",
+      "cancelButton": "Cancelar",
+      "sendButton": "Enviar",
+      "offenseTypes": {
+        "catfish": "Sospecha de Suplantación",
+        "offensive": "Contenido Sexual Ofensivo",
+        "hate": "Discurso de Odio",
+        "harassment": "Acoso",
+        "other": "Otro"
+      }
     },
     "LiveCallCentre": {
       "title": "Centro de llamadas en vivo",
@@ -171,7 +198,21 @@
       "CurrentUserProfile": "Profil de l'Utilisateur Actuel",
       "unsupportedAudio": "Votre navigateur ne supporte pas l'élément audio.",
       "DeleteYourPostost": "Supprimez ce post que vous avez créé",
-      "cameraOrMicError": "Erreur lors de l'accès à la caméra ou au microphone. Veuillez vérifier les paramètres de votre appareil."
+      "cameraOrMicError": "Erreur lors de l'accès à la caméra ou au microphone. Veuillez vérifier les paramètres de votre appareil.",
+      "reportPost": "Signaler",
+      "offenseType": "Type d'Infraction",
+      "selectReason": "-- Sélectionner une Raison --",
+      "additionalDetails": "Détails Supplémentaires",
+      "describeIssue": "Décrivez le problème (au moins 5 caractères)...",
+      "cancelButton": "Annuler",
+      "sendButton": "Envoyer",
+      "offenseTypes": {
+        "catfish": "Suspecté d'Usurpation",
+        "offensive": "Contenu Sexuellement Offensant",
+        "hate": "Discours de Haine",
+        "harassment": "Harcèlement",
+        "other": "Autre"
+      }
     },
     "LiveCallCentre": {
       "title": "Centre d'appels en direct",
@@ -234,7 +275,21 @@
       "CurrentUserProfile": "Aktuelles Benutzerprofil",
       "unsupportedAudio": "Ihr Browser unterstützt das Audioelement nicht.",
       "DeleteYourPostost": "Lösche diesen Beitrag, den du erstellt hast",
-      "cameraOrMicError": "Fehler beim Zugriff auf Kamera oder Mikrofon. Überprüfen Sie Ihre Geräteeinstellungen."
+      "cameraOrMicError": "Fehler beim Zugriff auf Kamera oder Mikrofon. Überprüfen Sie Ihre Geräteeinstellungen.",
+      "reportPost": "Melden",
+      "offenseType": "Vergehenstyp",
+      "selectReason": "-- Grund Wählen --",
+      "additionalDetails": "Zusätzliche Details",
+      "describeIssue": "Beschreiben Sie das Problem (mindestens 5 Zeichen)...",
+      "cancelButton": "Abbrechen",
+      "sendButton": "Senden",
+      "offenseTypes": {
+        "catfish": "Verdächtiger Catfish",
+        "offensive": "Sexuell Anstößig",
+        "hate": "Hassrede",
+        "harassment": "Belästigung",
+        "other": "Andere"
+      }
     },
     "LiveCallCentre": {
       "title": "Live-Call-Center",
@@ -297,7 +352,21 @@
       "CurrentUserProfile": "ملف المستخدم الحالي",
       "unsupportedAudio": "متصفحك لا يدعم عنصر الصوت.",
       "DeleteYourPostost": "احذف هذا المنشور الذي قمت بإنشائه",
-      "cameraOrMicError": "حدث خطأ في الوصول إلى الكاميرا أو الميكروفون. يرجى التحقق من إعدادات جهازك."
+      "cameraOrMicError": "حدث خطأ في الوصول إلى الكاميرا أو الميكروفون. يرجى التحقق من إعدادات جهازك.",
+      "reportPost": "الإبلاغ",
+      "offenseType": "نوع المخالفة",
+      "selectReason": "-- اختر سببًا --",
+      "additionalDetails": "تفاصيل إضافية",
+      "describeIssue": "صف المشكلة (على الأقل 5 أحرف)...",
+      "cancelButton": "إلغاء",
+      "sendButton": "إرسال",
+      "offenseTypes": {
+        "catfish": "انتحال مشتبه به",
+        "offensive": "محتوى جنسي مسيء",
+        "hate": "خطاب الكراهية",
+        "harassment": "تحرش",
+        "other": "أخرى"
+      }
     },
     "LiveCallCentre": {
       "title": "مركز الاتصال المباشر",
@@ -360,7 +429,21 @@
       "CurrentUserProfile": "当前用户资料",
       "unsupportedAudio": "您的浏览器不支持音频元素。",
       "DeleteYourPostost": "删除你发布的帖子",
-      "cameraOrMicError": "访问摄像头或麦克风时出错。请检查您的设备设置。"
+      "cameraOrMicError": "访问摄像头或麦克风时出错。请检查您的设备设置。",
+      "reportPost": "举报",
+      "offenseType": "违规类型",
+      "selectReason": "-- 选择原因 --",
+      "additionalDetails": "附加详细信息",
+      "describeIssue": "描述问题（至少5个字符）...",
+      "cancelButton": "取消",
+      "sendButton": "发送",
+      "offenseTypes": {
+        "catfish": "疑似假冒",
+        "offensive": "性骚扰内容",
+        "hate": "仇恨言论",
+        "harassment": "骚扰",
+        "other": "其他"
+      }
     },
     "LiveCallCentre": {
       "title": "实时呼叫中心",
@@ -423,7 +506,21 @@
       "CurrentUserProfile": "Próifíl Úsáideora Reatha",
       "unsupportedAudio": "Ní thacaíonn do bhrabhsálaí leis an eilimint fuaime.",
       "DeleteYourPostost": "Scrios an post seo a rinne tú",
-      "cameraOrMicError": "Earráid ag rochtain ceamara nó micreafón. Seiceáil socruithe do ghléas."
+      "cameraOrMicError": "Earráid ag rochtain ceamara nó micreafón. Seiceáil socruithe do ghléas.",
+      "reportPost": "Tuairiscigh",
+      "offenseType": "Cineál Sárú",
+      "selectReason": "-- Roghnaigh Cúis --",
+      "additionalDetails": "Sonraí Breise",
+      "describeIssue": "Déan cur síos ar an bhfadhb (ar a laghad 5 charachtar)...",
+      "cancelButton": "Cealaigh",
+      "sendButton": "Seol",
+      "offenseTypes": {
+        "catfish": "Catfish Amhrasach",
+        "offensive": "Ábhar Gnéasach Mí-oiriúnach",
+        "hate": "Teanga Ghráin",
+        "harassment": "Ciapadh",
+        "other": "Eile"
+      }
     },
     "LiveCallCentre": {
       "title": "Ionad Glaonna Beo",
@@ -485,7 +582,21 @@
       "NotImplemented": "Não Implementado",
       "LaunchLiveCallCentre": "Lançar Centro de Chamadas Ao Vivo",
       "CurrentUserProfile": "Perfil do Usuário Atual",
-      "cameraOrMicError": "Erro ao acessar a câmera ou o microfone. Verifique as configurações do seu dispositivo."
+      "cameraOrMicError": "Erro ao acessar a câmera ou o microfone. Verifique as configurações do seu dispositivo.",
+      "reportPost": "Denunciar",
+      "offenseType": "Tipo de Infração",
+      "selectReason": "-- Selecionar Motivo --",
+      "additionalDetails": "Detalhes Adicionais",
+      "describeIssue": "Descreva o problema (pelo menos 5 caracteres)...",
+      "cancelButton": "Cancelar",
+      "sendButton": "Enviar",
+      "offenseTypes": {
+        "catfish": "Suspeita de Falsidade",
+        "offensive": "Conteúdo Sexualmente Ofensivo",
+        "hate": "Discurso de Ódio",
+        "harassment": "Assédio",
+        "other": "Outro"
+      }
     },
     "LiveCallCentre": {
       "title": "Central de Chamadas ao Vivo",
@@ -547,7 +658,21 @@
       "NotImplemented": "अभी तक लागू नहीं किया गया",
       "LaunchLiveCallCentre": "लाइव कॉल सेंटर लॉन्च करें",
       "CurrentUserProfile": "वर्तमान उपयोगकर्ता प्रोफ़ाइल",
-      "cameraOrMicError": "कैमरा या माइक्रोफोन तक पहुँचने में त्रुटि। कृपया अपने डिवाइस की सेटिंग्स जांचें।"
+      "cameraOrMicError": "कैमरा या माइक्रोफोन तक पहुँचने में त्रुटि। कृपया अपने डिवाइस की सेटिंग्स जांचें।",
+      "reportPost": "रिपोर्ट",
+      "offenseType": "अपराध का प्रकार",
+      "selectReason": "-- कारण चुनें --",
+      "additionalDetails": "अतिरिक्त विवरण",
+      "describeIssue": "समस्या का वर्णन करें (कम से कम 5 अक्षर)...",
+      "cancelButton": "रद्द करें",
+      "sendButton": "भेजें",
+      "offenseTypes": {
+        "catfish": "संदिग्ध कैटफ़िश",
+        "offensive": "यौन रूप से आपत्तिजनक",
+        "hate": "घृणास्पद भाषण",
+        "harassment": "उत्पीड़न",
+        "other": "अन्य"
+      }
     },
     "LiveCallCentre": {
       "title": "लाइव कॉल सेंटर",
@@ -609,7 +734,21 @@
       "NotImplemented": "Չի իրականացվել",
       "LaunchLiveCallCentre": "Գործարկել կենդանի զանգերի կենտրոնը",
       "CurrentUserProfile": "Ընթացիկ օգտագործողի պրոֆիլ",
-      "cameraOrMicError": "Սխալ՝ տեսախցիկին կամ խոսափողին հասանելիության ժամանակ։ Խնդրում ենք ստուգել ձեր սարքի կարգավորումները։"
+      "cameraOrMicError": "Սխալ՝ տեսախցիկին կամ խոսափողին հասանելիության ժամանակ։ Խնդրում ենք ստուգել ձեր սարքի կարգավորումները։",
+      "reportPost": "Զեկույց",
+      "offenseType": "Խախտման տեսակ",
+      "selectReason": "-- Ընտրեք պատճառը --",
+      "additionalDetails": "Լրացուցիչ մանրամասներ",
+      "describeIssue": "Նկարագրեք խնդիրը (առնվազն 5 նիշ)...",
+      "cancelButton": "Չեղարկել",
+      "sendButton": "Ուղարկել",
+      "offenseTypes": {
+        "catfish": "Կասկածելի ինքնություն",
+        "offensive": "Սեռական բովանդակություն",
+        "hate": "Ատելության խոսք",
+        "harassment": "Հալածանք",
+        "other": "Այլ"
+      }
     },
     "LiveCallCentre": {
       "title": "Ուղիղ զանգերի կենտրոն",

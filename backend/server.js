@@ -726,7 +726,7 @@ app.post("/api/register", async (req, res) => {
       ga: "GA", // Gaelic
       hi: "HI",
       pt: "PT",
-      hy: "HY"
+      hy: "HY",
     };
 
     // Assuming you have `selectedLanguage` representing the user's chosen language
@@ -2581,7 +2581,7 @@ async function system_reply({
       systemResponse = chatCompletion.choices[0]?.message?.content || "";
     } else if (process.env.AI_ENGINE === "2") {
       // Use OpenAI with the new AI/ML engine and custom baseURL
-      const openai  = new OpenAI({
+      const openai = new OpenAI({
         apiKey: openaiAPIKey,
         baseURL: "https://api.deepseek.com", // Custom base URL
       });
@@ -2598,7 +2598,10 @@ async function system_reply({
 
       // systemResponse = chatCompletion.choices[0]?.message?.content || "";
       const chatCompletion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: pretrainText  },{ role: "user", content: content }],
+        messages: [
+          { role: "system", content: pretrainText },
+          { role: "user", content: content },
+        ],
         model: "deepseek-chat",
       });
       systemResponse = chatCompletion.choices[0]?.message?.content || "";
@@ -2868,10 +2871,81 @@ const getLocalizedContent = (type, language, replacements) => {
 // console.log("loggedInUserName", loggedInUserName)
 // console.log("associatedUsers", associatedUsers)
 // console.log("scheduledTime", scheduledTime)
+app.post("/api/report_post", async (req, res) => {
+  const { postId, reporterId, postType, offenseType, message } = req.body;
+  const SYSTEM_EMAIL = "connectedengaged@gmail.com";
+
+  try {
+    // Fetch offending user's details
+    const postResult = await pool.query(
+      `SELECT sd.id AS post_id, u.id AS offending_user_id, u.username AS offending_username 
+       FROM submission_dialog sd
+       JOIN users u ON sd.posting_user_id = u.id
+       WHERE sd.id = $1`,
+      [postId]
+    );
+
+    if (postResult.rows.length === 0) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    const post = postResult.rows[0];
+
+    // Fetch reporter's details
+    const reporterResult = await pool.query(
+      `SELECT id, username, email FROM users WHERE id = $1`,
+      [reporterId]
+    );
+
+    if (reporterResult.rows.length === 0) {
+      return res.status(404).json({ message: "Reporter not found." });
+    }
+
+    const reporter = reporterResult.rows[0];
+
+    // Construct post details with user-provided offense details
+    let postDetails = `Post ID: ${post.post_id}\nPosted by: ${post.offending_username} (ID: ${post.offending_user_id})\n`;
+    postDetails += `Post Type: ${postType}\n`; // Use frontend-supplied postType
+    postDetails += `Offense Type: ${offenseType}\n`;
+    postDetails += `Reporter Message: "${message}"\n`;
+
+    // Email content
+    const subject = `⚠️ Reported Post - ID: ${post.post_id}`;
+    const emailMessage = `A post has been reported by ${reporter.username} (ID: ${reporter.id}).
+
+Details of the reported post:
+${postDetails}
+
+Please review this post immediately.
+
+- ConnectedEngaged System`;
+
+    const mailOptions = {
+      from: process.env.RESET_EMAIL,
+      to: SYSTEM_EMAIL,
+      subject: subject,
+      text: emailMessage,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending report email:", error);
+        return res.status(500).json({ message: "Failed to send report." });
+      }
+      console.log("Report email sent:", info.response);
+      res
+        .status(200)
+        .json({ success: true, message: "Report sent successfully." });
+    });
+  } catch (error) {
+    console.error("Error processing report:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 app.post("/api/notify_offline_users", async (req, res) => {
   const { type, title, loggedInUserName, associatedUsers, scheduledTime } =
     req.body;
-
   try {
     for (const user of associatedUsers) {
       const { rows } = await pool.query(
@@ -2947,5 +3021,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9914**Armenia ${PORT}`);
+  console.log(`**9915**Child Safety ${PORT}`);
 });

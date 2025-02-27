@@ -567,15 +567,28 @@ const LoginForm = () => {
                 </div>
               </section>
             )}
-            <Button
-              onClick={() =>
-                navigate("/privacy-policy", {
-                  state: { selectedLanguage, from: "login" }, // Pass the selected language via state
-                })
-              }
-            >
-              {pageTranslations.privacyPolicyLink || "Privacy Policy"}
-            </Button>
+            <div style={{ display: "flex", flexDirection: "column",justifyContent: "center" }}>
+              <Button
+                onClick={() =>
+                  navigate("/privacy-policy", {
+                    state: { selectedLanguage, from: "login" }, // Pass the selected language via state
+                  })
+                }
+              >
+                {pageTranslations.privacyPolicyLink || "Privacy Policy"}
+              </Button>
+
+              <Button
+                style={{ marginTop: "10px" }} // Add spacing below the Privacy Policy button
+                onClick={() =>
+                  navigate("/child-safety", {
+                    state: { selectedLanguage, from: "login" }, // Pass the selected language via state
+                  })
+                }
+              >
+                {pageTranslations.childSafetyLink || "Child Safety"}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

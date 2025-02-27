@@ -1177,6 +1177,7 @@ Interaction_entry {
 .custom-file-label:hover {
   background-color: #0056b3;
 }
+
 /* Dynamic font class added via JS based on user selection */
 .font-style-1 {
   font-family: "Roboto", sans-serif;
