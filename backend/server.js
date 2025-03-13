@@ -2529,6 +2529,8 @@ async function system_reply({
   interestedUserIds,
   user_id,
 }) {
+  const systemAdminId = parseInt(process.env.SYSTEM_ADMIN_ID, 10); // FIX HERE
+
   let pretrainText = "";
   const systemInfo = process.env.SYSTEM_SUMMARY;
 
@@ -2538,9 +2540,9 @@ async function system_reply({
   const userInfo = userResult.rows[0];
 
   const botInfo = userInfo.about_my_bot_pal;
-
   const language = languageMap[userInfo.language_code];
-  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters and speaks in the ${language} language`;
+
+  pretrainText = `You are chatting with a bot that has the following characteristics: ${botInfo} and always answers with less than 150 characters and speaks in the ${language} language.`;
 
   const userPreferences = `
     User's sexual orientation: ${userInfo.sexual_orientation},
@@ -2557,19 +2559,33 @@ async function system_reply({
       throw new Error("Content is missing for the system reply");
     }
 
+    // Fetch last 10 messages from the conversation history
+    const historyQuery = `
+      SELECT posting_user_id, text_content FROM submission_dialog 
+      WHERE submission_id = $1 
+      ORDER BY created_at DESC 
+      LIMIT 10;
+    `;
+    const historyResult = await pool.query(historyQuery, [submissionId]);
+
+    const conversationHistory = historyResult.rows.reverse().map((row) => ({
+      role: row.posting_user_id === systemAdminId ? "assistant" : "user", // FIX HERE
+      content: row.text_content,
+    }));
+
+    // Add the current user message
+    conversationHistory.push({
+      role: "user",
+      content: content,
+    });
+
     let systemResponse;
     if (process.env.AI_ENGINE === "1") {
       // Use Groq
       const chatCompletion = await groq.chat.completions.create({
         messages: [
-          {
-            role: "system",
-            content: pretrainText,
-          },
-          {
-            role: "user",
-            content: content,
-          },
+          { role: "system", content: pretrainText },
+          ...conversationHistory,
         ],
         model: "llama3-8b-8192",
         temperature: 1,
@@ -2583,24 +2599,13 @@ async function system_reply({
       // Use OpenAI with the new AI/ML engine and custom baseURL
       const openai = new OpenAI({
         apiKey: openaiAPIKey,
-        baseURL: "https://api.deepseek.com", // Custom base URL
+        baseURL: "https://api.deepseek.com",
       });
 
-      // const chatCompletion = await api.chat.completions.create({
-      //   model: "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-      //   messages: [
-      //     { role: "system", content: pretrainText },
-      //     { role: "user", content: content },
-      //   ],
-      //   temperature: 0.7,
-      //   max_tokens: 150,
-      // });
-
-      // systemResponse = chatCompletion.choices[0]?.message?.content || "";
       const chatCompletion = await openai.chat.completions.create({
         messages: [
           { role: "system", content: pretrainText },
-          { role: "user", content: content },
+          ...conversationHistory,
         ],
         model: "deepseek-chat",
       });
@@ -2626,6 +2631,7 @@ async function system_reply({
     console.error("Error generating system reply:", error);
   }
 }
+
 
 app.post("/api/users/:submissionId/text-entry", async (req, res) => {
   try {
@@ -3021,5 +3027,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9915**Child Safety ${PORT}`);
+  console.log(`**9916**More intelligent AI ${PORT}`);
 });
