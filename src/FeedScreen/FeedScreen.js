@@ -204,6 +204,7 @@ const FeedScreen = () => {
     });
 
     socket.on("incomingCall", (data) => {
+      console.log('[WebRTC] incomingCall event received:', data);
       setCaller(data);
     });
 
@@ -691,7 +692,13 @@ const FeedScreen = () => {
                 });
   
                 peer.on("signal", (data) => {
+                  console.log('[1][WebRTC] Emitting callUser event');
                   socketRef.current.emit("callUser", {
+                    userToCall,
+                    signalData: data,
+                    from: userId,
+                  });
+                  console.log('[2][WebRTC] Emitting callUser event', {
                     userToCall,
                     signalData: data,
                     from: userId,
