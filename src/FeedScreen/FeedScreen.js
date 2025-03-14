@@ -651,11 +651,22 @@ const FeedScreen = () => {
     });
   };
   const startVideoCall = (userToCall) => {
-    console.log('Starting video call with:', userToCall);
-  
+    setShowLiveCallCentre(false);
+    const selectedUsername = getUserName(userToCall);
+    const systemTime = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    // Post the event message
+    postMessage(
+      `${loggedInUserName} called ${selectedUsername} at ${systemTime}`
+    );
+    // Send email notification
+    setInCall(true);
+
     if (window.ReactNativeWebView) {
       console.log('Running inside a React Native WebView');
-  
       // Listen for the permissionsGranted message
       const handlePermissionsGranted = (event) => {
         try {
@@ -724,59 +735,58 @@ const FeedScreen = () => {
   
       // Request permissions from React Native
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestPermissions' }));
-    } else {
-      console.log('Running in a browser');
-  
-      // Directly attempt to access the microphone and camera
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          console.log('Media access granted in browser');
-          if (localVideoRef.current) {
-            localVideoRef.current.srcObject = stream;
-          }
-  
-          // Handle WebRTC peer connection here
-          const peer = new Peer({
-            initiator: true,
-            trickle: false,
-            stream: stream,
-          });
-  
-          peer.on("signal", (data) => {
-            socketRef.current.emit("callUser", {
-              userToCall,
-              signalData: data,
-              from: userId,
-            });
-          });
-  
-          peer.on("stream", (stream) => {
-            if (remoteVideoRef.current) {
-              remoteVideoRef.current.srcObject = stream;
-            }
-          });
-  
-          peer.on("close", () => {
-            endCall();
-          });
-  
-          socketRef.current.on("callAccepted", (signal) => {
-            peer.signal(signal);
-          });
-  
-          peerRef.current = peer;
-        })
-        .catch((error) => {
-          console.error('Failed to start media devices in browser:', error);
-          setMessage(
-            translations[languageCode]?.feedScreen?.cameraOrMicError ||
-              "Error accessing camera or microphone. Please check your device settings."
-          );
-          setType("error");
-          setAlertKey((prevKey) => prevKey + 1);
-          setInCall(false);
-        });
     }
+    else {
+
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+
+        const peer = new Peer({
+          initiator: true,
+          trickle: false,
+          stream: stream,
+        });
+
+        peer.on("signal", (data) => {
+          socketRef.current.emit("callUser", {
+            userToCall,
+            signalData: data,
+            from: userId,
+          });
+        });
+
+        peer.on("stream", (stream) => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+          }
+        });
+
+        peer.on("close", () => {
+          endCall();
+        });
+
+        socketRef.current.on("callAccepted", (signal) => {
+          peer.signal(signal);
+        });
+
+        peerRef.current = peer;
+      })
+      .catch((error) => {
+        console.error("Failed to start media devices:", error);
+        setMessage(
+          translations[languageCode]?.feedScreen?.cameraOrMicError ||
+            "Error accessing camera or microphone. Please check your device settings."
+        );
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+        setInCall(false);
+      });
+    };
   };
 
   const answerCall = () => {
