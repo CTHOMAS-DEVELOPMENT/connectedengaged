@@ -134,60 +134,60 @@ const FeedScreen = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const handleMessage = (event) => {
-      try {
-        // Attempt to parse the message data
-        const message = JSON.parse(event.data);
-        console.log('Received message:', message);
-  
-        // Check if the message type is 'permissionsGranted'
-        if (message.type === 'permissionsGranted') {
-          console.log('Permissions granted message received');
-          requestMediaAccess();
-        }
-      } catch (error) {
-        console.error('Error parsing message data:', error);
-        console.log('Raw message data:', event.data);
-      }
-    };
-  
-    const requestMediaAccess = () => {
-      // Attempt to access the microphone and camera
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          console.log('Media access granted');
-  
-          // Assign the local stream to the local video element
-          if (localVideoRef.current) {
-            localVideoRef.current.srcObject = stream;
-          }
-  
-          // If you're using WebRTC, handle the remote stream here
-        })
-        .catch((error) => {
-          console.error('Error accessing media devices:', error);
-        });
-    };
-  
-    // Check if running inside a React Native WebView
-    if (window.ReactNativeWebView) {
-      console.log('Running inside a React Native WebView');
-      // Listen for messages from React Native
-      window.addEventListener('message', handleMessage);
-    } else {
-      console.log('Running in a browser');
-      // Directly request media access in the browser
-      requestMediaAccess();
-    }
-  
-    // Clean up the event listener
-    return () => {
-      if (window.ReactNativeWebView) {
-        window.removeEventListener('message', handleMessage);
-      }
-    };
-  }, []);
+//  useEffect(() => {
+//   const handleMessage = (event) => {
+//     try {
+//       // Attempt to parse the message data
+//       const message = JSON.parse(event.data);
+//       console.log('Received message:', message);
+
+//       // Check if the message type is 'permissionsGranted'
+//       if (message.type === 'permissionsGranted') {
+//         console.log('Permissions granted message received');
+//         requestMediaAccess();
+//       }
+//     } catch (error) {
+//       console.error('Error parsing message data:', error);
+//       console.log('Raw message data:', event.data);
+//     }
+//   };
+
+//   const requestMediaAccess = () => {
+//     // Attempt to access the microphone and camera
+//     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+//       .then((stream) => {
+//         console.log('Media access granted');
+
+//         // Assign the local stream to the local video element
+//         if (localVideoRef.current) {
+//           localVideoRef.current.srcObject = stream;
+//         }
+
+//         // If you're using WebRTC, handle the remote stream here
+//       })
+//       .catch((error) => {
+//         console.error('Error accessing media devices:', error);
+//       });
+//   };
+
+//   // Check if running inside a React Native WebView
+//   if (window.ReactNativeWebView) {
+//     console.log('Running inside a React Native WebView');
+//     // Listen for messages from React Native
+//     window.addEventListener('message', handleMessage);
+//   } else {
+//     console.log('Running in a browser');
+//     // Directly request media access in the browser
+//     requestMediaAccess();
+//   }
+
+//   // Clean up the event listener
+//   return () => {
+//     if (window.ReactNativeWebView) {
+//       window.removeEventListener('message', handleMessage);
+//     }
+//   };
+// }, []);
 
   useEffect(() => {
     const socket = isLocal
@@ -651,66 +651,132 @@ const FeedScreen = () => {
     });
   };
   const startVideoCall = (userToCall) => {
-    setShowLiveCallCentre(false);
-    const selectedUsername = getUserName(userToCall);
-    const systemTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    // Post the event message
-    postMessage(
-      `${loggedInUserName} called ${selectedUsername} at ${systemTime}`
-    );
-    // Send email notification
-    setInCall(true);
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-
-        const peer = new Peer({
-          initiator: true,
-          trickle: false,
-          stream: stream,
-        });
-
-        peer.on("signal", (data) => {
-          socketRef.current.emit("callUser", {
-            userToCall,
-            signalData: data,
-            from: userId,
-          });
-        });
-
-        peer.on("stream", (stream) => {
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
+    console.log('Starting video call with:', userToCall);
+  
+    if (window.ReactNativeWebView) {
+      console.log('Running inside a React Native WebView');
+  
+      // Listen for the permissionsGranted message
+      const handlePermissionsGranted = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          if (message.type === 'permissionsGranted') {
+            console.log('Permissions granted, attempting to access media devices');
+            window.removeEventListener('message', handlePermissionsGranted); // Clean up the listener
+  
+            // Now attempt to access the microphone and camera
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+              .then((stream) => {
+                console.log('Media access granted in WebView');
+                if (localVideoRef.current) {
+                  localVideoRef.current.srcObject = stream;
+                }
+  
+                // Handle WebRTC peer connection here
+                const peer = new Peer({
+                  initiator: true,
+                  trickle: false,
+                  stream: stream,
+                });
+  
+                peer.on("signal", (data) => {
+                  socketRef.current.emit("callUser", {
+                    userToCall,
+                    signalData: data,
+                    from: userId,
+                  });
+                });
+  
+                peer.on("stream", (stream) => {
+                  if (remoteVideoRef.current) {
+                    remoteVideoRef.current.srcObject = stream;
+                  }
+                });
+  
+                peer.on("close", () => {
+                  endCall();
+                });
+  
+                socketRef.current.on("callAccepted", (signal) => {
+                  peer.signal(signal);
+                });
+  
+                peerRef.current = peer;
+              })
+              .catch((error) => {
+                console.error('Failed to start media devices in WebView:', error);
+                setMessage(
+                  translations[languageCode]?.feedScreen?.cameraOrMicError ||
+                    "Error accessing camera or microphone. Please check your device settings."
+                );
+                setType("error");
+                setAlertKey((prevKey) => prevKey + 1);
+                setInCall(false);
+              });
           }
+        } catch (error) {
+          console.error('Error parsing permissionsGranted message:', error);
+        }
+      };
+  
+      // Add the listener for the permissionsGranted message
+      window.addEventListener('message', handlePermissionsGranted);
+  
+      // Request permissions from React Native
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestPermissions' }));
+    } else {
+      console.log('Running in a browser');
+  
+      // Directly attempt to access the microphone and camera
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          console.log('Media access granted in browser');
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = stream;
+          }
+  
+          // Handle WebRTC peer connection here
+          const peer = new Peer({
+            initiator: true,
+            trickle: false,
+            stream: stream,
+          });
+  
+          peer.on("signal", (data) => {
+            socketRef.current.emit("callUser", {
+              userToCall,
+              signalData: data,
+              from: userId,
+            });
+          });
+  
+          peer.on("stream", (stream) => {
+            if (remoteVideoRef.current) {
+              remoteVideoRef.current.srcObject = stream;
+            }
+          });
+  
+          peer.on("close", () => {
+            endCall();
+          });
+  
+          socketRef.current.on("callAccepted", (signal) => {
+            peer.signal(signal);
+          });
+  
+          peerRef.current = peer;
+        })
+        .catch((error) => {
+          console.error('Failed to start media devices in browser:', error);
+          setMessage(
+            translations[languageCode]?.feedScreen?.cameraOrMicError ||
+              "Error accessing camera or microphone. Please check your device settings."
+          );
+          setType("error");
+          setAlertKey((prevKey) => prevKey + 1);
+          setInCall(false);
         });
-
-        peer.on("close", () => {
-          endCall();
-        });
-
-        socketRef.current.on("callAccepted", (signal) => {
-          peer.signal(signal);
-        });
-
-        peerRef.current = peer;
-      })
-      .catch((error) => {
-        console.error("Failed to start media devices:", error);
-        setMessage(
-          translations[languageCode]?.feedScreen?.cameraOrMicError ||
-            "Error accessing camera or microphone. Please check your device settings."
-        );
-        setType("error");
-        setAlertKey((prevKey) => prevKey + 1);
-        setInCall(false);
-      });
+    }
   };
 
   const answerCall = () => {
@@ -750,7 +816,6 @@ const FeedScreen = () => {
         peerRef.current = peer;
       });
   };
-  //999
   const launchLiveCallCentre = () => {
     const updatedAssociatedUsers = associatedUsers.map((user) => {
       return {
