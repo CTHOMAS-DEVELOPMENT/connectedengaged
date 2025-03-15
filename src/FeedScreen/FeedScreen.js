@@ -1666,6 +1666,8 @@ const FeedScreen = () => {
           </Button>
         </nav>
         {caller && !inCall && (
+          <>
+          {console.log('Caller state detected:', caller, 'inCall is', inCall)}
           <div className="wrapper-container-peer-answer incoming-call">
             <p>
               {translations[languageCode]?.feedScreen?.incomingCallFrom ||
@@ -1680,6 +1682,7 @@ const FeedScreen = () => {
                 "Decline"}
             </Button>
           </div>
+          </>
         )}
       </main>
     </div>
