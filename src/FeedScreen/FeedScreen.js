@@ -685,7 +685,9 @@ const FeedScreen = () => {
           ]
         }
       });
-      
+      peer.on('error', (err) => {
+        console.error('[WebRTC] Peer error:', err);
+      });
       console.log("[WebRTC] Peer instance created:", peer);
       peer.on("signal", (data) => {
         console.log('[1][WebRTC] Emitting callUser event with signal:', data);
