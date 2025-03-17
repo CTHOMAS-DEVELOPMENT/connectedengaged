@@ -679,8 +679,14 @@ const FeedScreen = () => {
         initiator: true,
         trickle: false,
         stream: stream,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }, // Google STUN
+          ]
+        }
       });
-  
+      
+      console.log("[WebRTC] Peer instance created:", peer);
       peer.on("signal", (data) => {
         console.log('[1][WebRTC] Emitting callUser event with signal:', data);
         socketRef.current.emit("callUser", {
