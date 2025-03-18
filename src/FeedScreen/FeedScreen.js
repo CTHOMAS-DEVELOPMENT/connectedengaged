@@ -690,6 +690,7 @@ const FeedScreen = () => {
       });
       console.log("[WebRTC] Peer instance created:", peer);
       peer.on("signal", (data) => {
+        console.log("[WebRTC] Ready to emit callUser");
         console.log('[1][WebRTC] Emitting callUser event with signal:', data);
         socketRef.current.emit("callUser", {
           userToCall,
@@ -738,7 +739,7 @@ const FeedScreen = () => {
         try {
           const message = JSON.parse(event.data);
           if (message.type === 'permissionsGranted') {
-            console.log('[WebView] permissionsGranted received inside WebView');
+            console.log('[WebView] *permissionsGranted received inside WebView');
             window.removeEventListener('message', handlePermissionsGranted);
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
               .then(handleMediaStream)
