@@ -719,7 +719,7 @@ const FeedScreen = () => {
     };
   
     const handleMediaError = (error) => {
-      console.error('[WebRTC] Failed to start media devices:', error);
+      console.error('[WebRTC] getUserMedia failed inside WebView:', error);
       setMessage(
         translations[languageCode]?.feedScreen?.cameraOrMicError ||
         "Error accessing camera or microphone. Please check your device settings."
@@ -734,6 +734,7 @@ const FeedScreen = () => {
       console.log('[WebView] Detected React Native WebView, requesting permissions');
   
       const handlePermissionsGranted = (event) => {
+        console.log('[WebView] Received message in handlePermissionsGranted:', event.data);
         try {
           const message = JSON.parse(event.data);
           if (message.type === 'permissionsGranted') {
@@ -752,7 +753,7 @@ const FeedScreen = () => {
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestPermissions' }));
     } else {
       // Browser environment
-      console.log('[WebRTC] Running in browser, requesting media directly');
+      console.log('[WebRTC] Attempting getUserMedia call inside WebView');
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
         .then(handleMediaStream)
         .catch(handleMediaError);
