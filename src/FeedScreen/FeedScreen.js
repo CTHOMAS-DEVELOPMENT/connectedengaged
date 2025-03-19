@@ -732,8 +732,7 @@ const FeedScreen = () => {
   
     // React Native WebView case
     if (window.ReactNativeWebView) {
-      console.log('[WebView] Detected React Native WebView, requesting permissions');
-  
+      console.log('[WebView] 🚀 React Native WebView DETECTED — fresh build');
       const handlePermissionsGranted = (event) => {
         console.log('[WebView] Received message in handlePermissionsGranted:', event.data);
         try {
