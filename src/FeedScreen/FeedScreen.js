@@ -741,7 +741,7 @@ const FeedScreen = () => {
           if (message.type === 'permissionsGranted') {
             console.log('[WebView] *permissionsGranted received inside WebView');
             window.removeEventListener('message', handlePermissionsGranted);
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
               .then(handleMediaStream)
               .catch(handleMediaError);
           }
@@ -755,7 +755,7 @@ const FeedScreen = () => {
     } else {
       // Browser environment
       console.log('[WebRTC] Attempting getUserMedia call inside WebView');
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
         .then(handleMediaStream)
         .catch(handleMediaError);
     }
