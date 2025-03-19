@@ -741,9 +741,14 @@ const FeedScreen = () => {
           if (message.type === 'permissionsGranted') {
             console.log('[WebView] *permissionsGranted received inside WebView');
             window.removeEventListener('message', handlePermissionsGranted);
-            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-              .then(handleMediaStream)
-              .catch(handleMediaError);
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(handleMediaStream)
+            .catch((error) => {
+              console.error('[WebRTC] getUserMedia failed inside WebView:', error.name, error.message);
+              alert('getUserMedia failed: ' + error.name + ' – ' + error.message); // TEMP
+              handleMediaError(error);
+            });
+          
           }
         } catch (error) {
           console.error('[WebView] Error parsing permissionsGranted message:', error);
@@ -755,9 +760,14 @@ const FeedScreen = () => {
     } else {
       // Browser environment
       console.log('[WebRTC] Attempting getUserMedia call inside WebView');
-      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-        .then(handleMediaStream)
-        .catch(handleMediaError);
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(handleMediaStream)
+      .catch((error) => {
+        console.error('[WebRTC] getUserMedia failed inside WebView:', error.name, error.message);
+        alert('getUserMedia failed: ' + error.name + ' – ' + error.message); // TEMP
+        handleMediaError(error);
+      });
+    
     }
   };
   
