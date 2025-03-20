@@ -5,7 +5,7 @@ const WebRTCVideoTest = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const constraints = { audio: true };
+    const constraints = { video: true };
 
     console.log('[TEST] Requesting media with constraints:', constraints);
 
