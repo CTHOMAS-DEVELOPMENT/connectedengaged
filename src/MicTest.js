@@ -1,59 +1,72 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 const MicTest = () => {
-  const [status, setStatus] = useState("🎤 Requesting mic access...");
+  const [status, setStatus] = useState('🎙️ Requesting mic access...');
 
   useEffect(() => {
+    const logPrefix = '[MicTest]';
+
     const handlePermissionsGranted = (event) => {
+      console.log(`${logPrefix} 📥 Received message from WebView:`, event.data);
       try {
         const message = JSON.parse(event.data);
-        if (message.type === "permissionsGranted") {
-          console.log("[MicTest] 📩 permissionsGranted received from React Native");
+        if (message.type === 'permissionsGranted') {
+          console.log(`${logPrefix} ✅ permissionsGranted received inside WebView`);
+
+          console.log(`${logPrefix} 🔍 Requesting getUserMedia({ audio: true })`);
           navigator.mediaDevices.getUserMedia({ audio: true })
             .then((stream) => {
               const audioTracks = stream.getAudioTracks();
-              console.log("[MicTest] ✅ getUserMedia succeeded");
-              console.log("[MicTest] 🎧 Audio tracks:", audioTracks);
-              setStatus(`✅ Microphone access granted — ${audioTracks.length} track(s)`);
-              stream.getTracks().forEach(track => track.stop()); // Stop it after test
-              window.removeEventListener("message", handlePermissionsGranted);
+              console.log(`${logPrefix} ✅ getUserMedia succeeded`);
+              console.log(`${logPrefix} 🎧 Audio tracks:`, audioTracks);
+              setStatus(`✅ Mic granted — ${audioTracks.length} track(s)`);
+              stream.getTracks().forEach(track => track.stop());
             })
             .catch((err) => {
-              console.error("[MicTest] ❌ getUserMedia failed:", err.name, err.message);
+              console.error(`${logPrefix} ❌ getUserMedia failed:`, err.name, err.message);
               setStatus(`❌ Mic access failed: ${err.name} — ${err.message}`);
             });
         }
-      } catch (e) {
-        console.error("[MicTest] Failed to parse message:", e);
+      } catch (err) {
+        console.error(`${logPrefix} 🚨 Error parsing message:`, err);
       }
     };
 
+    // Only needed inside WebView
     if (window.ReactNativeWebView) {
-      console.log("[MicTest] 🚀 Running in React Native WebView");
-      window.addEventListener("message", handlePermissionsGranted);
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "requestPermissions" }));
+      console.log(`${logPrefix} 🚀 Running in React Native WebView`);
+      window.addEventListener('message', handlePermissionsGranted);
+
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({ type: 'requestPermissions' })
+      );
     } else {
-      console.log("[MicTest] 🌐 Running in browser");
+      console.log(`${logPrefix} 🧪 Running in browser`);
       navigator.mediaDevices.getUserMedia({ audio: true })
         .then((stream) => {
           const audioTracks = stream.getAudioTracks();
-          console.log("[MicTest] ✅ Browser mic access OK —", audioTracks);
-          setStatus(`✅ Microphone access granted — ${audioTracks.length} track(s)`);
+          console.log(`${logPrefix} ✅ getUserMedia succeeded`);
+          console.log(`${logPrefix} 🎧 Audio tracks:`, audioTracks);
+          setStatus(`✅ Mic granted — ${audioTracks.length} track(s)`);
           stream.getTracks().forEach(track => track.stop());
         })
         .catch((err) => {
-          console.error("[MicTest] ❌ Browser mic access failed:", err);
+          console.error(`${logPrefix} ❌ getUserMedia failed:`, err.name, err.message);
           setStatus(`❌ Mic access failed: ${err.name} — ${err.message}`);
         });
     }
 
-    return () => window.removeEventListener("message", handlePermissionsGranted);
+    return () => {
+      window.removeEventListener('message', handlePermissionsGranted);
+    };
   }, []);
 
   return (
-    <div className="testing-container">
-      <h2>🎧 Mic Access Test</h2>
-      <p style={{ color: status.startsWith("✅") ? "green" : "red" }}>{status}</p>
+    <div className="test-container">
+      <h3>🎧 Mic Access Test</h3>
+      <p style={{ color: status.includes('✅') ? 'green' : 'red' }}>
+        {status}
+      </p>
     </div>
   );
 };
