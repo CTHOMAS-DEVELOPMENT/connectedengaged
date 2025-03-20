@@ -732,7 +732,7 @@ const FeedScreen = () => {
   
     // React Native WebView case
     if (window.ReactNativeWebView) {
-      console.log('[WebView] 🚀 React Native WebView DETECTED — fresh build');
+      console.log('[WebView] 🚀 React Native WebView DETECTED — fresh build 2');
       const handlePermissionsGranted = (event) => {
         console.log('[WebView] Received message in handlePermissionsGranted:', event.data);
         try {
@@ -740,13 +740,27 @@ const FeedScreen = () => {
           if (message.type === 'permissionsGranted') {
             console.log('[WebView] *permissionsGranted received inside WebView');
             window.removeEventListener('message', handlePermissionsGranted);
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(handleMediaStream)
-            .catch((error) => {
-              console.error('[WebRTC] getUserMedia failed inside WebView:', error.name, error.message);
-              alert('getUserMedia failed: ' + error.name + ' – ' + error.message); // TEMP
-              handleMediaError(error);
-            });
+            navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+  .then((stream) => {
+    console.log('[WebRTC] ✅ getUserMedia success inside WebView');
+    console.log('[WebRTC] Tracks:', stream.getTracks());
+    console.log('[WebRTC] Video Tracks:', stream.getVideoTracks());
+    console.log('[WebRTC] Audio Tracks:', stream.getAudioTracks());
+
+    if (localVideoRef.current) {
+      console.log('[WebRTC] Setting localVideoRef.srcObject inside WebView');
+      localVideoRef.current.srcObject = stream;
+    } else {
+      console.warn('[WebRTC] localVideoRef is null');
+    }
+
+    // Continue with peer connection setup...
+  })
+  .catch((err) => {
+    console.error('[WebRTC] ❌ getUserMedia failed:', err.name, err.message);
+    alert(`[WebRTC] getUserMedia failed: ${err.name} — ${err.message}`);
+  });
+
           
           }
         } catch (error) {
@@ -759,14 +773,27 @@ const FeedScreen = () => {
     } else {
       // Browser environment
       console.log('[WebRTC] Attempting getUserMedia call inside WebView');
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(handleMediaStream)
-      .catch((error) => {
-        console.error('[WebRTC] getUserMedia failed inside WebView:', error.name, error.message);
-        alert('getUserMedia failed: ' + error.name + ' – ' + error.message); // TEMP
-        handleMediaError(error);
-      });
-    
+      navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+  .then((stream) => {
+    console.log('[WebRTC] ✅ getUserMedia success inside WebView');
+    console.log('[WebRTC] Tracks:', stream.getTracks());
+    console.log('[WebRTC] Video Tracks:', stream.getVideoTracks());
+    console.log('[WebRTC] Audio Tracks:', stream.getAudioTracks());
+
+    if (localVideoRef.current) {
+      console.log('[WebRTC] Setting localVideoRef.srcObject inside WebView');
+      localVideoRef.current.srcObject = stream;
+    } else {
+      console.warn('[WebRTC] localVideoRef is null');
+    }
+
+    // Continue with peer connection setup...
+  })
+  .catch((err) => {
+    console.error('[WebRTC] ❌ getUserMedia failed:', err.name, err.message);
+    alert(`[WebRTC] getUserMedia failed: ${err.name} — ${err.message}`);
+  });
+
     }
   };
   

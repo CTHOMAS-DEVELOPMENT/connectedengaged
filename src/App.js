@@ -21,7 +21,7 @@ import PrivacyPolicy from "./Login/PrivacyPolicy";
 import ChildSafety from "./Login/ChildSafety";
 import GoodBye from "./system/GoodBye";
 import ProtectedRoute from "./ProtectedRoute";
-
+import WebRTCVideoTest from "./WebRTCVideoTest"
 function App() {
   return (
     <Router>
@@ -32,7 +32,9 @@ function App() {
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyWithState />} />
           <Route path="/child-safety" element={<ChildSafetyWithState />} /> {/* New Route for Child Safety */}
-          {/* Protected Routes */}
+          <Route path="/webrtc-test" element={<WebRTCVideoTest />} />
+
+{/* Protected Routes */}
           <Route
             path="/feed"
             element={
