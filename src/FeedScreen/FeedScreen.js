@@ -662,77 +662,77 @@ const FeedScreen = () => {
     postMessage(`${loggedInUserName} called ${selectedUsername} at ${systemTime}`);
     setInCall(true);
   
-    // const handleMediaStream = (stream) => {
-    //   console.log('[WebRTC] Stream received');
-    //   console.log('[WebRTC] Stream tracks:', stream.getTracks());
-    //   console.log('[WebRTC] Video track:', stream.getVideoTracks());
-    //   console.log('[WebRTC] Audio track:', stream.getAudioTracks());
+    const handleMediaStream = (stream) => {
+      console.log('[WebRTC] Stream received');
+      console.log('[WebRTC] Stream tracks:', stream.getTracks());
+      console.log('[WebRTC] Video track:', stream.getVideoTracks());
+      console.log('[WebRTC] Audio track:', stream.getAudioTracks());
   
-    //   if (localVideoRef.current) {
-    //     console.log('[WebRTC] Setting localVideoRef.srcObject');
-    //     localVideoRef.current.srcObject = stream;
-    //   } else {
-    //     console.warn('[WebRTC] localVideoRef is null — video not mounted yet?');
-    //   }
+      if (localVideoRef.current) {
+        console.log('[WebRTC] Setting localVideoRef.srcObject');
+        localVideoRef.current.srcObject = stream;
+      } else {
+        console.warn('[WebRTC] localVideoRef is null — video not mounted yet?');
+      }
   
-    //   const peer = new Peer({
-    //     initiator: true,
-    //     trickle: false,
-    //     stream: stream,
-    //     config: {
-    //       iceServers: [
-    //         { urls: 'stun:stun.l.google.com:19302' }, // Google STUN
-    //       ]
-    //     }
-    //   });
-    //   peer.on('error', (err) => {
-    //     console.error('[WebRTC] Peer error:', err);
-    //   });
-    //   console.log("[WebRTC] Peer instance created:", peer);
-    //   peer.on("signal", (data) => {
-    //     console.log("[WebRTC] Ready to emit callUser");
-    //     console.log('[1][WebRTC] Emitting callUser event with signal:', data);
-    //     socketRef.current.emit("callUser", {
-    //       userToCall,
-    //       signalData: data,
-    //       from: userId,
-    //     });
-    //   });
+      const peer = new Peer({
+        initiator: true,
+        trickle: false,
+        stream: stream,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }, // Google STUN
+          ]
+        }
+      });
+      peer.on('error', (err) => {
+        console.error('[WebRTC] Peer error:', err);
+      });
+      console.log("[WebRTC] Peer instance created:", peer);
+      peer.on("signal", (data) => {
+        console.log("[WebRTC] Ready to emit callUser");
+        console.log('[1][WebRTC] Emitting callUser event with signal:', data);
+        socketRef.current.emit("callUser", {
+          userToCall,
+          signalData: data,
+          from: userId,
+        });
+      });
   
-    //   peer.on("stream", (stream) => {
-    //     console.log('[WebRTC] Remote stream received');
-    //     if (remoteVideoRef.current) {
-    //       remoteVideoRef.current.srcObject = stream;
-    //     }
-    //   });
+      peer.on("stream", (stream) => {
+        console.log('[WebRTC] Remote stream received');
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = stream;
+        }
+      });
   
-    //   peer.on("close", () => {
-    //     console.log('[WebRTC] Peer connection closed');
-    //     endCall();
-    //   });
+      peer.on("close", () => {
+        console.log('[WebRTC] Peer connection closed');
+        endCall();
+      });
   
-    //   socketRef.current.on("callAccepted", (signal) => {
-    //     console.log('[WebRTC] callAccepted signal received');
-    //     peer.signal(signal);
-    //   });
+      socketRef.current.on("callAccepted", (signal) => {
+        console.log('[WebRTC] callAccepted signal received');
+        peer.signal(signal);
+      });
   
-    //   peerRef.current = peer;
-    // };
+      peerRef.current = peer;
+    };
   
-    // const handleMediaError = (error) => {
-    //   console.error('[WebRTC] getUserMedia failed inside WebView:', error);
-    //   setMessage(
-    //     translations[languageCode]?.feedScreen?.cameraOrMicError ||
-    //     "Error accessing camera or microphone. Please check your device settings."
-    //   );
-    //   setType("error");
-    //   setAlertKey((prevKey) => prevKey + 1);
-    //   setInCall(false);
-    // };
+    const handleMediaError = (error) => {
+      console.error('[WebRTC] getUserMedia failed inside WebView:', error);
+      setMessage(
+        translations[languageCode]?.feedScreen?.cameraOrMicError ||
+        "Error accessing camera or microphone. Please check your device settings."
+      );
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+      setInCall(false);
+    };
   
     // React Native WebView case
     if (window.ReactNativeWebView) {
-      console.log('[WebView] 🚀 React Native WebView DETECTED — fresh build 2');
+      console.log('[WebView] 🚀 React Native WebView DETECTED — fresh build');
       const handlePermissionsGranted = (event) => {
         console.log('[WebView] Received message in handlePermissionsGranted:', event.data);
         try {
@@ -740,27 +740,13 @@ const FeedScreen = () => {
           if (message.type === 'permissionsGranted') {
             console.log('[WebView] *permissionsGranted received inside WebView');
             window.removeEventListener('message', handlePermissionsGranted);
-            navigator.mediaDevices.getUserMedia({ video: false, audio: true })
-  .then((stream) => {
-    console.log('[WebRTC] ✅ getUserMedia success inside WebView');
-    console.log('[WebRTC] Tracks:', stream.getTracks());
-    console.log('[WebRTC] Video Tracks:', stream.getVideoTracks());
-    console.log('[WebRTC] Audio Tracks:', stream.getAudioTracks());
-
-    if (localVideoRef.current) {
-      console.log('[WebRTC] Setting localVideoRef.srcObject inside WebView');
-      localVideoRef.current.srcObject = stream;
-    } else {
-      console.warn('[WebRTC] localVideoRef is null');
-    }
-
-    // Continue with peer connection setup...
-  })
-  .catch((err) => {
-    console.error('[WebRTC] ❌ getUserMedia failed:', err.name, err.message);
-    alert(`[WebRTC] getUserMedia failed: ${err.name} — ${err.message}`);
-  });
-
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(handleMediaStream)
+            .catch((error) => {
+              console.error('[WebRTC] getUserMedia failed inside WebView:', error.name, error.message);
+              alert('getUserMedia failed: ' + error.name + ' – ' + error.message); // TEMP
+              handleMediaError(error);
+            });
           
           }
         } catch (error) {
@@ -773,7 +759,7 @@ const FeedScreen = () => {
     } else {
       // Browser environment
       console.log('[WebRTC] Attempting getUserMedia call inside WebView');
-      navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   .then((stream) => {
     console.log('[WebRTC] ✅ getUserMedia success inside WebView');
     console.log('[WebRTC] Tracks:', stream.getTracks());
