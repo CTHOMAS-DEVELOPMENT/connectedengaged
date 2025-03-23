@@ -17,12 +17,14 @@ const MicTest = () => {
         if (message.type === 'permissionsGranted') {
           console.log(`${logPrefix} ✅ permissionsGranted received inside WebView`);
   
-          navigator.mediaDevices.getUserMedia({ audio: true })
+          navigator.mediaDevices.getUserMedia({ audio: true, video: true })
             .then((stream) => {
               clearTimeout(permissionTimeout);
               const audioTracks = stream.getAudioTracks();
+              const videoTracks = stream.getVideoTracks();
               console.log(`${logPrefix} ✅ getUserMedia succeeded`);
-              setStatus(`✅ Mic granted — ${audioTracks.length} track(s)`);
+              setStatus(`✅ Mic + Cam granted — Audio: ${audioTracks.length}, Video: ${videoTracks.length}`);
+
               stream.getTracks().forEach((track) => track.stop());
             })
             .catch((err) => {
@@ -41,12 +43,14 @@ const MicTest = () => {
       window.addEventListener('message', handlePermissionsGranted);
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestPermissions' }));
     } else {
-      navigator.mediaDevices.getUserMedia({ audio: true })
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
         .then((stream) => {
           clearTimeout(permissionTimeout);
           const audioTracks = stream.getAudioTracks();
+          const videoTracks = stream.getVideoTracks();
           console.log(`${logPrefix} ✅ getUserMedia succeeded`);
-          setStatus(`✅ Mic granted — ${audioTracks.length} track(s)`);
+          setStatus(`✅ Mic + Cam granted — Audio: ${audioTracks.length}, Video: ${videoTracks.length}`);
+
           stream.getTracks().forEach((track) => track.stop());
         })
         .catch((err) => {
