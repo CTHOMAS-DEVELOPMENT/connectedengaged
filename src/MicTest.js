@@ -17,7 +17,7 @@ const MicTest = () => {
         if (message.type === 'permissionsGranted') {
           console.log(`${logPrefix} ✅ permissionsGranted received inside WebView`);
   
-          navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+          navigator.mediaDevices.getUserMedia({ audio: true })
             .then((stream) => {
               clearTimeout(permissionTimeout);
               const audioTracks = stream.getAudioTracks();
@@ -43,7 +43,7 @@ const MicTest = () => {
       window.addEventListener('message', handlePermissionsGranted);
       window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestPermissions' }));
     } else {
-        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        navigator.mediaDevices.getUserMedia({ audio: true })
         .then((stream) => {
           clearTimeout(permissionTimeout);
           const audioTracks = stream.getAudioTracks();
