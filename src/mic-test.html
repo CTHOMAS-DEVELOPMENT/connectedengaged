@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mic Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    .status {
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    .mic-status {
+      margin-top: 10px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎤 Microphone Test</h1>
+  <p>This page will attempt to access your microphone.</p>
+  <button onclick="runMicTest()">🔁 Start Mic Test</button>
+  <div class="status" id="status">Idle</div>
+  <div class="mic-status" id="micStatus"></div>
+
+  <script>
+    const status = (msg) => {
+      document.getElementById("status").textContent = msg;
+      sendToNative(`STATUS: ${msg}`);
+    };
+
+    const sendToNative = (msg) => {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(msg);
+      } else {
+        console.log('[Web] ' + msg);
+      }
+    };
+
+    async function runMicTest() {
+      status("🔐 Requesting microphone access...");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const tracks = stream.getAudioTracks();
+        const info = tracks.map(t => `🎚 Track: ${t.label} (enabled: ${t.enabled})`).join("\n");
+
+        document.getElementById("micStatus").textContent = info;
+        status("✅ Microphone access granted");
+
+        sendToNative("✅ Mic test successful");
+      } catch (err) {
+        status("❌ Microphone access denied");
+        sendToNative(`❌ Mic test failed: ${err.message}`);
+      }
+    }
+  </script>
+</body>
+</html>
