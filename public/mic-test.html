@@ -3,59 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mic Test</title>
+  <title>Microphone Test</title>
   <style>
     body {
+      background-color: #000;
+      color: white;
       font-family: sans-serif;
       padding: 20px;
-      background: #0a0a0a;
-      color: #fff;
     }
-    .status {
-      font-size: 1.2em;
-      margin-top: 20px;
-    }
-    .mic-status {
+    .success { color: lightgreen; }
+    .error { color: tomato; }
+    button {
       margin-top: 10px;
+      padding: 8px 16px;
+    }
+    #status {
+      margin-top: 20px;
       font-family: monospace;
     }
   </style>
 </head>
 <body>
-  <h1>🎤 Microphone Test</h1>
+  <h2>🎤 Microphone Test</h2>
   <p>This page will attempt to access your microphone.</p>
-  <button onclick="runMicTest()">🔁 Start Mic Test</button>
-  <div class="status" id="status">Idle</div>
-  <div class="mic-status" id="micStatus"></div>
+  <button onclick="startMicTest()">🎙️ Start Mic Test</button>
+  <div id="status">Idle</div>
 
   <script>
-    const status = (msg) => {
-      document.getElementById("status").textContent = msg;
-      sendToNative(`STATUS: ${msg}`);
-    };
+    const statusDiv = document.getElementById("status");
 
-    const sendToNative = (msg) => {
+    function logStatus(msg, css = "") {
+      const line = document.createElement("div");
+      line.textContent = msg;
+      if (css) line.className = css;
+      statusDiv.appendChild(line);
+    }
+
+    function postToReactNative(data) {
       if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(msg);
-      } else {
-        console.log('[Web] ' + msg);
+        window.ReactNativeWebView.postMessage(JSON.stringify(data));
       }
-    };
+    }
 
-    async function runMicTest() {
-      status("🔐 Requesting microphone access...");
+    async function startMicTest() {
+      logStatus("[Web] STATUS: 🔐 Requesting microphone access...");
+      postToReactNative({ type: "micTestStart" });
+
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const tracks = stream.getAudioTracks();
-        const info = tracks.map(t => `🎚 Track: ${t.label} (enabled: ${t.enabled})`).join("\n");
+        const info = tracks.map(track =>
+          `🎵 Track: ${track.label} (enabled: ${track.enabled})`
+        );
 
-        document.getElementById("micStatus").textContent = info;
-        status("✅ Microphone access granted");
+        logStatus("[Web] STATUS: ✅ Microphone access granted", "success");
+        info.forEach(line => logStatus(line, "success"));
+        postToReactNative({ type: "micTestResult", status: "granted", info });
 
-        sendToNative("✅ Mic test successful");
+        // Clean up stream after a few seconds
+        setTimeout(() => {
+          stream.getTracks().forEach(t => t.stop());
+          logStatus("[Web] STATUS: 🛑 Stream stopped");
+        }, 3000);
       } catch (err) {
-        status("❌ Microphone access denied");
-        sendToNative(`❌ Mic test failed: ${err.message}`);
+        logStatus("[Web] STATUS: ❌ Microphone access denied", "error");
+        postToReactNative({ type: "micTestResult", status: "denied", error: err.message });
       }
     }
   </script>
