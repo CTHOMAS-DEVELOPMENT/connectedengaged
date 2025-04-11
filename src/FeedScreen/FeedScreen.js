@@ -134,61 +134,6 @@ const FeedScreen = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-//  useEffect(() => {
-//   const handleMessage = (event) => {
-//     try {
-//       // Attempt to parse the message data
-//       const message = JSON.parse(event.data);
-//       console.log('Received message:', message);
-
-//       // Check if the message type is 'permissionsGranted'
-//       if (message.type === 'permissionsGranted') {
-//         console.log('Permissions granted message received');
-//         requestMediaAccess();
-//       }
-//     } catch (error) {
-//       console.error('Error parsing message data:', error);
-//       console.log('Raw message data:', event.data);
-//     }
-//   };
-
-//   const requestMediaAccess = () => {
-//     // Attempt to access the microphone and camera
-//     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-//       .then((stream) => {
-//         console.log('Media access granted');
-
-//         // Assign the local stream to the local video element
-//         if (localVideoRef.current) {
-//           localVideoRef.current.srcObject = stream;
-//         }
-
-//         // If you're using WebRTC, handle the remote stream here
-//       })
-//       .catch((error) => {
-//         console.error('Error accessing media devices:', error);
-//       });
-//   };
-
-//   // Check if running inside a React Native WebView
-//   if (window.ReactNativeWebView) {
-//     console.log('Running inside a React Native WebView');
-//     // Listen for messages from React Native
-//     window.addEventListener('message', handleMessage);
-//   } else {
-//     console.log('Running in a browser');
-//     // Directly request media access in the browser
-//     requestMediaAccess();
-//   }
-
-//   // Clean up the event listener
-//   return () => {
-//     if (window.ReactNativeWebView) {
-//       window.removeEventListener('message', handleMessage);
-//     }
-//   };
-// }, []);
-
   useEffect(() => {
     const socket = isLocal
       ? io(process.env.REACT_APP_BACKEND_HOST) // Development environment, no transport options needed
@@ -204,6 +149,7 @@ const FeedScreen = () => {
     });
 
     socket.on("incomingCall", (data) => {
+      console.log("[FE] incomingCall", data);
       setCaller(data);
     });
 
