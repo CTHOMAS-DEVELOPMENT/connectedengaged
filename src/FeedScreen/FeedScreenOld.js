@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AlertMessage from "../system/AlertMessage";
+import AlertMessage from "AlertMessage";
+import { requestPermissions } from '../system/permissionsService';
 import io from "socket.io-client";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
@@ -204,6 +205,7 @@ const FeedScreen = () => {
     });
 
     socket.on("incomingCall", (data) => {
+      console.log('[WebRTC] incomingCall event received:', data);
       setCaller(data);
     });
 
@@ -657,61 +659,132 @@ const FeedScreen = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
-
-    // Post the event message
-    postMessage(
-      `${loggedInUserName} called ${selectedUsername} at ${systemTime}`
-    );
-    // Send email notification
+  
+    postMessage(`${loggedInUserName} called ${selectedUsername} at ${systemTime}`);
     setInCall(true);
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
+  
+    const handleMediaStream = (stream) => {
+      console.log('[WebRTC] Stream received');
+      console.log('[WebRTC] Stream tracks:', stream.getTracks());
+      console.log('[WebRTC] Video track:', stream.getVideoTracks());
+      console.log('[WebRTC] Audio track:', stream.getAudioTracks());
+  
+      if (localVideoRef.current) {
+        console.log('[WebRTC] Setting localVideoRef.srcObject');
+        localVideoRef.current.srcObject = stream;
+      } else {
+        console.warn('[WebRTC] localVideoRef is null — video not mounted yet?');
+      }
+  
+      const peer = new Peer({
+        initiator: true,
+        trickle: false,
+        stream: stream,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }, // Google STUN
+          ]
         }
-
-        const peer = new Peer({
-          initiator: true,
-          trickle: false,
-          stream: stream,
-        });
-
-        peer.on("signal", (data) => {
-          socketRef.current.emit("callUser", {
-            userToCall,
-            signalData: data,
-            from: userId,
-          });
-        });
-
-        peer.on("stream", (stream) => {
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
-          }
-        });
-
-        peer.on("close", () => {
-          endCall();
-        });
-
-        socketRef.current.on("callAccepted", (signal) => {
-          peer.signal(signal);
-        });
-
-        peerRef.current = peer;
-      })
-      .catch((error) => {
-        console.error("Failed to start media devices:", error);
-        setMessage(
-          translations[languageCode]?.feedScreen?.cameraOrMicError ||
-            "Error accessing camera or microphone. Please check your device settings."
-        );
-        setType("error");
-        setAlertKey((prevKey) => prevKey + 1);
-        setInCall(false);
       });
+      peer.on('error', (err) => {
+        console.error('[WebRTC] Peer error:', err);
+      });
+      console.log("[WebRTC] Peer instance created:", peer);
+      peer.on("signal", (data) => {
+        console.log("[WebRTC] Ready to emit callUser");
+        console.log('[1][WebRTC] Emitting callUser event with signal:', data);
+        socketRef.current.emit("callUser", {
+          userToCall,
+          signalData: data,
+          from: userId,
+        });
+      });
+  
+      peer.on("stream", (stream) => {
+        console.log('[WebRTC] Remote stream received');
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = stream;
+        }
+      });
+  
+      peer.on("close", () => {
+        console.log('[WebRTC] Peer connection closed');
+        endCall();
+      });
+  
+      socketRef.current.on("callAccepted", (signal) => {
+        console.log('[WebRTC] callAccepted signal received');
+        peer.signal(signal);
+      });
+  
+      peerRef.current = peer;
+    };
+  
+    const handleMediaError = (error) => {
+      console.error('[WebRTC] getUserMedia failed inside WebView:', error);
+      setMessage(
+        translations[languageCode]?.feedScreen?.cameraOrMicError ||
+        "Error accessing camera or microphone. Please check your device settings."
+      );
+      setType("error");
+      setAlertKey((prevKey) => prevKey + 1);
+      setInCall(false);
+    };
+  
+    // React Native WebView case
+    if (window.ReactNativeWebView) {
+      console.log('[WebView] 🚀 React Native WebView DETECTED — fresh build');
+      const handlePermissionsGranted = (event) => {
+        console.log('[WebView] Received message in handlePermissionsGranted:', event.data);
+        try {
+          const message = JSON.parse(event.data);
+          if (message.type === 'permissionsGranted') {
+            console.log('[WebView] *permissionsGranted received inside WebView');
+            window.removeEventListener('message', handlePermissionsGranted);
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(handleMediaStream)
+            .catch((error) => {
+              console.error('[WebRTC] getUserMedia failed inside WebView:', error.name, error.message);
+              alert('getUserMedia failed: ' + error.name + ' – ' + error.message); // TEMP
+              handleMediaError(error);
+            });
+          
+          }
+        } catch (error) {
+          console.error('[WebView] Error parsing permissionsGranted message:', error);
+        }
+      };
+  
+      window.addEventListener('message', handlePermissionsGranted);
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'requestPermissions' }));
+    } else {
+      // Browser environment
+      console.log('[WebRTC] Attempting getUserMedia call inside WebView');
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+  .then((stream) => {
+    console.log('[WebRTC] ✅ getUserMedia success inside WebView');
+    console.log('[WebRTC] Tracks:', stream.getTracks());
+    console.log('[WebRTC] Video Tracks:', stream.getVideoTracks());
+    console.log('[WebRTC] Audio Tracks:', stream.getAudioTracks());
+
+    if (localVideoRef.current) {
+      console.log('[WebRTC] Setting localVideoRef.srcObject inside WebView');
+      localVideoRef.current.srcObject = stream;
+    } else {
+      console.warn('[WebRTC] localVideoRef is null');
+    }
+
+    // Continue with peer connection setup...
+  })
+  .catch((err) => {
+    console.error('[WebRTC] ❌ getUserMedia failed:', err.name, err.message);
+    alert(`[WebRTC] getUserMedia failed: ${err.name} — ${err.message}`);
+  });
+
+    }
   };
+  
+  
 
   const answerCall = () => {
     setInCall(true);
@@ -719,6 +792,9 @@ const FeedScreen = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
+        console.log('[WebRTC] Stream tracks:', stream.getTracks());
+console.log('[WebRTC] Video track:', stream.getVideoTracks());
+console.log('[WebRTC] Audio track:', stream.getAudioTracks());
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
@@ -1583,6 +1659,8 @@ const FeedScreen = () => {
           </Button>
         </nav>
         {caller && !inCall && (
+          <>
+          {console.log('Caller state detected:', caller, 'inCall is', inCall)}
           <div className="wrapper-container-peer-answer incoming-call">
             <p>
               {translations[languageCode]?.feedScreen?.incomingCallFrom ||
@@ -1597,6 +1675,7 @@ const FeedScreen = () => {
                 "Decline"}
             </Button>
           </div>
+          </>
         )}
       </main>
     </div>
