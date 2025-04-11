@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AlertMessage from "../system/AlertMessage";
+import { requestPermissions } from '../system/permissionsService';
 import io from "socket.io-client";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
@@ -610,12 +611,17 @@ const FeedScreen = () => {
     );
     // Send email notification
     setInCall(true);
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
+    requestPermissions()
+  .then((stream) => {
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
+    }
+    // navigator.mediaDevices
+    //   .getUserMedia({ video: true, audio: true })
+    //   .then((stream) => {
+    //     if (localVideoRef.current) {
+    //       localVideoRef.current.srcObject = stream;
+    //     }
 
         const peer = new Peer({
           initiator: true,
@@ -662,13 +668,17 @@ const FeedScreen = () => {
   const answerCall = () => {
     setInCall(true);
 
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-
+    // navigator.mediaDevices
+    //   .getUserMedia({ video: true, audio: true })
+    //   .then((stream) => {
+    //     if (localVideoRef.current) {
+    //       localVideoRef.current.srcObject = stream;
+    //     }
+        requestPermissions()
+        .then((stream) => {
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = stream;
+          }
         const peer = new Peer({
           initiator: false,
           trickle: false,
