@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AlertMessage from "../system/AlertMessage";
-import { requestPermissions } from '../system/permissionsService';
+import { requestPermissions } from "../system/permissionsService";
 import io from "socket.io-client";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
@@ -155,7 +155,7 @@ const FeedScreen = () => {
     });
 
     socket.on("callAccepted", (signal) => {
-      //console.log("Call accepted:", signal);
+      console.log("[FE] 📥 Received callAccepted signal:", signal.type);
       if (peerRef.current) {
         peerRef.current.signal(signal);
       }
@@ -612,16 +612,20 @@ const FeedScreen = () => {
     // Send email notification
     setInCall(true);
     requestPermissions()
-  .then((stream) => {
-    if (localVideoRef.current) {
-      localVideoRef.current.srcObject = stream;
-    }
-    // navigator.mediaDevices
-    //   .getUserMedia({ video: true, audio: true })
-    //   .then((stream) => {
-    //     if (localVideoRef.current) {
-    //       localVideoRef.current.srcObject = stream;
-    //     }
+      .then((stream) => {
+        console.log("[FE] ✅ Media stream granted");
+        console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
+        console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+        if (localVideoRef.current) {
+          console.log("[FE] 🔍 Setting local video stream");
+          localVideoRef.current.srcObject = stream;
+        }
+        // navigator.mediaDevices
+        //   .getUserMedia({ video: true, audio: true })
+        //   .then((stream) => {
+        //     if (localVideoRef.current) {
+        //       localVideoRef.current.srcObject = stream;
+        //     }
 
         const peer = new Peer({
           initiator: true,
@@ -630,6 +634,7 @@ const FeedScreen = () => {
         });
 
         peer.on("signal", (data) => {
+          console.log("[FE] 📤 Emitting signal:", data.type);
           socketRef.current.emit("callUser", {
             userToCall,
             signalData: data,
@@ -638,6 +643,7 @@ const FeedScreen = () => {
         });
 
         peer.on("stream", (stream) => {
+          console.log("[FE] 📺 Remote stream received:", stream);
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
           }
@@ -654,7 +660,7 @@ const FeedScreen = () => {
         peerRef.current = peer;
       })
       .catch((error) => {
-        console.error("Failed to start media devices:", error);
+        console.error("[FE] ❌ Media access failed:", error);
         setMessage(
           translations[languageCode]?.feedScreen?.cameraOrMicError ||
             "Error accessing camera or microphone. Please check your device settings."
@@ -668,43 +674,42 @@ const FeedScreen = () => {
   const answerCall = () => {
     setInCall(true);
 
-    // navigator.mediaDevices
-    //   .getUserMedia({ video: true, audio: true })
-    //   .then((stream) => {
-    //     if (localVideoRef.current) {
-    //       localVideoRef.current.srcObject = stream;
-    //     }
-        requestPermissions()
-        .then((stream) => {
-          if (localVideoRef.current) {
-            localVideoRef.current.srcObject = stream;
-          }
-        const peer = new Peer({
-          initiator: false,
-          trickle: false,
-          stream: stream,
-        });
-
-        peer.on("signal", (data) => {
-          socketRef.current.emit("acceptCall", {
-            signal: data,
-            to: caller.from,
-          });
-        });
-
-        peer.on("stream", (stream) => {
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
-          }
-        });
-
-        peer.on("close", () => {
-          endCall();
-        });
-
-        peer.signal(caller.signal);
-        peerRef.current = peer;
+    requestPermissions().then((stream) => {
+      console.log("[FE] ✅ Media stream granted");
+      console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
+      console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+      if (localVideoRef.current) {
+        console.log("[FE] 🔍 Setting local video stream");
+        localVideoRef.current.srcObject = stream;
+      }
+      const peer = new Peer({
+        initiator: false,
+        trickle: false,
+        stream: stream,
       });
+
+      peer.on("signal", (data) => {
+        console.log("[FE] 📤 Emitting signal:", data.type);
+        socketRef.current.emit("acceptCall", {
+          signal: data,
+          to: caller.from,
+        });
+      });
+
+      peer.on("stream", (stream) => {
+        console.log("[FE] 📺 Remote stream received:", stream);
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = stream;
+        }
+      });
+
+      peer.on("close", () => {
+        endCall();
+      });
+
+      peer.signal(caller.signal);
+      peerRef.current = peer;
+    });
   };
   const launchLiveCallCentre = () => {
     const updatedAssociatedUsers = associatedUsers.map((user) => {
