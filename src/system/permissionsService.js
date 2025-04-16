@@ -30,11 +30,13 @@ export const isReactNativeWebView = () => {
     });
   };
   
-  export const requestPermissions = async () => {
-    if (isReactNativeWebView()) {
-      requestWebViewPermissions();
-      await waitForWebViewPermissions();
-    }
-    return navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  };
+  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+  .then((stream) => {
+    console.log("[✅] getUserMedia success:", stream);
+    return stream;
+  })
+  .catch((err) => {
+    console.error("[❌] getUserMedia error in Chrome:", err.name, err.message);
+  });
+
   
