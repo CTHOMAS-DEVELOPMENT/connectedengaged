@@ -30,13 +30,21 @@ export const isReactNativeWebView = () => {
     });
   };
   
-  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-  .then((stream) => {
-    console.log("[✅] getUserMedia success:", stream);
-    return stream;
-  })
-  .catch((err) => {
-    console.error("[❌] getUserMedia error in Chrome:", err.name, err.message);
-  });
+  export const requestPermissions = async () => {
+    if (isReactNativeWebView()) {
+      requestWebViewPermissions();
+      await waitForWebViewPermissions();
+    }
+  
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      console.log("[✅] getUserMedia success:", stream);
+      return stream;
+    } catch (err) {
+      console.error("[❌] getUserMedia error in Chrome:", err.name, err.message);
+      throw err; // Re-throw so the caller knows it failed
+    }
+  };
+  
 
   
