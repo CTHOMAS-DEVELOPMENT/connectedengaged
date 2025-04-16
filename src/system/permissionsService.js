@@ -41,10 +41,11 @@ export const isReactNativeWebView = () => {
       console.log("[✅] getUserMedia success:", stream);
       return stream;
     } catch (err) {
-      console.error("[❌] getUserMedia error in Chrome:", err.name, err.message);
-      throw err; // Re-throw so the caller knows it failed
+      console.error("[❌] getUserMedia error:", err.name, err.message);
+      throw err; // rethrow so caller can handle
     }
   };
+  
   
 
   
