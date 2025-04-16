@@ -642,10 +642,23 @@ const FeedScreen = () => {
           });
         });
 
-        peer.on("stream", (stream) => {
+        //peer.on("stream", (stream) => {
+          peer.on("track", (track, stream) => {
+            //console.log("[FE] 📺 Remote stream received:", stream);
+            console.log("[FE] 📺 Remote track, stream received?")
+            console.log("[FE] 🎯 peer.on(track) fired:", track.kind, stream);
           console.log("[FE] 📺 Remote stream received:", stream);
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
+// 💡 Force re-render of <video> for WebView quirk
+requestAnimationFrame(() => {
+  remoteVideoRef.current.style.display = "none";
+  void remoteVideoRef.current.offsetHeight; // force reflow
+  remoteVideoRef.current.style.display = "block";
+});
+remoteVideoRef.current.play?.().catch((err) =>
+  console.warn("Video play failed:", err)
+);
           }
         });
 
@@ -696,17 +709,28 @@ const FeedScreen = () => {
         });
       });
 
-      peer.on("stream", (stream) => {
-        console.log("[FE] 📺 Remote stream received:", stream);
+      //peer.on("stream", (stream) => {
+        peer.on("track", (track, stream) => {
+        //console.log("[FE] 📺 Remote stream received:", stream);
+        console.log("[FE] 📺 Remote track, stream received?")
+        console.log("[FE] 🎯 peer.on(track) fired:", track.kind, stream);
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = stream;
+          requestAnimationFrame(() => {
+            remoteVideoRef.current.style.display = "none";
+            void remoteVideoRef.current.offsetHeight; // force reflow
+            remoteVideoRef.current.style.display = "block";
+          });
+          remoteVideoRef.current.play?.().catch((err) =>
+            console.warn("Video play failed:", err)
+          );
         }
       });
 
       peer.on("close", () => {
         endCall();
       });
-
+      console.log("[FE] 🔄 Sending signal back to caller:", caller.signal);
       peer.signal(caller.signal);
       peerRef.current = peer;
     });
