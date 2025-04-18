@@ -722,10 +722,22 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
           void localVideoRef.current.offsetHeight;
           localVideoRef.current.style.display = "block";
         });
-    
+        console.log(
+          "[FE] 📏 local video dimensions (before play):",
+          localVideoRef.current.videoWidth,
+          localVideoRef.current.videoHeight
+        );
         localVideoRef.current.play?.()
           .then(() => {
             console.log("[FE] 🎬 Local video playing!");
+            setTimeout(() => {
+              console.log(
+                "[FE] 📏 local video dimensions (after play):",
+                localVideoRef.current.videoWidth,
+                localVideoRef.current.videoHeight
+              );
+            }, 1000);
+            
           })
           .catch((err) => {
             console.warn("🚫 Local video play failed:", err);
