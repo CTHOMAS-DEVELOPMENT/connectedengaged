@@ -161,12 +161,20 @@ const FeedScreen = () => {
     });
 
     socket.on("callAccepted", (signal) => {
-      console.log("[FE] 📥 Received callAccepted signal:", signal.type);
+      console.log("[FE] 📥 Received callAccepted signal:", signal?.type, signal?.sdp);
+    
+      if (!signal?.sdp) {
+        console.warn("⚠️ callAccepted received with missing SDP");
+      }
+    
       if (peerRef.current) {
+        console.log("[FE] 🔁 Signaling peer with callAccepted signal");
         peerRef.current.signal(signal);
+      } else {
+        console.warn("⚠️ peerRef.current is null, can't signal");
       }
     });
-
+    
     socket.on("active users update", (activeUsers) => {
       //console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
