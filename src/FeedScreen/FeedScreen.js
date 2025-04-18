@@ -723,17 +723,15 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
           localVideoRef.current.style.display = "block";
         });
         
-        try {
-          const width = localVideoRef.current?.videoWidth;
-          const height = localVideoRef.current?.videoHeight;
-          console.log(
-            "[FE] 📏 local video dimensions (before play):",
-            width,
-            height
-          );
-        } catch (err) {
-          console.warn("🚫 Error reading video dimensions before play:", err);
-        }
+        setTimeout(() => {
+          try {
+            const width = localVideoRef.current?.videoWidth;
+            const height = localVideoRef.current?.videoHeight;
+            console.log("[FE] ⏱ DELAYED video dimensions:", width, height);
+          } catch (err) {
+            console.warn("🚫 Error reading video dimensions after delay:", err);
+          }
+        }, 2000);
         
         localVideoRef.current.play?.()
           .then(() => {
