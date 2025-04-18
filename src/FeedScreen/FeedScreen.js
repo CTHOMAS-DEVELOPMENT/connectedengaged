@@ -691,6 +691,11 @@ remoteVideoRef.current.play?.().catch((err) =>
   };
 
   const answerCall = () => {
+    console.log("[FE] 📞 answerCall triggered by user click");
+    console.log("[FE] 👤 caller object:", caller);
+console.log("[FE] 📡 sending signal back to:", caller?.from);
+console.log("[FE] 🔁 original signal from caller:", caller?.signal);
+
     setInCall(true);
 
     requestPermissions().then((stream) => {
