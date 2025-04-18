@@ -630,16 +630,14 @@ const FeedScreen = () => {
         console.log("[FE] ✅ Media stream granted");
         console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
         console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+        stream.getTracks().forEach((track) => {
+          console.log(`[FE] 🎛 Track kind: ${track.kind}, readyState: ${track.readyState}, enabled: ${track.enabled}`);
+        });
         if (localVideoRef.current) {
+          console.log("💥 I'm in the localVideoRef block!");
           console.log("[FE] 🔍 Setting local video stream");
           localVideoRef.current.srcObject = stream;
         }
-        // navigator.mediaDevices
-        //   .getUserMedia({ video: true, audio: true })
-        //   .then((stream) => {
-        //     if (localVideoRef.current) {
-        //       localVideoRef.current.srcObject = stream;
-        //     }
 
         const peer = new Peer({
           initiator: true,
@@ -716,6 +714,7 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
     
       if (localVideoRef.current) {
         console.log("[FE] 🔍 Setting local video stream");
+        console.log("💥 I'm in the localVideoRef block!");
         localVideoRef.current.srcObject = stream;
     
         requestAnimationFrame(() => {
