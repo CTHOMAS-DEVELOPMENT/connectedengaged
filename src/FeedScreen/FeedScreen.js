@@ -144,13 +144,19 @@ const FeedScreen = () => {
     socketRef.current = socket; // Save socket instance
 
     socket.on("connect", () => {
-      //console.log("Socket connected");
+      console.log("Socket connected testing 1");
+      setTimeout(() => {
+        console.log("[FE] 🔁 Sending test ping to backend");
+        socket.emit("pingTest", { userId });
+      }, 5000);
+      
+      console.log("[FE] ✅ WebSocket connected in WebView?", socket.connected);
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
 
     socket.on("incomingCall", (data) => {
-      console.log("[FE] incomingCall", data);
+      console.log("[FE] 📞 incomingCall received:", data);
       setCaller(data);
     });
 
