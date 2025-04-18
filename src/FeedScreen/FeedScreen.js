@@ -714,7 +714,7 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
     
       if (localVideoRef.current) {
         console.log("[FE] 🔍 Setting local video stream");
-        console.log("💥 I'm in the localVideoRef block!");
+        console.log("💥 I'm in the localVideoRef block in answer call!");
         localVideoRef.current.srcObject = stream;
     
         requestAnimationFrame(() => {
@@ -747,10 +747,13 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
       });
     
       peer.on("track", (track, remoteStream) => {
+        
         console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
-    
+          console.log("[FE] 🎥 remoteRef.srcObject:", remoteVideoRef.current?.srcObject);
+          console.log("[FE] 🎥 remoteRef videoTracks:", remoteVideoRef.current?.srcObject?.getVideoTracks());
+          
           requestAnimationFrame(() => {
             remoteVideoRef.current.style.display = "none";
             void remoteVideoRef.current.offsetHeight;
