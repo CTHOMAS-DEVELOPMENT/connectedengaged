@@ -722,22 +722,27 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
           void localVideoRef.current.offsetHeight;
           localVideoRef.current.style.display = "block";
         });
-        console.log(
-          "[FE] 📏 local video dimensions (before play):",
-          localVideoRef.current.videoWidth,
-          localVideoRef.current.videoHeight
-        );
+        
+        try {
+          const width = localVideoRef.current?.videoWidth;
+          const height = localVideoRef.current?.videoHeight;
+          console.log(
+            "[FE] 📏 local video dimensions (before play):",
+            width,
+            height
+          );
+        } catch (err) {
+          console.warn("🚫 Error reading video dimensions before play:", err);
+        }
+        
         localVideoRef.current.play?.()
           .then(() => {
             console.log("[FE] 🎬 Local video playing!");
             setTimeout(() => {
-              console.log(
-                "[FE] 📏 local video dimensions (after play):",
-                localVideoRef.current.videoWidth,
-                localVideoRef.current.videoHeight
-              );
+              const w = localVideoRef.current?.videoWidth;
+              const h = localVideoRef.current?.videoHeight;
+              console.log("[FE] 📏 local video dimensions (after play):", w, h);
             }, 1000);
-            
           })
           .catch((err) => {
             console.warn("🚫 Local video play failed:", err);
