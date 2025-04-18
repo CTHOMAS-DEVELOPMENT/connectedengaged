@@ -670,9 +670,12 @@ requestAnimationFrame(() => {
   void remoteVideoRef.current.offsetHeight; // force reflow
   remoteVideoRef.current.style.display = "block";
 });
-remoteVideoRef.current.play?.().catch((err) =>
-  console.warn("Video play failed:", err)
-);
+
+remoteVideoRef.current.play?.().then(() => {
+  console.log("[FE] 🎬 Remote video playing!");
+}).catch((err) => {
+  console.warn("🚫 Remote video play failed:", err);
+});
           }
         });
 
@@ -710,16 +713,32 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
       console.log("[FE] ✅ Media stream granted");
       console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
       console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+    
       if (localVideoRef.current) {
         console.log("[FE] 🔍 Setting local video stream");
         localVideoRef.current.srcObject = stream;
+    
+        requestAnimationFrame(() => {
+          localVideoRef.current.style.display = "none";
+          void localVideoRef.current.offsetHeight;
+          localVideoRef.current.style.display = "block";
+        });
+    
+        localVideoRef.current.play?.()
+          .then(() => {
+            console.log("[FE] 🎬 Local video playing!");
+          })
+          .catch((err) => {
+            console.warn("🚫 Local video play failed:", err);
+          });
       }
+    
       const peer = new Peer({
         initiator: false,
         trickle: false,
         stream: stream,
       });
-
+    
       peer.on("signal", (data) => {
         console.log("[FE] 📤 Emitting signal:", data.type);
         socketRef.current.emit("acceptCall", {
@@ -727,32 +746,37 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
           to: caller.from,
         });
       });
-
-      //peer.on("stream", (stream) => {
-        peer.on("track", (track, stream) => {
-        //console.log("[FE] 📺 Remote stream received:", stream);
-        console.log("[FE] 📺 Remote track, stream received?")
-        console.log("[FE] 🎯 peer.on(track) fired:", track.kind, stream);
+    
+      peer.on("track", (track, remoteStream) => {
+        console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
         if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = stream;
+          remoteVideoRef.current.srcObject = remoteStream;
+    
           requestAnimationFrame(() => {
             remoteVideoRef.current.style.display = "none";
-            void remoteVideoRef.current.offsetHeight; // force reflow
+            void remoteVideoRef.current.offsetHeight;
             remoteVideoRef.current.style.display = "block";
           });
-          remoteVideoRef.current.play?.().catch((err) =>
-            console.warn("Video play failed:", err)
-          );
+    
+          remoteVideoRef.current.play?.()
+            .then(() => {
+              console.log("[FE] 🎬 Remote video playing!");
+            })
+            .catch((err) => {
+              console.warn("🚫 Remote video play failed:", err);
+            });
         }
       });
-
+    
       peer.on("close", () => {
         endCall();
       });
+    
       console.log("[FE] 🔄 Sending signal back to caller:", caller.signal);
       peer.signal(caller.signal);
       peerRef.current = peer;
     });
+    
   };
   const launchLiveCallCentre = () => {
     const updatedAssociatedUsers = associatedUsers.map((user) => {
@@ -1273,6 +1297,7 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
                   autoPlay
                   muted
                   className="local-video"
+                  style={{ backgroundColor: "black" }}
                 />
                 <Button
                   variant="outline-danger"
@@ -1285,7 +1310,7 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
                 >
                   <TelephoneFill size={25} />
                 </Button>
-                <video ref={remoteVideoRef} autoPlay className="remote-video" />
+                <video ref={remoteVideoRef} autoPlay className="remote-video" style={{ backgroundColor: "black" }}/>
               </div>
             )}
           </>
