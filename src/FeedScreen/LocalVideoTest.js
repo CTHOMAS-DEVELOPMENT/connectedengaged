@@ -1,76 +1,70 @@
-import React, { useEffect, useRef, useState } from "react";
+// LocalVideoTest.js
+import React, { useEffect, useRef } from "react";
 
 const LocalVideoTest = () => {
-  const localVideoRef = useRef(null);
-  const [error, setError] = useState(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
-    console.log("[Test] 🔄 Running local video test");
+    console.log("[Test] 🧪 Running local video test");
+    console.log("[Test] ✍️ Requesting media permissions...");
 
-    const startVideo = async () => {
-      try {
-        console.log("[Test] 🎤 Requesting media permissions...");
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-
+    navigator.mediaDevices
+      .getUserMedia({
+        video: { facingMode: "user" }, // Force front camera
+        audio: false,
+      })
+      .then((stream) => {
         console.log("[Test] ✅ Stream acquired:", stream);
 
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
+        const video = videoRef.current;
+        if (video) {
+          console.log("[Test] 📽 Setting srcObject");
+          video.srcObject = stream;
 
-          console.log("[Test] 🎥 Setting srcObject");
-          console.log("[Test] Element exists:", localVideoRef.current);
-          console.log(
-            "[Test] srcObject on element:",
-            localVideoRef.current.srcObject
-          );
+          console.log("[Test] 🧱 Element exists:", video.outerHTML);
 
-          requestAnimationFrame(() => {
-            localVideoRef.current.style.display = "none";
-            void localVideoRef.current.offsetHeight;
-            localVideoRef.current.style.display = "block";
-          });
+          const [videoTrack] = stream.getVideoTracks();
+          console.log("[Test] 🔎 Track settings:", videoTrack.getSettings());
+          console.log("[Test] 🔇 Track muted?", videoTrack.muted);
 
-          const widthBefore = localVideoRef.current.videoWidth;
-          const heightBefore = localVideoRef.current.videoHeight;
-          console.log("[Test] ⏱ Dimensions before play:", widthBefore, heightBefore);
-
-          await localVideoRef.current.play();
-
-          console.log("[Test] 🎬 Local video playing!");
-          setTimeout(() => {
-            const width = localVideoRef.current.videoWidth;
-            const height = localVideoRef.current.videoHeight;
-            console.log("[Test] ⏱ Dimensions after play:", width, height);
-          }, 1000);
+          video.play()
+            .then(() => {
+              console.log("[Test] ✅ Local video playing!");
+              setTimeout(() => {
+                console.log(
+                  "[Test] ⏱ Dimensions after play:",
+                  video.videoWidth,
+                  video.videoHeight
+                );
+              }, 500);
+            })
+            .catch((err) => {
+              console.error("[Test] 🚫 play() failed:", err);
+            });
         } else {
-          console.warn("[Test] ⚠️ localVideoRef.current is null");
+          console.warn("[Test] ⚠️ videoRef is null");
         }
-      } catch (err) {
-        console.error("[Test] ❌ Error getting media or playing video", err);
-        setError(err.message);
-      }
-    };
-
-    startVideo();
+      })
+      .catch((err) => {
+        console.error("[Test] ❌ Failed to acquire media:", err);
+      });
   }, []);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>🎥 Local Video Test</h2>
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+    <div>
+      <h2>Local Video Test</h2>
       <video
-        ref={localVideoRef}
+        ref={videoRef}
         autoPlay
         muted
         playsInline
         style={{
           width: 320,
           height: 240,
-          backgroundColor: "black",
-          border: "2px solid #ccc",
+          backgroundColor: "red",
+          border: "2px solid lime",
+          zIndex: 9999,
+          position: "relative",
         }}
       />
     </div>
