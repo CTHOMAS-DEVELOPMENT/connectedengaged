@@ -23,6 +23,7 @@ import GoodBye from "./system/GoodBye";
 import ProtectedRoute from "./ProtectedRoute";
 import WebRTCVideoTest from "./WebRTCVideoTest"
 import MicTest from "./MicTest"
+import LocalVideoTest from "./FeedScreen/LocalVideoTest"
 function App() {
   return (
     <Router>
@@ -35,6 +36,8 @@ function App() {
           <Route path="/child-safety" element={<ChildSafetyWithState />} /> {/* New Route for Child Safety */}
           <Route path="/webrtc-test" element={<WebRTCVideoTest />} />
           <Route path="/mic-test" element={<MicTest />} />
+          <Route path="/local-video-test" element={<LocalVideoTest />} />
+          
 {/* Protected Routes */}
           <Route
             path="/feed"

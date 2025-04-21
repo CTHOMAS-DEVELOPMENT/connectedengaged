@@ -728,126 +728,100 @@ remoteVideoRef.current.play?.().then(() => {
   const answerCall = () => {
     console.log("[FE] 📞 answerCall triggered by user click");
     console.log("[FE] 👤 caller object:", caller);
-    console.log("[FE] 📡 sending signal back to:", caller?.from);
-    console.log("[FE] 🛰 original signal from caller:", caller?.signal);
-  
+console.log("[FE] 📡 sending signal back to:", caller?.from);
+console.log("[FE] 🔁 original signal from caller:", caller?.signal);
+
     setInCall(true);
-  
-    requestPermissions()
-      .then((stream) => {
-        console.log("[FE] ✅ Media stream granted");
-        console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
-        console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
-  
-        stream.getTracks().forEach((track) => {
-          console.log(`[FE] 🎛 Track kind: ${track.kind}, readyState: ${track.readyState}, enabled: ${track.enabled}`);
-        });
-  
-        const assignLocalStream = () => {
-          if (!localVideoRef.current) {
-            console.warn("🚫 localVideoRef.current is null during delayed assignment");
-            return;
-          }
-  
+
+    requestPermissions().then((stream) => {
+      console.log("[FE] ✅ Media stream granted");
+      console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
+      console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+    
+      setTimeout(() => {
+        console.log("[FE] ⏳ setTimeout triggered");
+      
+        if (localVideoRef.current) {
           console.log("💥 I'm in the localVideoRef block in answer call!");
+          console.log("[FE] 🔍 Setting local video stream");
           localVideoRef.current.srcObject = stream;
-  
-          // WebView render quirk workaround
+      
           requestAnimationFrame(() => {
             localVideoRef.current.style.display = "none";
-            void localVideoRef.current.offsetHeight; // force reflow
+            void localVideoRef.current.offsetHeight;
             localVideoRef.current.style.display = "block";
           });
-  
-          try {
-            console.log(
-              "[FE] 📏 local video dimensions (before play):",
-              localVideoRef.current.videoWidth,
-              localVideoRef.current.videoHeight
-            );
-          } catch (err) {
-            console.warn("🚫 Error reading video dimensions before play:", err);
-          }
-  
-          localVideoRef.current.play?.()
+      
+          localVideoRef.current.play?.().then(() => {
+            console.log("[FE] 🎬 Local video playing!");
+            const { videoWidth, videoHeight } = localVideoRef.current;
+            console.log("[FE] 📏 After play dimensions:", videoWidth, videoHeight);
+          });
+        } else {
+          console.warn("⚠️ localVideoRef.current was still null after delay");
+        }
+      }, 500); // give React time to render video element
+    
+      const peer = new Peer({
+        initiator: false,
+        trickle: false,
+        stream: stream,
+      });
+    
+      peer.on("signal", (data) => {
+        console.log("[FE] 📤 Emitting signal:", data.type);
+        socketRef.current.emit("acceptCall", {
+          signal: data,
+          to: caller.from,
+        });
+      });
+    
+      peer.on("track", (track, remoteStream) => {
+        console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
+        console.log("[FE] 🧪 remoteStream.getTracks():", remoteStream.getTracks());
+        console.log("[FE] 🧪 remoteStream.getVideoTracks():", remoteStream.getVideoTracks());
+      
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = remoteStream;
+      
+          console.log("[FE] 🔎 remoteVideoRef.current.srcObject set");
+      
+          requestAnimationFrame(() => {
+            remoteVideoRef.current.style.display = "none";
+            void remoteVideoRef.current.offsetHeight;
+            remoteVideoRef.current.style.display = "block";
+          });
+      
+          remoteVideoRef.current.play?.()
             .then(() => {
-              console.log("[FE] 🎬 Local video playing!");
+              console.log("[FE] 🎬 Remote video playing!");
               setTimeout(() => {
                 console.log(
-                  "[FE] 📏 local video dimensions (after play):",
-                  localVideoRef.current.videoWidth,
-                  localVideoRef.current.videoHeight
+                  "[FE] 📏 remote video dimensions (after play):",
+                  remoteVideoRef.current.videoWidth,
+                  remoteVideoRef.current.videoHeight
                 );
               }, 1000);
             })
             .catch((err) => {
-              console.warn("🚫 Local video play failed:", err);
+              console.warn("🚫 Remote video play failed:", err);
             });
-        };
-  
-        // Immediate attempt
-        if (localVideoRef.current) {
-          assignLocalStream();
-        } else {
-          console.warn("⌛ localVideoRef not ready, deferring stream assignment...");
-          setTimeout(assignLocalStream, 500); // Retry after short delay
         }
-  
-        const peer = new Peer({
-          initiator: false,
-          trickle: false,
-          stream,
-        });
-  
-        peer.on("signal", (data) => {
-          console.log("[FE] 📤 Emitting signal:", data.type);
-          socketRef.current.emit("acceptCall", {
-            signal: data,
-            to: caller.from,
-          });
-        });
-  
-        peer.on("track", (track, remoteStream) => {
-          console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = remoteStream;
-            console.log("[FE] 🎥 remoteRef videoTracks:", remoteStream?.getVideoTracks());
-  
-            requestAnimationFrame(() => {
-              remoteVideoRef.current.style.display = "none";
-              void remoteVideoRef.current.offsetHeight;
-              remoteVideoRef.current.style.display = "block";
-            });
-  
-            remoteVideoRef.current.play?.()
-              .then(() => {
-                console.log("[FE] 🎬 Remote video playing!");
-              })
-              .catch((err) => {
-                console.warn("🚫 Remote video play failed:", err);
-              });
-          }
-        });
-  
-        peer.on("close", () => {
-          endCall();
-        });
-  
-        peer.signal(caller.signal);
-        peerRef.current = peer;
-      })
-      .catch((error) => {
-        console.error("[FE] ❌ Media access failed:", error);
-        setMessage(
-          translations[languageCode]?.feedScreen?.cameraOrMicError ||
-          "Error accessing camera or microphone. Please check your device settings."
-        );
-        setType("error");
-        setAlertKey((prevKey) => prevKey + 1);
-        setInCall(false);
       });
+      
+    
+      peer.on("close", () => {
+        endCall();
+      });
+    
+      console.log("[FE] 🔄 Sending signal back to caller:", caller.signal);
+      peer.signal(caller.signal);
+      console.log("[FE] ✅ peer.signal(caller.signal) called — awaiting 'track' event...");
+
+      peerRef.current = peer;
+    });
+    
   };
-  
   const launchLiveCallCentre = () => {
     const updatedAssociatedUsers = associatedUsers.map((user) => {
       return {
@@ -1366,15 +1340,7 @@ remoteVideoRef.current.play?.().then(() => {
   ref={localVideoRef}
   autoPlay
   muted
-  style={{
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "200px",
-    height: "150px",
-    backgroundColor: "black",
-    zIndex: 9999,
-  }}
+  style={{ backgroundColor: "black" }}
 />
 
 
