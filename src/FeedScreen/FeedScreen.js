@@ -712,40 +712,29 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
       console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
       console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
     
-      if (localVideoRef.current) {
-        console.log("[FE] 🔍 Setting local video stream");
-        console.log("💥 I'm in the localVideoRef block in answer call!");
-        localVideoRef.current.srcObject = stream;
-    
-        requestAnimationFrame(() => {
-          localVideoRef.current.style.display = "none";
-          void localVideoRef.current.offsetHeight;
-          localVideoRef.current.style.display = "block";
-        });
-        
-        setTimeout(() => {
-          try {
-            const width = localVideoRef.current?.videoWidth;
-            const height = localVideoRef.current?.videoHeight;
-            console.log("[FE] ⏱ DELAYED video dimensions:", width, height);
-          } catch (err) {
-            console.warn("🚫 Error reading video dimensions after delay:", err);
-          }
-        }, 2000);
-        
-        localVideoRef.current.play?.()
-          .then(() => {
-            console.log("[FE] 🎬 Local video playing!");
-            setTimeout(() => {
-              const w = localVideoRef.current?.videoWidth;
-              const h = localVideoRef.current?.videoHeight;
-              console.log("[FE] 📏 local video dimensions (after play):", w, h);
-            }, 1000);
-          })
-          .catch((err) => {
-            console.warn("🚫 Local video play failed:", err);
+      setTimeout(() => {
+        console.log("[FE] ⏳ setTimeout triggered");
+      
+        if (localVideoRef.current) {
+          console.log("💥 I'm in the localVideoRef block in answer call!");
+          console.log("[FE] 🔍 Setting local video stream");
+          localVideoRef.current.srcObject = stream;
+      
+          requestAnimationFrame(() => {
+            localVideoRef.current.style.display = "none";
+            void localVideoRef.current.offsetHeight;
+            localVideoRef.current.style.display = "block";
           });
-      }
+      
+          localVideoRef.current.play?.().then(() => {
+            console.log("[FE] 🎬 Local video playing!");
+            const { videoWidth, videoHeight } = localVideoRef.current;
+            console.log("[FE] 📏 After play dimensions:", videoWidth, videoHeight);
+          });
+        } else {
+          console.warn("⚠️ localVideoRef.current was still null after delay");
+        }
+      }, 500); // give React time to render video element
     
       const peer = new Peer({
         initiator: false,
@@ -1309,13 +1298,17 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
             )}
             {inCall && (
               <div className="video-call-container">
-                <video
-                  ref={localVideoRef}
-                  autoPlay
-                  muted
-                  className="local-video"
-                  style={{ backgroundColor: "black" }}
-                />
+<video
+  ref={(ref) => {
+    localVideoRef.current = ref;
+    console.log("🎯 Video ref mounted:", !!ref);
+  }}
+  autoPlay
+  muted
+  className="local-video"
+  style={{ backgroundColor: "black" }}
+/>
+
                 <Button
                   variant="outline-danger"
                   className="btn-icon"
