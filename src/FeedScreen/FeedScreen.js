@@ -777,28 +777,38 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
       });
     
       peer.on("track", (track, remoteStream) => {
-        
         console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
+        console.log("[FE] 🧪 remoteStream.getTracks():", remoteStream.getTracks());
+        console.log("[FE] 🧪 remoteStream.getVideoTracks():", remoteStream.getVideoTracks());
+      
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
-          console.log("[FE] 🎥 remoteRef.srcObject:", remoteVideoRef.current?.srcObject);
-          console.log("[FE] 🎥 remoteRef videoTracks:", remoteVideoRef.current?.srcObject?.getVideoTracks());
-          
+      
+          console.log("[FE] 🔎 remoteVideoRef.current.srcObject set");
+      
           requestAnimationFrame(() => {
             remoteVideoRef.current.style.display = "none";
             void remoteVideoRef.current.offsetHeight;
             remoteVideoRef.current.style.display = "block";
           });
-    
+      
           remoteVideoRef.current.play?.()
             .then(() => {
               console.log("[FE] 🎬 Remote video playing!");
+              setTimeout(() => {
+                console.log(
+                  "[FE] 📏 remote video dimensions (after play):",
+                  remoteVideoRef.current.videoWidth,
+                  remoteVideoRef.current.videoHeight
+                );
+              }, 1000);
             })
             .catch((err) => {
               console.warn("🚫 Remote video play failed:", err);
             });
         }
       });
+      
     
       peer.on("close", () => {
         endCall();
@@ -806,6 +816,8 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
     
       console.log("[FE] 🔄 Sending signal back to caller:", caller.signal);
       peer.signal(caller.signal);
+      console.log("[FE] ✅ peer.signal(caller.signal) called — awaiting 'track' event...");
+
       peerRef.current = peer;
     });
     
