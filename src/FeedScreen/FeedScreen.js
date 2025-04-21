@@ -635,9 +635,35 @@ const FeedScreen = () => {
         });
         if (localVideoRef.current) {
           console.log("💥 I'm in the localVideoRef block!");
-          console.log("[FE] 🔍 Setting local video stream");
           localVideoRef.current.srcObject = stream;
+        
+          // Delay play until after display toggle
+          requestAnimationFrame(() => {
+            localVideoRef.current.style.display = "none";
+            void localVideoRef.current.offsetHeight; // trigger reflow
+            localVideoRef.current.style.display = "block";
+        
+            // Wait one more tick to let browser apply layout changes
+            setTimeout(() => {
+              const { videoWidth, videoHeight } = localVideoRef.current;
+              console.log("[FE] 📏 local video dimensions (before play):", videoWidth, videoHeight);
+        
+              localVideoRef.current.play?.()
+                .then(() => {
+                  console.log("[FE] 🎬 Local video playing!");
+                  setTimeout(() => {
+                    const w = localVideoRef.current?.videoWidth;
+                    const h = localVideoRef.current?.videoHeight;
+                    console.log("[FE] 📏 local video dimensions (after play):", w, h);
+                  }, 1000);
+                })
+                .catch((err) => {
+                  console.warn("🚫 Local video play failed:", err);
+                });
+            }, 100); // slight delay after display flip
+          });
         }
+        
 
         const peer = new Peer({
           initiator: true,
