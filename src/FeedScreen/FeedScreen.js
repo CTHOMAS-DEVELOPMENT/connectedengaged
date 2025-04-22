@@ -45,7 +45,7 @@ import {
   EnvelopePlusFill,
   EnvelopeSlashFill,
   Telephone,
-  TelephoneFill,
+  //TelephoneFill,
 } from "react-bootstrap-icons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { checkAuthorization } from "../system/authService";
