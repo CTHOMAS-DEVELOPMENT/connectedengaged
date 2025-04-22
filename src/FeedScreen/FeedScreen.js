@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AlertMessage from "../system/AlertMessage";
 import { requestPermissions } from "../system/permissionsService";
 import io from "socket.io-client";
+import LocalVideo from "./LocalVideo"
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
 import TextEntry from "../TextEntry/TextEntry";
@@ -1332,36 +1333,8 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
                 role="alert"
               />
             )}
-            {inCall && (
-              <div className="video-call-container">
-<video
-  ref={localVideoRef}
-  autoPlay
-  muted
-  style={{
-    backgroundColor: "red",
-    border: "2px solid lime",
-    width: 320,
-    height: 240,
-    zIndex: 999,
-  }}
-/>
+            {inCall && <LocalVideo />}
 
-
-                <Button
-                  variant="outline-danger"
-                  className="btn-icon"
-                  onClick={endCall}
-                  aria-label={
-                    translations[languageCode]?.feedScreen?.endCall ||
-                    "End the call"
-                  }
-                >
-                  <TelephoneFill size={25} />
-                </Button>
-                <video ref={remoteVideoRef} autoPlay className="remote-video" style={{ backgroundColor: "black" }}/>
-              </div>
-            )}
           </>
         )}
 
