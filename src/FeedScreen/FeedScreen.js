@@ -45,7 +45,7 @@ import {
   EnvelopePlusFill,
   EnvelopeSlashFill,
   Telephone,
-  //TelephoneFill,
+  TelephoneFill,
 } from "react-bootstrap-icons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { checkAuthorization } from "../system/authService";
@@ -1333,7 +1333,35 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
                 role="alert"
               />
             )}
-            {inCall && <LocalVideo />}
+            {inCall && (
+  <div className="video-call-container">
+    <LocalVideo />  {/* ✅ Known working local video */}
+
+    <Button
+      variant="outline-danger"
+      className="btn-icon"
+      onClick={endCall}
+      aria-label={
+        translations[languageCode]?.feedScreen?.endCall || "End the call"
+      }
+    >
+      <TelephoneFill size={25} />
+    </Button>
+
+    <video
+      ref={remoteVideoRef}
+      autoPlay
+      className="remote-video"
+      style={{
+        backgroundColor: "black",
+        border: "2px solid blue",
+        width: 320,
+        height: 240,
+      }}
+    />
+  </div>
+)}
+
 
           </>
         )}
