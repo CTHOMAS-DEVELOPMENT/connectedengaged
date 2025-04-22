@@ -742,24 +742,22 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
         console.log("[FE] ⏳ setTimeout triggered");
       
         if (localVideoRef.current) {
-          console.log("💥 I'm in the localVideoRef block in answer call!");
-          console.log("[FE] 🔍 Setting local video stream");
+          console.log("🎯 Attaching stream to localVideoRef");
           localVideoRef.current.srcObject = stream;
-      
+        
           requestAnimationFrame(() => {
             localVideoRef.current.style.display = "none";
             void localVideoRef.current.offsetHeight;
             localVideoRef.current.style.display = "block";
           });
-      
+        
           localVideoRef.current.play?.().then(() => {
-            console.log("[FE] 🎬 Local video playing!");
-            const { videoWidth, videoHeight } = localVideoRef.current;
-            console.log("[FE] 📏 After play dimensions:", videoWidth, videoHeight);
-          });
+            console.log("🎬 local video playing");
+          }).catch(console.error);
         } else {
-          console.warn("⚠️ localVideoRef.current was still null after delay");
+          console.warn("🚫 localVideoRef.current was null");
         }
+        
       }, 500); // give React time to render video element
     
       const peer = new Peer({
@@ -1340,7 +1338,13 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
   ref={localVideoRef}
   autoPlay
   muted
-  style={{ backgroundColor: "black" }}
+  style={{
+    backgroundColor: "red",
+    border: "2px solid lime",
+    width: 320,
+    height: 240,
+    zIndex: 999,
+  }}
 />
 
 
