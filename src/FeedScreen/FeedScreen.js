@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AlertMessage from "../system/AlertMessage";
 import { requestPermissions } from "../system/permissionsService";
 import io from "socket.io-client";
-import LocalVideo from "./LocalVideo";
 import AllVideo from "./AllVideo";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
