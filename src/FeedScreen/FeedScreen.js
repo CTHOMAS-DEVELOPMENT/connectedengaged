@@ -776,14 +776,11 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
       });
     
       peer.on("track", (track, remoteStream) => {
-        console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
-        console.log("[FE] 🧪 remoteStream.getTracks():", remoteStream.getTracks());
-        console.log("[FE] 🧪 remoteStream.getVideoTracks():", remoteStream.getVideoTracks());
+        console.log("[FE] 🎯 peer.on(track) fired:", track.kind);
+        console.log("[FE] 🌊 Remote stream tracks:", remoteStream.getTracks());
       
         if (remoteVideoRef.current) {
           remoteVideoRef.current.srcObject = remoteStream;
-      
-          console.log("[FE] 🔎 remoteVideoRef.current.srcObject set");
       
           requestAnimationFrame(() => {
             remoteVideoRef.current.style.display = "none";
@@ -792,21 +789,11 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
           });
       
           remoteVideoRef.current.play?.()
-            .then(() => {
-              console.log("[FE] 🎬 Remote video playing!");
-              setTimeout(() => {
-                console.log(
-                  "[FE] 📏 remote video dimensions (after play):",
-                  remoteVideoRef.current.videoWidth,
-                  remoteVideoRef.current.videoHeight
-                );
-              }, 1000);
-            })
-            .catch((err) => {
-              console.warn("🚫 Remote video play failed:", err);
-            });
+            .then(() => console.log("[FE] 🎬 Remote video playing!"))
+            .catch(err => console.warn("🚫 Remote video play failed:", err));
         }
       });
+      
       
     
       peer.on("close", () => {
