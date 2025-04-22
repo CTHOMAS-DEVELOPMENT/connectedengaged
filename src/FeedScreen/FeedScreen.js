@@ -1262,18 +1262,25 @@ const FeedScreen = () => {
               />
             )}
             {inCall && (
-              <div className="video-call-container">
-                <AllVideo stream={localStream} label="Local" muted={true} />
-                <Button
-                  variant="outline-danger"
-                  className="btn-icon"
-                  onClick={endCall}
-                >
-                  <TelephoneFill size={25} />
-                </Button>
-                <AllVideo stream={remoteStream} label="Remote" />
-              </div>
-            )}
+  <div className="video-call-container">
+    {localStream && (
+      <AllVideo stream={localStream} label="Local" muted={true} />
+    )}
+    <Button
+      variant="outline-danger"
+      className="btn-icon"
+      onClick={endCall}
+    >
+      <TelephoneFill size={25} />
+    </Button>
+    {remoteStream && (
+      <AllVideo stream={remoteStream} label="Remote" />
+    )}
+  </div>
+)}
+{!localStream && <p>Loading local video...</p>}
+{!remoteStream && inCall && <p>Waiting for remote user...</p>}
+
           </>
         )}
 
