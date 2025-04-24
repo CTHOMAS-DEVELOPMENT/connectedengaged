@@ -699,32 +699,33 @@ const FeedScreen = () => {
 
         //peer.on("stream", (stream) => {
         peer.on("track", (track, stream) => {
-          //console.log("[FE] 📺 Remote stream received:", stream);
-          console.log("[FE] 📺 Remote track, stream received?");
-          console.log("[FE] 🎯 peer.on(track) fired:", track.kind, stream);
-          console.log("[FE] 📺 Remote stream received:", stream);
-          if (remoteVideoRef.current) {
-            //remoteVideoRef.current.srcObject = stream;
+          console.log("[FE] 🎯 peer.on('track') fired!");
+          console.log("[FE] 👉 Track kind:", track.kind);
+          console.log("[FE] 👉 Stream ID:", stream?.id);
+          console.log("[FE] 👉 Stream active:", stream?.active);
+          console.log("[FE] 👉 Stream tracks:", stream.getTracks());
+
+          if (stream && stream.getTracks().length > 0) {
+            console.log(
+              "[FE] ✅ Valid remote stream received, setting state..."
+            );
             setRemoteStream(stream);
-
-            // 💡 Force re-render of <video> for WebView quirk
-            requestAnimationFrame(() => {
-              remoteVideoRef.current.style.display = "none";
-              void remoteVideoRef.current.offsetHeight; // force reflow
-              remoteVideoRef.current.style.display = "block";
-            });
-
-            remoteVideoRef.current
-              .play?.()
-              .then(() => {
-                console.log("[FE] 🎬 Remote video playing!");
-              })
-              .catch((err) => {
-                console.warn("🚫 Remote video play failed:", err);
-              });
+          } else {
+            console.warn(
+              "[FE] ⚠️ Received track event but stream is invalid or empty."
+            );
           }
         });
 
+        peer.on("connect", () => {
+          console.log("[FE] 🚀 Peer connection established!");
+        });
+        peer.on("stream", (stream) => {
+          console.log("[FE] 🎥 peer.on('stream') fallback fired:", stream);
+      });
+        peer.on("error", (err) => {
+          console.error("[FE] ❌ Peer connection error:", err);
+        });
         peer.on("close", () => {
           endCall();
         });
@@ -803,7 +804,7 @@ const FeedScreen = () => {
         console.log("[FE] 🌊 Remote stream tracks:", remoteStream.getTracks());
 
         if (remoteVideoRef.current) {
-          setRemoteStream(remoteStream)
+          setRemoteStream(remoteStream);
 
           requestAnimationFrame(() => {
             remoteVideoRef.current.style.display = "none";
@@ -1355,36 +1356,38 @@ const FeedScreen = () => {
               />
             )}
             {inCall && (
-  <div
-    className="video-call-container"
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      marginTop: "20px",
-      border: "2px solid blue",
-      padding: "10px"
-    }}
-  >
-    <h3>📞 Video Call Debug Mode</h3>
-    <p>Remote Stream Status: {remoteStream ? "✅ Stream Set" : "❌ No Stream Yet"}</p>
+              <div
+                className="video-call-container"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginTop: "20px",
+                  border: "2px solid blue",
+                  padding: "10px",
+                }}
+              >
+                <h3>📞 Video Call Debug Mode</h3>
+                <p>
+                  Remote Stream Status:{" "}
+                  {remoteStream ? "✅ Stream Set" : "❌ No Stream Yet"}
+                </p>
 
-    <div style={{ display: "flex", gap: "20px" }}>
-      <LocalVideo />
-      <RemoteVideo stream={remoteStream} />
-    </div>
+                <div style={{ display: "flex", gap: "20px" }}>
+                  <LocalVideo />
+                  <RemoteVideo stream={remoteStream} />
+                </div>
 
-    <Button
-      variant="outline-danger"
-      className="btn-icon"
-      onClick={endCall}
-      style={{ marginTop: "10px" }}
-    >
-      End Call
-    </Button>
-  </div>
-)}
-
+                <Button
+                  variant="outline-danger"
+                  className="btn-icon"
+                  onClick={endCall}
+                  style={{ marginTop: "10px" }}
+                >
+                  End Call
+                </Button>
+              </div>
+            )}
           </>
         )}
 
