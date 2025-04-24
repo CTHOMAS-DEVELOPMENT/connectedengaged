@@ -4,6 +4,7 @@ import AlertMessage from "../system/AlertMessage";
 import { requestPermissions } from "../system/permissionsService";
 import io from "socket.io-client";
 import LocalVideo from "./LocalVideo";
+import RemoteVideo from "./RemoteVideo";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
 import TextEntry from "../TextEntry/TextEntry";
@@ -89,6 +90,7 @@ const FeedScreen = () => {
   const [reportPostId, setReportPostId] = useState(null); // Stores post ID being reported
   const [isSendEnabled, setIsSendEnabled] = useState(false); // Controls Send button
   const [reportPostType, setReportPostType] = useState("");
+  const [remoteStream, setRemoteStream] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerRef = useRef(null);
@@ -702,7 +704,9 @@ const FeedScreen = () => {
           console.log("[FE] 🎯 peer.on(track) fired:", track.kind, stream);
           console.log("[FE] 📺 Remote stream received:", stream);
           if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
+            //remoteVideoRef.current.srcObject = stream;
+            setRemoteStream(stream);
+
             // 💡 Force re-render of <video> for WebView quirk
             requestAnimationFrame(() => {
               remoteVideoRef.current.style.display = "none";
@@ -799,7 +803,7 @@ const FeedScreen = () => {
         console.log("[FE] 🌊 Remote stream tracks:", remoteStream.getTracks());
 
         if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = remoteStream;
+          setRemoteStream(remoteStream)
 
           requestAnimationFrame(() => {
             remoteVideoRef.current.style.display = "none";
@@ -1373,18 +1377,8 @@ const FeedScreen = () => {
                 >
                   <TelephoneFill size={25} />
                 </Button>
-                <video
-                  ref={remoteVideoRef}
-                  autoPlay
-                  className="remote-video"
-                  style={{
-                    backgroundColor: "black",
-                    border: "2px solid blue",
-                    width: 320,
-                    height: 240,
-                  }}
-                />
-              </div>
+                {remoteStream && <RemoteVideo stream={remoteStream} />}
+                </div>
             )}
           </>
         )}
