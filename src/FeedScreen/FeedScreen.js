@@ -1355,31 +1355,36 @@ const FeedScreen = () => {
               />
             )}
             {inCall && (
-              <div
-                className="video-call-container"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "20px",
-                  marginTop: "20px",
-                }}
-              >
-                <LocalVideo /> {/* Local video preview */}
-                <Button
-                  variant="outline-danger"
-                  className="btn-icon"
-                  onClick={endCall}
-                  aria-label={
-                    translations[languageCode]?.feedScreen?.endCall ||
-                    "End the call"
-                  }
-                >
-                  <TelephoneFill size={25} />
-                </Button>
-                {remoteStream && <RemoteVideo stream={remoteStream} />}
-                </div>
-            )}
+  <div
+    className="video-call-container"
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: "20px",
+      border: "2px solid blue",
+      padding: "10px"
+    }}
+  >
+    <h3>📞 Video Call Debug Mode</h3>
+    <p>Remote Stream Status: {remoteStream ? "✅ Stream Set" : "❌ No Stream Yet"}</p>
+
+    <div style={{ display: "flex", gap: "20px" }}>
+      <LocalVideo />
+      <RemoteVideo stream={remoteStream} />
+    </div>
+
+    <Button
+      variant="outline-danger"
+      className="btn-icon"
+      onClick={endCall}
+      style={{ marginTop: "10px" }}
+    >
+      End Call
+    </Button>
+  </div>
+)}
+
           </>
         )}
 
