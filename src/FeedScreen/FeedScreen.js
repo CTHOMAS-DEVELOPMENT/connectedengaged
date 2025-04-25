@@ -775,90 +775,113 @@ const FeedScreen = () => {
     console.log("[FE] 📡 sending signal back to:", caller?.from);
     console.log("[FE] 🔁 original signal from caller:", caller?.signal);
 
+    // Validate caller.signal before proceeding
+    if (!caller?.signal || !caller.signal.type || !caller.signal.sdp) {
+        console.error("[FE] 🚨 Invalid caller signal detected! Aborting answerCall.", caller.signal);
+        return;
+    }
+
     setInCall(true);
 
-    requestPermissions().then((stream) => {
-      console.log("[FE] ✅ Media stream granted");
-      console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
-      console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+    requestPermissions()
+      .then((stream) => {
+        console.log("[FE] ✅ Media stream granted");
+        console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
+        console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
 
-      setTimeout(() => {
-        console.log("[FE] ⏳ setTimeout triggered");
+        setTimeout(() => {
+          console.log("[FE] ⏳ setTimeout triggered");
 
-        if (localVideoRef.current) {
-          console.log("🎯 Attaching stream to localVideoRef");
-          localVideoRef.current.srcObject = stream;
+          if (localVideoRef.current) {
+            console.log("🎯 Attaching stream to localVideoRef");
+            localVideoRef.current.srcObject = stream;
 
-          requestAnimationFrame(() => {
-            localVideoRef.current.style.display = "none";
-            void localVideoRef.current.offsetHeight;
-            localVideoRef.current.style.display = "block";
+            requestAnimationFrame(() => {
+              localVideoRef.current.style.display = "none";
+              void localVideoRef.current.offsetHeight;
+              localVideoRef.current.style.display = "block";
+            });
+
+            localVideoRef.current
+              .play?.()
+              .then(() => console.log("🎬 local video playing"))
+              .catch(err => console.error("🚫 Local video play failed:", err));
+          } else {
+            console.warn("🚫 localVideoRef.current was null");
+          }
+        }, 500); 
+
+        try {
+          console.log("[FE] 🛠 Attempting to create Peer connection...");
+          const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream: stream,
+          });
+          console.log("[FE] 🚀 Peer connection initialized. Initiator (answerCall):", peer.initiator);
+
+          peer.on("signal", (data) => {
+            console.log("[FE] 📤 Emitting signal (answerCall):", data.type);
+            socketRef.current.emit("acceptCall", {
+              signal: data,
+              to: caller.from,
+            });
           });
 
-          localVideoRef.current
-            .play?.()
-            .then(() => {
-              console.log("🎬 local video playing");
-            })
-            .catch(console.error);
-        } else {
-          console.warn("🚫 localVideoRef.current was null");
-        }
-      }, 500); // give React time to render video element
+          peer.on("track", (track, remoteStream) => {
+            console.log("[FE] 🎯 peer.on('track') fired (answerCall)!");
+            console.log("[FE] 👉 Track kind:", track.kind);
+            console.log("[FE] 👉 Remote Stream ID:", remoteStream?.id);
+            console.log("[FE] 👉 Remote Stream active:", remoteStream?.active);
+            console.log("[FE] 👉 Remote Stream tracks:", remoteStream.getTracks());
 
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream: stream,
-      });
-      console.log("[FE] 🚀 Peer connection initialized. Initiator (answerCall):", peer.initiator);
-      if (peer._pc) {
-        peer._pc.addEventListener("iceconnectionstatechange", () => {
-          console.log("[FE] ❄️ [RAW] ICE state changed:", peer._pc.iceConnectionState);
-        });
-      }
-      
-      peer.on("signal", (data) => {
-        console.log("[FE] 📤 Emitting signal:", data.type);
-        socketRef.current.emit("acceptCall", {
-          signal: data,
-          to: caller.from,
-        });
-      });
-
-      peer.on("track", (track, remoteStream) => {
-        console.log("[FE] 🎯 peer.on(track) fired (answerCall):", track.kind);
-        console.log("[FE] 🌊 Remote stream tracks (answerCall):", remoteStream.getTracks());
-
-        if (remoteVideoRef.current) {
-          setRemoteStream(remoteStream);
-
-          requestAnimationFrame(() => {
-            remoteVideoRef.current.style.display = "none";
-            void remoteVideoRef.current.offsetHeight;
-            remoteVideoRef.current.style.display = "block";
+            if (remoteStream && remoteStream.getTracks().length > 0) {
+              console.log("[FE] ✅ Valid remote stream received, updating state...");
+              setRemoteStream(remoteStream);
+            } else {
+              console.warn("[FE] ⚠️ Received track but stream is invalid or empty.");
+            }
           });
 
-          remoteVideoRef.current
-            .play?.()
-            .then(() => console.log("[FE] 🎬 Remote video playing!"))
-            .catch((err) => console.warn("🚫 Remote video play failed:", err));
+          peer.on("connect", () => {
+            console.log("[FE] 🚀 Peer connection established (answerCall)!");
+          });
+
+          peer.on("error", (err) => {
+            console.error("[FE] ❌ Peer error (answerCall):", err);
+          });
+
+          peer.on("close", () => {
+            console.log("[FE] 🔒 Peer connection closed (answerCall)");
+            endCall();
+          });
+
+          peer.on('iceStateChange', () => {
+            console.log("[FE] ❄️ ICE connection state (answerCall):", peer._pc.iceConnectionState);
+          });
+
+          peerRef.current = peer;
+
+          console.log("[FE] 🔄 Sending signal back to caller via peer.signal...");
+          peer.signal(caller.signal);
+          console.log("[FE] ✅ peer.signal(caller.signal) called — awaiting 'track' event...");
+
+        } catch (err) {
+          console.error("[FE] ❌ Exception during Peer setup (answerCall):", err);
         }
+      })
+      .catch((error) => {
+        console.error("[FE] ❌ Media access failed (answerCall):", error);
+        setMessage(
+          translations[languageCode]?.feedScreen?.cameraOrMicError ||
+            "Error accessing camera or microphone. Please check your device settings."
+        );
+        setType("error");
+        setAlertKey((prevKey) => prevKey + 1);
+        setInCall(false);
       });
+};
 
-      peer.on("close", () => {
-        endCall();
-      });
-
-      console.log("[FE] 🔄 Sending signal back to caller:", caller.signal);
-      peer.signal(caller.signal);
-      console.log(
-        "[FE] ✅ peer.signal(caller.signal) called — awaiting 'track' event..."
-      );
-
-      peerRef.current = peer;
-    });
-  };
   const launchLiveCallCentre = () => {
     const updatedAssociatedUsers = associatedUsers.map((user) => {
       return {
