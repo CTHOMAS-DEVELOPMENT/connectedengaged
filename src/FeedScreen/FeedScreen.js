@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AlertMessage from "../system/AlertMessage";
-import { requestPermissions } from "../system/permissionsService";
 import io from "socket.io-client";
 import PhotoUploadAndEdit from "../PhotoUploadAndEdit/PhotoUploadAndEdit";
 import TextUpdate from "../TextEntry/TextUpdate";
@@ -136,6 +135,61 @@ const FeedScreen = () => {
   }, []);
 
   useEffect(() => {
+    const handleMessage = (event) => {
+      try {
+        // Attempt to parse the message data
+        const message = JSON.parse(event.data);
+        console.log('Received message:', message);
+  
+        // Check if the message type is 'permissionsGranted'
+        if (message.type === 'permissionsGranted') {
+          console.log('Permissions granted message received');
+          requestMediaAccess();
+        }
+      } catch (error) {
+        console.error('Error parsing message data:', error);
+        console.log('Raw message data:', event.data);
+      }
+    };
+  
+    const requestMediaAccess = () => {
+      // Attempt to access the microphone and camera
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          console.log('Media access granted');
+  
+          // Assign the local stream to the local video element
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = stream;
+          }
+  
+          // If you're using WebRTC, handle the remote stream here
+        })
+        .catch((error) => {
+          console.error('Error accessing media devices:', error);
+        });
+    };
+  
+    // Check if running inside a React Native WebView
+    if (window.ReactNativeWebView) {
+      console.log('Running inside a React Native WebView');
+      // Listen for messages from React Native
+      window.addEventListener('message', handleMessage);
+    } else {
+      console.log('Running in a browser');
+      // Directly request media access in the browser
+      requestMediaAccess();
+    }
+  
+    // Clean up the event listener
+    return () => {
+      if (window.ReactNativeWebView) {
+        window.removeEventListener('message', handleMessage);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     const socket = isLocal
       ? io(process.env.REACT_APP_BACKEND_HOST) // Development environment, no transport options needed
       : io(process.env.REACT_APP_BACKEND_HOST, {
@@ -144,37 +198,22 @@ const FeedScreen = () => {
     socketRef.current = socket; // Save socket instance
 
     socket.on("connect", () => {
-      console.log("Socket connected testing 1");
-      setTimeout(() => {
-        console.log("[FE] 🔁 Sending test ping to backend");
-        socket.emit("pingTest", { userId });
-      }, 5000);
-      
-      console.log("[FE] ✅ WebSocket connected in WebView?", socket.connected);
+      //console.log("Socket connected");
       socket.emit("register", { userId, submissionIds: [submissionId] });
       socket.emit("enter screen", { userId, submissionId });
     });
 
     socket.on("incomingCall", (data) => {
-      console.log("[FE] 📞 incomingCall received:", data);
       setCaller(data);
     });
 
     socket.on("callAccepted", (signal) => {
-      console.log("[FE] 📥 Received callAccepted signal:", signal?.type, signal?.sdp);
-    
-      if (!signal?.sdp) {
-        console.warn("⚠️ callAccepted received with missing SDP");
-      }
-    
+      //console.log("Call accepted:", signal);
       if (peerRef.current) {
-        console.log("[FE] 🔁 Signaling peer with callAccepted signal");
         peerRef.current.signal(signal);
-      } else {
-        console.warn("⚠️ peerRef.current is null, can't signal");
       }
     });
-    
+
     socket.on("active users update", (activeUsers) => {
       //console.log("Active users update:", activeUsers);
       setActiveUsersList(activeUsers);
@@ -625,45 +664,12 @@ const FeedScreen = () => {
     );
     // Send email notification
     setInCall(true);
-    requestPermissions()
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
       .then((stream) => {
-        console.log("[FE] ✅ Media stream granted");
-        console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
-        console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
-        stream.getTracks().forEach((track) => {
-          console.log(`[FE] 🎛 Track kind: ${track.kind}, readyState: ${track.readyState}, enabled: ${track.enabled}`);
-        });
         if (localVideoRef.current) {
-          console.log("💥 I'm in the localVideoRef block!");
           localVideoRef.current.srcObject = stream;
-        
-          // Delay play until after display toggle
-          requestAnimationFrame(() => {
-            localVideoRef.current.style.display = "none";
-            void localVideoRef.current.offsetHeight; // trigger reflow
-            localVideoRef.current.style.display = "block";
-        
-            // Wait one more tick to let browser apply layout changes
-            setTimeout(() => {
-              const { videoWidth, videoHeight } = localVideoRef.current;
-              console.log("[FE] 📏 local video dimensions (before play):", videoWidth, videoHeight);
-        
-              localVideoRef.current.play?.()
-                .then(() => {
-                  console.log("[FE] 🎬 Local video playing!");
-                  setTimeout(() => {
-                    const w = localVideoRef.current?.videoWidth;
-                    const h = localVideoRef.current?.videoHeight;
-                    console.log("[FE] 📏 local video dimensions (after play):", w, h);
-                  }, 1000);
-                })
-                .catch((err) => {
-                  console.warn("🚫 Local video play failed:", err);
-                });
-            }, 100); // slight delay after display flip
-          });
         }
-        
 
         const peer = new Peer({
           initiator: true,
@@ -672,7 +678,6 @@ const FeedScreen = () => {
         });
 
         peer.on("signal", (data) => {
-          console.log("[FE] 📤 Emitting signal:", data.type);
           socketRef.current.emit("callUser", {
             userToCall,
             signalData: data,
@@ -680,26 +685,9 @@ const FeedScreen = () => {
           });
         });
 
-        //peer.on("stream", (stream) => {
-          peer.on("track", (track, stream) => {
-            //console.log("[FE] 📺 Remote stream received:", stream);
-            console.log("[FE] 📺 Remote track, stream received?")
-            console.log("[FE] 🎯 peer.on(track) fired:", track.kind, stream);
-          console.log("[FE] 📺 Remote stream received:", stream);
+        peer.on("stream", (stream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = stream;
-// 💡 Force re-render of <video> for WebView quirk
-requestAnimationFrame(() => {
-  remoteVideoRef.current.style.display = "none";
-  void remoteVideoRef.current.offsetHeight; // force reflow
-  remoteVideoRef.current.style.display = "block";
-});
-
-remoteVideoRef.current.play?.().then(() => {
-  console.log("[FE] 🎬 Remote video playing!");
-}).catch((err) => {
-  console.warn("🚫 Remote video play failed:", err);
-});
           }
         });
 
@@ -714,7 +702,7 @@ remoteVideoRef.current.play?.().then(() => {
         peerRef.current = peer;
       })
       .catch((error) => {
-        console.error("[FE] ❌ Media access failed:", error);
+        console.error("Failed to start media devices:", error);
         setMessage(
           translations[languageCode]?.feedScreen?.cameraOrMicError ||
             "Error accessing camera or microphone. Please check your device settings."
@@ -726,100 +714,43 @@ remoteVideoRef.current.play?.().then(() => {
   };
 
   const answerCall = () => {
-    console.log("[FE] 📞 answerCall triggered by user click");
-    console.log("[FE] 👤 caller object:", caller);
-console.log("[FE] 📡 sending signal back to:", caller?.from);
-console.log("[FE] 🔁 original signal from caller:", caller?.signal);
-
     setInCall(true);
 
-    requestPermissions().then((stream) => {
-      console.log("[FE] ✅ Media stream granted");
-      console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
-      console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
-    
-      setTimeout(() => {
-        console.log("[FE] ⏳ setTimeout triggered");
-      
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
         if (localVideoRef.current) {
-          console.log("🎯 Attaching stream to localVideoRef");
           localVideoRef.current.srcObject = stream;
-        
-          requestAnimationFrame(() => {
-            localVideoRef.current.style.display = "none";
-            void localVideoRef.current.offsetHeight;
-            localVideoRef.current.style.display = "block";
-          });
-        
-          localVideoRef.current.play?.().then(() => {
-            console.log("🎬 local video playing");
-          }).catch(console.error);
-        } else {
-          console.warn("🚫 localVideoRef.current was null");
         }
-        
-      }, 500); // give React time to render video element
-    
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
-        stream: stream,
-      });
-    
-      peer.on("signal", (data) => {
-        console.log("[FE] 📤 Emitting signal:", data.type);
-        socketRef.current.emit("acceptCall", {
-          signal: data,
-          to: caller.from,
-        });
-      });
-    
-      peer.on("track", (track, remoteStream) => {
-        console.log("[FE] 🎯 peer.on(track) fired:", track.kind, remoteStream);
-        console.log("[FE] 🧪 remoteStream.getTracks():", remoteStream.getTracks());
-        console.log("[FE] 🧪 remoteStream.getVideoTracks():", remoteStream.getVideoTracks());
-      
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.srcObject = remoteStream;
-      
-          console.log("[FE] 🔎 remoteVideoRef.current.srcObject set");
-      
-          requestAnimationFrame(() => {
-            remoteVideoRef.current.style.display = "none";
-            void remoteVideoRef.current.offsetHeight;
-            remoteVideoRef.current.style.display = "block";
-          });
-      
-          remoteVideoRef.current.play?.()
-            .then(() => {
-              console.log("[FE] 🎬 Remote video playing!");
-              setTimeout(() => {
-                console.log(
-                  "[FE] 📏 remote video dimensions (after play):",
-                  remoteVideoRef.current.videoWidth,
-                  remoteVideoRef.current.videoHeight
-                );
-              }, 1000);
-            })
-            .catch((err) => {
-              console.warn("🚫 Remote video play failed:", err);
-            });
-        }
-      });
-      
-    
-      peer.on("close", () => {
-        endCall();
-      });
-    
-      console.log("[FE] 🔄 Sending signal back to caller:", caller.signal);
-      peer.signal(caller.signal);
-      console.log("[FE] ✅ peer.signal(caller.signal) called — awaiting 'track' event...");
 
-      peerRef.current = peer;
-    });
-    
+        const peer = new Peer({
+          initiator: false,
+          trickle: false,
+          stream: stream,
+        });
+
+        peer.on("signal", (data) => {
+          socketRef.current.emit("acceptCall", {
+            signal: data,
+            to: caller.from,
+          });
+        });
+
+        peer.on("stream", (stream) => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = stream;
+          }
+        });
+
+        peer.on("close", () => {
+          endCall();
+        });
+
+        peer.signal(caller.signal);
+        peerRef.current = peer;
+      });
   };
+  //999
   const launchLiveCallCentre = () => {
     const updatedAssociatedUsers = associatedUsers.map((user) => {
       return {
@@ -1334,20 +1265,12 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
             )}
             {inCall && (
               <div className="video-call-container">
-<video
-  ref={localVideoRef}
-  autoPlay
-  muted
-  style={{
-    backgroundColor: "red",
-    border: "2px solid lime",
-    width: 320,
-    height: 240,
-    zIndex: 999,
-  }}
-/>
-
-
+                <video
+                  ref={localVideoRef}
+                  autoPlay
+                  muted
+                  className="local-video"
+                />
                 <Button
                   variant="outline-danger"
                   className="btn-icon"
@@ -1359,7 +1282,7 @@ console.log("[FE] 🔁 original signal from caller:", caller?.signal);
                 >
                   <TelephoneFill size={25} />
                 </Button>
-                <video ref={remoteVideoRef} autoPlay className="remote-video" style={{ backgroundColor: "black" }}/>
+                <video ref={remoteVideoRef} autoPlay className="remote-video" />
               </div>
             )}
           </>

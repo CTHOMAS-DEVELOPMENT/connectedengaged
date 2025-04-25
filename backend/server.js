@@ -221,8 +221,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("callUser", ({ userToCall, signalData, from }) => {
-    console.log(`User ${from} calling user ${userToCall}`);
-    console.log("signalData:", signalData);
+    //console.log(`User ${from} calling user ${userToCall}`);
+    //console.log("Current clientSubmissions:", clientSubmissions);
     const recipientSocketId = Object.keys(clientSubmissions).find(
       (socketId) => clientSubmissions[socketId].userId === userToCall
     );
@@ -3027,5 +3027,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9917**Video Call for Phone App (1) ${PORT}`);
+  console.log(`**9916**More intelligent AI ${PORT}`);
 });
