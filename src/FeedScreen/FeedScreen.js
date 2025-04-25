@@ -637,6 +637,10 @@ const FeedScreen = () => {
         console.log("[FE] ✅ Media stream granted");
         console.log("[FE] 📹 Video tracks:", stream.getVideoTracks());
         console.log("[FE] 🎙 Audio tracks:", stream.getAudioTracks());
+        if (!stream || stream.getTracks().length === 0) {
+          console.warn("[FE] ⚠️ No tracks in remote stream!");
+        }
+        
         stream.getTracks().forEach((track) => {
           console.log(
             `[FE] 🎛 Track kind: ${track.kind}, readyState: ${track.readyState}, enabled: ${track.enabled}`
@@ -687,7 +691,13 @@ const FeedScreen = () => {
           trickle: false,
           stream: stream,
         });
-
+        console.log("[FE] 🚀 Peer connection initialized. Initiator (startVideoCall):", peer.initiator);
+        if (peer._pc) {
+          peer._pc.addEventListener("iceconnectionstatechange", () => {
+            console.log("[FE] ❄️ [RAW] ICE state changed:", peer._pc.iceConnectionState);
+          });
+        }
+        
         peer.on("signal", (data) => {
           console.log("[FE] 📤 Emitting signal:", data.type);
           socketRef.current.emit("callUser", {
@@ -699,17 +709,21 @@ const FeedScreen = () => {
 
         //peer.on("stream", (stream) => {
         peer.on("track", (track, stream) => {
-          console.log("[FE] 🎯 peer.on('track') fired!");
+          console.log("[FE] 🎯 peer.on('track') fired(startVideoCall)!");
           console.log("[FE] 👉 Track kind:", track.kind);
           console.log("[FE] 👉 Stream ID:", stream?.id);
           console.log("[FE] 👉 Stream active:", stream?.active);
           console.log("[FE] 👉 Stream tracks:", stream.getTracks());
-
+          if (!stream || stream.getTracks().length === 0) {
+            console.warn("[FE] ⚠️ No tracks in remote stream(startVideoCall)!");
+          }
+          
           if (stream && stream.getTracks().length > 0) {
             console.log(
               "[FE] ✅ Valid remote stream received, setting state..."
             );
             setRemoteStream(stream);
+            console.log("[FE] 🖥 Remote stream set in state:", stream);
           } else {
             console.warn(
               "[FE] ⚠️ Received track event but stream is invalid or empty."
@@ -718,7 +732,7 @@ const FeedScreen = () => {
         });
 
         peer.on("connect", () => {
-          console.log("[FE] 🚀 Peer connection established!");
+          console.log("[FE] 🚀 Peer connection established(startVideoCall)!");
         });
         peer.on("stream", (stream) => {
           console.log("[FE] 🎥 peer.on('stream') fallback fired:", stream);
@@ -726,6 +740,13 @@ const FeedScreen = () => {
         peer.on("error", (err) => {
           console.error("[FE] ❌ Peer connection error:", err);
         });
+        peer.on('iceStateChange', () => {
+          console.log("[FE] ❄️ ICE connection state(startVideoCall):", peer._pc.iceConnectionState);
+        });
+        // peer.on('signal', data => {
+        //   console.log("[FE] 📡 Sending signaling data:", data);
+        // });
+        
         peer.on("close", () => {
           endCall();
         });
@@ -790,7 +811,13 @@ const FeedScreen = () => {
         trickle: false,
         stream: stream,
       });
-
+      console.log("[FE] 🚀 Peer connection initialized. Initiator (answerCall):", peer.initiator);
+      if (peer._pc) {
+        peer._pc.addEventListener("iceconnectionstatechange", () => {
+          console.log("[FE] ❄️ [RAW] ICE state changed:", peer._pc.iceConnectionState);
+        });
+      }
+      
       peer.on("signal", (data) => {
         console.log("[FE] 📤 Emitting signal:", data.type);
         socketRef.current.emit("acceptCall", {
@@ -800,8 +827,8 @@ const FeedScreen = () => {
       });
 
       peer.on("track", (track, remoteStream) => {
-        console.log("[FE] 🎯 peer.on(track) fired:", track.kind);
-        console.log("[FE] 🌊 Remote stream tracks:", remoteStream.getTracks());
+        console.log("[FE] 🎯 peer.on(track) fired (answerCall):", track.kind);
+        console.log("[FE] 🌊 Remote stream tracks (answerCall):", remoteStream.getTracks());
 
         if (remoteVideoRef.current) {
           setRemoteStream(remoteStream);
