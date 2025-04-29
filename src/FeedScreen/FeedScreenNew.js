@@ -100,7 +100,31 @@ const FeedScreen = () => {
     title,
     languageCode = "en",
   } = location.state || {};
+  const isMobileApp = !!window.ReactNativeWebView;
+  const videoCallContainerStyle = {
+    display: "flex",
+    gap: "1rem", // space between the two videos
+    alignItems: "stretch",
+    width: "100%",
+    height: "400px", // pick whatever fixed height you like
+  };
 
+  const videoWrapperStyle = {
+    flex: 1, // each wrapper takes up half the container
+    backgroundColor: "black",
+    borderRadius: "8px",
+    overflow: "hidden",
+    position: "relative",
+  };
+
+  const videoElementStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover", // scale & crop to fill the wrapper
+  };
   const sendButtonEnabledStyle = {
     ...reportButtonStyle,
     backgroundColor: "#dc3545", // Bootstrap red
@@ -139,52 +163,53 @@ const FeedScreen = () => {
       try {
         // Attempt to parse the message data
         const message = JSON.parse(event.data);
-        console.log('Received message:', message);
-  
+        console.log("Received message:", message);
+
         // Check if the message type is 'permissionsGranted'
-        if (message.type === 'permissionsGranted') {
-          console.log('Permissions granted message received');
+        if (message.type === "permissionsGranted") {
+          console.log("Permissions granted message received");
           requestMediaAccess();
         }
       } catch (error) {
-        console.error('Error parsing message data:', error);
-        console.log('Raw message data:', event.data);
+        console.error("Error parsing message data:", error);
+        console.log("Raw message data:", event.data);
       }
     };
-  
+
     const requestMediaAccess = () => {
       // Attempt to access the microphone and camera
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
         .then((stream) => {
-          console.log('Media access granted');
-  
+          console.log("Media access granted");
+
           // Assign the local stream to the local video element
           if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
           }
-  
+
           // If you're using WebRTC, handle the remote stream here
         })
         .catch((error) => {
-          console.error('Error accessing media devices:', error);
+          console.error("Error accessing media devices:", error);
         });
     };
-  
+
     // Check if running inside a React Native WebView
     if (window.ReactNativeWebView) {
-      console.log('Running inside a React Native WebView');
+      console.log("Running inside a React Native WebView");
       // Listen for messages from React Native
-      window.addEventListener('message', handleMessage);
+      window.addEventListener("message", handleMessage);
     } else {
-      console.log('Running in a browser');
+      console.log("Running in a browser");
       // Directly request media access in the browser
       requestMediaAccess();
     }
-  
+
     // Clean up the event listener
     return () => {
       if (window.ReactNativeWebView) {
-        window.removeEventListener('message', handleMessage);
+        window.removeEventListener("message", handleMessage);
       }
     };
   }, []);
@@ -1264,25 +1289,69 @@ const FeedScreen = () => {
               />
             )}
             {inCall && (
-              <div className="video-call-container">
-                <video
-                  ref={localVideoRef}
-                  autoPlay
-                  muted
-                  className="local-video"
-                />
-                <Button
-                  variant="outline-danger"
-                  className="btn-icon"
-                  onClick={endCall}
-                  aria-label={
-                    translations[languageCode]?.feedScreen?.endCall ||
-                    "End the call"
-                  }
+              <div
+                className="video-call-container"
+                style={videoCallContainerStyle}
+              >
+                {/* Local Video */}
+                <div style={videoWrapperStyle}>
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    muted
+                    style={videoElementStyle}
+                  />
+                </div>
+
+                {/* Call Controls */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
                 >
-                  <TelephoneFill size={25} />
-                </Button>
-                <video ref={remoteVideoRef} autoPlay className="remote-video" />
+                  <Button
+                    variant="outline-danger"
+                    className="btn-icon"
+                    onClick={endCall}
+                    aria-label={
+                      translations[languageCode]?.feedScreen?.endCall ||
+                      "End the call"
+                    }
+                  >
+                    <TelephoneFill size={25} />
+                  </Button>
+
+                  {/* "Open in Browser" Button (only shown in React Native app) */}
+                  {isMobileApp && (
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => {
+                        // Use deep linking to open the current URL in the default browser
+                        if (window.ReactNativeWebView) {
+                          window.ReactNativeWebView.postMessage(
+                            JSON.stringify({
+                              type: "openInBrowser",
+                              url: window.location.href,
+                            })
+                          );
+                        } else {
+                          window.open(window.location.href, "_blank");
+                        }
+                      }}
+                      aria-label="Open in browser for better call quality"
+                    >
+                      {translations[languageCode]?.feedScreen?.openInBrowser ||
+                        "Open in Browser"}
+                    </Button>
+                  )}
+                </div>
+
+                {/* Remote Video */}
+                <div style={videoWrapperStyle}>
+                  <video ref={remoteVideoRef} style={videoElementStyle} />
+                </div>
               </div>
             )}
           </>
