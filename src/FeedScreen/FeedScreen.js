@@ -94,6 +94,7 @@ const FeedScreen = () => {
   const searchInputRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const isMobileApp = !!window.ReactNativeWebView;
   const {
     submissionId,
     userId,
@@ -139,52 +140,53 @@ const FeedScreen = () => {
       try {
         // Attempt to parse the message data
         const message = JSON.parse(event.data);
-        console.log('Received message:', message);
-  
+        console.log("Received message:", message);
+
         // Check if the message type is 'permissionsGranted'
-        if (message.type === 'permissionsGranted') {
-          console.log('Permissions granted message received');
+        if (message.type === "permissionsGranted") {
+          console.log("Permissions granted message received");
           requestMediaAccess();
         }
       } catch (error) {
-        console.error('Error parsing message data:', error);
-        console.log('Raw message data:', event.data);
+        console.error("Error parsing message data:", error);
+        console.log("Raw message data:", event.data);
       }
     };
-  
+
     const requestMediaAccess = () => {
       // Attempt to access the microphone and camera
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
         .then((stream) => {
-          console.log('Media access granted');
-  
+          console.log("Media access granted");
+
           // Assign the local stream to the local video element
           if (localVideoRef.current) {
             localVideoRef.current.srcObject = stream;
           }
-  
+
           // If you're using WebRTC, handle the remote stream here
         })
         .catch((error) => {
-          console.error('Error accessing media devices:', error);
+          console.error("Error accessing media devices:", error);
         });
     };
-  
+
     // Check if running inside a React Native WebView
     if (window.ReactNativeWebView) {
-      console.log('Running inside a React Native WebView');
+      console.log("Running inside a React Native WebView");
       // Listen for messages from React Native
-      window.addEventListener('message', handleMessage);
+      window.addEventListener("message", handleMessage);
     } else {
-      console.log('Running in a browser');
+      console.log("Running in a browser");
       // Directly request media access in the browser
       requestMediaAccess();
     }
-  
+
     // Clean up the event listener
     return () => {
       if (window.ReactNativeWebView) {
-        window.removeEventListener('message', handleMessage);
+        window.removeEventListener("message", handleMessage);
       }
     };
   }, []);
@@ -1282,6 +1284,28 @@ const FeedScreen = () => {
                 >
                   <TelephoneFill size={25} />
                 </Button>
+                {isMobileApp && (
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => {
+                      // Use deep linking to open the current URL in the default browser
+                      if (window.ReactNativeWebView) {
+                        window.ReactNativeWebView.postMessage(
+                          JSON.stringify({
+                            type: "openInBrowser",
+                            url: window.location.href,
+                          })
+                        );
+                      } else {
+                        window.open(window.location.href, "_blank");
+                      }
+                    }}
+                    aria-label="Open in browser for better call quality"
+                  >
+                    {translations[languageCode]?.feedScreen?.openInBrowser ||
+                      "Open in Browser"}
+                  </Button>
+                )}
                 <video ref={remoteVideoRef} autoPlay className="remote-video" />
               </div>
             )}
