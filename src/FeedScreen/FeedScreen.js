@@ -100,7 +100,7 @@ const FeedScreen = () => {
     title,
     languageCode = "en",
   } = location.state || {};
-  // style objects
+  const isMobileApp = !!window.ReactNativeWebView;
   const videoCallContainerStyle = {
     display: "flex",
     gap: "1rem", // space between the two videos
@@ -1293,6 +1293,7 @@ const FeedScreen = () => {
                 className="video-call-container"
                 style={videoCallContainerStyle}
               >
+                {/* Local Video */}
                 <div style={videoWrapperStyle}>
                   <video
                     ref={localVideoRef}
@@ -1301,17 +1302,53 @@ const FeedScreen = () => {
                     style={videoElementStyle}
                   />
                 </div>
-                <Button
-                  variant="outline-danger"
-                  className="btn-icon"
-                  onClick={endCall}
-                  aria-label={
-                    translations[languageCode]?.feedScreen?.endCall ||
-                    "End the call"
-                  }
+
+                {/* Call Controls */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
                 >
-                  <TelephoneFill size={25} />
-                </Button>
+                  <Button
+                    variant="outline-danger"
+                    className="btn-icon"
+                    onClick={endCall}
+                    aria-label={
+                      translations[languageCode]?.feedScreen?.endCall ||
+                      "End the call"
+                    }
+                  >
+                    <TelephoneFill size={25} />
+                  </Button>
+
+                  {/* "Open in Browser" Button (only shown in React Native app) */}
+                  {isMobileApp && (
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => {
+                        // Use deep linking to open the current URL in the default browser
+                        if (window.ReactNativeWebView) {
+                          window.ReactNativeWebView.postMessage(
+                            JSON.stringify({
+                              type: "openInBrowser",
+                              url: window.location.href,
+                            })
+                          );
+                        } else {
+                          window.open(window.location.href, "_blank");
+                        }
+                      }}
+                      aria-label="Open in browser for better call quality"
+                    >
+                      {translations[languageCode]?.feedScreen?.openInBrowser ||
+                        "Open in Browser"}
+                    </Button>
+                  )}
+                </div>
+
+                {/* Remote Video */}
                 <div style={videoWrapperStyle}>
                   <video ref={remoteVideoRef} style={videoElementStyle} />
                 </div>
