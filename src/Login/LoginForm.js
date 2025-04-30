@@ -263,48 +263,76 @@ const LoginForm = () => {
     setShowModal(false);
     setConsentGiven(true); // Set consent given upon closing the modal
   };
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      console.log("Existing token found. Clearing it.");
-      localStorage.removeItem("token");
-    }
-    const preferredLanguage = Cookies.get("preferredLanguage");
-    if (preferredLanguage) {
-      setSelectedLanguage(preferredLanguage); // Use cookie language
-      return; // Skip fetching IP address
-    }
 
-    const fetchIpAddress = async () => {
-      if (hasFetchedIp.current) return;
-      hasFetchedIp.current = true; // Prevent double fetching
+useEffect(() => {
+  // 1. Token Clearing (existing)
+  if (localStorage.getItem("token")) {
+    console.log("Existing token found. Clearing it.");
+    localStorage.removeItem("token");
+  }
 
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/get-ip`
-        );
-        const data = await response.json();
-        const ipLanguage = data.language || "en"; // Get language from the response
-        const ipCountry = data.country || ""; // Get country from the response
-        const ip = data.ip || ""; // Get IP from the response
+  // 2. Deep Link Token Handling (new)
+  const urlParams = new URLSearchParams(window.location.search);
+  const deepLinkToken = urlParams.get('token');
+  const source = urlParams.get('source');
 
-        console.log("IP-based data data:", data);
+  if (deepLinkToken && source === 'app') {
+    localStorage.setItem("token", deepLinkToken);
+    window.history.replaceState({}, '', window.location.pathname);
 
-        if (languageMap[ipLanguage]) {
-          setSelectedLanguage(ipLanguage);
-          Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
-        }
-
-        // Save ipCountry and ip for passing to the RegistrationForm
-        setIpCountry(ipCountry);
-        setIp(ip);
-      } catch (error) {
-        console.error("Error fetching IP address:", error);
+    fetch(`${process.env.REACT_APP_API_URL}/api/verify-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${deepLinkToken}`
       }
-    };
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.valid) {
+        navigate("/userlist", { state: { userId: data.userId } });
+        return; // Skip further execution if redirecting
+      }
+    })
+    .catch(error => {
+      console.error("Token verification failed:", error);
+    });
+  }
 
-    fetchIpAddress(); // Trigger the IP lookup asynchronously
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+  // 3. Language Detection (existing)
+  const preferredLanguage = Cookies.get("preferredLanguage");
+  if (preferredLanguage) {
+    setSelectedLanguage(preferredLanguage);
+    return; // Skip IP fetch if language is set
+  }
+
+  // 4. IP Detection (existing)
+  const fetchIpAddress = async () => {
+    if (hasFetchedIp.current) return;
+    hasFetchedIp.current = true;
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-ip`);
+      const data = await response.json();
+      const ipLanguage = data.language || "en";
+      const ipCountry = data.country || "";
+      const ip = data.ip || "";
+
+      if (languageMap[ipLanguage]) {
+        setSelectedLanguage(ipLanguage);
+        Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
+      }
+
+      setIpCountry(ipCountry);
+      setIp(ip);
+    } catch (error) {
+      console.error("Error fetching IP address:", error);
+    }
+  };
+
+  fetchIpAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // Empty dependency array
 
   // Handle resize events to check for mobile view
   useEffect(() => {

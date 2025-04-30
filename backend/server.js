@@ -537,6 +537,33 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// New endpoint for token verification
+app.post("/api/verify-token", authenticateToken, async (req, res) => {
+  try {
+    // Verify token is still in database (optional extra check)
+    const result = await pool.query(
+      "SELECT id FROM users WHERE id = $1 AND token = $2",
+      [req.user.userId, req.headers.authorization.split(' ')[1]]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(403).json({ valid: false, message: "Token revoked" });
+    }
+
+    res.json({
+      valid: true,
+      userId: req.user.userId,
+      // Include any additional user data needed by your frontend
+      userData: {
+        username: result.rows[0].username,
+        // ... other fields
+      }
+    });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.status(500).json({ valid: false, message: "Verification failed" });
+  }
+});
 async function processZipFile(
   zipFilePath,
   userId,
@@ -2326,24 +2353,9 @@ async function delete_records_after_backup(userId) {
   }
 }
 
-// app.delete('/api/users/:userId', async (req, res) => {
-//   const userId = parseInt(req.params.userId, 10);
-//   console.log(`DELETE request received for user ID: ${userId}`);
-//   if (isNaN(userId)) {
-//     return res.status(400).json({ message: "Invalid user ID" });
-//   }
 
-//   try {
-//     // Call the function to back up and delete user records
-//     await delete_records_after_backup(userId);
 
-//     // Respond with success
-//     res.status(200).json({ message: "User data backed up and deleted successfully." });
-//   } catch (error) {
-//     console.error("Error deleting user records:", error);
-//     res.status(500).json({ message: "An error occurred while deleting user data." });
-//   }
-// });
+
 app.delete("/api/users/me", authenticateToken, async (req, res) => {
   const userId = req.user.userId; // Extract the userId from the token
 
@@ -3027,5 +3039,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9916**More intelligent AI ${PORT}`);
+  console.log(`**9950**Allow app to browser for WebRTC ${PORT}`);
 });
