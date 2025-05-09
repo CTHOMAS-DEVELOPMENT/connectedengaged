@@ -184,9 +184,15 @@ const LoginForm = () => {
             localStorage.setItem("token", data.token);
 
             // Store the username in a cookie
-            Cookies.set("username", formData.username, { expires: 365 }); // Store username for 1 year
+            Cookies.set("username", formData.username, { expires: 365 });
 
-            navigate("/userlist", { state: { userId: data.userId } });
+            // 👉 If inside React Native WebView, ask it to open the browser
+            if (window.ReactNativeWebView) {
+              window.ReactNativeWebView.postMessage("openInBrowser");
+            } else {
+              // Normal browser flow
+              navigate("/userlist", { state: { userId: data.userId } });
+            }
           } else {
             setMessage(data.message || "Login failed");
             setType("error");
@@ -264,75 +270,77 @@ const LoginForm = () => {
     setConsentGiven(true); // Set consent given upon closing the modal
   };
 
-useEffect(() => {
-  // 1. Token Clearing (existing)
-  if (localStorage.getItem("token")) {
-    console.log("Existing token found. Clearing it.");
-    localStorage.removeItem("token");
-  }
-
-  // 2. Deep Link Token Handling (new)
-  const urlParams = new URLSearchParams(window.location.search);
-  const deepLinkToken = urlParams.get('token');
-  const source = urlParams.get('source');
-
-  if (deepLinkToken && source === 'app') {
-    localStorage.setItem("token", deepLinkToken);
-    window.history.replaceState({}, '', window.location.pathname);
-
-    fetch(`${process.env.REACT_APP_API_URL}/api/verify-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${deepLinkToken}`
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.valid) {
-        navigate("/userlist", { state: { userId: data.userId } });
-        return; // Skip further execution if redirecting
-      }
-    })
-    .catch(error => {
-      console.error("Token verification failed:", error);
-    });
-  }
-
-  // 3. Language Detection (existing)
-  const preferredLanguage = Cookies.get("preferredLanguage");
-  if (preferredLanguage) {
-    setSelectedLanguage(preferredLanguage);
-    return; // Skip IP fetch if language is set
-  }
-
-  // 4. IP Detection (existing)
-  const fetchIpAddress = async () => {
-    if (hasFetchedIp.current) return;
-    hasFetchedIp.current = true;
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-ip`);
-      const data = await response.json();
-      const ipLanguage = data.language || "en";
-      const ipCountry = data.country || "";
-      const ip = data.ip || "";
-
-      if (languageMap[ipLanguage]) {
-        setSelectedLanguage(ipLanguage);
-        Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
-      }
-
-      setIpCountry(ipCountry);
-      setIp(ip);
-    } catch (error) {
-      console.error("Error fetching IP address:", error);
+  useEffect(() => {
+    // 1. Token Clearing (existing)
+    if (localStorage.getItem("token")) {
+      console.log("Existing token found. Clearing it.");
+      localStorage.removeItem("token");
     }
-  };
 
-  fetchIpAddress();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // Empty dependency array
+    // 2. Deep Link Token Handling (new)
+    const urlParams = new URLSearchParams(window.location.search);
+    const deepLinkToken = urlParams.get("token");
+    const source = urlParams.get("source");
+
+    if (deepLinkToken && source === "app") {
+      localStorage.setItem("token", deepLinkToken);
+      window.history.replaceState({}, "", window.location.pathname);
+
+      fetch(`${process.env.REACT_APP_API_URL}/api/verify-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${deepLinkToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.valid) {
+            navigate("/userlist", { state: { userId: data.userId } });
+            return; // Skip further execution if redirecting
+          }
+        })
+        .catch((error) => {
+          console.error("Token verification failed:", error);
+        });
+    }
+
+    // 3. Language Detection (existing)
+    const preferredLanguage = Cookies.get("preferredLanguage");
+    if (preferredLanguage) {
+      setSelectedLanguage(preferredLanguage);
+      return; // Skip IP fetch if language is set
+    }
+
+    // 4. IP Detection (existing)
+    const fetchIpAddress = async () => {
+      if (hasFetchedIp.current) return;
+      hasFetchedIp.current = true;
+
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/get-ip`
+        );
+        const data = await response.json();
+        const ipLanguage = data.language || "en";
+        const ipCountry = data.country || "";
+        const ip = data.ip || "";
+
+        if (languageMap[ipLanguage]) {
+          setSelectedLanguage(ipLanguage);
+          Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
+        }
+
+        setIpCountry(ipCountry);
+        setIp(ip);
+      } catch (error) {
+        console.error("Error fetching IP address:", error);
+      }
+    };
+
+    fetchIpAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array
 
   // Handle resize events to check for mobile view
   useEffect(() => {
@@ -595,7 +603,13 @@ useEffect(() => {
                 </div>
               </section>
             )}
-            <div style={{ display: "flex", flexDirection: "column",justifyContent: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
               <Button
                 onClick={() =>
                   navigate("/privacy-policy", {
