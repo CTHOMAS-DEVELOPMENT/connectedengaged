@@ -9,7 +9,7 @@ import RejectAllIcon from "./reject_all.svg";
 import InformationIcon from "./information.svg";
 import CustomizeIcon from "./customize.svg";
 import ScrollingHelpText from "../system/ScrollingHelpText.js";
-import { Button, Modal, Dropdown, Spinner } from "react-bootstrap"; // Add Dropdown to imports
+import { Button, Modal, Dropdown } from "react-bootstrap"; // Add Dropdown to imports
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const LoginForm = () => {
@@ -33,7 +33,6 @@ const LoginForm = () => {
     return Cookies.get("preferredLanguage") || "en"; // Default to 'en' if no cookie is set
   });
   const location = useLocation(); // Get the location object
-  const [autoLoggingIn, setAutoLoggingIn] = useState(false);
   const formItemStyle = {
     width: "100%", // Full width to match other form items
     maxWidth: "200px", // Constrain the max width
@@ -285,7 +284,6 @@ const LoginForm = () => {
     const source = urlParams.get("source");
 
     if (deepLinkToken && source === "app") {
-      setAutoLoggingIn(true);
       localStorage.setItem("token", deepLinkToken);
       window.history.replaceState({}, "", window.location.pathname);
 
@@ -300,11 +298,12 @@ const LoginForm = () => {
         .then((data) => {
           if (data.valid) {
             navigate("/userlist", { state: { userId: data.userId } });
-          } else {
-            setAutoLoggingIn(false);
+            return; // Skip further execution if redirecting
           }
         })
-        .catch(() => setAutoLoggingIn(false));
+        .catch((error) => {
+          console.error("Token verification failed:", error);
+        });
     }
 
     // 3. Language Detection (existing)
@@ -378,18 +377,7 @@ const LoginForm = () => {
       [name]: value,
     });
   };
-  if (autoLoggingIn) {
-    return (
-      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
-        <Spinner animation="border" role="status" variant="primary">
-          <span className="visually-hidden">Logging in...</span>
-        </Spinner>
-        <p style={{ marginTop: "20px" }} className="font-style-4">
-          {pageTranslations.autoLogin || "Verifying session..."}
-        </p>
-      </main>
-    );
-  }
+
   return (
     <main className="login-layout" aria-labelledby="login-title">
       <div className="title-and-help" style={{ textAlign: "center" }}>
