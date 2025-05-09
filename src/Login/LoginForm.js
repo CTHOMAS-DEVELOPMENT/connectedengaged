@@ -142,7 +142,6 @@ const LoginForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-  
     if (!consentGiven) {
       setMessage(
         pageTranslations.cookieConsentError ||
@@ -153,7 +152,6 @@ const LoginForm = () => {
       resetImages();
       return;
     }
-  
     if (!isImageCorrectlyOriented()) {
       setMessage(
         pageTranslations.imageOrientationError ||
@@ -164,7 +162,6 @@ const LoginForm = () => {
       resetImages();
       return;
     }
-  
     if (validateForm()) {
       fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
         method: "POST",
@@ -176,29 +173,27 @@ const LoginForm = () => {
           password: formData.password,
         }),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          return response.json();
+        })
         .then((data) => {
           if (data.success) {
             setMessage(pageTranslations.loginSuccess || "Login successful");
             setType("success");
             setAlertKey((prevKey) => prevKey + 1);
-  
             localStorage.setItem("token", data.token);
+
+            // Store the username in a cookie
             Cookies.set("username", formData.username, { expires: 365 });
-  
-            // 👇 Build deep link to direct the browser to the correct page
-            const browserURL = `https://connectedengager.com/userlist?token=${data.token}&source=app&username=${encodeURIComponent(
-              formData.username
-            )}`;
-  
-            // 👇 Use WebView postMessage or navigate normally
+
+            // 👉 If inside React Native WebView, ask it to open the browser
             if (window.ReactNativeWebView) {
-              window.ReactNativeWebView.postMessage(
-                `openInBrowser::${browserURL}`
-              );
+              const browserURL = `https://connectedengager.com?token=${data.token}&source=app`;
+              window.ReactNativeWebView.postMessage(`openInBrowser::${browserURL}`);
             } else {
               navigate("/userlist", { state: { userId: data.userId } });
             }
+            
           } else {
             setMessage(data.message || "Login failed");
             setType("error");
@@ -218,7 +213,6 @@ const LoginForm = () => {
         });
     }
   };
-  
 
   const resetImages = () => {
     shuffleConsentImages();
