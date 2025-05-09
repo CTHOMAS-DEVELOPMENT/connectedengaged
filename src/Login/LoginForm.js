@@ -188,11 +188,12 @@ const LoginForm = () => {
 
             // 👉 If inside React Native WebView, ask it to open the browser
             if (window.ReactNativeWebView) {
-              window.ReactNativeWebView.postMessage("openInBrowser");
+              const browserURL = `https://connectedengager.com?token=${data.token}&source=app`;
+              window.ReactNativeWebView.postMessage(`openInBrowser::${browserURL}`);
             } else {
-              // Normal browser flow
               navigate("/userlist", { state: { userId: data.userId } });
             }
+            
           } else {
             setMessage(data.message || "Login failed");
             setType("error");
