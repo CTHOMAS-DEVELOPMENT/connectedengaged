@@ -94,7 +94,6 @@ const FeedScreen = () => {
   const searchInputRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const isMobileApp = !!window.ReactNativeWebView;
   const {
     submissionId,
     userId,
@@ -1284,28 +1283,7 @@ const FeedScreen = () => {
                 >
                   <TelephoneFill size={25} />
                 </Button>
-                {isMobileApp && (
-                  <Button
-                    variant="outline-primary"
-                    onClick={() => {
-                      // Use deep linking to open the current URL in the default browser
-                      if (window.ReactNativeWebView) {
-                        window.ReactNativeWebView.postMessage(
-                          JSON.stringify({
-                            type: "openInBrowser",
-                            url: window.location.href,
-                          })
-                        );
-                      } else {
-                        window.open(window.location.href, "_blank");
-                      }
-                    }}
-                    aria-label="Open in browser for better call quality"
-                  >
-                    {translations[languageCode]?.feedScreen?.openInBrowser ||
-                      "Open in Browser"}
-                  </Button>
-                )}
+
                 <video ref={remoteVideoRef} autoPlay className="remote-video" />
               </div>
             )}
