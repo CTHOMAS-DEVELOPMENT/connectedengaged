@@ -359,8 +359,10 @@ input {
 
 .local-video, .remote-video {
   width: 45%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 .end-call-button {
