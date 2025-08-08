@@ -167,7 +167,37 @@ const RegistrationForm = () => {
       setIpData({ ip, country, language });
     }
   }, [language, country, ip]);
-
+  useEffect(() => {
+    window.addEventListener("message", (event) => {
+      if (event.data?.type === "simulateRegister") {
+        const { username, email, password, language } = event.data;
+  
+        // Apply the language (optional)
+        if (language) {
+          setSelectedLanguage(language);
+          Cookies.set("preferredLanguage", language, { expires: 365 });
+        }
+  
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          username,
+          email,
+          password,
+        }));
+  
+        setDummyEmail(email); // Ensure confirm email matches
+        setIsEighteenOrOlder(true);
+        setPrivacyChecked(true);
+  
+        // Scroll to top or focus username if needed
+        if (usernameInputRef.current) {
+          usernameInputRef.current.focus();
+        }
+      }
+    });
+  }, []);
+  
+  
   const handleSelectCoordinates = (selectedCoordinates) => {
     setLocationSelected(true);
     // Update formData with the new coordinates
@@ -363,6 +393,15 @@ const RegistrationForm = () => {
       })
       .then((data) => {
         if (data.id) {
+
+          window.postMessage({
+            type: "simulateLogin",
+            username: formData.username,
+            password: formData.password,
+            language: selectedLanguage,
+          }, "*");
+          
+
           setUserId(data.id);
           setMessage(
             pageTranslations.registrationSuccessful || "Registration successful"

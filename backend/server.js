@@ -411,7 +411,7 @@ function lookupLanguageForIp(ipAddress) {
 
   // If no match is found, log and return a default result
   console.log(`No match found for IP: ${ipAddress}`);
-  return { country: undefined, language: "en" }; // Default to 'en' if no match is found
+  return { country: "UNDEFINED", language: "en" }; // Default to 'en' if no match is found
 }
 
 function ipToBinary(ip, bitSize) {

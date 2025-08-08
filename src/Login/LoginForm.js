@@ -273,6 +273,7 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
+    console.log("ipCountry?");
     // 1. Token Clearing (existing)
     if (localStorage.getItem("token")) {
       console.log("Existing token found. Clearing it.");
@@ -327,19 +328,18 @@ const LoginForm = () => {
         const ipLanguage = data.language || "en";
         const ipCountry = data.country || "";
         const ip = data.ip || "";
-
         if (languageMap[ipLanguage]) {
           setSelectedLanguage(ipLanguage);
           Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
         }
-
+        console.log("ipCountry?");
+        console.log("ipCountry:", ipCountry);
         setIpCountry(ipCountry);
         setIp(ip);
       } catch (error) {
         console.error("Error fetching IP address:", error);
       }
     };
-
     fetchIpAddress();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array
@@ -371,6 +371,17 @@ const LoginForm = () => {
       }));
     }
   }, [location.state?.username]);
+
+  useEffect(() => {
+    window.addEventListener("message", (event) => {
+      if (event.data?.type === "simulateLogin") {
+        const { username, password, language } = event.data;
+        setFormData({ username, password });
+        setSelectedLanguage(language);
+      }
+    });
+  }, []);
+  
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({

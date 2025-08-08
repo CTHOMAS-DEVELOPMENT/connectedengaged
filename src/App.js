@@ -5,6 +5,8 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import TestUserSimulator from "./Atester/TestUserSimulator";
+
 import RegistrationForm from "./RegistrationProfileCreation/RegistrationForm";
 import LoginForm from "./Login/LoginForm";
 import FeedScreen from "./FeedScreen/FeedScreen";
@@ -30,6 +32,7 @@ function App() {
       <div className="App">
         <Routes>
           {/* Public Routes */}
+          <Route path="/testuser" element={<TestUserSimulator />} />
           <Route path="/" element={<LoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyWithState />} />
