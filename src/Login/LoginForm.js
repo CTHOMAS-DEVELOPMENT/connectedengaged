@@ -34,6 +34,8 @@ const LoginForm = () => {
   });
   const location = useLocation(); // Get the location object
   const [autoLoggingIn, setAutoLoggingIn] = useState(false);
+  const [geoCheckComplete, setGeoCheckComplete] = useState(false);
+  const [isBannedCountry, setIsBannedCountry] = useState(false);
   const formItemStyle = {
     width: "100%", // Full width to match other form items
     maxWidth: "200px", // Constrain the max width
@@ -73,8 +75,19 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const helpMessage =
     pageTranslations.helpMessage || "No help message configured";
-    const BANNED_COUNTRIES = new Set(["IRELAND","ISRAEL","UNITED KINGDOM","UNITED STATES", "UNKNOWN"]);
-        const consentImages = [
+    // const BANNED_COUNTRIES = new Set([
+    //   "ISRAEL",
+    //   "UNITED KINGDOM",
+    //   "UNITED STATES",
+    //   "UNKNOWN",
+    // ]);
+    const BANNED_COUNTRIES = new Set([
+      "IRELAND",
+      "ISRAEL",
+      "UNITED KINGDOM",
+      "UNITED STATES",
+    ]);
+      const consentImages = [
     {
       id: "customize",
       svg: CustomizeIcon,
@@ -190,11 +203,12 @@ const LoginForm = () => {
             // 👉 If inside React Native WebView, ask it to open the browser
             if (window.ReactNativeWebView) {
               const browserURL = `https://connectedengager.com?token=${data.token}&source=app`;
-              window.ReactNativeWebView.postMessage(`openInBrowser::${browserURL}`);
+              window.ReactNativeWebView.postMessage(
+                `openInBrowser::${browserURL}`
+              );
             } else {
               navigate("/userlist", { state: { userId: data.userId } });
             }
-            
           } else {
             setMessage(data.message || "Login failed");
             setType("error");
@@ -330,17 +344,19 @@ const LoginForm = () => {
           setSelectedLanguage(ipLanguage);
           Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
         }
-        
+
         const tCountry = ipCountry.trim().toUpperCase();
         const isBanned = BANNED_COUNTRIES.has(tCountry);
         console.log("isBanned?", isBanned, "tCountry:", tCountry);
-        
+
         if (isBanned) {
-          // Use error so it always shows even if warnings are filtered out
           console.error(`[GEO] BANNED country detected`, tCountry);
+          setIsBannedCountry(true);
         }
+
         setIpCountry(ipCountry);
         setIp(ip);
+        setGeoCheckComplete(true); // ✅ Mark check as complete
       } catch (error) {
         console.error("Error fetching IP address:", error);
       }
@@ -364,7 +380,6 @@ const LoginForm = () => {
   }, []); // Runs once on mount, to track window resizing
 
   useEffect(() => {
-    
     resetImages(); // Call resetImages to randomize images and rotation on component mount
     setConsentImagesState(consentImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -388,7 +403,7 @@ const LoginForm = () => {
       }
     });
   }, []);
-  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -398,7 +413,10 @@ const LoginForm = () => {
   };
   if (autoLoggingIn) {
     return (
-      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
+      <main
+        className="login-layout"
+        style={{ textAlign: "center", paddingTop: "100px" }}
+      >
         <Spinner animation="border" role="status" variant="primary">
           <span className="visually-hidden">Logging in...</span>
         </Spinner>
@@ -408,6 +426,32 @@ const LoginForm = () => {
       </main>
     );
   }
+  if (!geoCheckComplete) {
+    return (
+      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
+        <Spinner animation="border" role="status" variant="primary">
+          <span className="visually-hidden">
+            {pageTranslations.checkingLocation || "Checking your location, please wait..."}
+          </span>
+        </Spinner>
+        <p style={{ marginTop: "20px" }} className="font-style-4">
+          {pageTranslations.checkingLocation || "Checking your location, please wait..."}
+        </p>
+      </main>
+    );
+  }
+  
+  if (isBannedCountry) {
+    return (
+      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
+        <p style={{ color: "red", fontWeight: "bold" }}>
+          {pageTranslations.serviceNotAvailable || "Sorry, this service is not available in your country."}
+        </p>
+      </main>
+    );
+  }
+  
+  
   return (
     <main className="login-layout" aria-labelledby="login-title">
       <div className="title-and-help" style={{ textAlign: "center" }}>

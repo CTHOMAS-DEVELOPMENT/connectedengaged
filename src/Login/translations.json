@@ -29,7 +29,10 @@
       "loginFailed": "Login failed",
       "loginFailedNetwork": "Login failed due to network error",
       "privacyPolicyLink": "Privacy Policy",
-      "childSafetyLink": "Child Safety"
+      "childSafetyLink": "Child Safety",
+      "checkingLocation": "Checking your location, please wait",
+      "serviceNotAvailable": "Sorry, this service is not available in your country."
+    
     },
     "privacyPolicy": {
       "title": "Privacy Policy",
@@ -95,7 +98,10 @@
       "loginFailed": "Inicio de sesión fallido",
       "loginFailedNetwork": "Error de inicio de sesión debido a un error de red",
       "privacyPolicyLink": "Política de Privacidad",
-      "childSafetyLink": "Seguridad Infantil"
+      "childSafetyLink": "Seguridad Infantil",
+      "checkingLocation": "Comprobando tu ubicación, por favor espera",
+      "serviceNotAvailable": "Lo sentimos, este servicio no está disponible en tu país."
+    
     },
     "privacyPolicy": {
       "title": "Política de Privacidad",
@@ -161,7 +167,10 @@
       "loginFailed": "Échec de la connexion",
       "loginFailedNetwork": "Échec de la connexion en raison d'une erreur réseau",
       "privacyPolicyLink": "Politique de Confidentialité",
-      "childSafetyLink": "Sécurité des Enfants"
+      "childSafetyLink": "Sécurité des Enfants",
+      "checkingLocation": "Vérification de votre position, veuillez patienter",
+      "serviceNotAvailable": "Désolé, ce service n'est pas disponible dans votre pays."
+  
     },
     "privacyPolicy": {
       "title": "Politique de Confidentialité",
@@ -227,7 +236,10 @@
       "loginFailed": "Anmeldung fehlgeschlagen",
       "loginFailedNetwork": "Anmeldung aufgrund eines Netzwerkfehlers fehlgeschlagen",
       "privacyPolicyLink": "Datenschutzerklärung",
-      "childSafetyLink": "Kindersicherheit"
+      "childSafetyLink": "Kindersicherheit",
+      "checkingLocation": "Standort wird überprüft, bitte warten",
+      "serviceNotAvailable": "Leider ist dieser Dienst in Ihrem Land nicht verfügbar."
+   
     },
     "privacyPolicy": {
       "title": "Datenschutzrichtlinie",
@@ -293,7 +305,9 @@
       "loginFailed": "فشل تسجيل الدخول",
       "loginFailedNetwork": "فشل تسجيل الدخول بسبب خطأ في الشبكة",
       "privacyPolicyLink": "سياسة الخصوصية",
-      "childSafetyLink": "سلامة الأطفال"
+      "childSafetyLink": "سلامة الأطفال",
+      "checkingLocation": "جارٍ التحقق من موقعك، يرجى الانتظار",
+      "serviceNotAvailable": "عذرًا، هذه الخدمة غير متاحة في بلدك."
     },
     "privacyPolicy": {
       "title": "سياسة الخصوصية",
@@ -359,7 +373,9 @@
       "loginFailed": "登录失败",
       "loginFailedNetwork": "由于网络错误，登录失败",
       "privacyPolicyLink": "隐私政策",
-      "childSafetyLink": "儿童安全"
+      "childSafetyLink": "儿童安全",
+      "checkingLocation": "正在检查您的位置，请稍候",
+      "serviceNotAvailable": "抱歉，该服务在您所在的国家/地区不可用。"
     },
     "privacyPolicy": {
       "title": "隐私政策",
@@ -425,7 +441,10 @@
       "loginFailed": "Theip ar logáil isteach",
       "loginFailedNetwork": "Theip ar logáil isteach de bharr earráid líonra",
       "privacyPolicyLink": "Polasaí Príobháideachais",
-      "childSafetyLink": "Sábháilteacht Leanaí"
+      "childSafetyLink": "Sábháilteacht Leanaí",
+      "checkingLocation": "Ag seiceáil do shuímh, fan go fóill",
+      "serviceNotAvailable": "Tá brón orainn, níl an tseirbhís seo ar fáil i do thír."
+    
     },
     "privacyPolicy": {
       "title": "Polasaí Príobháideachais",
@@ -491,7 +510,10 @@
       "loginFailed": "Falha no login",
       "loginFailedNetwork": "Falha no login devido a erro de rede",
       "privacyPolicyLink": "Política de Privacidade",
-      "childSafetyLink": "Segurança Infantil"
+      "childSafetyLink": "Segurança Infantil",
+      "checkingLocation": "Verificando sua localização, por favor aguarde",
+      "serviceNotAvailable": "Desculpe, este serviço não está disponível no seu país."
+    
     },
     "privacyPolicy": {
       "title": "Política de Privacidade",
@@ -557,7 +579,9 @@
       "loginFailed": "लॉगिन विफल।",
       "loginFailedNetwork": "नेटवर्क त्रुटि के कारण लॉगिन विफल।",
       "privacyPolicyLink": "गोपनीयता नीति",
-      "childSafetyLink": "बाल सुरक्षा"
+      "childSafetyLink": "बाल सुरक्षा",
+      "checkingLocation": "आपका स्थान जांचा जा रहा है, कृपया प्रतीक्षा करें",
+      "serviceNotAvailable": "क्षमा करें, यह सेवा आपके देश में उपलब्ध नहीं है।"
     },
     "privacyPolicy": {
       "title": "गोपनीयता नीति",
@@ -623,7 +647,9 @@
       "loginFailed": "Մուտքը ձախողվեց։",
       "loginFailedNetwork": "Մուտքը ձախողվեց ցանցի սխալի պատճառով։",
       "privacyPolicyLink": "Գաղտնիության քաղաքականություն",
-      "childSafetyLink": "Մանկական անվտանգություն"
+      "childSafetyLink": "Մանկական անվտանգություն",
+      "checkingLocation": "Ստուգում ենք ձեր գտնվելու վայրը, խնդրում ենք սպասել",
+      "serviceNotAvailable": "Ներեցեք, այս ծառայությունը հասանելի չէ ձեր երկրում։"
     },
     "privacyPolicy": {
       "title": "Գաղտնիության քաղաքականություն",
