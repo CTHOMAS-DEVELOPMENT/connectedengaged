@@ -73,8 +73,8 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const helpMessage =
     pageTranslations.helpMessage || "No help message configured";
-  // Move the consentImages array inside the component after pageTranslations is defined
-  const consentImages = [
+    const BANNED_COUNTRIES = new Set(["IRELAND","ISRAEL","UNITED KINGDOM","UNITED STATES", "UNKNOWN"]);
+        const consentImages = [
     {
       id: "customize",
       svg: CustomizeIcon,
@@ -273,7 +273,6 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    console.log("ipCountry?");
     // 1. Token Clearing (existing)
     if (localStorage.getItem("token")) {
       console.log("Existing token found. Clearing it.");
@@ -312,7 +311,6 @@ const LoginForm = () => {
     const preferredLanguage = Cookies.get("preferredLanguage");
     if (preferredLanguage) {
       setSelectedLanguage(preferredLanguage);
-      return; // Skip IP fetch if language is set
     }
 
     // 4. IP Detection (existing)
@@ -332,8 +330,15 @@ const LoginForm = () => {
           setSelectedLanguage(ipLanguage);
           Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
         }
-        console.log("ipCountry?");
-        console.log("ipCountry:", ipCountry);
+        
+        const tCountry = ipCountry.trim().toUpperCase();
+        const isBanned = BANNED_COUNTRIES.has(tCountry);
+        console.log("isBanned?", isBanned, "tCountry:", tCountry);
+        
+        if (isBanned) {
+          // Use error so it always shows even if warnings are filtered out
+          console.error(`[GEO] BANNED country detected`, tCountry);
+        }
         setIpCountry(ipCountry);
         setIp(ip);
       } catch (error) {
@@ -359,10 +364,12 @@ const LoginForm = () => {
   }, []); // Runs once on mount, to track window resizing
 
   useEffect(() => {
+    
     resetImages(); // Call resetImages to randomize images and rotation on component mount
     setConsentImagesState(consentImages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage, pageTranslations]); // Add selectedLanguage and pageTranslations to the dependency array
+
   useEffect(() => {
     if (location.state?.username) {
       setFormData((prevFormData) => ({

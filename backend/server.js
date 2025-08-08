@@ -3039,5 +3039,5 @@ process.on("unhandledRejection", (reason, promise) => {
 const PORT = process.env.PORT || process.env.PROXYPORT;
 
 server.listen(PORT, () => {
-  console.log(`**9950**Allow app to browser for WebRTC ${PORT}`);
+  console.log(`**9960-validate country`);
 });
