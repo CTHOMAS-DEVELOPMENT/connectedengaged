@@ -75,14 +75,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const helpMessage =
     pageTranslations.helpMessage || "No help message configured";
-    // const BANNED_COUNTRIES = new Set([
-    //   "ISRAEL",
-    //   "UNITED KINGDOM",
-    //   "UNITED STATES",
-    //   "UNKNOWN",
-    // ]);
     const BANNED_COUNTRIES = new Set([
-      "IRELAND",
       "ISRAEL",
       "UNITED KINGDOM",
       "UNITED STATES",
@@ -347,10 +340,10 @@ const LoginForm = () => {
 
         const tCountry = ipCountry.trim().toUpperCase();
         const isBanned = BANNED_COUNTRIES.has(tCountry);
-        console.log("isBanned?", isBanned, "tCountry:", tCountry);
+        //console.log("isBanned?", isBanned, "tCountry:", tCountry);
 
         if (isBanned) {
-          console.error(`[GEO] BANNED country detected`, tCountry);
+          //console.error(`[GEO] BANNED country detected`, tCountry);
           setIsBannedCountry(true);
         }
 
