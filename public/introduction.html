@@ -11,18 +11,54 @@
         crossorigin="anonymous"
     />
     <style>
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f8f9fa; }
-        #wrapwrap { min-height: 100vh; display: flex; flex-direction: column; }
-        header.o_header_standard { background-color: #ffffff; box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); }
-        header .container, footer .container { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-        main { flex: 1 0 auto; padding: 3rem 1rem; }
-        footer.o_footer { background-color: #212529; color: #f8f9fa; flex-shrink: 0; }
-        .site-logo-text { font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; font-size: 1rem; }
-        .nav-link.active { font-weight: 600; }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        #wrapwrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header.o_header_standard {
+            background-color: #ffffff;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        }
+        header .container,
+        footer .container {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+        main {
+            flex: 1 0 auto;
+            padding: 3rem 1rem;
+        }
+        footer.o_footer {
+            background-color: #212529;
+            color: #f8f9fa;
+            flex-shrink: 0;
+        }
+        .site-logo-text {
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+        .nav-link.active {
+            font-weight: 600;
+        }
+        .intro-box {
+            background: #ffffff;
+            border-radius: 0.5rem;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 <div id="wrapwrap">
+    <!-- HEADER -->
     <header id="top" class="o_header_standard">
         <div class="container">
             <div class="d-flex align-items-center justify-content-between flex-wrap">
@@ -49,42 +85,30 @@
         </div>
     </header>
 
+    <!-- MAIN CONTENT -->
     <main>
         <div class="container">
-            <h1 class="mb-3">Introduction</h1>
-            <p class="lead">
-                There has never been a more important time for people to take
-                responsibility for knowledge, courage and action – and to bring
-                real power back to our communities.
-            </p>
-            <p>
-                Forward Assembly exists as a practical, grounded response to the
-                direction many of us feel the world is heading. Rather than
-                simply protesting, this initiative is about building structures,
-                connections and remedies that work in the real world.
-            </p>
-            <ul>
-                <li>Now is the time for a concerted <strong>call to action</strong>.</li>
-                <li>We recognise the need for solutions, not just analysis.</li>
-                <li>We want greater cohesion and unity across the Freedom Movement and beyond.</li>
-                <li>We already have infrastructure, networks and knowledge that must not be wasted.</li>
-                <li>We aim to use technology in ways that serve humanity, not corporate or technocratic control.</li>
-            </ul>
-            <p class="mb-0">
-                This website is the first step in creating a national framework
-                of coordinators, venues and think tank teams that can turn
-                ideas into reality.
-            </p>
-        </div>
-    </main>
+            <div class="intro-box">
+                <h1 class="mb-3">Introduction</h1>
+                <p class="lead">
+                    Forward Assembly is a practical, early-stage attempt to link
+                    people, venues and skills so communities can work together on
+                    real-world remedies.
+                </p>
 
-    <footer id="bottom" class="o_footer">
-        <div class="container text-center">
-            Footer · Forward Assembly – Website under construction
-        </div>
-    </footer>
-</div>
+                <p>
+                    We are not setting ourselves up as anything special, and we
+                    are not trying to sit above other groups. This is simply a
+                    shared framework that anyone in the wider Freedom Movement
+                    (and beyond) can plug into if they find it useful.
+                </p>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-</body>
-</html>
+                <p>
+                    Many of us can see that the current direction of the world is
+                    not working for ordinary people. There is no shortage of
+                    insight, experience or courage – but there is often a lack of
+                    joined-up structure. Forward Assembly is one small attempt to:
+                </p>
+
+                <ul>
+                    <li>connect local and regional efforts across the UK &amp; Ir
