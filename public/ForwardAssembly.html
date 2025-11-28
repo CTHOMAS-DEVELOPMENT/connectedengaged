@@ -14,14 +14,6 @@
         crossorigin="anonymous"
     />
 
-    <!-- Font Awesome (optional) -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-    />
-
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -50,15 +42,23 @@
             flex: 1 0 auto;
         }
 
-        .under-construction-section {
+        .home-section {
             padding: 3rem 1rem;
         }
 
-        .under-construction-box {
+        .home-box {
             background-color: #ffffff;
             border-radius: 0.5rem;
             padding: 2.5rem 2rem;
             box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+        }
+
+        .mission-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-left: 4px solid #adb5bd;
+            background: #f1f3f5;
+            border-radius: 0.4rem;
         }
 
         footer.o_footer {
@@ -82,11 +82,17 @@
             max-width: 100%;
             border-radius: 0.75rem;
         }
+
+        .slogan {
+            font-style: italic;
+            color: #495057;
+        }
     </style>
 </head>
 
 <body>
 <div id="wrapwrap">
+
     <!-- HEADER -->
     <header id="top" data-name="Header" class="o_header_standard">
         <div class="container">
@@ -95,7 +101,7 @@
                     Forward Assembly
                 </div>
                 <nav class="navbar navbar-expand-md navbar-light p-0">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#faNav" aria-controls="faNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#faNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div id="faNav" class="collapse navbar-collapse">
@@ -118,70 +124,86 @@
 
     <!-- MAIN CONTENT -->
     <main>
-        <section class="under-construction-section">
+        <section class="home-section">
             <div class="container">
                 <div class="row g-4 align-items-start">
+
                     <div class="col-md-7">
-                        <div class="under-construction-box">
-                            <h1 class="mb-3">Forward Assembly</h1>
+                        <div class="home-box">
+                            <h1 class="mb-1">Forward Assembly</h1>
+
+                            <!-- SLOGAN -->
+                            <p class="slogan mb-3">
+                                Linking people, places and solutions.
+                            </p>
+
                             <p class="lead">
-                                A developing national network of coordinators, venues and
-                                think tank teams working together on real-world solutions.
+                                A developing network of people, venues and skills
+                                coming together to support practical, real-world remedies.
                             </p>
+
                             <p>
-                                These pages are an early draft of the project. Much of the
-                                site is still <strong>“Under Construction”</strong>, but we want
-                                people at the November 2025 gathering to see that the
-                                foundations are being laid and that this is not just a
-                                talking shop.
+                                These pages are an early draft. They are not polished and
+                                they are not meant to present Forward Assembly as anything
+                                special or separate from other efforts. This is simply a
+                                shared working base that anyone can contribute to.
                             </p>
+
                             <p>
-                                Over the coming weeks we’ll be adding:
+                                The aim is to make it easier for local and regional groups
+                                to coordinate, share resources, and turn ideas into action.
                             </p>
-                            <ul>
-                                <li>Regional maps and local contact structures</li>
-                                <li>A sharable venue spreadsheet for the UK &amp; Ireland</li>
-                                <li>Think Tank departments and team pages</li>
-                                <li>Spaces for projects, initiatives and events</li>
-                            </ul>
-                            <p class="mb-0">
-                                Please explore the sections in the menu above. Many pages will
-                                simply state <em>“Website under construction”</em> with space
-                                for the tech / content teams to add copy.
+
+                            <!-- MISSION STATEMENT -->
+                            <div class="mission-box">
+                                <h6 class="mb-2">Draft Mission Statement (for discussion)</h6>
+                                <p class="mb-0">
+                                    Forward Assembly exists to connect people, venues and
+                                    practical skills across the UK and Ireland so communities
+                                    can design and deliver their own remedies, independent of
+                                    party politics and corporate control.
+                                </p>
+                            </div>
+
+                            <p class="mt-3 mb-0">
+                                Most sections of this site are clearly marked
+                                <strong>“under construction”</strong>. They are intentionally
+                                simple so different teams can add content without barriers.
                             </p>
                         </div>
                     </div>
 
                     <div class="col-md-5">
-                        <!-- IMAGE 1: Save the Date flyer -->
+                        <!-- IMAGE 1 -->
                         <figure class="text-center">
                             <img
                                 src="fa-save-the-date.png"
-                                alt="Forward Assembly save the date flyer 29-30 Nov 2025"
+                                alt="Forward Assembly save the date flyer"
                                 class="flyer mb-2"
                             />
                             <figcaption class="small text-muted">
-                                Save the Date: 29–30 November 2025 – Café Belge, MK19 6FW
+                                Save the Date – 29–30 November 2025 · Café Belge, MK19 6FW
                             </figcaption>
                         </figure>
                     </div>
+
                 </div>
             </div>
         </section>
     </main>
 
     <!-- FOOTER -->
-    <footer id="bottom" data-name="Footer" class="o_footer">
+    <footer id="bottom" class="o_footer">
         <div class="container text-center">
             Footer · Forward Assembly – Website under construction
         </div>
     </footer>
 </div>
 
-<!-- Bootstrap JS -->
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"
 ></script>
+
 </body>
 </html>
