@@ -2599,7 +2599,7 @@ async function system_reply({
           { role: "system", content: pretrainText },
           ...conversationHistory,
         ],
-        model: "llama3-8b-8192",
+        model: "llama-3.1-8b-instant",
         temperature: 1,
         max_tokens: 150,
         top_p: 1,
