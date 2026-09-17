@@ -75,12 +75,12 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const helpMessage =
     pageTranslations.helpMessage || "No help message configured";
-    const BANNED_COUNTRIES = new Set([
-      "ISRAEL",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-    ]);
-      const consentImages = [
+  const BANNED_COUNTRIES = new Set([
+    "ISRAEL",
+    "UNITED KINGDOM",
+    "UNITED STATES",
+  ]);
+  const consentImages = [
     {
       id: "customize",
       svg: CustomizeIcon,
@@ -152,7 +152,7 @@ const LoginForm = () => {
     if (!consentGiven) {
       setMessage(
         pageTranslations.cookieConsentError ||
-          "Please accept or reject cookies before logging in."
+          "Please accept or reject cookies before logging in.",
       );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
@@ -162,7 +162,7 @@ const LoginForm = () => {
     if (!isImageCorrectlyOriented()) {
       setMessage(
         pageTranslations.imageOrientationError ||
-          "Please correctly orient the images before submitting."
+          "Please correctly orient the images before submitting.",
       );
       setType("error");
       setAlertKey((prevKey) => prevKey + 1);
@@ -197,7 +197,7 @@ const LoginForm = () => {
             if (window.ReactNativeWebView) {
               const browserURL = `https://connectedengager.com?token=${data.token}&source=app`;
               window.ReactNativeWebView.postMessage(
-                `openInBrowser::${browserURL}`
+                `openInBrowser::${browserURL}`,
               );
             } else {
               navigate("/userlist", { state: { userId: data.userId } });
@@ -213,7 +213,7 @@ const LoginForm = () => {
           console.error("Login error:", error);
           setMessage(
             pageTranslations.loginFailedNetwork ||
-              "Login failed due to network error"
+              "Login failed due to network error",
           );
           setType("error");
           setAlertKey((prevKey) => prevKey + 1);
@@ -246,14 +246,14 @@ const LoginForm = () => {
       case "info":
         setModalContent(
           pageTranslations.infoMessage ||
-            "We have two cookies which are for remembering your username and your language preference to remove the inconvenience of remembering your username or having to reselect your language preference the next time you login"
+            "We have two cookies which are for remembering your username and your language preference to remove the inconvenience of remembering your username or having to reselect your language preference the next time you login",
         );
         setShowModal(true);
         break;
       case "customize":
         setModalContent(
           pageTranslations.customizeMessage ||
-            "You can either accept the application specific cookies or reject them."
+            "You can either accept the application specific cookies or reject them.",
         );
         setShowModal(true);
         break;
@@ -261,7 +261,7 @@ const LoginForm = () => {
         Cookies.remove("username");
         Cookies.remove("preferredLanguage");
         setModalContent(
-          pageTranslations.rejectAllMessage || "We have removed all cookies"
+          pageTranslations.rejectAllMessage || "We have removed all cookies",
         );
         setShowModal(true);
         break;
@@ -327,7 +327,7 @@ const LoginForm = () => {
 
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/get-ip`
+          `${process.env.REACT_APP_API_URL}/api/get-ip`,
         );
         const data = await response.json();
         const ipLanguage = data.language || "en";
@@ -421,30 +421,38 @@ const LoginForm = () => {
   }
   if (!geoCheckComplete) {
     return (
-      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
+      <main
+        className="login-layout"
+        style={{ textAlign: "center", paddingTop: "100px" }}
+      >
         <Spinner animation="border" role="status" variant="primary">
           <span className="visually-hidden">
-            {pageTranslations.checkingLocation || "Checking your location, please wait..."}
+            {pageTranslations.checkingLocation ||
+              "Checking your location, please wait..."}
           </span>
         </Spinner>
         <p style={{ marginTop: "20px" }} className="font-style-4">
-          {pageTranslations.checkingLocation || "Checking your location, please wait..."}
+          {pageTranslations.checkingLocation ||
+            "Checking your location, please wait..."}
         </p>
       </main>
     );
   }
-  
+
   if (isBannedCountry) {
     return (
-      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
+      <main
+        className="login-layout"
+        style={{ textAlign: "center", paddingTop: "100px" }}
+      >
         <p style={{ color: "red", fontWeight: "bold" }}>
-          {pageTranslations.serviceNotAvailable || "Sorry, this service is not available in your country."}
+          {pageTranslations.serviceNotAvailable ||
+            "Sorry, this service is not available in your country."}
         </p>
       </main>
     );
   }
-  
-  
+
   return (
     <main className="login-layout" aria-labelledby="login-title">
       <div className="title-and-help" style={{ textAlign: "center" }}>
@@ -455,6 +463,14 @@ const LoginForm = () => {
           <ScrollingHelpText message={helpMessage} width="300px" />
         </div>
       </div>
+      <section className="special-needs-demo-link">
+        <h2>Special Needs demonstration</h2>
+        <p>
+          Explore the browser-based demonstration. Changes are stored only in
+          your browser and can be reset at any time.
+        </p>
+        <a href="/SpecialNeeds/">Open Special Needs demo</a>
+      </section>
       <div style={{ textAlign: "center", margin: "20px" }}>
         <Dropdown onSelect={(eventKey) => handleLanguageChange(eventKey)}>
           <Dropdown.Toggle
@@ -666,7 +682,7 @@ const LoginForm = () => {
                           {label}
                         </div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               </section>

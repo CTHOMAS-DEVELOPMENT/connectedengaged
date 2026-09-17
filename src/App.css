@@ -1226,4 +1226,39 @@ Interaction_entry {
 .font-style-4:lang(en) {
   font-family: "Barrio", sans-serif !important;
 }
+.special-needs-demo-link {
+  max-width: 620px;
+  margin: 20px auto;
+  padding: 18px 22px;
+  border: 1px solid #b7ddd8;
+  border-left: 5px solid #147d73;
+  border-radius: 8px;
+  background: #effaf8;
+  text-align: center;
+}
 
+.special-needs-demo-link h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.special-needs-demo-link p {
+  margin: 0 0 14px;
+}
+
+.special-needs-demo-link a {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 6px;
+  background: #147d73;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.special-needs-demo-link a:hover,
+.special-needs-demo-link a:focus {
+  background: #0f625a;
+  color: white;
+  text-decoration: underline;
+}
