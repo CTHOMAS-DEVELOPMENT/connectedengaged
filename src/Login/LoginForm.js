@@ -1,707 +1,288 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom"; // Import Link from react-router-dom
-import Cookies from "js-cookie";
-import translations from "./translations.json";
-import AlertMessage from "../system/AlertMessage";
-import { womanImages, manImages } from "./images.js";
-import AcceptAllIcon from "./accept_all.svg";
-import RejectAllIcon from "./reject_all.svg";
-import InformationIcon from "./information.svg";
-import CustomizeIcon from "./customize.svg";
-import ScrollingHelpText from "../system/ScrollingHelpText.js";
-import { Button, Modal, Dropdown, Spinner } from "react-bootstrap"; // Add Dropdown to imports
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect } from "react";
+import "./DomainOwnerStudio.css";
+
+const ArrowIcon = () => (
+  <svg viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M4 10h11M11 5l5 5-5 5" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z" />
+    <path d="m8.5 12 2.2 2.2 4.8-5" />
+  </svg>
+);
 
 const LoginForm = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-  const [message, setMessage] = useState("");
-  const [type, setType] = useState("info"); // Default to 'info' or any type you prefer
-  const [alertKey, setAlertKey] = useState(0);
-  const [errors, setErrors] = useState({});
-  const [manRotation, setManRotation] = useState(0);
-  const [womanRotation, setWomanRotation] = useState(0);
-  const [womanImage, setWomanImage] = useState(womanImages[0]);
-  const [consentGiven, setConsentGiven] = useState(false);
-  const [consentImagesState, setConsentImagesState] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [manImage, setManImage] = useState(manImages[0]);
-  const [ipCountry, setIpCountry] = useState(""); // Initialize state for country
-  const [ip, setIp] = useState(""); // Initialize state for IP
-  const hasFetchedIp = useRef(false); // Ref to control the fetch
-  const [selectedLanguage, setSelectedLanguage] = useState(() => {
-    return Cookies.get("preferredLanguage") || "en"; // Default to 'en' if no cookie is set
-  });
-  const location = useLocation(); // Get the location object
-  const [autoLoggingIn, setAutoLoggingIn] = useState(false);
-  const [geoCheckComplete, setGeoCheckComplete] = useState(false);
-  const [isBannedCountry, setIsBannedCountry] = useState(false);
-  const formItemStyle = {
-    width: "100%", // Full width to match other form items
-    maxWidth: "200px", // Constrain the max width
-    margin: "0 auto", // Center it within the container
-    display: "flex",
-    justifyContent: "center",
-  };
-  const verticleWrapper = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center", // Center vertically
-    width: "100%", // Ensure the wrapper takes full width
-  };
-
-  const horizontalWrapper = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center", // Center vertically
-    width: "100%",
-  };
-  const languageMap = {
-    en: "English",
-    es: "Español",
-    fr: "Français",
-    de: "Deutsch",
-    ar: "العربية", // Arabic
-    zh: "中文", // Chinese
-    ga: "Gaelach",
-    pt: "Português",
-    hi: "हिन्दी",
-    hy: "Հայերեն",
-  };
-
-  const pageTranslations = translations[selectedLanguage]?.["login"] || {}; // Get the translation for the current page
-  const navigate = useNavigate();
-  const helpMessage =
-    pageTranslations.helpMessage || "No help message configured";
-    const BANNED_COUNTRIES = new Set([
-      "ISRAEL",
-      "UNITED KINGDOM",
-      "UNITED STATES",
-    ]);
-      const consentImages = [
-    {
-      id: "customize",
-      svg: CustomizeIcon,
-      label: pageTranslations.consent?.customize || "Customize",
-    },
-    {
-      id: "acceptAll",
-      svg: AcceptAllIcon,
-      label: pageTranslations.consent?.acceptAll || "Accept All",
-    },
-    {
-      id: "rejectAll",
-      svg: RejectAllIcon,
-      label: pageTranslations.consent?.rejectAll || "Reject All",
-    },
-    {
-      id: "info",
-      svg: InformationIcon,
-      label: pageTranslations.consent?.info || "Information",
-    },
-  ];
-  const [formData, setFormData] = useState({
-    username: location.state?.username || Cookies.get("username") || "", // Use username from state if available
-    password: "", // Do not store password
-  });
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    }
-
-    if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const rotateImage = (image) => {
-    if (image === "man") {
-      setManRotation((prevRotation) => (prevRotation + 90) % 360);
-    } else {
-      setWomanRotation((prevRotation) => (prevRotation + 90) % 360);
-    }
-  };
-
-  const shuffleConsentImages = () => {
-    let shuffled = [...consentImages];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    setConsentImagesState(shuffled);
-  };
-
-  const isImageCorrectlyOriented = () => {
-    return manRotation % 360 === 0 && womanRotation % 360 === 0;
-  };
-
-  const handleLanguageChange = (languageCode) => {
-    setSelectedLanguage(languageCode);
-    Cookies.set("preferredLanguage", languageCode, { expires: 365 }); // Store for 1 year
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!consentGiven) {
-      setMessage(
-        pageTranslations.cookieConsentError ||
-          "Please accept or reject cookies before logging in."
-      );
-      setType("error");
-      setAlertKey((prevKey) => prevKey + 1);
-      resetImages();
-      return;
-    }
-    if (!isImageCorrectlyOriented()) {
-      setMessage(
-        pageTranslations.imageOrientationError ||
-          "Please correctly orient the images before submitting."
-      );
-      setType("error");
-      setAlertKey((prevKey) => prevKey + 1);
-      resetImages();
-      return;
-    }
-    if (validateForm()) {
-      fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-        }),
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          if (data.success) {
-            setMessage(pageTranslations.loginSuccess || "Login successful");
-            setType("success");
-            setAlertKey((prevKey) => prevKey + 1);
-            localStorage.setItem("token", data.token);
-
-            // Store the username in a cookie
-            Cookies.set("username", formData.username, { expires: 365 });
-
-            // 👉 If inside React Native WebView, ask it to open the browser
-            if (window.ReactNativeWebView) {
-              const browserURL = `https://connectedengager.com?token=${data.token}&source=app`;
-              window.ReactNativeWebView.postMessage(
-                `openInBrowser::${browserURL}`
-              );
-            } else {
-              navigate("/userlist", { state: { userId: data.userId } });
-            }
-          } else {
-            setMessage(data.message || "Login failed");
-            setType("error");
-            setAlertKey((prevKey) => prevKey + 1);
-            resetImages();
-          }
-        })
-        .catch((error) => {
-          console.error("Login error:", error);
-          setMessage(
-            pageTranslations.loginFailedNetwork ||
-              "Login failed due to network error"
-          );
-          setType("error");
-          setAlertKey((prevKey) => prevKey + 1);
-          resetImages();
-        });
-    }
-  };
-
-  const resetImages = () => {
-    shuffleConsentImages();
-
-    const randomRotation = () => {
-      const angles = [0, 90, 180, 270]; // Possible rotations
-      return angles[Math.floor(Math.random() * angles.length)];
-    };
-
-    const selectRandomImage = (images) => {
-      return images[Math.floor(Math.random() * images.length)];
-    };
-
-    setManRotation(randomRotation()); // Randomize man image rotation
-    setWomanRotation(randomRotation()); // Randomize woman image rotation
-
-    setManImage(selectRandomImage(manImages)); // Randomize man image
-    setWomanImage(selectRandomImage(womanImages)); // Randomize woman image
-  };
-
-  const scoreClickConsent = (consertId) => {
-    switch (consertId) {
-      case "info":
-        setModalContent(
-          pageTranslations.infoMessage ||
-            "We have two cookies which are for remembering your username and your language preference to remove the inconvenience of remembering your username or having to reselect your language preference the next time you login"
-        );
-        setShowModal(true);
-        break;
-      case "customize":
-        setModalContent(
-          pageTranslations.customizeMessage ||
-            "You can either accept the application specific cookies or reject them."
-        );
-        setShowModal(true);
-        break;
-      case "rejectAll":
-        Cookies.remove("username");
-        Cookies.remove("preferredLanguage");
-        setModalContent(
-          pageTranslations.rejectAllMessage || "We have removed all cookies"
-        );
-        setShowModal(true);
-        break;
-
-      case "acceptAll":
-        setConsentGiven(true);
-        break;
-      default:
-        console.log("Unrecognized consent ID");
-    }
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setConsentGiven(true); // Set consent given upon closing the modal
-  };
-
   useEffect(() => {
-    // 1. Token Clearing (existing)
-    if (localStorage.getItem("token")) {
-      console.log("Existing token found. Clearing it.");
-      localStorage.removeItem("token");
-    }
-
-    // 2. Deep Link Token Handling (new)
-    const urlParams = new URLSearchParams(window.location.search);
-    const deepLinkToken = urlParams.get("token");
-    const source = urlParams.get("source");
-
-    if (deepLinkToken && source === "app") {
-      setAutoLoggingIn(true);
-      localStorage.setItem("token", deepLinkToken);
-      window.history.replaceState({}, "", window.location.pathname);
-
-      fetch(`${process.env.REACT_APP_API_URL}/api/verify-token`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${deepLinkToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.valid) {
-            navigate("/userlist", { state: { userId: data.userId } });
-          } else {
-            setAutoLoggingIn(false);
-          }
-        })
-        .catch(() => setAutoLoggingIn(false));
-    }
-
-    // 3. Language Detection (existing)
-    const preferredLanguage = Cookies.get("preferredLanguage");
-    if (preferredLanguage) {
-      setSelectedLanguage(preferredLanguage);
-    }
-
-    // 4. IP Detection (existing)
-    const fetchIpAddress = async () => {
-      if (hasFetchedIp.current) return;
-      hasFetchedIp.current = true;
-
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/get-ip`
-        );
-        const data = await response.json();
-        const ipLanguage = data.language || "en";
-        const ipCountry = data.country || "";
-        const ip = data.ip || "";
-        if (languageMap[ipLanguage]) {
-          setSelectedLanguage(ipLanguage);
-          Cookies.set("preferredLanguage", ipLanguage, { expires: 365 });
-        }
-
-        const tCountry = ipCountry.trim().toUpperCase();
-        const isBanned = BANNED_COUNTRIES.has(tCountry);
-        //console.log("isBanned?", isBanned, "tCountry:", tCountry);
-
-        if (isBanned) {
-          //console.error(`[GEO] BANNED country detected`, tCountry);
-          setIsBannedCountry(true);
-        }
-
-        setIpCountry(ipCountry);
-        setIp(ip);
-        setGeoCheckComplete(true); // ✅ Mark check as complete
-      } catch (error) {
-        console.error("Error fetching IP address:", error);
-      }
-    };
-    fetchIpAddress();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array
-
-  // Handle resize events to check for mobile view
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Set the initial isMobile state
+    const previousTitle = document.title;
+    document.title = "Domain Owner Studio | Connected Engager";
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      document.title = previousTitle;
     };
-  }, []); // Runs once on mount, to track window resizing
-
-  useEffect(() => {
-    resetImages(); // Call resetImages to randomize images and rotation on component mount
-    setConsentImagesState(consentImages);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLanguage, pageTranslations]); // Add selectedLanguage and pageTranslations to the dependency array
-
-  useEffect(() => {
-    if (location.state?.username) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        username: location.state.username, // Set the username from the passed state
-      }));
-    }
-  }, [location.state?.username]);
-
-  useEffect(() => {
-    window.addEventListener("message", (event) => {
-      if (event.data?.type === "simulateLogin") {
-        const { username, password, language } = event.data;
-        setFormData({ username, password });
-        setSelectedLanguage(language);
-      }
-    });
   }, []);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-  if (autoLoggingIn) {
-    return (
-      <main
-        className="login-layout"
-        style={{ textAlign: "center", paddingTop: "100px" }}
-      >
-        <Spinner animation="border" role="status" variant="primary">
-          <span className="visually-hidden">Logging in...</span>
-        </Spinner>
-        <p style={{ marginTop: "20px" }} className="font-style-4">
-          {pageTranslations.autoLogin || "Verifying session..."}
-        </p>
-      </main>
-    );
-  }
-  if (!geoCheckComplete) {
-    return (
-      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
-        <Spinner animation="border" role="status" variant="primary">
-          <span className="visually-hidden">
-            {pageTranslations.checkingLocation || "Checking your location, please wait..."}
-          </span>
-        </Spinner>
-        <p style={{ marginTop: "20px" }} className="font-style-4">
-          {pageTranslations.checkingLocation || "Checking your location, please wait..."}
-        </p>
-      </main>
-    );
-  }
-  
-  if (isBannedCountry) {
-    return (
-      <main className="login-layout" style={{ textAlign: "center", paddingTop: "100px" }}>
-        <p style={{ color: "red", fontWeight: "bold" }}>
-          {pageTranslations.serviceNotAvailable || "Sorry, this service is not available in your country."}
-        </p>
-      </main>
-    );
-  }
-  
-  
   return (
-    <main className="login-layout" aria-labelledby="login-title">
-      <div className="title-and-help" style={{ textAlign: "center" }}>
-        <h1 id="login-title" className="font-style-4">
-          {pageTranslations.title || "Are you Connected Engaged?"}
-        </h1>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <ScrollingHelpText message={helpMessage} width="300px" />
-        </div>
-      </div>
-      <div style={{ textAlign: "center", margin: "20px" }}>
-        <Dropdown onSelect={(eventKey) => handleLanguageChange(eventKey)}>
-          <Dropdown.Toggle
-            variant="primary"
-            id="language-dropdown"
-            className={`font-style-4`}
-            lang={selectedLanguage}
-          >
-            {languageMap[selectedLanguage]}{" "}
-          </Dropdown.Toggle>
+    <main className="domain-studio">
+      <nav className="domain-studio__nav" aria-label="Primary navigation">
+        <a className="domain-studio__brand" href="#top" aria-label="Domain Owner Studio home">
+          <span className="domain-studio__brand-mark" aria-hidden="true">
+            DO
+          </span>
+          <span>
+            <strong>Domain Owner Studio</strong>
+            <small>by Connected Engager</small>
+          </span>
+        </a>
 
-          <Dropdown.Menu>
-            <Dropdown.Item eventKey="en" className="font-style-4" lang="en">
-              English
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="es" className="font-style-4" lang="es">
-              Español
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="fr" className="font-style-4" lang="fr">
-              Français
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="de" className="font-style-4" lang="de">
-              Deutsch
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="ar" className="font-style-4" lang="ar">
-              العربية
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="zh" className="font-style-4" lang="zh">
-              中文
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="ga" className="font-style-4" lang="ga">
-              Gaelic
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="pt" className="font-style-4" lang="pt">
-              Português
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="hy" className="font-style-4" lang="hy">
-              Հայերեն
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="hi" className="font-style-4" lang="hi">
-              हिन्दी
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
-      <div style={isMobile ? verticleWrapper : horizontalWrapper}>
-        <div className="image-panel">
-          <img
-            src={manImage}
-            alt="Man"
-            style={{ transform: `rotate(${manRotation}deg)` }}
-            onClick={() => rotateImage("man")}
-            aria-describedby="instructions"
-          />
+        <div className="domain-studio__nav-links">
+          <a href="#method">Method</a>
+          <a href="#pilot">Live case study</a>
+          <a href="#principles">Data principles</a>
+          <a className="domain-studio__nav-cta" href="#enquiry">
+            Start a conversation
+          </a>
         </div>
-        <div className="image-panel">
-          <img
-            src={womanImage}
-            alt="Woman"
-            style={{ transform: `rotate(${womanRotation}deg)` }}
-            onClick={() => rotateImage("woman")}
-            aria-describedby="instructions"
-          />
-        </div>
-        <div id="instructions" className="visually-hidden">
-          {pageTranslations.imageRotate ||
-            "Please rotate the images to the correct orientation before proceeding."}
-        </div>
-      </div>
-      {message && (
-        <div role="alert" aria-live="assertive" id="form-message">
-          <AlertMessage key={alertKey} message={message} type={type} />
-        </div>
-      )}
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <div className="login-form">
-          <div className="form-container">
-            <form onSubmit={handleSubmit} aria-labelledby="login-title">
-              <div style={formItemStyle}>
-                <label htmlFor="username" className="visually-hidden">
-                  {pageTranslations.usernamePlaceholder || "Username"}
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  placeholder={
-                    pageTranslations.usernamePlaceholder || "Username"
-                  }
-                  onChange={handleInputChange}
-                  required
-                  aria-describedby="username-error"
-                />
-                {errors.username && (
-                  <p id="username-error" className="error">
-                    {errors.username}
-                  </p>
-                )}
-              </div>
-              <div style={formItemStyle}>
-                <label htmlFor="password" className="visually-hidden">
-                  {pageTranslations.passwordLabel || "Password"}
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  placeholder={
-                    pageTranslations.passwordPlaceholder || "Password"
-                  }
-                  onChange={handleInputChange}
-                  required
-                  aria-describedby="password-error"
-                />
-                {errors.password && (
-                  <p id="password-error" className="error">
-                    {pageTranslations.passwordLengthError ||
-                      "Password must be at least 8 characters"}
-                  </p>
-                )}
-              </div>
-              <div style={{ ...formItemStyle, flexDirection: "column" }}>
-                <Button variant="primary" onClick={handleSubmit}>
-                  {pageTranslations.loginButton || "Login"}
-                </Button>{" "}
-                <span>
-                  {pageTranslations.noAccountText || "Don't have an account?"}
-                </span>
-                <Button
-                  onClick={() =>
-                    navigate("/register", {
-                      state: {
-                        language: selectedLanguage, // Pass the detected or selected language
-                        country: ipCountry, // Pass the detected country
-                        ip: ip, // Pass the detected IP
-                      },
-                    })
-                  }
-                >
-                  {pageTranslations.registerLink || "Register here"}
-                </Button>
-              </div>
+      </nav>
 
-              <div className="login-page-link">
-                <span>
-                  <Link
-                    to="/password-reset-request"
-                    state={{ selectedLanguage: selectedLanguage }} // Pass the selected language to PasswordResetRequest
-                  >
-                    {pageTranslations.forgottenPasswordLink ||
-                      "Forgotten password?"}
-                  </Link>
-                </span>
-              </div>
-            </form>
-            {showModal && (
-              <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                  <Modal.Title className="font-style-4">
-                    {pageTranslations.modalTitle || "Cookie Information"}
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{modalContent}</Modal.Body>
-                <Modal.Footer>
-                  <Button variant="secondary" onClick={handleCloseModal}>
-                    {pageTranslations.closeButton || "Close"}
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            )}
+      <header className="domain-studio__hero" id="top">
+        <div className="domain-studio__hero-glow domain-studio__hero-glow--one" />
+        <div className="domain-studio__hero-glow domain-studio__hero-glow--two" />
 
-            {!consentGiven && (
-              <section
-                aria-label={
-                  pageTranslations.cookieConsent || "Cookie Consent Options"
-                }
-              >
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobile
-                      ? "1fr 1fr"
-                      : "repeat(4, 1fr)", // 2 columns on mobile, 4 on larger
-                    gridGap: "15px", // Adds space between items
-                    justifyContent: "center", // Centers the grid
-                    alignItems: "center", // Centers items vertically
-                    marginTop: "20px", // Space at the top
-                  }}
-                >
-                  {consentImagesState.map(
-                    ({ id, svg: SvgComponent, label }) => (
-                      <div
-                        key={id}
-                        onClick={() => scoreClickConsent(id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <img
-                          src={SvgComponent}
-                          alt={label}
-                          style={{ width: "60px", height: "60px" }}
-                        />
-                        <div
-                          className="font-style-4"
-                          style={{ textAlign: "center" }}
-                        >
-                          {label}
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-              </section>
-            )}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                onClick={() =>
-                  navigate("/privacy-policy", {
-                    state: { selectedLanguage, from: "login" }, // Pass the selected language via state
-                  })
-                }
-              >
-                {pageTranslations.privacyPolicyLink || "Privacy Policy"}
-              </Button>
+        <div className="domain-studio__hero-copy">
+          <p className="domain-studio__eyebrow">
+            <span /> Small systems. Deep knowledge. Human control.
+          </p>
+          <h1>
+            Are you a <em>Domain owner</em> at work?
+          </h1>
+          <p className="domain-studio__lede">
+            You know the exceptions, the shortcuts, the risks and the real sequence of work.
+            That knowledge can become a focused system—without turning your working life into
+            somebody else&apos;s platform.
+          </p>
 
-              <Button
-                style={{ marginTop: "10px" }} // Add spacing below the Privacy Policy button
-                onClick={() =>
-                  navigate("/child-safety", {
-                    state: { selectedLanguage, from: "login" }, // Pass the selected language via state
-                  })
-                }
-              >
-                {pageTranslations.childSafetyLink || "Child Safety"}
-              </Button>
+          <div className="domain-studio__hero-actions">
+            <a className="domain-studio__button domain-studio__button--primary" href="#method">
+              Explore the method <ArrowIcon />
+            </a>
+            <a className="domain-studio__button domain-studio__button--ghost" href="#pilot">
+              See the pilot in practice
+            </a>
+          </div>
+
+          <dl className="domain-studio__hero-facts">
+            <div>
+              <dt>01</dt>
+              <dd>Your knowledge leads</dd>
             </div>
+            <div>
+              <dt>02</dt>
+              <dd>Safety starts in development</dd>
+            </div>
+            <div>
+              <dt>03</dt>
+              <dd>Your data stays portable</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div className="domain-studio__map" aria-label="A visual map showing domain knowledge becoming a focused system">
+          <div className="domain-studio__map-orbit domain-studio__map-orbit--outer" />
+          <div className="domain-studio__map-orbit domain-studio__map-orbit--inner" />
+          <div className="domain-studio__map-core">
+            <span>DOMAIN</span>
+            <strong>YOU</strong>
+            <small>The person who knows how the work really works</small>
+          </div>
+          <span className="domain-studio__map-node domain-studio__map-node--one">Rules</span>
+          <span className="domain-studio__map-node domain-studio__map-node--two">Exceptions</span>
+          <span className="domain-studio__map-node domain-studio__map-node--three">Decisions</span>
+          <span className="domain-studio__map-node domain-studio__map-node--four">Records</span>
+          <span className="domain-studio__map-node domain-studio__map-node--five">Outcomes</span>
+          <div className="domain-studio__map-caption">
+            <span className="domain-studio__pulse" /> Knowledge worth mining
           </div>
         </div>
-      </div>
+      </header>
+
+      <section className="domain-studio__trust-strip" aria-label="Our working principles">
+        <p><strong>Local-first</strong><span>when the work allows it</span></p>
+        <p><strong>Standalone</strong><span>without isolated data</span></p>
+        <p><strong>Parallel-run</strong><span>before handover</span></p>
+        <p><strong>Exportable</strong><span>in understandable formats</span></p>
+      </section>
+
+      <section className="domain-studio__section domain-studio__intro">
+        <div className="domain-studio__section-label">The opportunity</div>
+        <div className="domain-studio__intro-copy">
+          <h2>The best software brief may already be walking around your workplace.</h2>
+          <p>
+            A domain owner is not necessarily a manager or a technologist. It is the person
+            colleagues rely on when the documented process stops matching reality. We work with
+            that knowledge carefully: observing before automating, testing before replacing, and
+            keeping the resulting system understandable.
+          </p>
+        </div>
+        <aside className="domain-studio__quote">
+          <span>“</span>
+          <p>The system begins with the person who can explain why the ordinary case is never quite ordinary.</p>
+        </aside>
+      </section>
+
+      <section className="domain-studio__section domain-studio__method" id="method">
+        <div className="domain-studio__section-heading">
+          <div>
+            <p className="domain-studio__kicker">Knowledge mining, without extraction</p>
+            <h2>From lived expertise to a system that fits</h2>
+          </div>
+          <p>
+            The domain owner remains visible in every decision. A prototype is evidence for a
+            conversation—not an excuse to rush into production.
+          </p>
+        </div>
+
+        <ol className="domain-studio__steps">
+          <li>
+            <span className="domain-studio__step-number">01</span>
+            <div className="domain-studio__step-icon">OBSERVE</div>
+            <h3>Find the real workflow</h3>
+            <p>Listen for handoffs, exceptions, duplicate entry and the knowledge held outside formal documentation.</p>
+          </li>
+          <li>
+            <span className="domain-studio__step-number">02</span>
+            <div className="domain-studio__step-icon">MODEL</div>
+            <h3>Make knowledge visible</h3>
+            <p>Turn language, records and decisions into a small shared model that the domain owner can challenge.</p>
+          </li>
+          <li>
+            <span className="domain-studio__step-number">03</span>
+            <div className="domain-studio__step-icon">PROVE</div>
+            <h3>Run a bounded pilot</h3>
+            <p>Use fictional data first, introduce protection early, and run the new approach beside the old one.</p>
+          </li>
+          <li>
+            <span className="domain-studio__step-number">04</span>
+            <div className="domain-studio__step-icon">HANDOVER</div>
+            <h3>Leave control behind</h3>
+            <p>Deliver understandable data, documented recovery and a system that can evolve without becoming a trap.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section className="domain-studio__pilot" id="pilot">
+        <div className="domain-studio__pilot-visual">
+          <div className="domain-studio__window">
+            <div className="domain-studio__window-bar">
+              <span /><span /><span />
+              <small>local-first pilot</small>
+            </div>
+            <div className="domain-studio__window-body">
+              <div className="domain-studio__window-nav" />
+              <div className="domain-studio__window-banner">
+                <span>Protected local workspace</span>
+              </div>
+              <div className="domain-studio__window-grid">
+                <span /><span /><span />
+              </div>
+              <div className="domain-studio__window-lines">
+                <span /><span /><span /><span />
+              </div>
+            </div>
+          </div>
+          <div className="domain-studio__pilot-stamp">LIVE<br />LEARNING</div>
+        </div>
+
+        <div className="domain-studio__pilot-copy">
+          <p className="domain-studio__kicker">Case study 001 · Special Needs</p>
+          <h2>A teacher&apos;s expertise, shaped into a local-first pilot.</h2>
+          <p>
+            The Special Needs project began with one domain expert, one machine and a deliberately
+            small scope. Records stay in the chosen browser profile, encrypted backups are explicit,
+            and the pilot is introduced alongside the existing way of working.
+          </p>
+          <ul>
+            <li><ShieldIcon /> Fictional information during early testing</li>
+            <li><ShieldIcon /> Encrypted backup and reviewed recovery</li>
+            <li><ShieldIcon /> Parallel running before operational use</li>
+            <li><ShieldIcon /> Portable records rather than platform lock-in</li>
+          </ul>
+          <a className="domain-studio__text-link" href="https://specialneeds-demo.netlify.app/">
+            Open the public fictional demonstration <ArrowIcon />
+          </a>
+          <small className="domain-studio__pilot-note">
+            The protected operational pilot is intentionally not linked from this public page.
+          </small>
+        </div>
+      </section>
+
+      <section className="domain-studio__section domain-studio__principles" id="principles">
+        <div className="domain-studio__section-heading">
+          <div>
+            <p className="domain-studio__kicker">Protection is architecture</p>
+            <h2>Safe data practices begin during development</h2>
+          </div>
+          <p>
+            Security is not a badge added at release. It is a trail of restrained decisions that
+            begins before a real person&apos;s information enters the system.
+          </p>
+        </div>
+
+        <div className="domain-studio__principle-grid">
+          <article>
+            <span>MINIMISE</span>
+            <h3>Collect less</h3>
+            <p>No visitor IP profiling, behavioural tracking or speculative personal data collection on this page.</p>
+          </article>
+          <article>
+            <span>PROTECT</span>
+            <h3>Design recovery early</h3>
+            <p>Backups, restore checks and clear storage guidance are part of the pilot—not deferred maintenance.</p>
+          </article>
+          <article>
+            <span>TRANSFER</span>
+            <h3>Keep data understandable</h3>
+            <p>A standalone system should exchange records through documented formats rather than imprison them.</p>
+          </article>
+          <article>
+            <span>PROVE</span>
+            <h3>Earn operational trust</h3>
+            <p>Use fictional information, bounded trials and parallel running before relying on a fledgling system.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="domain-studio__enquiry" id="enquiry">
+        <div>
+          <p className="domain-studio__kicker">Bring the awkward workflow</p>
+          <h2>What do you understand at work that software still ignores?</h2>
+          <p>
+            The full enquiry form is the next step. Until it opens, you can start with a short email:
+            describe the work, the recurring friction and who currently carries the knowledge.
+          </p>
+        </div>
+        <div className="domain-studio__enquiry-card">
+          <span className="domain-studio__enquiry-status"><i /> Enquiry form in development</span>
+          <a href="mailto:connectedengaged@gmail.com?subject=Domain%20Owner%20Studio%20enquiry">
+            connectedengaged@gmail.com <ArrowIcon />
+          </a>
+          <small>No mailing list. No automated sales sequence. A human conversation first.</small>
+        </div>
+      </section>
+
+      <footer className="domain-studio__footer">
+        <a className="domain-studio__brand" href="#top">
+          <span className="domain-studio__brand-mark" aria-hidden="true">DO</span>
+          <span><strong>Domain Owner Studio</strong><small>by Connected Engager</small></span>
+        </a>
+        <p>Focused software for people who know the work.</p>
+        <div>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="mailto:connectedengaged@gmail.com">Contact</a>
+        </div>
+      </footer>
     </main>
   );
 };
