@@ -58,20 +58,20 @@ const LoginForm = () => {
             <span /> Small systems. Deep knowledge. Human control.
           </p>
           <h1>
-            Are you a <em>Domain owner</em> at work?
+            Small software systems for <em>work you know inside out.</em>
           </h1>
           <p className="domain-studio__lede">
-            You know the exceptions, the shortcuts, the risks and the real sequence of work.
-            That knowledge can become a focused system—without turning your working life into
-            somebody else&apos;s platform.
+            Managing requests, records or approvals across messages and spreadsheets? I’ll work
+            with you to build a small system around how you actually do the job—with you in
+            control of the decisions that matter.
           </p>
 
           <div className="domain-studio__hero-actions">
-            <a className="domain-studio__button domain-studio__button--primary" href="#method">
-              Explore the method <ArrowIcon />
+            <a className="domain-studio__button domain-studio__button--primary" href="#pilot">
+              See real examples
             </a>
-            <a className="domain-studio__button domain-studio__button--ghost" href="#pilot">
-              See the projects in practice
+            <a className="domain-studio__button domain-studio__button--ghost" href="mailto:connectedengaged@gmail.com?subject=My%20workflow">
+              Tell me about your workflow
             </a>
           </div>
 
