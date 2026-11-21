@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import "./DomainOwnerStudio.css";
+import AngelTreeDemo from "./AngelTreeDemo.jsx";
+import "./AngelTreeCaseStudy.css";
 
 const ArrowIcon = () => (
   <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -39,7 +41,7 @@ const LoginForm = () => {
 
         <div className="domain-studio__nav-links">
           <a href="#method">Method</a>
-          <a href="#pilot">Live case study</a>
+          <a href="#pilot">Case studies</a>
           <a href="#principles">Data principles</a>
           <a className="domain-studio__nav-cta" href="#enquiry">
             Start a conversation
@@ -69,7 +71,7 @@ const LoginForm = () => {
               Explore the method <ArrowIcon />
             </a>
             <a className="domain-studio__button domain-studio__button--ghost" href="#pilot">
-              See the pilot in practice
+              See the projects in practice
             </a>
           </div>
 
@@ -196,7 +198,7 @@ const LoginForm = () => {
         </div>
 
         <div className="domain-studio__pilot-copy">
-          <p className="domain-studio__kicker">Case study 001 · Special Needs</p>
+          <p className="domain-studio__kicker">Case study · Special Needs</p>
           <h2>A teacher&apos;s expertise, shaped into a local-first pilot.</h2>
           <p>
             The Special Needs project began with one domain expert, one machine and a deliberately
@@ -216,6 +218,49 @@ const LoginForm = () => {
             The protected operational pilot is intentionally not linked from this public page.
           </small>
         </div>
+      </section>
+
+      <section className="domain-studio__pilot domain-studio__angeltree" id="angeltree" aria-labelledby="angeltree-heading">
+        <div className="domain-studio__pilot-copy">
+          <p className="domain-studio__kicker">Case study · AngelTree</p>
+          <h2 id="angeltree-heading">A thoughtful match begins with the person who knows.</h2>
+          <p>
+            A community organiser knows the families, the children and the people offering to help.
+            AngelTree gives her a simple way to collect each child’s wishes and share them with
+            a chosen sponsor. The matching decision stays with her.
+          </p>
+          <ul>
+            <li><ShieldIcon /> One private questionnaire link for each child</li>
+            <li><ShieldIcon /> Parents submit online without creating an account</li>
+            <li><ShieldIcon /> The organiser chooses who receives each request</li>
+            <li><ShieldIcon /> Sponsors open a separate, read-only gift page</li>
+          </ul>
+          <p className="angeltree-case__lesson">
+            <strong>What the domain owner taught us</strong>
+            The first design let sponsors choose a child. Her knowledge of relationships and
+            different budgets showed why she needed to make that choice herself. The workflow
+            changed around that decision.
+          </p>
+          <a className="domain-studio__text-link" href="#angeltree-demo">Try the fictional AngelTree example</a>
+          <small className="domain-studio__pilot-note">
+            This public example is separate from the working system. No family records or private organiser links are shared here.
+          </small>
+        </div>
+        <aside className="angeltree-case__visual" aria-label="How AngelTree supports the organiser">
+          <span className="angeltree-case__tag">Small wishes. Wonderful moments.</span>
+          <div className="angeltree-case__gift" aria-hidden="true"><span /></div>
+          <h3>She knows who to ask.</h3>
+          <p>Parents share the wishes.<br />The organiser makes the match.<br />Sponsors see what matters.</p>
+          <span className="angeltree-case__signature">Human judgement, supported.</span>
+        </aside>
+      </section>
+
+      <section className="domain-studio__section angeltree-case__demo-section" id="angeltree-demo" aria-labelledby="angeltree-demo-heading">
+        <div className="domain-studio__section-heading">
+          <div><p className="domain-studio__kicker">Try the handover</p><h2 id="angeltree-demo-heading">One child. Three perspectives.</h2></div>
+          <p>Step into the organiser, parent and sponsor views using a fictional practice request. No account or real information needed.</p>
+        </div>
+        <AngelTreeDemo />
       </section>
 
       <section className="domain-studio__section domain-studio__principles" id="principles">

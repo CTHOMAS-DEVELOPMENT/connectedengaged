@@ -1,0 +1,50 @@
+.domain-studio__angeltree { scroll-margin-top: 2rem; }
+.angeltree-case__lesson { border-left: 3px solid #8de1ca; padding-left: 1.2rem; }
+.angeltree-case__lesson strong { display: block; margin-bottom: .6rem; }
+.angeltree-case__visual { background: #e2ebd9; color: #173f36; border-radius: 1.5rem; padding: clamp(1.5rem, 4vw, 4rem); text-align: center; align-self: center; min-width: 0; }
+.angeltree-case__tag, .angeltree-case__signature { display: block; font-size: .875rem; letter-spacing: .06em; }
+.angeltree-case__visual h3 { font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1.2; margin: 1rem 0; }
+.angeltree-case__visual p { line-height: 1.8; font-size: 1rem; }
+.angeltree-case__signature { margin-top: 2rem; }
+.angeltree-case__gift { position: relative; width: 9rem; height: 7rem; background: #254e40; border-radius: .4rem; margin: 4rem auto 2rem; transform: rotate(-8deg); box-shadow: 0 1rem 2rem #173f3625; }
+.angeltree-case__gift::before { content: ''; position: absolute; top: -.6rem; left: -.5rem; right: -.5rem; height: 1.3rem; background: #38644e; border-radius: .3rem; }
+.angeltree-case__gift::after { content: ''; position: absolute; width: 1.25rem; background: #ddc67b; height: 100%; top: 0; left: calc(50% - .625rem); }
+.angeltree-case__gift span::before, .angeltree-case__gift span::after { content: ''; position: absolute; top: -2.4rem; width: 2.9rem; height: 1.8rem; border: .4rem solid #ddc67b; border-radius: 70% 70% 20% 70%; }
+.angeltree-case__gift span::before { left: 1.5rem; transform: rotate(20deg); }
+.angeltree-case__gift span::after { right: 1.4rem; transform: rotate(-20deg) scaleX(-1); }
+.domain-studio .angeltree-case__demo-section { display: block; scroll-margin-top: 2rem; }
+.at-demo { margin-top: 2rem; background: #faf9f3; color: #173f36; border: 1px solid #c4d3c7; border-radius: 1.25rem; overflow: hidden; font-size: 1rem; line-height: 1.6; text-align: left; }
+.at-demo * { box-sizing: border-box; }
+.at-demo__header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid #d4dfd2; }
+.at-demo__header p { margin: .5rem 0 0; font-size: .875rem; }
+.at-demo__badge { color: #254e40; font-size: .875rem; font-weight: 700; }
+.at-demo__roles { display: flex; flex-wrap: wrap; gap: .6rem; padding: 1rem 1.5rem; background: #e9eee2; }
+.at-demo__roles span { padding: .4rem .9rem; border: 1px solid #637b6b; border-radius: 2rem; }
+.at-demo__roles [aria-current] { background: #254e40; color: white; }
+.at-demo__body { padding: clamp(1.25rem, 4vw, 2.5rem); max-width: 52rem; margin: auto; }
+.at-demo h3 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.3; margin: 0 0 1rem; color: #173f36; }
+.at-demo p { color: #294d42; margin: 1rem 0; font-size: 1rem; }
+.at-demo label { display: grid; gap: .4rem; margin: 1rem 0; font-size: 1rem; font-weight: 600; min-width: 0; }
+.at-demo input:not([type=checkbox]), .at-demo select, .at-demo textarea { display: block; width: 100%; min-width: 0; min-height: 46px; background: white; border: 1px solid #71877a; border-radius: .5rem; padding: .7rem; color: #173f36; font: inherit; }
+.at-demo textarea { resize: vertical; }
+.at-demo button { min-height: 46px; max-width: 100%; margin: .5rem 0; padding: .7rem 1.1rem; border: 1px solid #254e40; border-radius: .5rem; background: transparent; color: #173f36; font: inherit; font-weight: 650; cursor: pointer; white-space: normal; }
+.at-demo .at-demo__primary { background: #254e40; color: white; }
+.at-demo :is(button,input,select,textarea):focus-visible { outline: 3px solid #a66c18; outline-offset: 3px; }
+.at-demo__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
+.at-demo fieldset { min-width: 0; border: 1px solid #71877a; border-radius: .65rem; padding: 1rem; margin: 1.5rem 0; }
+.at-demo legend { font-weight: 700; padding: 0 .4rem; }
+.at-demo__checklist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; }
+.at-demo__checklist label { display: flex; align-items: center; gap: .6rem; font-weight: 400; margin: 0; min-height: 44px; }
+.at-demo__checklist input { width: 1.1rem; height: 1.1rem; flex-shrink: 0; accent-color: #254e40; }
+.at-demo .at-demo__required { color: #af2117; }
+.at-demo__details { margin: 0; }
+.at-demo__details div { padding: .9rem 0; border-bottom: 1px solid #d4dfd2; }
+.at-demo dt { font-weight: 700; }
+.at-demo dd { margin: .3rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.at-demo .at-demo__status { background: #e2ebd9; padding: .75rem 1rem; border-radius: .5rem; font-weight: 700; }
+.at-demo .at-demo__closing { font-weight: 650; }
+@media (max-width: 700px) {
+  .domain-studio__angeltree { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .at-demo__columns, .at-demo__checklist { grid-template-columns: minmax(0, 1fr); }
+  .at-demo__body > button, .at-demo form > button { width: 100%; }
+}
